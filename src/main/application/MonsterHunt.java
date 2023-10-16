@@ -16,13 +16,15 @@ public class MonsterHunt extends Application{
 	@Override
 	public void start(Stage stage) throws Exception {
 		Maze maze = new Maze();
-		System.out.println(maze);
-		Scene scene = new Scene(maze.draw(),500,500);
-		stage.setScene(scene);
-		stage.show();
+		Stage view1 = new Stage();
+		Stage view2 = new Stage();
+		view1.setScene(maze.mv.draw());
+		view1.show();
+		view2.setScene(maze.hv.draw());
+		view2.show();
+		System.out.println(maze.toString());
 		
 	}
-	
 	
 	
 

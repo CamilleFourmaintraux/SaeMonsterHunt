@@ -1,6 +1,4 @@
-package main.cells;
-
-import main.maze.ICoordinate;
+package main.maze.cells;
 
 public class CellEvent implements ICellEvent{
 	ICoordinate coord;

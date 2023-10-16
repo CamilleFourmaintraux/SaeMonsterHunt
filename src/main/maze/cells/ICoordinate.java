@@ -1,4 +1,4 @@
-package main.maze;
+package main.maze.cells;
 
 public interface ICoordinate {
 	public int getRow();

@@ -1,6 +1,4 @@
-package main.cells;
-
-import main.maze.ICoordinate;
+package main.maze.cells;
 
 public interface ICellEvent {
 	public CellInfo getState();

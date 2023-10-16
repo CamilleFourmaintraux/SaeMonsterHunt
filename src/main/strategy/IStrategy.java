@@ -1,6 +1,6 @@
-package main.Strategy;
+package main.strategy;
 
-import main.maze.ICoordinate;
+import main.maze.cells.ICoordinate;
 
 public interface IStrategy {
 	public ICoordinate play();

@@ -3,19 +3,22 @@ package main.utils;
 import java.util.ArrayList;
 
 public abstract class Subject {
-	ArrayList<Observer> subs;
+	protected ArrayList<Observer> subs;
+	protected Subject() {
+		this.subs=new ArrayList<Observer>();
+	}
 	public void attach(Observer obs) {
 		this.subs.add(obs);
 	}
 	public void detach(Observer obs) {
 		this.subs.remove(obs);
 	}
-	private void notifyObservers() {
+	protected void notifyObservers() {
 		for(Observer obs:this.subs) {
 			obs.update(this);
 		}
 	}
-	private void notifyObservers(Object data) {
+	protected void notifyObservers(Object data) {
 		for(Observer obs:this.subs) {
 			obs.update(this,data);
 		}

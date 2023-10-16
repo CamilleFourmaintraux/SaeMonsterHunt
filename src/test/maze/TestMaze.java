@@ -1,4 +1,4 @@
-package testMaze;
+package test.maze;
 
 public class TestMaze {
 
