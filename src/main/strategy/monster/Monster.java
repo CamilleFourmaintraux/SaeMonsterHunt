@@ -8,6 +8,7 @@ public class Monster extends Subject implements IMonsterStrategy{
 	protected ICoordinate coord;
 	protected ICoordinate coord_exit;
 	protected ICoordinate coord_hunted;
+	protected boolean monsterTurn;
 	
 	
 	
@@ -17,6 +18,7 @@ public class Monster extends Subject implements IMonsterStrategy{
 		this.coord = coord;
 		this.coord_exit = coord_exit;
 		this.coord_hunted = coord_hunted;
+		this.monsterTurn=true;
 	}
 	@Override
 	public ICoordinate play() {//move
@@ -37,10 +39,12 @@ public class Monster extends Subject implements IMonsterStrategy{
 	public void move(ICoordinate newCoord) {
 		this.coord=newCoord;
 		this.notifyObservers(newCoord);
+		this.monsterTurn=false;
 	}
 	
 	public void actualizeShot(ICoordinate newCoord) {
 		this.coord_hunted=newCoord;
+		this.monsterTurn=true;
 		this.notifyObservers();
 	}
 }

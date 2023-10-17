@@ -1,11 +1,13 @@
 package main.maze;
 
-import javafx.scene.Group;
+
 /*import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;*/
+
+import javafx.scene.Group;
 import main.maze.cells.*;
-//import main.maze.cells.ICellEvent.CellInfo; //Inutilisé
+import main.maze.cells.ICellEvent.CellInfo; //Inutilisé
 import main.strategy.hunter.*;
 import main.strategy.monster.*;
 import main.utils.Observer;
@@ -13,52 +15,31 @@ import main.utils.Subject;
 import main.utils.Utils;
 
 public class Maze implements Observer{
-	private boolean[][] walls;
-	private int[][] traces;
-	private Coordinate coord_exit;
-	private Coordinate coord_monster;
-	private Coordinate coord_hunter;
-	public int hauteur;
-	public int largeur;
-	public int size=30;
-	public int turn=0;
-	private Monster monster;
-	public MonsterView mv;
-	private Hunter hunter;
-	public HunterView hv;
 	
+	protected boolean[][] walls;
+	protected int[][] traces;
+	protected Coordinate coord_exit;
+	protected Coordinate coord_monster;
+	protected Coordinate coord_hunter;
+	protected Monster monster;
+	protected Hunter hunter;
+	
+	public int turn=0;
+	public boolean itIsMonsterTurn;
 	
 	public Maze() {
 		this.walls=this.generateBasicMap();
-		this.traces=this.initTraces();
-		this.hauteur = walls.length;
-		this.largeur = walls[0].length;
+		this.traces = this.initTraces();
+		this.initMonsterExitHunter();
 		
-		this.initMonsterExit();
-		
-		this.mv=new MonsterView(this.monster);
-		this.hunter=new Hunter(this.hauteur,this.largeur,coord_hunter);
-		this.hunter.attach(this);
-		this.hv=new HunterView(this.hunter);
-		
-		this.printTraces();
-		
-		
+		this.itIsMonsterTurn=true;
 	}
-	public Maze(int hauteur, int largeur,int probability) {
-		this.walls=this.generateWalls(probability);
-		this.traces=this.initTraces();
-		this.hauteur = hauteur;
-		this.largeur = largeur;
-		
-		this.initMonsterExit();
-		
-		this.mv=new MonsterView(this.monster);
-		this.hunter=new Hunter(this.hauteur,this.largeur,coord_hunter);
-		this.hunter.attach(this);
-		this.hv=new HunterView(this.hunter);
-	}
-	
+	public Maze(int probability, int height, int width, int size) {
+			this.walls=this.generateWalls(probability, height, width);
+			this.traces = this.initTraces();
+			this.initMonsterExitHunter();
+			this.itIsMonsterTurn=true;
+		}
 	public int[][] initTraces(){
 		int[][] traces = new int[this.walls.length][this.walls[0].length];
 		for(int h=0; h<this.walls.length;h++) {
@@ -96,8 +77,8 @@ public class Maze implements Observer{
 			{false,true,true,true,false,false,true,true,true,false}};	// X . . . X X . . . X 
 	}
 	
-	public boolean[][] generateWalls(int probability) {
-		boolean[][] maze = new boolean[hauteur][largeur];
+	public boolean[][] generateWalls(int probability, int height, int width) {
+		boolean[][] maze = new boolean[height][width];
 		for(int h=0; h<maze.length; h++) {
 			for(int l=0; l<maze[h].length; l++) {
 				if(probability>Utils.random.nextInt(100)) {
@@ -110,16 +91,19 @@ public class Maze implements Observer{
 		}
 		return maze;
 	}
-	public void initMonsterExit() {
+	public void initMonsterExitHunter() {
 		this.coord_exit=new Coordinate();
 		this.coord_monster=new Coordinate();
 		this.coord_hunter=new Coordinate();
-		this.monster= new Monster(this.walls,this.coord_monster,this.coord_exit,this.coord_hunter);
-		this.monster.attach(this);
-		this.coord_monster.setCoordinate(0, 8);
-		this.monster.move(coord_monster);
 		this.coord_exit.setCoordinate(4, 4);
 		this.coord_hunter.setCoordinate(-100, -100);//TODO On initie hunter en dehors de l'écran pour ne pas faire apparaitre de tir, fonctionne pour le moment car le hunter ne decouvre pas encore la map avec les tirs, à faire attention lors du développement.
+		this.monster = new Monster(this.walls,this.coord_monster,this.coord_exit,this.coord_hunter);
+		this.monster.attach(this);
+		this.hunter = new Hunter(this.walls.length,this.walls[0].length,this.coord_hunter);
+		this.hunter.attach(this);
+		this.coord_monster.setCoordinate(0, 8);
+		this.monster.move(coord_monster);
+		
 	}
 	
 	public String toString() {
@@ -177,7 +161,7 @@ public class Maze implements Observer{
 	}
 	
 	//Inutilisé
-	/*private CellInfo getCellInfo(int y, int x) {
+	private CellInfo getCellInfo(int y, int x) {
 		if(this.coord_monster.getRow()==y && this.coord_monster.getCol()==x) {
 			return CellInfo.MONSTER;
 		}else if(this.coord_hunter.getRow()==y && this.coord_hunter.getCol()==x) {
@@ -189,7 +173,13 @@ public class Maze implements Observer{
 		}else {
 			return CellInfo.WALL;
 		}
-	}*/
+	}
+	
+	protected boolean isWall(Coordinate c) {
+		return this.walls[c.getRow()][c.getCol()];
+		
+	}
+	
 	@Override
 	public void update(Subject s) {
 		//Permet d'update les vues sans toucher au labyrinthe.
@@ -201,17 +191,26 @@ public class Maze implements Observer{
 	@Override
 	public void update(Subject s, Object o) {
 		//Permet les déplacements en updatant les vues et le labyrinthe.
-		if(s.getClass()==Monster.class) {
+		if(s.getClass()==Monster.class) {//&&this.itIsMonsterTurn
 			this.turn=this.turn+1;
-			System.out.println("TEST:Monster"+this.turn);
+			//System.out.println("TEST:Monster"+this.turn);
 			this.coord_monster=(Coordinate)o;
 			this.traces[coord_monster.getRow()][coord_monster.getCol()]=this.turn;
-			System.out.println("["+coord_monster.getRow()+"]["+coord_monster.getCol()+"]="+this.turn+"("+this.traces[coord_monster.getRow()][coord_monster.getCol()]+")");
-			this.printTraces();
+			//System.out.println("["+coord_monster.getRow()+"]["+coord_monster.getCol()+"]="+this.turn+"("+this.traces[coord_monster.getRow()][coord_monster.getCol()]+")");
+			//this.printTraces();
+			this.itIsMonsterTurn=false;
+			this.hunter.setMonsterTurn(itIsMonsterTurn);
+			
 		}else if(s.getClass()==Hunter.class) {
-			System.out.println("TEST:Hunter");
-			this.coord_hunter=(Coordinate)o;
-			this.monster.actualizeShot((Coordinate)o);
+			//System.out.println("TEST:Hunter");
+			Coordinate c = (Coordinate) o;
+			this.coord_hunter=c;
+			this.monster.actualizeShot(c);
+			if(this.hunter.isMonster(this.coord_monster)) {
+				System.out.println("Chasseur-Vous avez tiré sur le monste ! Bien joué !");
+			}
+			this.hunter.actualizeTraces(coord_hunter, this.traces[coord_hunter.getRow()][coord_hunter.getCol()]);
+			this.itIsMonsterTurn=true;
 		}
 		
 	}

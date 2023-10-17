@@ -7,10 +7,12 @@ import main.maze.cells.Coordinate;
 public class Hunter extends Subject implements IHunterStrategy{
 	protected int[][] traces;
 	protected ICoordinate lastShot;
+	protected boolean monsterTurn;
 	
 	public Hunter(int height, int width, ICoordinate coord_hunter) {
 		this.lastShot=coord_hunter;
 		this.initialize(height, width);
+		this.monsterTurn=true;
 	}
 	
 	public Hunter() {
@@ -39,6 +41,21 @@ public class Hunter extends Subject implements IHunterStrategy{
 	}
 	public void shoot(ICoordinate newCoord) {
 		this.lastShot=newCoord;
+		this.monsterTurn=true;
 		this.notifyObservers(newCoord);
 	}
+	
+	public void actualizeTraces(ICoordinate c, int trace) {
+		this.traces[c.getRow()][c.getCol()]=trace;
+		this.notifyObservers();
+	}
+	
+	public void setMonsterTurn(boolean b) {
+		this.monsterTurn=b;
+	}
+	
+	public boolean isMonster(ICoordinate c) {
+		return this.lastShot.getRow()==c.getRow()&&this.lastShot.getCol()==c.getCol();
+	}
+	
 }

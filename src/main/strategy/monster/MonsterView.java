@@ -1,4 +1,4 @@
-package main.strategy.monster;
+ package main.strategy.monster;
 
 
 import javafx.scene.Group;
@@ -15,15 +15,18 @@ import main.utils.Utils;
 
 public class MonsterView extends Stage implements Observer{
 	//Affichage
-	int window_height = 500; //500 par défault
-	int window_width = 500; //500 par défault
-	int gap_X=0; //0 par défault
-	int gap_y=0; //0 par défault
+	protected int window_height = 500; //500 par défault
+	protected int window_width = 500; //500 par défault
+	protected int gap_X=0; //0 par défault
+	protected int gap_y=0; //0 par défault
+	protected int zoom = 50 ; //50 par défault
+	protected Color colorOfWalls=Color.DARKGRAY;
+	protected Color colorOfFloors=Color.LIGHTGRAY;
 	/*
 	final int gap_X=this.window_width/10;
 	final int gap_y=this.window_height/10;
 	*/
-	int zoom = 50 ; //30 par défault
+	
 	
 	//Subject
 	Monster monster;
@@ -40,6 +43,24 @@ public class MonsterView extends Stage implements Observer{
 		this.initiateSprites();
 	}
 	
+	
+	
+	public MonsterView(int window_height, int window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
+			Color colorOfFloors, Monster monster) {
+		this.window_height = window_height;
+		this.window_width = window_width;
+		this.gap_X = gap_X;
+		this.gap_y = gap_y;
+		this.zoom = zoom;
+		this.colorOfWalls = colorOfWalls;
+		this.colorOfFloors = colorOfFloors;
+		this.monster = monster;
+		this.monster.attach(this);
+		this.initiateSprites();
+	}
+
+
+
 	@Override
 	public void update(Subject s) {
 		this.sprite_monster.setX(this.monster.coord.getCol()*this.zoom+this.gap_X);
@@ -86,12 +107,15 @@ public class MonsterView extends Stage implements Observer{
 		this.selection.setStrokeWidth(3);
 		this.selection.setVisible(false);
 		this.selection.setOnMouseClicked(e->{
-			if(e.isShiftDown()) {
+			int y = (int)((selection.getY()-this.gap_y)/this.zoom);
+			int x = (int)((selection.getX()-this.gap_X)/this.zoom);
+			this.select(e, x,y);
+			/*if(e.isShiftDown()) {
 				monster.move(new Coordinate(((int)selection.getY()-this.gap_y)/this.zoom,((int)selection.getX()-this.gap_X)/this.zoom));
 			}else {
 				this.selection.toBack();
 				//selection.setVisible(false);
-			}
+			}*/
 		});
 		
 	}
@@ -101,13 +125,14 @@ public class MonsterView extends Stage implements Observer{
 		root.getChildren().add(this.selection);
 		for(int h=0; h<this.monster.walls.length; h++) {
 			for(int l=0; l<this.monster.walls[h].length; l++) {
-				Rectangle r = Utils.makeRectangle(l*this.zoom+this.gap_X, h*this.zoom+this.gap_y, this.zoom,this.zoom, Color.AQUA);
+				Rectangle r = Utils.makeRectangle(l*this.zoom+this.gap_X, h*this.zoom+this.gap_y, this.zoom,this.zoom, this.colorOfFloors);
+				
 				//Codage des rectangles
 				if(this.monster.walls[h][l]) {
 					//Code à calculer si c'est un sol : obsolète car la manière de faire les rectangles à changer
 				}else {
-					r.setFill(Color.BLUE);
-					r.setStroke(Color.BLUE);
+					r.setFill(this.colorOfWalls);
+					r.setStroke(this.colorOfWalls);
 					r.setStrokeWidth(1);
 				}
 				r.setOnMouseClicked(e->{
@@ -136,16 +161,21 @@ public class MonsterView extends Stage implements Observer{
 		this.selection.setX(x*this.zoom+this.gap_X);
 		if(this.monster.walls[y][x]) {
 			this.selection.setVisible(true);
+			this.selection.toFront();
 			if(Math.abs(this.monster.coord.getRow()-y)<2 && Math.abs(this.monster.coord.getCol()-x)<2) {
-				this.selection.toFront();
+				this.selection.setStroke(Color.RED);
+				this.selection.setStrokeWidth(3);
 				System.out.println("("+y+","+x+") est sélectionné.");
-				if(e.isShiftDown()) {
+				if(e.isShiftDown()&&this.monster.monsterTurn) {
 					monster.move(new Coordinate(y,x));
+				}else {
+					System.out.println("Monstre-C'est au tour du chasseur.");
 				}
 			}else {
 				System.out.println("Le monstre est à ("+this.monster.coord.getRow()+","+this.monster.coord.getCol()+"), soit ("+(this.monster.coord.getRow()-y)+","+(this.monster.coord.getCol()-x)+") de distance.");
 				System.out.println("("+y+","+x+") n'est pas une case adjacente !");
-				this.selection.toBack();
+				this.selection.setStroke(Color.DARKRED);
+				this.selection.setStrokeWidth(1);
 			}	
 		}else {
 			System.out.println("("+y+","+x+") est un mur !");
