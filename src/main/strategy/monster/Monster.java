@@ -11,7 +11,6 @@ public class Monster extends Subject implements IMonsterStrategy{
 	protected boolean monsterTurn;
 	
 	
-	
 	public Monster(boolean[][] walls,ICoordinate coord, ICoordinate coord_exit, ICoordinate coord_hunted) {
 		super();
 		this.initialize(walls);
@@ -46,5 +45,13 @@ public class Monster extends Subject implements IMonsterStrategy{
 		this.coord_hunted=newCoord;
 		this.monsterTurn=true;
 		this.notifyObservers();
+	}
+	
+	public int getRow() {
+		return this.coord.getRow();
+	}
+	
+	public int getCol() {
+		return this.coord.getCol();
 	}
 }

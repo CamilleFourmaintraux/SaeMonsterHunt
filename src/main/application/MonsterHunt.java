@@ -15,15 +15,7 @@ public class MonsterHunt extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		Management gestion = new Management(500,500,0,0,50,Color.DARKGRAY,Color.LIGHTGRAY);
-		Stage view1 = new Stage();
-		Stage view2 = new Stage();
-		view1.setScene(gestion.mv.draw());
-		view1.show();
-		view2.setScene(gestion.hv.draw());
-		view2.show();
-		//System.out.println(maze.toString());
-		
+		Management game = new Management(50,10,10,500,500,0,0,50,Color.DARKGRAY,Color.LIGHTGRAY);
 	}
 	
 	

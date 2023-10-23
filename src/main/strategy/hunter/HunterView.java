@@ -2,6 +2,7 @@ package main.strategy.hunter;
 
 
 import javafx.scene.Group;
+import javafx.scene.layout.VBox;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -10,31 +11,37 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import main.maze.cells.Coordinate;
+import main.maze.cells.CellWithText;
 import main.utils.Observer;
 import main.utils.Subject;
-import main.utils.Utils;
 
 public class HunterView extends Stage implements Observer{
 	//Affichage
-	protected int window_height; //500 par défault
-	protected int window_width; //500 par défault
-	protected int gap_X; //0 par défault
-	protected int gap_Y; //0 par défault
-	protected int zoom; //30 par défault
-	protected Color colorOfWalls;
-	protected Color colorOfFloors;
+	public int window_height; //500 par défault
+	public int window_width; //500 par défault
+	public int gap_X; //0 par défault
+	public int gap_Y; //0 par défault
+	public int zoom; //30 par défault
+	public Color colorOfWalls;
+	public Color colorOfFloors;
 	
 	//Subject
 	Hunter hunter;
 	
 	//Sprite (Rectangle pour le moment)
-	Rectangle sprite_shot;
-	Rectangle selection;
+	CellWithText sprite_shot;
+	CellWithText selection;
 	
-	Group root;
+	VBox vbox = new VBox();
+	Group group_stage;
+	Group group_sprite;
+	Group group_map;
+	Group group_texts;
 
 	public HunterView(int window_height, int window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
 		Color colorOfFloors, Hunter hunter) {
+		
+		//Initiation de la fenetre
 		this.window_height = window_height;
 		this.window_width = window_width;
 		this.gap_X = gap_X;
@@ -42,81 +49,127 @@ public class HunterView extends Stage implements Observer{
 		this.zoom = zoom;
 		this.colorOfWalls = colorOfWalls;
 		this.colorOfFloors = colorOfFloors;
+		
 		this.hunter = hunter;
 		this.hunter.attach(this);
+		
+		//Initiation des groupes
+		this.group_stage=new Group();
+		this.group_sprite=new Group();
+		this.group_texts=new Group();
+		this.group_map = new Group();
+		
 		this.initiateSprites();
+		this.draw();
+		//group_texts.getChildren().add(new CellWithText(0,0,50,Color.CORAL,this.gap_X,this.gap_Y,"pomme"));
+		this.group_stage.getChildren().add(group_map);
+		this.group_stage.getChildren().add(group_sprite);
+		this.group_stage.getChildren().add(group_texts);
+		
+		//Scene
+		Scene scene = new Scene(this.group_stage, this.window_height, this.window_width);
+		this.setScene(scene);
+		this.setTitle("MONSTERHUNTER - HunterView");
+		
 	}
-
-
 
 	@Override
 	public void update(Subject s) {
-		this.sprite_shot.setX(this.hunter.lastShot.getCol()*zoom+gap_X);
-		this.sprite_shot.setY(this.hunter.lastShot.getRow()*zoom+gap_Y);
+		this.sprite_shot.setX(calculDrawX(this.hunter.getCol()));
+		this.sprite_shot.setY(calculDrawY(this.hunter.getRow()));
+		this.sprite_shot.setVisible(true);
 		
 	}
 
 	@Override
 	public void update(Subject s, Object o) {
-		this.sprite_shot.setX(this.hunter.lastShot.getCol()*zoom+gap_X);
-		this.sprite_shot.setY(this.hunter.lastShot.getRow()*zoom+gap_Y);
-		
+		this.sprite_shot.setX(calculDrawX(this.hunter.getCol()));
+		this.sprite_shot.setY(calculDrawY(this.hunter.getRow()));
+		this.sprite_shot.setVisible(true);
 	}
 	
-	public Scene draw() {
-		this.root = new Group();
-		root.getChildren().add(this.selection);
+	public void draw() {
 		for(int h=0; h<this.hunter.traces.length; h++) {
 			for(int l=0; l<this.hunter.traces[h].length; l++) {
 				//Codage des rectangles
-				RectangleWithText r = new RectangleWithText(new Text(""), l*zoom+gap_X, h*zoom+gap_Y, zoom,zoom, Color.BLACK,Color.DARKGREY,1);
+				CellWithText cell = new CellWithText(l, h, zoom, Color.BLACK,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""));
 				//System.out.println(r.getRect().getPa);
-				r.setOnMouseClicked(e->{
-					this.select(r,e);
+				cell.setOnMouseClicked(e->{
+					this.select(cell,e);
 				});
-				root.getChildren().add(r);
-				r.getText().setOnMouseClicked(e->{
-					this.select(r,e);
+				group_map.getChildren().add(cell);
+				cell.getText().setOnMouseClicked(e->{
+					this.select(cell,e);
 				});
-				root.getChildren().add(r.getText());
+				this.group_texts.getChildren().add(cell.getText());
 				}
 			}
-		root.getChildren().add(sprite_shot);
-		Scene scene = new Scene(root, 500, 500);
-		return scene;
+	}
+	/*//TODO Corriger et finir les fonctions redraw
+	public void redraw(int new_gap_X, int new_gap_Y, int new_zoom) {
+		for(Node e:this.group_map.getChildren()) {
+			CellWithText r = (CellWithText)e;
+			this.redrawCell(r, new_gap_X, new_gap_Y, new_zoom);
+		}
+		for(Node e:this.group_sprite.getChildren()) {
+			CellWithText r = (CellWithText)e;
+			this.redrawCell(r, new_gap_X, new_gap_Y, new_zoom);
+		}
+	}
+	
+	public void redrawCell(CellWithText r,int new_gap_X, int new_gap_Y, int new_zoom) {
+		int y = this.calculCoordX(r);
+		int x = this.calculCoordY(r);
+		this.setZoom(new_zoom);
+		this.setGap_X(new_gap_X);
+		this.setGap_Y(new_gap_Y);
+		r.setX(calculDrawX(x));
+		r.setY(calculDrawY(y));
+		r.setWidth(zoom);
+		r.setHeight(zoom);
+		r.setX(x+(zoom/3));
+		r.setY(y+(zoom/2));
+	}*/
+	
+	public int calculCoordX(Rectangle r) {
+		return (int)((r.getX()-gap_X)/zoom);
+	}
+	public int calculCoordY(Rectangle r) {
+		return (int)((r.getY()-gap_Y)/zoom);
+	}
+	public int calculDrawX(int x) {
+		return x*zoom+gap_X;
+	}
+	public int calculDrawY(int y) {
+		return y*zoom+gap_Y;
 	}
 	
 	private void initiateSprites() {
 		//initialisation du sprite de selection
-		this.selection = Utils.makeRectangle(-1,-1, zoom,zoom, Color.TRANSPARENT);
+		this.selection =  new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Shot");
 		this.selection.setOnMouseClicked(e->{
-			/*if(e.isShiftDown()) {
-				hunter.shoot(new Coordinate(((int)this.selection.getY()-gap_Y)/zoom,((int)this.selection.getX()-gap_X)/zoom));
-				
-			}else {
-				this.selection.setVisible(false);
-			}*/
 			this.select(selection, e);
 		});
-		this.selection.setStroke(Color.RED);
-		this.selection.setStrokeWidth(3);
 		this.selection.setVisible(false);
 		
 		//initialisation du sprite du tir
-		this.sprite_shot=Utils.makeRectangle(this.hunter.lastShot.getCol()*zoom+gap_X,this.hunter.lastShot.getRow()*zoom+gap_Y, zoom,zoom, Color.TRANSPARENT);
-		this.selection.setStroke(Color.YELLOW);
-		this.selection.setStrokeWidth(5);
+		this.sprite_shot=new CellWithText(this.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot");
 		this.sprite_shot.setOnMouseClicked(e->{
 			this.select(this.sprite_shot,e);
 			//this.sprite_shot.setVisible(false);
 		});
+		this.sprite_shot.setVisible(false);
+		
+		//On ajoute les sprites au groupe associé.
+		this.group_sprite.getChildren().add(this.sprite_shot);
+		this.group_sprite.getChildren().add(this.selection);
 	}
 	
-	public void select(Rectangle r, MouseEvent e) {
-		int y = ((int)(r.getY()-gap_Y)/zoom);
-		int x = ((int)(r.getX()-gap_X)/zoom);
-		this.selection.setY(y*zoom+gap_Y);
-		this.selection.setX(x*zoom+gap_X);
+	public void select(CellWithText r, MouseEvent e) {
+		int y = this.calculCoordY(r);
+		int x = this.calculCoordX(r);
+		this.selection.setY(this.calculDrawY(y));
+		this.selection.setX(this.calculDrawX(x));
 		this.selection.toFront();
 		this.selection.setVisible(true);
 		//System.out.println("("+y+","+x+") est sélectionné.");
@@ -124,66 +177,120 @@ public class HunterView extends Stage implements Observer{
 			Coordinate c = new Coordinate(y,x);
 			hunter.shoot(c);
 			try{
-				this.searchSprite(root, c).setStroke(Color.TRANSPARENT);
-				if(this.hunter.traces[this.hunter.lastShot.getRow()][this.hunter.lastShot.getCol()]==-1) {
-					this.searchSprite(root, c).setFill(this.colorOfWalls);
+				CellWithText cwt = this.searchSprite(this.group_map, c);
+				cwt.setStroke(Color.TRANSPARENT);
+				if(this.hunter.traces[this.hunter.getRow()][this.hunter.getCol()]==-1) {
+					cwt.setFill(this.colorOfWalls);
 				}else {
-					this.searchSprite(root, c).setFill(this.colorOfFloors);
+					cwt.setFill(this.colorOfFloors);
 					int trace = this.hunter.traces[c.getRow()][c.getCol()];
 					if(trace>0) {
-						this.searchSprite(root, c).setText(""+trace);
+						cwt.setText(""+trace);
 					}
 				}
 			}catch(Exception exception) {
 				System.out.println("Error-Aucun Rectangle Correspondant !");
 			}
-		}else {
-			System.out.println("Chasseur-Juste sélection:"+this.hunter.monsterTurn);
 		}
-		}
-		/*public void select(Sprite r, MouseEvent e) {
-			int y = ((int)(r.getY()-gap_Y)/zoom);
-			int x = ((int)(r.getX()-gap_X)/zoom);
-			this.selection.setY(y*zoom+gap_Y);
-			this.selection.setX(x*zoom+gap_X);
-			this.selection.toFront();
-			this.selection.setVisible(true);
-			System.out.println("("+y+","+x+") est sélectionné.");
-			if(e.isShiftDown()) {
-				Coordinate c = new Coordinate(y,x);
-				hunter.shoot(c);
-				try{
-					if(this.hunter.traces[this.hunter.lastShot.getRow()][this.hunter.lastShot.getCol()]==-1) {
-						this.searchSprite(root, c).setFill(Color.BLUE);
-					}else {
-						this.searchSprite(root, c).setFill(Color.AQUA);
-					}
-				}catch(Exception exception) {
-					System.out.println("Pas de Sprite trouvé !");
-				}
-				
-			}*/
-				/*r.setOnKeyPressed(new EventHandler<KeyEvent>() {
-					@Override
-					public void handle(KeyEvent ke) {if(ke.getCode()==KeyCode.ENTER) {}}
-		        });
-	}*/
+	}
 	
-	public RectangleWithText searchSprite(Group group, Coordinate c) {
+	//TODO Aucun rectangle trouvé
+	public CellWithText searchSprite(Group group, Coordinate c) {
 		for(Node e:group.getChildren()) {
-			//System.out.println(e.getClass());
-			if(e.getClass()==RectangleWithText.class) {
-				RectangleWithText s = (RectangleWithText) e;
-				//System.out.println("Classe sprite!");
-				int y = ((int)(s.getY()-gap_Y)/zoom);
-				int x = ((int)(s.getX()-gap_X)/zoom);
-				if(c.getRow()==y && c.getCol()==x) {
-					return (RectangleWithText)e;
+			if(e.getClass()==CellWithText.class) {
+				CellWithText s = (CellWithText) e;
+				if(s.getCoord().equals(c)) {
+					return (CellWithText)e;
 				}
 			}
 		}
 		return null;
 	}
+
+
+
+	public int getWindow_height() {
+		return window_height;
+	}
+
+
+
+	public void setWindow_height(int window_height) {
+		this.window_height = window_height;
+	}
+
+
+
+	public int getWindow_width() {
+		return window_width;
+	}
+
+
+
+	public void setWindow_width(int window_width) {
+		this.window_width = window_width;
+	}
+
+
+
+	public int getGap_X() {
+		return gap_X;
+	}
+
+
+
+	public void setGap_X(int gap_X) {
+		this.gap_X = gap_X;
+	}
+
+
+
+	public int getGap_Y() {
+		return gap_Y;
+	}
+
+
+
+	public void setGap_Y(int gap_Y) {
+		this.gap_Y = gap_Y;
+	}
+
+
+
+	public int getZoom() {
+		return zoom;
+	}
+
+
+
+	public void setZoom(int zoom) {
+		this.zoom = zoom;
+	}
+
+
+
+	public Color getColorOfWalls() {
+		return colorOfWalls;
+	}
+
+
+
+	public void setColorOfWalls(Color colorOfWalls) {
+		this.colorOfWalls = colorOfWalls;
+	}
+
+
+
+	public Color getColorOfFloors() {
+		return colorOfFloors;
+	}
+
+
+
+	public void setColorOfFloors(Color colorOfFloors) {
+		this.colorOfFloors = colorOfFloors;
+	}
+	
 	
 
 }

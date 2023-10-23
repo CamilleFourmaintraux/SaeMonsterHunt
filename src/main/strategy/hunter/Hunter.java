@@ -54,8 +54,14 @@ public class Hunter extends Subject implements IHunterStrategy{
 		this.monsterTurn=b;
 	}
 	
-	public boolean isMonster(ICoordinate c) {
-		return this.lastShot.getRow()==c.getRow()&&this.lastShot.getCol()==c.getCol();
+	public int getRow() {
+		return this.lastShot.getRow();
 	}
 	
+	public int getCol() {
+		return this.lastShot.getCol();
+	}
+	public ICoordinate getCoord() {
+		return this.lastShot;
+	}
 }
