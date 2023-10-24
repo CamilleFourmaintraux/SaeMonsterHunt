@@ -32,7 +32,6 @@ public class Monster extends Subject implements IMonsterStrategy{
 	@Override
 	public void initialize(boolean[][] walls) {
 		this.walls=walls;
-		
 	}
 	
 	public void move(ICoordinate newCoord) {
@@ -47,6 +46,8 @@ public class Monster extends Subject implements IMonsterStrategy{
 		this.notifyObservers();
 	}
 	
+	// Getters & Setters
+	
 	public int getRow() {
 		return this.coord.getRow();
 	}
@@ -54,4 +55,22 @@ public class Monster extends Subject implements IMonsterStrategy{
 	public int getCol() {
 		return this.coord.getCol();
 	}
+	
+	public boolean[][] getWalls() {
+		return walls;
+	}
+	public ICoordinate getCoord() {
+		return coord;
+	}
+	public ICoordinate getCoord_exit() {
+		return coord_exit;
+	}
+	public ICoordinate getCoord_hunted() {
+		return coord_hunted;
+	}
+	public boolean isMonsterTurn() {
+		return monsterTurn;
+	}
+	
+	
 }
