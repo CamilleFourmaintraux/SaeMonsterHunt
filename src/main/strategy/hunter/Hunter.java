@@ -45,6 +45,10 @@ public class Hunter extends Subject implements IHunterStrategy{
 		this.notifyObservers(newCoord);
 	}
 	
+	public int[][] getTraces() {
+		return traces;
+	}
+
 	public void actualizeTraces(ICoordinate c, int trace) {
 		this.traces[c.getRow()][c.getCol()]=trace;
 		this.notifyObservers();
@@ -63,5 +67,9 @@ public class Hunter extends Subject implements IHunterStrategy{
 	}
 	public ICoordinate getCoord() {
 		return this.lastShot;
+	}
+
+	public boolean isMonsterTurn() {
+		return monsterTurn;
 	}
 }
