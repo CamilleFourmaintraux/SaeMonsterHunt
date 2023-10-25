@@ -70,8 +70,4 @@ public class Hunter implements IHunterStrategy{
 	public void setCoord(ICoordinate c) {
 		this.coord=c;
 	}
-
-	public boolean isMonsterTurn() {
-		return monsterTurn;
-	}
 }

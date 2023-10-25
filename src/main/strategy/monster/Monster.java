@@ -50,7 +50,6 @@ public class Monster implements IMonsterStrategy{
 		return this.coord.getCol();
 	}
 	
-<<<<<<< HEAD
 	public ICoordinate getCoord() {
 		return this.coord;
 	}
@@ -58,23 +57,8 @@ public class Monster implements IMonsterStrategy{
 	public void setCoord(ICoordinate c) {
 		this.coord=c;
 	}
-=======
+
 	public boolean[][] getWalls() {
 		return walls;
 	}
-	public ICoordinate getCoord() {
-		return coord;
-	}
-	public ICoordinate getCoord_exit() {
-		return coord_exit;
-	}
-	public ICoordinate getCoord_hunted() {
-		return coord_hunted;
-	}
-	public boolean isMonsterTurn() {
-		return monsterTurn;
-	}
-	
-	
->>>>>>> branch 'master' of https://gitlab.univ-lille.fr/sae302/2023/J2_SAE3A.git
 }
