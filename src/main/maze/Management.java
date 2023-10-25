@@ -1,9 +1,6 @@
 package main.maze;
 
-import main.strategy.hunter.HunterView;
-import main.strategy.monster.MonsterView;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
@@ -62,9 +59,10 @@ public class Management extends Stage{
 		//Initialisation du button (pour démarrer le jeu)
 		Button play = new Button("Play");
 		play.setOnAction(e->{
-			this.maze=new Maze(probability, maze_height, maze_width);
-			this.mv=new MonsterView(this.window_height,this.window_width,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.maze.monster);
-			this.hv=new HunterView(this.window_height,this.window_width,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.maze.hunter);
+			//this.maze=new Maze(probability, maze_height, maze_width);
+			this.maze=new Maze();
+			this.mv=new MonsterView(this.window_height,this.window_width,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.maze);
+			this.hv=new HunterView(this.window_height,this.window_width,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.maze);
 			this.mv.setX(this.window_width/2);
 			this.hv.setX(this.window_width*2);
 			this.mv.show();

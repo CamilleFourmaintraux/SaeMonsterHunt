@@ -1,23 +1,16 @@
 package main.strategy.monster;
 
 import main.maze.cells.ICoordinate;
-import main.utils.Subject;
 
-public class Monster extends Subject implements IMonsterStrategy{
-	protected boolean[][] walls;
-	protected ICoordinate coord;
-	protected ICoordinate coord_exit;
-	protected ICoordinate coord_hunted;
-	protected boolean monsterTurn;
+public class Monster implements IMonsterStrategy{
+	public boolean[][] walls;
+	public ICoordinate coord;
 	
 	
-	public Monster(boolean[][] walls,ICoordinate coord, ICoordinate coord_exit, ICoordinate coord_hunted) {
+	public Monster(boolean[][] walls,ICoordinate coord) {
 		super();
 		this.initialize(walls);
 		this.coord = coord;
-		this.coord_exit = coord_exit;
-		this.coord_hunted = coord_hunted;
-		this.monsterTurn=true;
 	}
 	@Override
 	public ICoordinate play() {//move
@@ -35,17 +28,18 @@ public class Monster extends Subject implements IMonsterStrategy{
 		
 	}
 	
+	/* méthodes à déplacer dans maze
 	public void move(ICoordinate newCoord) {
 		this.coord=newCoord;
 		this.notifyObservers(newCoord);
 		this.monsterTurn=false;
-	}
+	}*/
 	
-	public void actualizeShot(ICoordinate newCoord) {
+	/*public void actualizeShot(ICoordinate newCoord) {
 		this.coord_hunted=newCoord;
 		this.monsterTurn=true;
 		this.notifyObservers();
-	}
+	}*/
 	
 	public int getRow() {
 		return this.coord.getRow();
@@ -53,5 +47,13 @@ public class Monster extends Subject implements IMonsterStrategy{
 	
 	public int getCol() {
 		return this.coord.getCol();
+	}
+	
+	public ICoordinate getCoord() {
+		return this.coord;
+	}
+
+	public void setCoord(ICoordinate c) {
+		this.coord=c;
 	}
 }

@@ -1,8 +1,7 @@
-package main.strategy.hunter;
+package main.maze;
 
 
 import javafx.scene.Group;
-import javafx.scene.layout.VBox;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -10,8 +9,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import main.maze.cells.Coordinate;
+import main.maze.cells.ICoordinate;
 import main.maze.cells.CellWithText;
+import main.maze.cells.Coordinate;
 import main.utils.Observer;
 import main.utils.Subject;
 
@@ -26,20 +26,19 @@ public class HunterView extends Stage implements Observer{
 	public Color colorOfFloors;
 	
 	//Subject
-	Hunter hunter;
+	Maze maze;
 	
 	//Sprite (Rectangle pour le moment)
 	CellWithText sprite_shot;
 	CellWithText selection;
 	
-	VBox vbox = new VBox();
 	Group group_stage;
 	Group group_sprite;
 	Group group_map;
 	Group group_texts;
 
 	public HunterView(int window_height, int window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
-		Color colorOfFloors, Hunter hunter) {
+		Color colorOfFloors, Maze maze) {
 		
 		//Initiation de la fenetre
 		this.window_height = window_height;
@@ -50,8 +49,8 @@ public class HunterView extends Stage implements Observer{
 		this.colorOfWalls = colorOfWalls;
 		this.colorOfFloors = colorOfFloors;
 		
-		this.hunter = hunter;
-		this.hunter.attach(this);
+		this.maze = maze;
+		this.maze.attach(this);
 		
 		//Initiation des groupes
 		this.group_stage=new Group();
@@ -70,27 +69,31 @@ public class HunterView extends Stage implements Observer{
 		Scene scene = new Scene(this.group_stage, this.window_height, this.window_width);
 		this.setScene(scene);
 		this.setTitle("MONSTERHUNTER - HunterView");
-		
 	}
 
+	
+	//A CORRIGER
+	//////////////////
+	
+	
 	@Override
 	public void update(Subject s) {
-		this.sprite_shot.setX(calculDrawX(this.hunter.getCol()));
-		this.sprite_shot.setY(calculDrawY(this.hunter.getRow()));
+		this.sprite_shot.setX(calculDrawX(this.maze.hunter.getCol()));
+		this.sprite_shot.setY(calculDrawY(this.maze.hunter.getRow()));
 		this.sprite_shot.setVisible(true);
 		
 	}
 
 	@Override
 	public void update(Subject s, Object o) {
-		this.sprite_shot.setX(calculDrawX(this.hunter.getCol()));
-		this.sprite_shot.setY(calculDrawY(this.hunter.getRow()));
+		this.sprite_shot.setX(calculDrawX(this.maze.hunter.getCol()));
+		this.sprite_shot.setY(calculDrawY(this.maze.hunter.getRow()));
 		this.sprite_shot.setVisible(true);
 	}
 	
 	public void draw() {
-		for(int h=0; h<this.hunter.traces.length; h++) {
-			for(int l=0; l<this.hunter.traces[h].length; l++) {
+		for(int h=0; h<this.maze.hunter.traces.length; h++) {
+			for(int l=0; l<this.maze.hunter.traces[h].length; l++) {
 				//Codage des rectangles
 				CellWithText cell = new CellWithText(l, h, zoom, Color.BLACK,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""));
 				//System.out.println(r.getRect().getPa);
@@ -153,7 +156,7 @@ public class HunterView extends Stage implements Observer{
 		this.selection.setVisible(false);
 		
 		//initialisation du sprite du tir
-		this.sprite_shot=new CellWithText(this.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot");
+		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot");
 		this.sprite_shot.setOnMouseClicked(e->{
 			this.select(this.sprite_shot,e);
 			//this.sprite_shot.setVisible(false);
@@ -173,29 +176,17 @@ public class HunterView extends Stage implements Observer{
 		this.selection.toFront();
 		this.selection.setVisible(true);
 		//System.out.println("("+y+","+x+") est sélectionné.");
-		if(e.isShiftDown()&&!this.hunter.monsterTurn) {
-			Coordinate c = new Coordinate(y,x);
-			hunter.shoot(c);
-			try{
-				CellWithText cwt = this.searchSprite(this.group_map, c);
-				cwt.setStroke(Color.TRANSPARENT);
-				if(this.hunter.traces[this.hunter.getRow()][this.hunter.getCol()]==-1) {
-					cwt.setFill(this.colorOfWalls);
-				}else {
-					cwt.setFill(this.colorOfFloors);
-					int trace = this.hunter.traces[c.getRow()][c.getCol()];
-					if(trace>0) {
-						cwt.setText(""+trace);
-					}
-				}
-			}catch(Exception exception) {
-				System.out.println("Error-Aucun Rectangle Correspondant !");
+		if(e.isShiftDown()) {
+			ICoordinate c = new Coordinate(y,x);
+			if(this.maze.shoot(c)) {
+				this.actualizeCell(c);
 			}
+			
 		}
 	}
 	
 	//TODO Aucun rectangle trouvé
-	public CellWithText searchSprite(Group group, Coordinate c) {
+	public CellWithText searchSprite(Group group, ICoordinate c) {
 		for(Node e:group.getChildren()) {
 			if(e.getClass()==CellWithText.class) {
 				CellWithText s = (CellWithText) e;
@@ -205,6 +196,15 @@ public class HunterView extends Stage implements Observer{
 			}
 		}
 		return null;
+	}
+	
+	public void actualizeCell(ICoordinate c) {
+		try{
+			CellWithText cwt = searchSprite(this.group_map, c);
+			this.maze.revealCell(cwt,this.colorOfWalls,this.colorOfFloors);
+		}catch(Exception exception) {
+			System.out.println("Error-Aucun Rectangle Correspondant !");
+		}
 	}
 
 

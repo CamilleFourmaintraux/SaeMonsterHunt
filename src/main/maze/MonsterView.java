@@ -1,12 +1,10 @@
- package main.strategy.monster;
+ package main.maze;
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import main.maze.cells.Coordinate;
 import main.maze.cells.ICoordinate;
 import main.maze.cells.Cell;
 import main.maze.cells.CellWithText;
@@ -28,9 +26,8 @@ public class MonsterView extends Stage implements Observer{
 	final int gap_y=this.window_height/10;
 	*/
 	
-	
 	//Subject
-	Monster monster;
+	Maze maze;
 	
 	//Sprites (Rectangles pour le moment)
 	CellWithText sprite_monster;
@@ -42,16 +39,8 @@ public class MonsterView extends Stage implements Observer{
 	Group group_sprite;
 	Group group_map;
 	
-	public MonsterView(Monster monster) {
-		this.monster=monster;
-		this.monster.attach(this);
-		this.initiateSprites();
-	}
-	
-	
-	
 	public MonsterView(int window_height, int window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls,
-			Color colorOfFloors, Monster monster) {
+			Color colorOfFloors, Maze maze) {
 		this.window_height = window_height;
 		this.window_width = window_width;
 		this.gap_X = gap_X;
@@ -59,8 +48,8 @@ public class MonsterView extends Stage implements Observer{
 		this.zoom = zoom;
 		this.colorOfWalls = colorOfWalls;
 		this.colorOfFloors = colorOfFloors;
-		this.monster = monster;
-		this.monster.attach(this);
+		this.maze = maze;
+		this.maze.attach(this);
 		this.group_sprite=new Group();
 		this.initiateSprites();
 		this.group_map=this.draw();
@@ -70,31 +59,31 @@ public class MonsterView extends Stage implements Observer{
 		Scene scene = new Scene(this.group_stage,this.window_height,this.window_width);
 		this.setScene(scene);
 		this.setTitle("MONSTERHUNTER - MonsterView");
-		
 	}
 
-
+	//A corriger
+	////////////////////////////////////////////
 
 	@Override
 	public void update(Subject s) {
-		this.sprite_monster.setX(this.calculDrawX(this.monster.getCol()));
-		this.sprite_monster.setY(this.calculDrawY(this.monster.getRow()));
-		this.sprite_monster.setCoord(this.monster.coord);
-		this.sprite_shot.setX(this.calculDrawX(this.monster.coord_hunted.getCol()));
-		this.sprite_shot.setY(this.calculDrawY(this.monster.coord_hunted.getRow()));
-		this.sprite_shot.setCoord(this.monster.coord_hunted);
+		this.sprite_monster.setX(this.calculDrawX(this.maze.monster.getCol()));
+		this.sprite_monster.setY(this.calculDrawY(this.maze.monster.getRow()));
+		this.sprite_monster.setCoord(this.maze.monster.coord);
+		this.sprite_shot.setX(this.calculDrawX(this.maze.hunter.getCol()));
+		this.sprite_shot.setY(this.calculDrawY(this.maze.hunter.getRow()));
+		this.sprite_shot.setCoord(this.maze.hunter.getCoord());
 		this.sprite_shot.setVisible(true);
 	}
 
 	@Override
 	public void update(Subject s, Object o) {
-		this.sprite_monster.setX(this.calculDrawX(this.monster.getCol()));
-		this.sprite_monster.setY(this.calculDrawY(this.monster.getRow()));
-		this.sprite_monster.setCoord(this.monster.coord);
+		this.sprite_monster.setX(this.calculDrawX(this.maze.monster.getCol()));
+		this.sprite_monster.setY(this.calculDrawY(this.maze.monster.getRow()));
+		this.sprite_monster.setCoord(this.maze.monster.coord);
 		this.sprite_monster.setVisible(true);
-		this.sprite_shot.setX(this.calculDrawX(this.monster.coord_hunted.getCol()));
-		this.sprite_shot.setY(this.calculDrawY(this.monster.coord_hunted.getRow()));
-		this.sprite_shot.setCoord(this.monster.coord_hunted);
+		this.sprite_shot.setX(this.calculDrawX(this.maze.hunter.getCol()));
+		this.sprite_shot.setY(this.calculDrawY(this.maze.hunter.getRow()));
+		this.sprite_shot.setCoord(this.maze.hunter.getCoord());
 		this.sprite_shot.setVisible(true);
 	}
 	
@@ -102,11 +91,11 @@ public class MonsterView extends Stage implements Observer{
 	
 	private void initiateSprites() {
 		//Initialisation du sprite du monstre
-		this.sprite_monster=new CellWithText(this.monster.coord, this.zoom, Color.MAROON, this.gap_X, this.gap_Y, "Monster");
+		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, Color.MAROON, this.gap_X, this.gap_Y, "Monster");
 		this.sprite_monster.setOnMouseClicked(e->{
 			this.select(e, this.sprite_monster.getCoord());
 		});
-		this.sprite_monster.setOnKeyPressed(e->{
+		/*this.sprite_monster.setOnKeyPressed(e->{
 			if(e.getCode().equals(KeyCode.UP)) {
 				System.out.println("UP");
 			}
@@ -119,17 +108,17 @@ public class MonsterView extends Stage implements Observer{
 			else if(e.getCode().equals(KeyCode.LEFT)) {
 				System.out.println("LEFT");
 			}
-		});
+		});*/
 		
 		//initialisation du sprite du dernier tir du chasseur
-		this.sprite_shot=new CellWithText(this.monster.coord_hunted, this.zoom, Color.TRANSPARENT, Color.YELLOW, 3, this.gap_X, this.gap_Y, "Hunter");
+		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 3, this.gap_X, this.gap_Y, "Hunter");
 		this.sprite_shot.setOnMouseClicked(e->{
 			this.select(e, this.sprite_shot.getCoord());
 		});
 		this.sprite_shot.setVisible(false);
 		
 		//Initialisation du sprite de la sortie
-		this.sprite_exit=new CellWithText(this.monster.coord_exit, this.zoom, Color.GREEN, this.gap_X, this.gap_Y, "Exit");
+		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, Color.GREEN, this.gap_X, this.gap_Y, "Exit");
 		this.sprite_exit.setOnMouseClicked(e->{
 			this.sprite_exit.toBack();
 			this.select(e, this.sprite_exit.getCoord());
@@ -150,11 +139,11 @@ public class MonsterView extends Stage implements Observer{
 	
 	public Group draw() {
 		Group root = new Group();
-		for(int h=0; h<this.monster.walls.length; h++) {
-			for(int l=0; l<this.monster.walls[h].length; l++) {
+		for(int h=0; h<this.maze.walls.length; h++) {
+			for(int l=0; l<this.maze.walls[h].length; l++) {
 				Cell r = new Cell(l, h, this.zoom, this.colorOfFloors, this.gap_X, this.gap_Y);
 				//Codage des rectangles
-				if(this.monster.walls[h][l]) {
+				if(this.maze.walls[h][l]) {
 					//Code à calculer si c'est un sol : obsolète car la manière de faire les rectangles à changer
 				}else {
 					r.setFill(this.colorOfWalls);
@@ -182,25 +171,19 @@ public class MonsterView extends Stage implements Observer{
 		this.selection.setY(this.calculDrawY(row));
 		this.selection.setX(this.calculDrawX(col));
 		this.selection.setCoord(c); //IMPORTANT, on met à jour la nouvelle coord
-		if(this.monster.walls[row][col]) {
-			this.selection.setVisible(true);
-			this.selection.toFront();
-			int distanceX= Math.abs(this.monster.coord.getCol()-col);
-			int distanceY=Math.abs(this.monster.coord.getRow()-row);
-			if(this.isMonsterTurn() && ((distanceX==1 && distanceY==0) || (distanceX==0 && distanceY==1) || (distanceX==0 && distanceY==0))) { //(distanceX==1 && distanceY==1) //deplacement en diagonale
-				this.validSelection();
-				if(e.isShiftDown()) {
-					monster.move(new Coordinate(row,col));
-				}
-			}else{
-				//System.out.println("Le monstre est à ("+this.monster.coord.getRow()+","+this.monster.coord.getCol()+"), soit ("+(this.monster.coord.getRow()-row)+","+(this.monster.coord.getCol()-col)+") de distance.");
-				//System.out.println("("+row+","+col+") n'est pas une case adjacente !");
-				//System.out.println("(x:"+distanceX+", y:"+distanceY+") sont superieur à 1 ou égaux.");
-				this.invalidSelection();
-			}	
-		}else {
-			//System.out.println("("+row+","+col+") est un mur !");
-			this.selection.setVisible(false);
+		this.selection.setVisible(true);
+		this.selection.toFront();
+		if(this.maze.canMonsterMoveAt(c)) {
+			this.validSelection();	
+			if(e.isShiftDown()) {
+				this.maze.move(c);
+			}
+		}else{
+			this.invalidSelection();
+			//System.out.println("Le monstre est à ("+this.monster.coord.getRow()+","+this.monster.coord.getCol()+"), soit ("+(this.monster.coord.getRow()-row)+","+(this.monster.coord.getCol()-col)+") de distance.");
+			//System.out.println("("+row+","+col+") n'est pas une case adjacente !");
+			//System.out.println("(x:"+distanceX+", y:"+distanceY+") sont superieur à 1 ou égaux.");
+			
 		}
 	}
 	
@@ -304,26 +287,4 @@ public class MonsterView extends Stage implements Observer{
 	public int calculDrawY(int y) {
 		return y*zoom+gap_Y;
 	}
-	
-	
-	public boolean isMonsterTurn() {
-		return this.monster.monsterTurn;
-	}
-	//Inutilisé
-	/*private CellInfo getCellInfo(int y, int x) {
-		if(this.monster.coord.getRow()==y && this.monster.coord.getCol()==x) {
-			return CellInfo.MONSTER;
-		}else if(this.monster.coord_hunted.getRow()==y && this.monster.coord_hunted.getCol()==x) {
-			return CellInfo.HUNTER;
-		}else if(this.monster.coord_exit.getRow()==y && this.monster.coord_exit.getCol()==x) {
-			return CellInfo.EXIT;
-		}else if(this.monster.walls[y][x]) {
-			return CellInfo.EMPTY;
-		}else {
-			return CellInfo.WALL;
-		}
-	}*/
-
-	
-	
 }

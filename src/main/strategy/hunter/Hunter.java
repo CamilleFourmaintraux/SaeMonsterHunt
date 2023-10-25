@@ -1,22 +1,14 @@
 package main.strategy.hunter;
 
 import main.maze.cells.ICoordinate;
-import main.utils.Subject;
-import main.maze.cells.Coordinate;
 
-public class Hunter extends Subject implements IHunterStrategy{
-	protected int[][] traces;
-	protected ICoordinate lastShot;
-	protected boolean monsterTurn;
+public class Hunter implements IHunterStrategy{
+	public int[][] traces;
+	public ICoordinate coord;
 	
 	public Hunter(int height, int width, ICoordinate coord_hunter) {
-		this.lastShot=coord_hunter;
+		this.coord=coord_hunter;
 		this.initialize(height, width);
-		this.monsterTurn=true;
-	}
-	
-	public Hunter() {
-		this.lastShot=new Coordinate();
 	}
 	
 	@Override
@@ -34,13 +26,23 @@ public class Hunter extends Subject implements IHunterStrategy{
 		this.traces=new int[nbrRows][nbrCols];
 		for(int h=0; h<this.traces.length;h++) {
 			for(int l=0; l<this.traces[h].length;l++) {
-				traces[h][l]=0;
+				traces[h][l]=-2;// -2 -> Inexploré, -1 -> Mur, 0 -> pas de trace >0 -> trace (tour)
 			}
 		}
 		
 	}
-	public void shoot(ICoordinate newCoord) {
-		this.lastShot=newCoord;
+	
+	public void setTrace(ICoordinate c, int trace) {
+		this.traces[c.getRow()][c.getCol()]=trace;
+	}
+	
+	public int getTrace(ICoordinate c) {
+		return this.traces[c.getRow()][c.getCol()];
+	}
+	
+	//Métodes à placer dans Maze
+	/*public void shoot(ICoordinate newCoord) {
+		this.coord=newCoord;
 		this.monsterTurn=true;
 		this.notifyObservers(newCoord);
 	}
@@ -48,20 +50,20 @@ public class Hunter extends Subject implements IHunterStrategy{
 	public void actualizeTraces(ICoordinate c, int trace) {
 		this.traces[c.getRow()][c.getCol()]=trace;
 		this.notifyObservers();
-	}
-	
-	public void setMonsterTurn(boolean b) {
-		this.monsterTurn=b;
-	}
+	}*/
 	
 	public int getRow() {
-		return this.lastShot.getRow();
+		return this.coord.getRow();
 	}
 	
 	public int getCol() {
-		return this.lastShot.getCol();
+		return this.coord.getCol();
 	}
 	public ICoordinate getCoord() {
-		return this.lastShot;
+		return this.coord;
+	}
+	
+	public void setCoord(ICoordinate c) {
+		this.coord=c;
 	}
 }
