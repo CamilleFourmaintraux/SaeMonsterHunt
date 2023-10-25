@@ -2,6 +2,8 @@ package main.maze;
 
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import main.utils.Observer;
+import main.utils.Subject;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,7 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 
-public class Management extends Stage{
+public class Management extends Stage implements Observer{
 	protected int window_height; //500 par défault
 	protected int window_width; //500 par défault
 	protected int gap_X; //0 par défault
@@ -37,22 +39,6 @@ public class Management extends Stage{
 		this.colorOfWalls = colorOfWalls;
 		this.colorOfFloors = colorOfFloors;
 		
-		AnimationTimer windowsManagement = new AnimationTimer(){
-
-			@Override
-			public void handle(long arg0) {
-				if(maze.isGameOver) {
-					mv.close();
-					hv.close();
-					show();
-					maze.isGameOver=false;
-					this.stop();
-				}
-				
-			}
-			
-		};
-		
 		//Initialisation du label (pour le titre)
 		Label titre = new Label("MonsterHunt");
 		titre.setStyle("-fx-font-size: 25px;-fx-background-color: #FAA420;-fx-text-fill: #7D0F07;");
@@ -61,6 +47,7 @@ public class Management extends Stage{
 		play.setOnAction(e->{
 			//this.maze=new Maze(probability, maze_height, maze_width);
 			this.maze=new Maze();
+			this.maze.attach(this);
 			this.mv=new MonsterView(this.window_height,this.window_width,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.maze);
 			this.hv=new HunterView(this.window_height,this.window_width,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.maze);
 			this.mv.setX(this.window_width/2);
@@ -68,7 +55,6 @@ public class Management extends Stage{
 			this.mv.show();
 			this.hv.show();
 			this.close();
-			windowsManagement.start();
 		});
 		play.setStyle("-fx-background-color: #3498db;\n"
 				+ "    -fx-text-fill: #ffffff;\n"
@@ -96,6 +82,26 @@ public class Management extends Stage{
 		this.setTitle("MONSTERHUNTER - Menu");
 		this.show();
 		
+	}
+
+	@Override
+	public void update(Subject s) {
+		if(this.maze.isGameOver) {
+			mv.close();
+			hv.close();
+			show();
+			maze.isGameOver=false;
+		}
+	}
+
+	@Override
+	public void update(Subject s, Object o) {
+		if(this.maze.isGameOver) {
+			mv.close();
+			hv.close();
+			show();
+			maze.isGameOver=false;
+		}
 	}
 	
 }

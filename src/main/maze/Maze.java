@@ -20,7 +20,7 @@ public class Maze extends Subject{
 	protected Monster monster;
 	protected Hunter hunter;
 	
-	public int turn=0;
+	public int turn;
 	public boolean isMonsterTurn;
 	public boolean isGameOver;
 	
@@ -31,14 +31,15 @@ public class Maze extends Subject{
 	
 	public Maze(boolean[][] maze) {
 		this.walls=maze;
+		this.turn=1;
 		this.initMonsterExitHunter();
 		this.traces = this.initTraces();
-		this.isMonsterTurn=false;
+		this.isMonsterTurn=true;
+		this.move(this.monster.getCoord());
 	}
 	
 	public Maze(int probability, int height, int width) {
 		this(Maze.generateRandomMap(probability, height, width));
-		
 	}
 	
 	public int[][] initTraces(){
@@ -166,17 +167,28 @@ public class Maze extends Subject{
 	
 	public boolean move(ICoordinate c) { //Fais le déplcament du monstre, retoure true si le déplacement à été possible.:
 		if(this.canMonsterMoveAt(c)) {
+			System.out.println("Tour n°"+this.turn);
+			//Quel endroit le mettre -> pendant ou après le déplacement ?
+			//APRES
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
-				System.out.println("ATTENTION - Le mur s'est déplacé dans l'une des parties explorées !");
+				System.out.println("ATTENTION [Tour n°"+this.turn+"]- Le monstre à traversé (est entré et à quitté) l'une de vos cases déjà découverte !");
 			}
+			//
 			this.monster.setCoord(c);
 			this.isMonsterTurn=false;
 			this.setTrace(c, turn);
+			//PENDANT
 			/*if(this.hunter.getTrace(c)!=-2) {
-				System.out.println("ATTENTION - Le mur s'est déplacé dans l'une des parties explorées !");
+				System.out.println("ATTENTION [Tour n°"+this.turn+"]- Le monstre à traversé (est entré et à quitté) l'une de vos cases déjà découverte !");
 			}*/
+			//
+			if(this.monster.coord.equals(exit.getCoord())) {
+				this.isGameOver=true;
+				System.out.println("MONSTER GAGNE");
+			}
+			this.turn++;
 			this.notifyObservers(c);
-			return true;
+			return true; 
 		}
 		return false;
 	}
@@ -186,6 +198,10 @@ public class Maze extends Subject{
 			this.hunter.setCoord(c);
 			this.hunter.setTrace(c, this.getTrace(c));
 			this.isMonsterTurn=true;
+			if(this.hunter.coord.equals(monster.getCoord())) {
+				this.isGameOver=true;
+				System.out.println("HUNTER GAGNE");
+			}
 			this.notifyObservers(c);
 			return true;
 		}
@@ -249,14 +265,15 @@ public class Maze extends Subject{
 		
 	}*/
 	public void revealCell(CellWithText cwt, Color colorOfWalls, Color colorOfFloors) {
-		System.out.println("TEST:"+this.hunter.traces[this.hunter.getRow()][this.hunter.getCol()]);
 		cwt.setStroke(Color.TRANSPARENT);
 		if(this.hunter.traces[this.hunter.getRow()][this.hunter.getCol()]==-1) {
 			cwt.setFill(colorOfWalls);
 		}else {
+			System.out.println("TEST");
 			cwt.setFill(colorOfFloors);
 			int trace = this.hunter.traces[cwt.getRow()][cwt.getCol()];
 			if(trace>0) {
+				System.out.println("trace>0==true");
 				cwt.setText(""+trace);
 			}
 		}
