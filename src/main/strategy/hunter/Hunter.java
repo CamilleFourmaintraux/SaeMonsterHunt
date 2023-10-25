@@ -47,6 +47,10 @@ public class Hunter implements IHunterStrategy{
 		this.notifyObservers(newCoord);
 	}
 	
+	public int[][] getTraces() {
+		return traces;
+	}
+
 	public void actualizeTraces(ICoordinate c, int trace) {
 		this.traces[c.getRow()][c.getCol()]=trace;
 		this.notifyObservers();
@@ -65,5 +69,9 @@ public class Hunter implements IHunterStrategy{
 	
 	public void setCoord(ICoordinate c) {
 		this.coord=c;
+	}
+
+	public boolean isMonsterTurn() {
+		return monsterTurn;
 	}
 }
