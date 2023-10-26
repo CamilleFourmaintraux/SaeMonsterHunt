@@ -234,7 +234,7 @@ public class Maze extends Subject{
 	/**
 	 * Vérifie si la coordonnée donné est mur du labyrinthe ou non.
 	 * @param c une coordonnée du labyrinthe.
-	 * @return un boolean qui indique si à la coordonnée indiqué c'est un mur ou non.
+	 * @return true si à la coordonnée indiqué c'est un mur, sinon false.
 	 */
 	protected boolean isWall(Coordinate c) {
 		return this.walls[c.getRow()][c.getCol()];
@@ -252,7 +252,7 @@ public class Maze extends Subject{
 	/**
 	 * Action de déplacement du Monstre. 
 	 * @param c la coordonnée ou laquelle veut se déplacer le monstre.
-	 * @return un boolean qui indique si l'action a reussi ou non.
+	 * @return true si l'action a reussi, sinon false.
 	 */
 	public boolean move(ICoordinate c) { //Fais le dÃ©plcament du monstre, retoure true si le dÃ©placement Ã  Ã©tÃ© possible.:
 		if(this.canMonsterMoveAt(c)) {
@@ -285,7 +285,7 @@ public class Maze extends Subject{
 	/**
 	 * Action de tir du Chasseur.
 	 * @param c la coordonnée à laquelle le chasseur tire.
-	 * @return un boolean qui indique si l'action a reussi ou non.
+	 * @return true si l'action a reussi,sinon false.
 	 */
 	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, devrait toujours renvoyer true logiquement, peut etre changer le type de retour.
 		if(!this.isMonsterTurn) {
@@ -305,7 +305,7 @@ public class Maze extends Subject{
 	/**
 	 * Vérifie si le Monstre a la possibilté de se déplacer à la coordonnée du labyrinthe donnée.
 	 * @param c une coordonnée du labyrinthe.
-	 * @return un boolean qui indique si le Monstre peut se déplacer à la case demandé.
+	 * @return true si le Monstre peut se déplacer à la case demandé, sinon false.
 	 */
 	public boolean canMonsterMoveAt(ICoordinate c) {
 		if(this.isMonsterTurn && this.walls[c.getRow()][c.getCol()] && this.inReach(this.monster.getCoord(), c, 1)) {
@@ -335,7 +335,7 @@ public class Maze extends Subject{
 	 * @param c1 une première coordonnée du labyrinthe.
 	 * @param c2 une seconde coordonnée du labyrinthe.
 	 * @param reach portée maximale à laquelle les coordonnées doivent être l'une de l'autre.
-	 * @return
+	 * @return true si les deux coordonnées sont à portée,sinon false.
 	 */
 	public boolean inReach(ICoordinate c1, ICoordinate c2, int reach) {
 		return (this.calculDistance(c1, c2)[0]<reach+1 && this.calculDistance(c1, c2)[1]<reach+1);
