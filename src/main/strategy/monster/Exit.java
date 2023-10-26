@@ -8,7 +8,7 @@ import main.maze.cells.ICoordinate;
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
- * @author theo.frano.etu
+ * @author theo.franos.etu
  *
  */
 public class Exit {
@@ -17,7 +17,7 @@ public class Exit {
 	 */
 	ICoordinate coord;
 	/**
-     * Initialise un objet Exit avec les coordonnées de la sortie du labyrinthe.
+     * Crée un objet Exit avec les coordonnées de la sortie du labyrinthe.
      *
      * @param coord Les coordonnées de la sortie.
      */

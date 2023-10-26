@@ -7,7 +7,7 @@ import java.util.Objects;
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
- * @author theo.frano.etu
+ * @author theo.franos.etu
  *
  */
 public class Coordinate implements ICoordinate{
@@ -21,6 +21,7 @@ public class Coordinate implements ICoordinate{
 
 	/**
      * Constructeur avec des coordonnées spécifiées.
+     * Crée des coordonnées avec le numéro de ligne & colonne.
      *
      * @param row Le numéro de ligne.
      * @param col Le numéro de colonne.

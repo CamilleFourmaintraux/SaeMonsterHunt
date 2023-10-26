@@ -20,7 +20,7 @@ import main.utils.Utils;
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
- * @author theo.frano.etu
+ * @author theo.franos.etu
  *
  */
 public class Maze extends Subject{
