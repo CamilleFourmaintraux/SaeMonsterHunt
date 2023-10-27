@@ -24,12 +24,15 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
+import javafx.geometry.Pos;
 
 /**
- * La classe Management représente une fenêtre de gestion de jeu pour le jeu "MONSTER-HUNTER".
- * Elle gère les paramètres du jeu, la création de labyrinthes, et la transition entre les différentes vues du jeu.
- * Elle implémente l'interface Observer pour réagir aux événements du jeu.
- * 
+ * La classe Management reprsente une fentre de gestion de jeu pour le jeu "MONSTER-HUNTER".
+ * Elle gre les paramtres du jeu, la cration de labyrinthes, et la transition entre les diffrentes vues du jeu.
+ * Elle implmente l'interface Observer pour ragir aux vnements du jeu.
+ *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
@@ -37,7 +40,7 @@ import javafx.scene.layout.Region;
  *
  */
 public class Management extends Stage implements Observer{
-	
+
 	/**
 	 * Constante ID du menu settings.
 	 */
@@ -47,16 +50,16 @@ public class Management extends Stage implements Observer{
 	 */
 	final int ID_PLAY = 2;
 	/**
-	 * Constante utilisé dans les comboBox pour le choix des joueurs.
+	 * Constante utilis dans les comboBox pour le choix des joueurs.
 	 */
 	final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
-	
+
 	final int SPACING = 5;
 	/**
 	 * Constante de largeur minimum des labels.
 	 */
 	final int LABEL_MIN_WIDTH = 120;
-	
+
 	/**
 	 * Le labyrinthe.
 	 */
@@ -69,31 +72,31 @@ public class Management extends Stage implements Observer{
 	 * La vue du Chasseur.
 	 */
 	public HunterView hv;
-	
+
 	//Affichage
 	public int window_height; //500 par dÃ©fault
 	public int window_width;//500 par dÃ©fault
 	public Color colorOfWalls;
 	public Color colorOfFloors;
 	/**
-	 * Map contenant les différents menus du jeu.
+	 * Map contenant les diffrents menus du jeu.
 	 */
 	public Map<Integer, Scene> menus;
 	/**
-	 * paramètre indiquant si le jeu se déroule sur la même fenètre (true) ou fenètre séparé (false).
+	 * paramtre indiquant si le jeu se droule sur la mme fentre (true) ou fentre spar (false).
 	 */
 	public boolean sameScreen;
-	
+
 	/**
 	 * Constructeur de la classe Management.
-	 * 
+	 *
 	 * @param probability le taux de chances que la case du labyrinthe soit un mur plein.
 	 * @param maze_height La hauteur du labyrinthe.
 	 * @param maze_width La largeur du labyrinthe.
-	 * @param window_height La hauteur de la fenêtre.
-	 * @param window_width La largeur de la fenêtre.
-	 * @param gap_X L'écart horizontal dans la vue du labyrinthe.
-	 * @param gap_Y L'écart vertical dans la vue du labyrinthe.
+	 * @param window_height La hauteur de la fentre.
+	 * @param window_width La largeur de la fentre.
+	 * @param gap_X L'cart horizontal dans la vue du labyrinthe.
+	 * @param gap_Y L'cart vertical dans la vue du labyrinthe.
 	 * @param zoom Le niveau de zoom de la vue du labyrinthe.
 	 * @param colorOfWalls La couleur des murs.
 	 * @param colorOfFloors La couleur du sol.
@@ -105,20 +108,20 @@ public class Management extends Stage implements Observer{
 		this.colorOfFloors=colorOfFloors;
 		this.colorOfWalls=colorOfWalls;
 		this.sameScreen=true;
-		
+
 		this.generateSettingsMenu();
 		this.generatePlayMenu(probability,maze_height,maze_width,gap_X,gap_Y,zoom);
-		
+
 		this.setScene(this.getScene(this.ID_PLAY));
 		this.setTitle("MONSTER-HUNTER");
 		this.show();
-		
+
 	}
 
 	/**
-     * Met à jour l'observateur en réagissant à un changement dans le sujet observé.
-	 * 
-	 * @param s Le sujet observé dont l'état a été modifié.
+	 * Met  jour l'observateur en ragissant  un changement dans le sujet observ.
+	 *
+	 * @param s Le sujet observ dont l'tat a t modifi.
 	 */
 	@Override
 	public void update(Subject s) {
@@ -128,27 +131,28 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-     * Met à jour l'observateur en réagissant à un changement dans le sujet observé avec des données spécifiques.
-	 * 
-	 * @param s Le sujet observé dont l'état a été modifié.
-	 * @param o Un objet contenant des informations spécifiques sur la mise à jour.
+	 * Met  jour l'observateur en ragissant  un changement dans le sujet observ avec des donnes spcifiques.
+	 *
+	 * @param s Le sujet observ dont l'tat a t modifi.
+	 * @param o Un objet contenant des informations spcifiques sur la mise  jour.
 	 */
 	@Override
 	public void update(Subject s, Object o) {
 		if(!this.gameOver()) {
 			this.switchInGameView();
 		}
-		
+
 	}
-	
+
 	/**
-	 * Vérifie si le jeu est terminé.
-	 * 
-	 * @return true si le jeu est terminé, sinon faux.
+	 * Vrifie si le jeu est termin.
+	 *
+	 * @return true si le jeu est termin, sinon faux.
 	 */
 	public boolean gameOver() {
 		if(this.maze.isGameOver) {
-			this.setScene(this.getScene(this.ID_PLAY));
+			this.hide();
+			gameOverScreen();
 			maze.isGameOver=false;
 			return true;
 		}
@@ -156,7 +160,7 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Affiche une boîte de dialogue indiquant à qui est le tour.
+	 * Affiche une bote de dialogue indiquant  qui est le tour.
 	 * @param joueur Le nom du joueur.
 	 */
 	public void TurnView(String joueur) {
@@ -188,8 +192,8 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
- 	 * Bascule entre la vue du monstre et la vue du chasseur en fonction du tour actuel du jeu.
- 	 */
+	 * Bascule entre la vue du monstre et la vue du chasseur en fonction du tour actuel du jeu.
+	 */
 	public void switchInGameView() {
 		if(this.maze.isMonsterTurn) {
 			TurnView("Monstre");
@@ -199,17 +203,17 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
- 	 * Génère le menu des paramètres du jeu, permettant à l'utilisateur de personnaliser diverses options telles que
- 	 * la taille du labyrinthe, le thème, etc.
- 	 */
+	 * Gnre le menu des paramtres du jeu, permettant  l'utilisateur de personnaliser diverses options telles que
+	 * la taille du labyrinthe, le thme, etc.
+	 */
 	public void generateSettingsMenu() {
 		Label title = this.generateTitle("Settings");
-		
+
 		TextField tf_maze_height = this.generateTextField("10",this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,50), 2, '0', '9');
 		TextField tf_maze_width = this.generateTextField("10", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,60), 2, '0', '9');
 		Label l_height = this.generateLabel("Maze Height", tf_maze_height.getLayoutX()-this.LABEL_MIN_WIDTH, tf_maze_height.getLayoutY(), this.LABEL_MIN_WIDTH);
 		Label l_width= this.generateLabel("Maze Width", tf_maze_width.getLayoutX()-this.LABEL_MIN_WIDTH, tf_maze_width.getLayoutY(), this.LABEL_MIN_WIDTH);
-		
+
 		Button bScreenType = this.generateButton("Same Screen", this.calculPercentage(this.window_width,35),this.calculPercentage(this.window_height,15));
 		bScreenType.setOnAction(e->{
 			if(sameScreen) {
@@ -221,25 +225,25 @@ public class Management extends Stage implements Observer{
 			}
 		});
 		bScreenType.setMinWidth(150);
-		
+
 		ComboBox<String> theme = this.generateComboBox(new String[]{"Cave", "Forest", "Ocean"}, this.calculPercentage(this.window_width, 70), this.calculPercentage(this.window_height,50));
 		Label l_theme = this.generateLabel("Choose a theme", theme.getLayoutX()-this.LABEL_MIN_WIDTH,theme.getLayoutY(), this.LABEL_MIN_WIDTH);
-		
+
 		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_PLAY));
 		});
-		
+
 		Group group = new Group();
 		group.getChildren().addAll(title, l_height, tf_maze_height, l_width, tf_maze_width, bScreenType, l_theme, theme, bBack);
 		this.menus.put(Integer.valueOf(this.ID_SETTINGS), new Scene(group, this.window_height, this.window_width, this.colorOfFloors));
 	}
-	
-	
+
+
 	/**
-     * Génère le menu principal du jeu, permettant à l'utilisateur de définir des paramètres pour le jeu
-     * (noms des personnages, niveaux d'IA, etc.) et de lancer le jeu lui-même.
-	 * 
+	 * Gnre le menu principal du jeu, permettant  l'utilisateur de dfinir des paramtres pour le jeu
+	 * (noms des personnages, niveaux d'IA, etc.) et de lancer le jeu lui-mme.
+	 *
 	 * @param probability le taux de chances que la case du labyrinthe soit un mur plein.
 	 * @param maze_height La hauteur du labyrinthe.
 	 * @param maze_width La largeur du labyrinthe.
@@ -249,21 +253,21 @@ public class Management extends Stage implements Observer{
 	 */
 	public void generatePlayMenu(int probability, int maze_height, int maze_width, int gap_X, int gap_Y, int zoom) {
 		Label title = this.generateTitle("Main Menu");
-		
+
 		TextField tf_name_monster = this.generateTextField("Monster", this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
 		TextField tf_name_hunter = this.generateTextField("Hunter", this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
-		
+
 		Label l_nameM = this.generateLabel("Monster Name", tf_name_monster.getLayoutX(),tf_name_monster.getLayoutY()-15, this.LABEL_MIN_WIDTH);
 		Label l_nameH = this.generateLabel("Hunter Name", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
-		
+
 		ComboBox<String> choixIA_Monster = this.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 50));
 		ComboBox<String> choixIA_Hunter = this.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 50));
-		
+
 		Button bSettings = this.generateButton("Modify Settings", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height,80));
 		bSettings.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_SETTINGS));
 		});
-		
+
 		Button bPlay = this.generateButton("PLAY", this.calculPercentage(this.window_width, 45), this.calculPercentage(this.window_height,90));
 		bPlay.setOnAction(e->{
 			this.maze=new Maze(probability, maze_height, maze_width);
@@ -273,20 +277,20 @@ public class Management extends Stage implements Observer{
 			this.hv=new HunterView(window_height,window_width,gap_X,gap_Y,zoom,colorOfWalls,colorOfFloors,this.maze);
 			this.setScene(hv.scene);
 		});
-		
-		
-		
+
+
+
 		Group group = new Group();
 		group.getChildren().addAll(title, l_nameM, tf_name_monster, choixIA_Monster, l_nameH, tf_name_hunter, choixIA_Hunter, bSettings, bPlay);
-		
+
 		Scene scene =  new Scene(group, this.window_height, this.window_width, this.colorOfFloors);
-		
+
 		this.menus.put(Integer.valueOf(this.ID_PLAY),scene);
 	}
-	
+
 	/**
-     * Applique un style de base à un bouton, y compris le style lors du survol de la souris.
-	 * 
+	 * Applique un style de base  un bouton, y compris le style lors du survol de la souris.
+	 *
 	 * @param b Le bouton auquel on applique le style.
 	 */
 	public void applyStyleToButton(Button b) {
@@ -296,7 +300,7 @@ public class Management extends Stage implements Observer{
 				+ "    -fx-font-size: 14px;");
 		//Style lorsque l'utilisateur passe la souris sur le button
 		b.setOnMouseEntered(e -> {
-		    b.setStyle("-fx-background-color: #e74c3c;\n"
+			b.setStyle("-fx-background-color: #e74c3c;\n"
 					+ "    -fx-text-fill: #ffffff;\n"
 					+ "    -fx-font-size: 14px;");
 		});
@@ -307,14 +311,14 @@ public class Management extends Stage implements Observer{
 					+ "    -fx-font-size: 14px;");
 		});
 	}
-	
+
 	/**
-     * Génère un bouton avec un texte donné et le positionne aux coordonnées spécifiées.
-	 * 
-	 * @param msg Le texte affiché sur le bouton.
+	 * Gnre un bouton avec un texte donn et le positionne aux coordonnes spcifies.
+	 *
+	 * @param msg Le texte affich sur le bouton.
 	 * @param x La position horizontale du bouton.
 	 * @param y La position verticale du bouton.
-	 * @return Le bouton généré.
+	 * @return Le bouton gnr.
 	 */
 	public Button generateButton(String msg, double x, double y) {
 		Button button = new Button(msg);
@@ -323,14 +327,14 @@ public class Management extends Stage implements Observer{
 		this.applyStyleToButton(button);
 		return button;
 	}
-	
+
 	/**
-     * Génère une liste déroulante (ComboBox) avec les valeurs spécifiées et la positionne aux coordonnées spécifiées.
-	 * 
-	 * @param values Les valeurs à afficher dans la liste déroulante.
-	 * @param x La position horizontale de la liste déroulante.
-	 * @param y La position verticale de la liste déroulante.
-	 * @return La liste déroulante générée.
+	 * Gnre une liste droulante (ComboBox) avec les valeurs spcifies et la positionne aux coordonnes spcifies.
+	 *
+	 * @param values Les valeurs  afficher dans la liste droulante.
+	 * @param x La position horizontale de la liste droulante.
+	 * @param y La position verticale de la liste droulante.
+	 * @return La liste droulante gnre.
 	 */
 	public ComboBox<String> generateComboBox(String[] values, double x, double y) {
 		ComboBox<String> theme = new ComboBox<String>();
@@ -340,15 +344,15 @@ public class Management extends Stage implements Observer{
 		this.setLayout(theme, x ,y);
 		return theme;
 	}
-	
+
 	/**
-     * Génère un Label avec le texte donné et la positionne aux coordonnées spécifiées.
-	 * 
-	 * @param msg Le texte affiché sur le label.
+	 * Gnre un Label avec le texte donn et la positionne aux coordonnes spcifies.
+	 *
+	 * @param msg Le texte affich sur le label.
 	 * @param x La position horizontale du label.
 	 * @param y La position verticale du label.
 	 * @param minWidth La largeur minimale du label.
-	 * @return Le label générée.
+	 * @return Le label gnre.
 	 */
 	public Label generateLabel(String msg, double x, double y, double minWidth) {
 		Label label = new Label(msg);
@@ -357,17 +361,17 @@ public class Management extends Stage implements Observer{
 		this.setLayout(label, x,y);
 		return label;
 	}
-	
+
 	/**
-     * Génère un TextField avec une valeur par défaut et le positionne aux coordonnées spécifiées.
-	 *  
-	 * @param defaultValue La valeur par défaut du champ de texte.
+	 * Gnre un TextField avec une valeur par dfaut et le positionne aux coordonnes spcifies.
+	 *
+	 * @param defaultValue La valeur par dfaut du champ de texte.
 	 * @param x La position horizontale du champ de texte.
 	 * @param y La position verticale du champ de texte.
-	 * @param maxLength La longueur maximale du texte autorisée dans le champ.
-	 * @param limit1 Le premier caractère limite autorisé.
-	 * @param limit2 Le deuxième caractère limite autorisé.
-	 * @return Le TextField généré.
+	 * @param maxLength La longueur maximale du texte autorise dans le champ.
+	 * @param limit1 Le premier caractre limite autoris.
+	 * @param limit2 Le deuxime caractre limite autoris.
+	 * @return Le TextField gnr.
 	 */
 	public TextField generateTextField(String defaultValue, double x, double y, int maxLength, char limit1, char limit2) { //maxLength devrait Ãªtre <=16 pour des raisons d'affichage (sinon affichage moins beau)
 		TextField tf = new TextField(defaultValue);
@@ -378,9 +382,9 @@ public class Management extends Stage implements Observer{
 			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
 				if(!tf.getText().isEmpty()) {
 					if (tf.getText().length() > maxLength) {
-		                String s = tf.getText().substring(0, maxLength);
-		                tf.setText(s);
-		            }
+						String s = tf.getText().substring(0, maxLength);
+						tf.setText(s);
+					}
 					if(tf.getText().charAt(tf.getText().length()-1)<limit1 || tf.getText().charAt(tf.getText().length()-1)>limit2) {
 						tf.setText(oldValue);
 					}
@@ -389,12 +393,12 @@ public class Management extends Stage implements Observer{
 		});
 		return tf;
 	}
-	
+
 	/**
-	 * Gènère un Label utilisé comme titre de menu/fenêtre.
-	 * 
-	 * @param title le titre du menu/fenêtre.
-	 * @return Le label généré.
+	 * Gnre un Label utilis comme titre de menu/fentre.
+	 *
+	 * @param title le titre du menu/fentre.
+	 * @return Le label gnr.
 	 */
 	public Label generateTitle(String title) {
 		Label label = new Label(" "+title+" ");
@@ -403,17 +407,17 @@ public class Management extends Stage implements Observer{
 		label.setTextAlignment(TextAlignment.CENTER);
 		return label;
 	}
-	
+
 	/**
-     * Applique un style particulier à un Label de titre.
-	 * 
+	 * Applique un style particulier  un Label de titre.
+	 *
 	 * @param label un Label titre.
 	 */
 	public void applyStyleToTitle(Label label) {
 		label.setBackground(Utils.setBackGroungFill(this.colorOfWalls));
 		label.setStyle("-fx-font-size: 25px;-fx-text-fill: #000000;");
 	}
-	
+
 	/*
 	//Cette fonction semble trÃ¨s Ã©tange, mais elle permet de corriger un bug de javaFX
 	public void download(Node node) {
@@ -425,50 +429,89 @@ public class Management extends Stage implements Observer{
 		stage.close();
 	}
 	*/
-	
+
 	/**
-     * Permet de définir la couleur de fond d'un élément identifié par son ID.
-	 * 
-	 * @param id L'identifiant de l'élément à modifier.
-	 * @param fill La couleur de fond à appliquer.
+	 * Permet de dfinir la couleur de fond d'un lment identifi par son ID.
+	 *
+	 * @param id L'identifiant de l'lment  modifier.
+	 * @param fill La couleur de fond  appliquer.
 	 */
 	public void setBackGround(int id, Color fill) {
 		menus.get(id).setFill(fill);
 	}
-	
+
 	/**
-     * Récupère une scène avec un identifiant donné.
-	 * 
-	 * @param id L'identifiant de la scène à récupérer.
-	 * @return La scène correspondant à l'identifiant spécifié.
+	 * Rcupre une scne avec un identifiant donn.
+	 *
+	 * @param id L'identifiant de la scne  rcuprer.
+	 * @return La scne correspondant  l'identifiant spcifi.
 	 */
 	public Scene getScene(int id) {
 		return this.menus.get(Integer.valueOf(id));
 	}
-	
+
 	/**
-     * Positionne un élément aux coordonnées spécifiées.
-	 * 
-	 * @param node L'élément à positionner.
-	 * @param x La position horizontale de l'élément.
-	 * @param y La position verticale de l'élément.
+	 * Positionne un lment aux coordonnes spcifies.
+	 *
+	 * @param node L'lment  positionner.
+	 * @param x La position horizontale de l'lment.
+	 * @param y La position verticale de l'lment.
 	 */
 	public void setLayout(Node node, double x, double y) {
 		node.setLayoutX(x);
 		node.setLayoutY(y);
 	}
-	
+
 	/**
-     * Calcule un pourcentage de la valeur totale donnée.
-	 * 
+	 * Calcule un pourcentage de la valeur totale donne.
+	 *
 	 * @param total La valeur totale.
-	 * @param percentage Le pourcentage à calculer (doit être entre 0 et 100).
-	 * @return La valeur résultante du pourcentage calculé.
+	 * @param percentage Le pourcentage  calculer (doit tre entre 0 et 100).
+	 * @return La valeur rsultante du pourcentage calcul.
 	 */
 	public double calculPercentage(double total, double percentage) {//percentage must be between 0 and 100
 		return (percentage/100)*total;
 	}
-	
-	
-	
+
+	public void gameOverScreen() {
+
+		Stage gameOverStage = new Stage();
+
+		gameOverStage.setTitle("Game Over Menu");
+		gameOverStage.setWidth(this.window_width);
+		gameOverStage.setHeight(this.window_height);
+
+		Label title = this.generateTitle("Game Over Menu");
+
+		Button restartButton = this.generateButton("Rejouer", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height, 80));
+		Button quitButton = this.generateButton("Quitter", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height, 80));
+
+		restartButton.setOnAction(e -> {
+			this.show();
+			this.setScene(this.getScene(this.ID_PLAY));
+			gameOverStage.close();
+		});
+
+		quitButton.setOnAction(e -> {
+			System.exit(0);
+		});
+
+		StackPane layout = new StackPane();
+
+		// Placez le titre en haut Ã  gauche en dÃ©finissant l'alignement
+		StackPane.setAlignment(title, Pos.TOP_LEFT);
+
+		VBox buttonLayout = new VBox(20);
+		buttonLayout.getChildren().addAll(restartButton, quitButton);
+		buttonLayout.setAlignment(Pos.CENTER);
+
+		// Superposez le titre et les boutons
+		layout.getChildren().addAll(title, buttonLayout);
+
+		Scene sceneButton = new Scene(layout);
+		gameOverStage.setScene(sceneButton);
+
+		gameOverStage.show();
+	}
+
 }

@@ -15,6 +15,9 @@
 *.ear
 *.jar
 
+*.project
+*.classpath
+
 # Fichiers d'environnement
 *.iml
 *.log
@@ -25,3 +28,6 @@
 # Fichiers système
 .DS_Store
 Thumbs.db
+
+#Temporairement
+*.css
