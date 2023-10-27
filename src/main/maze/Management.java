@@ -29,9 +29,9 @@ import javafx.scene.layout.StackPane;
 import javafx.geometry.Pos;
 
 /**
- * La classe Management reprsente une fentre de gestion de jeu pour le jeu "MONSTER-HUNTER".
- * Elle gre les paramtres du jeu, la cration de labyrinthes, et la transition entre les diffrentes vues du jeu.
- * Elle implmente l'interface Observer pour ragir aux vnements du jeu.
+ * La classe Management represente une fenetre de gestion de jeu pour le jeu "MONSTER-HUNTER".
+ * Elle genere les parametres du jeu, la creation de labyrinthes, et la transition entre les differentes vues du jeu.
+ * Elle implemente l'interface Observer pour reagir aux evenements du jeu.
  *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -45,16 +45,22 @@ public class Management extends Stage implements Observer{
 	 * Constante ID du menu settings.
 	 */
 	final int ID_SETTINGS = 1;
+	
 	/**
 	 * Constante ID du menu play.
 	 */
 	final int ID_PLAY = 2;
+	
 	/**
-	 * Constante utilis dans les comboBox pour le choix des joueurs.
+	 * Constante utilise dans les comboBox pour le choix des joueurs.
 	 */
 	final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
-
+	
+	/**
+	 * Constante de pour le decalage lors de la generation des labels
+	 */
 	final int SPACING = 5;
+	
 	/**
 	 * Constante de largeur minimum des labels.
 	 */
@@ -64,10 +70,12 @@ public class Management extends Stage implements Observer{
 	 * Le labyrinthe.
 	 */
 	protected Maze maze;
+	
 	/**
 	 * La vue du Monstre.
 	 */
 	public MonsterView mv;
+	
 	/**
 	 * La vue du Chasseur.
 	 */
@@ -78,25 +86,27 @@ public class Management extends Stage implements Observer{
 	public int window_width;//500 par défault
 	public Color colorOfWalls;
 	public Color colorOfFloors;
+	
 	/**
-	 * Map contenant les diffrents menus du jeu.
+	 * Map contenant les differents menus du jeu.
 	 */
 	public Map<Integer, Scene> menus;
+	
 	/**
-	 * paramtre indiquant si le jeu se droule sur la mme fentre (true) ou fentre spar (false).
+	 * parametre indiquant si le jeu se deroule sur la meme fenetre (true) ou fenetre separe (false).
 	 */
 	public boolean sameScreen;
 
 	/**
 	 * Constructeur de la classe Management.
 	 *
-	 * @param probability le taux de chances que la case du labyrinthe soit un mur plein.
+	 * @param probability le taux de chances que la case du labyrinthe soit un mur.
 	 * @param maze_height La hauteur du labyrinthe.
 	 * @param maze_width La largeur du labyrinthe.
-	 * @param window_height La hauteur de la fentre.
-	 * @param window_width La largeur de la fentre.
-	 * @param gap_X L'cart horizontal dans la vue du labyrinthe.
-	 * @param gap_Y L'cart vertical dans la vue du labyrinthe.
+	 * @param window_height La hauteur de la fenetre.
+	 * @param window_width La largeur de la fenetre.
+	 * @param gap_X L'ecart horizontal dans la vue du labyrinthe. Permet de décaler l'entirete du labyrinthe sur un axe horizontal.
+	 * @param gap_Y L'ecart vertical dans la vue du labyrinthe.Permet de décaler l'entirete du labyrinthe sur un axe vertical.
 	 * @param zoom Le niveau de zoom de la vue du labyrinthe.
 	 * @param colorOfWalls La couleur des murs.
 	 * @param colorOfFloors La couleur du sol.
@@ -119,9 +129,9 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Met  jour l'observateur en ragissant  un changement dans le sujet observ.
+	 * Met a jour l'observateur en reagissant a un changement dans le sujet observe.
 	 *
-	 * @param s Le sujet observ dont l'tat a t modifi.
+	 * @param s Le sujet observe dont l'etat a ete modifie.
 	 */
 	@Override
 	public void update(Subject s) {
@@ -131,10 +141,10 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Met  jour l'observateur en ragissant  un changement dans le sujet observ avec des donnes spcifiques.
+	 * Met a jour l'observateur en reagissant a un changement dans le sujet observe avec des donnes specifiques.
 	 *
-	 * @param s Le sujet observ dont l'tat a t modifi.
-	 * @param o Un objet contenant des informations spcifiques sur la mise  jour.
+	 * @param s Le sujet observe dont l'etat a ete modifie.
+	 * @param o Un objet contenant des informations specifiques sur la mise  jour.
 	 */
 	@Override
 	public void update(Subject s, Object o) {
@@ -145,9 +155,9 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Vrifie si le jeu est termin.
+	 * Vrifie si le jeu est termine.
 	 *
-	 * @return true si le jeu est termin, sinon faux.
+	 * @return true si le jeu est termine, sinon faux.
 	 */
 	public boolean gameOver() {
 		if(this.maze.isGameOver) {
@@ -160,7 +170,7 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Affiche une bote de dialogue indiquant  qui est le tour.
+	 * Affiche une boite de dialogue indiquant a qui est le tour.
 	 * @param joueur Le nom du joueur.
 	 */
 	public void TurnView(String joueur) {
@@ -203,8 +213,8 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Gnre le menu des paramtres du jeu, permettant  l'utilisateur de personnaliser diverses options telles que
-	 * la taille du labyrinthe, le thme, etc.
+	 * Genere le menu des parametres du jeu, permettant  l'utilisateur de personnaliser diverses options telles que
+	 * la taille du labyrinthe, le theme, etc.
 	 */
 	public void generateSettingsMenu() {
 		Label title = this.generateTitle("Settings");
@@ -241,10 +251,10 @@ public class Management extends Stage implements Observer{
 
 
 	/**
-	 * Gnre le menu principal du jeu, permettant  l'utilisateur de dfinir des paramtres pour le jeu
-	 * (noms des personnages, niveaux d'IA, etc.) et de lancer le jeu lui-mme.
+	 * Genere le menu principal du jeu, permettant  l'utilisateur de definir des parametres pour le jeu
+	 * (noms des personnages, niveaux d'IA, etc.) et de lancer une partie.
 	 *
-	 * @param probability le taux de chances que la case du labyrinthe soit un mur plein.
+	 * @param probability le taux de chances que la case du labyrinthe soit un mur.
 	 * @param maze_height La hauteur du labyrinthe.
 	 * @param maze_width La largeur du labyrinthe.
 	 * @param gap_X L'espacement horizontal entre les cellules du labyrinthe.
@@ -289,7 +299,7 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Applique un style de base  un bouton, y compris le style lors du survol de la souris.
+	 * Applique un style de base a un bouton, y compris le style lors du survol de la souris.
 	 *
 	 * @param b Le bouton auquel on applique le style.
 	 */
@@ -313,12 +323,12 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Gnre un bouton avec un texte donn et le positionne aux coordonnes spcifies.
+	 * Genere un bouton avec un texte donne et le positionne aux coordonnes specifies.
 	 *
-	 * @param msg Le texte affich sur le bouton.
+	 * @param msg Le texte affiche sur le bouton.
 	 * @param x La position horizontale du bouton.
 	 * @param y La position verticale du bouton.
-	 * @return Le bouton gnr.
+	 * @return Le bouton genere.
 	 */
 	public Button generateButton(String msg, double x, double y) {
 		Button button = new Button(msg);
@@ -329,12 +339,12 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Gnre une liste droulante (ComboBox) avec les valeurs spcifies et la positionne aux coordonnes spcifies.
+	 * Genere une liste deroulante (ComboBox) avec les valeurs specifies et la positionne aux coordonnes specifies.
 	 *
-	 * @param values Les valeurs  afficher dans la liste droulante.
-	 * @param x La position horizontale de la liste droulante.
-	 * @param y La position verticale de la liste droulante.
-	 * @return La liste droulante gnre.
+	 * @param values Les valeurs affiche dans la liste deroulante.
+	 * @param x La position horizontale de la liste deroulante.
+	 * @param y La position verticale de la liste deroulante.
+	 * @return La liste deroulante genere.
 	 */
 	public ComboBox<String> generateComboBox(String[] values, double x, double y) {
 		ComboBox<String> theme = new ComboBox<String>();
@@ -363,15 +373,15 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Gnre un TextField avec une valeur par dfaut et le positionne aux coordonnes spcifies.
+	 * Genere un TextField avec une valeur par defaut et le positionne aux coordonnes specifies.
 	 *
-	 * @param defaultValue La valeur par dfaut du champ de texte.
+	 * @param defaultValue La valeur par defaut du champ de texte.
 	 * @param x La position horizontale du champ de texte.
 	 * @param y La position verticale du champ de texte.
 	 * @param maxLength La longueur maximale du texte autorise dans le champ.
-	 * @param limit1 Le premier caractre limite autoris.
-	 * @param limit2 Le deuxime caractre limite autoris.
-	 * @return Le TextField gnr.
+	 * @param limit1 Le premier caractere definissant le debut de l'ensemble des caracteres autorises
+	 * @param limit2 Le deuxime caractere definissant la fin de l'ensemble des caracteres autorises
+	 * @return Le TextField genere.
 	 */
 	public TextField generateTextField(String defaultValue, double x, double y, int maxLength, char limit1, char limit2) { //maxLength devrait être <=16 pour des raisons d'affichage (sinon affichage moins beau)
 		TextField tf = new TextField(defaultValue);
@@ -395,10 +405,10 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Gnre un Label utilis comme titre de menu/fentre.
+	 * Gnre un Label utilise comme titre de menu/fenetre.
 	 *
-	 * @param title le titre du menu/fentre.
-	 * @return Le label gnr.
+	 * @param title le titre du menu/fenetre.
+	 * @return Le label genere.
 	 */
 	public Label generateTitle(String title) {
 		Label label = new Label(" "+title+" ");
@@ -431,27 +441,27 @@ public class Management extends Stage implements Observer{
 	*/
 
 	/**
-	 * Permet de dfinir la couleur de fond d'un lment identifi par son ID.
+	 * Permet de definir la couleur de fond d'un element identifie par son ID.
 	 *
-	 * @param id L'identifiant de l'lment  modifier.
-	 * @param fill La couleur de fond  appliquer.
+	 * @param id L'identifiant de l'element modifie.
+	 * @param fill La couleur de fond applique.
 	 */
 	public void setBackGround(int id, Color fill) {
 		menus.get(id).setFill(fill);
 	}
 
 	/**
-	 * Rcupre une scne avec un identifiant donn.
+	 * Recupere une scene avec un identifiant donne.
 	 *
-	 * @param id L'identifiant de la scne  rcuprer.
-	 * @return La scne correspondant  l'identifiant spcifi.
+	 * @param id L'identifiant de la scene que l'on cherche.
+	 * @return La scene correspondant a l'identifiant specifie.
 	 */
 	public Scene getScene(int id) {
 		return this.menus.get(Integer.valueOf(id));
 	}
 
 	/**
-	 * Positionne un lment aux coordonnes spcifies.
+	 * Positionne un element aux coordonnes specifies.
 	 *
 	 * @param node L'lment  positionner.
 	 * @param x La position horizontale de l'lment.
