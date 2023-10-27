@@ -1,5 +1,7 @@
 package main.strategy.monster;
 
+import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import main.maze.cells.ICoordinate;
 
 public class Monster implements IMonsterStrategy{
@@ -11,16 +13,6 @@ public class Monster implements IMonsterStrategy{
 		super();
 		this.initialize(walls);
 		this.coord = coord;
-	}
-	@Override
-	public ICoordinate play() {//move
-		
-		return null;
-	}
-	@Override
-	public void update() {//update de "update strategy de IA" et non de "Observeur/Observé"
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void initialize(boolean[][] walls) {
@@ -60,5 +52,15 @@ public class Monster implements IMonsterStrategy{
 
 	public boolean[][] getWalls() {
 		return walls;
+	}
+	@Override
+	public fr.univlille.iutinfo.cam.player.perception.ICoordinate play() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void update(ICellEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

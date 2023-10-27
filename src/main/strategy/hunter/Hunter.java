@@ -1,5 +1,7 @@
 package main.strategy.hunter;
 
+import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import main.maze.cells.ICoordinate;
 
 public class Hunter implements IHunterStrategy{
@@ -9,17 +11,6 @@ public class Hunter implements IHunterStrategy{
 	public Hunter(int height, int width, ICoordinate coord_hunter) {
 		this.coord=coord_hunter;
 		this.initialize(height, width);
-	}
-	
-	@Override
-	public ICoordinate play() {//shot
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void initialize(int nbrRows, int nbrCols) {
@@ -69,5 +60,15 @@ public class Hunter implements IHunterStrategy{
 	
 	public void setCoord(ICoordinate c) {
 		this.coord=c;
+	}
+	@Override
+	public fr.univlille.iutinfo.cam.player.perception.ICoordinate play() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void update(ICellEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
