@@ -15,10 +15,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import main.strategy.monster.Monster;
 import main.utils.Observer;
 import main.utils.Subject;
 import main.utils.Utils;
-
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
+import javafx.scene.layout.Region;
 
 public class Management extends Stage implements Observer{
 	
@@ -81,15 +86,44 @@ public class Management extends Stage implements Observer{
 		}
 		return false;
 	}
-	
+
+	public void TurnView(String joueur) {
+		this.hide();
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Au tour du " + joueur);
+		alert.setHeaderText("Voulez vous commencer votre Tour ?");
+
+		// Personnaliser l'apparence de la boîte de dialogue
+		DialogPane dialogPane = alert.getDialogPane();
+		dialogPane.setMinHeight(Region.USE_PREF_SIZE);
+
+		// Boutons de confirmation et d'annulation
+		ButtonType bouttonJouer = new ButtonType("Jouer");
+		alert.getButtonTypes().setAll(bouttonJouer);
+
+		// Attendre la réponse de l'utilisateur
+		alert.showAndWait().ifPresent(response -> {
+			if(response == bouttonJouer){
+				if(joueur.equals("Monstre")){
+					this.setScene(mv.scene);
+					this.show();
+				} else {
+					this.setScene(hv.scene);
+					this.show();
+				}
+			}
+		});
+	}
+
+
 	public void switchInGameView() {
 		if(this.maze.isMonsterTurn) {
-			this.setScene(mv.scene);
+			TurnView("Monstre");
 		}else {
-			this.setScene(hv.scene);
+			TurnView("Chasseur");
 		}
 	}
-	
+
 	public void generateSettingsMenu() {
 		Label title = this.generateTitle("Settings");
 		
