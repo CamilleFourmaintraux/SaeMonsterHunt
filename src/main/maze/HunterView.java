@@ -68,12 +68,8 @@ public class HunterView implements Observer{
 		
 		//Scene
 		this.scene=new Scene(this.group_stage, this.window_height, this.window_width);
-		//this.setTitle("MONSTERHUNTER - HunterView");
 	}
 
-	
-	//A CORRIGER
-	//////////////////
 	
 	
 	@Override
@@ -96,7 +92,6 @@ public class HunterView implements Observer{
 			for(int l=0; l<this.maze.hunter.traces[h].length; l++) {
 				//Codage des rectangles
 				CellWithText cell = new CellWithText(l, h, zoom, Color.BLACK,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""));
-				//System.out.println(r.getRect().getPa);
 				cell.setOnMouseClicked(e->{
 					this.select(cell,e);
 				});

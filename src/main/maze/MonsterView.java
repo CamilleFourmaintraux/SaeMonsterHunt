@@ -13,17 +13,13 @@ import main.utils.Subject;
 
 public class MonsterView implements Observer{
 	//Affichage
-	public int window_height = 500; //500 par défault
-	public int window_width = 500; //500 par défault
-	public int gap_X=0; //0 par défault
-	public int gap_Y=0; //0 par défault
-	public int zoom = 50 ; //50 par défault
+	public int window_height;
+	public int window_width;
+	public int gap_X;
+	public int gap_Y;
+	public int zoom;
 	public Color colorOfWalls=Color.DARKGRAY;
 	public Color colorOfFloors=Color.LIGHTGRAY;
-	/*
-	final int gap_X=this.window_width/10;
-	final int gap_y=this.window_height/10;
-	*/
 	
 	//Subject
 	Maze maze;
@@ -57,11 +53,7 @@ public class MonsterView implements Observer{
 		this.group_stage.getChildren().add(this.group_map);
 		this.group_stage.getChildren().add(this.group_sprite);
 		this.scene=new Scene(this.group_stage,this.window_height,this.window_width);
-		//this.setTitle("MONSTERHUNTER - MonsterView");
 	}
-
-	//A corriger
-	////////////////////////////////////////////
 
 	@Override
 	public void update(Subject s) {
@@ -94,20 +86,6 @@ public class MonsterView implements Observer{
 		this.sprite_monster.setOnMouseClicked(e->{
 			this.select(e, this.sprite_monster.getCoord());
 		});
-		/*this.sprite_monster.setOnKeyPressed(e->{
-			if(e.getCode().equals(KeyCode.UP)) {
-				System.out.println("UP");
-			}
-			else if(e.getCode().equals(KeyCode.DOWN)) {
-				System.out.println("DOWN");
-			}
-			else if(e.getCode().equals(KeyCode.RIGHT)) {
-				System.out.println("RIGHT");
-			}
-			else if(e.getCode().equals(KeyCode.LEFT)) {
-				System.out.println("LEFT");
-			}
-		});*/
 		
 		//initialisation du sprite du dernier tir du chasseur
 		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 3, this.gap_X, this.gap_Y, "Hunter");
@@ -152,10 +130,6 @@ public class MonsterView implements Observer{
 				r.setOnMouseClicked(e->{
 					this.select(e, r.getCoord());
 				});
-				/*r.setOnKeyPressed(new EventHandler<KeyEvent>() {
-				@Override
-				public void handle(KeyEvent ke) {if(ke.getCode()==KeyCode.ENTER) {}}
-	        	});*/
 				
 				root.getChildren().add(r);
 			}
@@ -166,10 +140,9 @@ public class MonsterView implements Observer{
 	public void select(MouseEvent e, ICoordinate c) {
 		int row=c.getRow();
 		int col=c.getCol();
-		//System.out.println("("+row+","+col+") est sélectionné.");
 		this.selection.setY(this.calculDrawY(row));
 		this.selection.setX(this.calculDrawX(col));
-		this.selection.setCoord(c); //IMPORTANT, on met à jour la nouvelle coord
+		this.selection.setCoord(c);
 		this.selection.setVisible(true);
 		this.selection.toFront();
 		if(this.maze.canMonsterMoveAt(c)) {
@@ -179,9 +152,6 @@ public class MonsterView implements Observer{
 			}
 		}else{
 			this.invalidSelection();
-			//System.out.println("Le monstre est à ("+this.monster.coord.getRow()+","+this.monster.coord.getCol()+"), soit ("+(this.monster.coord.getRow()-row)+","+(this.monster.coord.getCol()-col)+") de distance.");
-			//System.out.println("("+row+","+col+") n'est pas une case adjacente !");
-			//System.out.println("(x:"+distanceX+", y:"+distanceY+") sont superieur à 1 ou égaux.");
 			
 		}
 	}
@@ -283,6 +253,7 @@ public class MonsterView implements Observer{
 	public int calculDrawX(int x) {
 		return x*zoom+gap_X;
 	}
+	
 	public int calculDrawY(int y) {
 		return y*zoom+gap_Y;
 	}

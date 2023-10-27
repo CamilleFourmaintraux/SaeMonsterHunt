@@ -31,7 +31,7 @@ public class Maze extends Subject{
 	/**
 	 * Tableau d'entier stockant les num�ros de tours ou le monstre est d�j� pass�.
 	 */
-	protected int[][] traces;//TODO message si le monstre passe sur une case déjà découverte
+	protected int[][] traces;//TODO message ou alerte si le monstre passe sur une case déjà découverte
 	/**
 	 * La sortie (les coordonn�es) du labyrinthe.
 	 */

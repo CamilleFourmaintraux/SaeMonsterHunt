@@ -15,7 +15,7 @@ public class MonsterHunt extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		Management game = new Management(50,10,10,500,500,0,0,50,Color.DARKGRAY,Color.LIGHTGRAY);
+		Management game = new Management(50,500,500,0,0,50,Color.DARKGRAY,Color.LIGHTGRAY);
 	}
 	
 	

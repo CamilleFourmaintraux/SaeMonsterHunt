@@ -92,15 +92,55 @@ public class Management extends Stage implements Observer{
 	public Color colorOfWalls;
 	public Color colorOfFloors;
 	
+	//Maze settings	
+	/**
+	 * maze_height -> stocke la hauteur du labyrinthe
+	 */
+	public int maze_height;
+	
+	/**
+	 * maze_width -> stocke la largeur du labyrinthe
+	 */
+	public int maze_width;
+	
+	/**
+	 * monster_name -> stocke le nom du joueur Monster
+	 */
+	public String monster_name;
+	
+	/**
+	 * hunter_name -> stocke le nom du joueur Hunter
+	 */
+	public String hunter_name;
+	
+	/**
+	 * monster_IA -> indique le type de joueur (humain, niveaux de l'ia)
+	 */
+	public String monster_IA;
+	
+	/**
+	 * hunter_IA -> indique le type de joueur (humain, niveaux de l'ia)
+	 */
+	public String hunter_IA;
+	
+	/**
+	 * theme -> indique les couleurs avec lesquels le jeu doit s'afficher
+	 */
+	public String theme;
+	
+	/**
+	*sameScreen -> indique si le jeu se deroule sur la meme fenetre (true) ou sur des fenetres separees (false).
+	**/
+	public boolean sameScreen;
+	
+	
+	
 	/**
 	 * Map contenant les differents menus du jeu.
 	 */
 	public Map<Integer, Scene> menus;
 	
-	/**
-	 * parametre indiquant si le jeu se deroule sur la meme fenetre (true) ou fenetre separe (false).
-	 */
-	public boolean sameScreen;
+	
 
 	/**
 	 * Constructeur de la classe Management.
@@ -116,7 +156,7 @@ public class Management extends Stage implements Observer{
 	 * @param colorOfWalls La couleur des murs.
 	 * @param colorOfFloors La couleur du sol.
 	 */
-	public Management(int probability, int maze_height, int maze_width, int window_height, int window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls, Color colorOfFloors) {
+	public Management(int probability, int window_height, int window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls, Color colorOfFloors) {
 		this.menus=new HashMap<Integer,Scene>();
 		this.window_height = window_height;
 		this.window_width = window_width;
@@ -125,7 +165,7 @@ public class Management extends Stage implements Observer{
 		this.sameScreen=true;
 
 		this.generateSettingsMenu();
-		this.generatePlayMenu(probability,maze_height,maze_width,gap_X,gap_Y,zoom);
+		this.generatePlayMenu(probability,gap_X,gap_Y,zoom);
 		this.generateGameOverScreen();
 
 		this.setScene(this.getScene(this.ID_PLAY));
@@ -217,6 +257,65 @@ public class Management extends Stage implements Observer{
 		}
 	}
 
+	
+
+	/**
+	 * Genere le menu principal du jeu, permettant  l'utilisateur de definir des parametres pour le jeu
+	 * (noms des personnages, niveaux d'IA, etc.) et de lancer une partie.
+	 *
+	 * @param probability le taux de chances que la case du labyrinthe soit un mur.
+	 * @param maze_height La hauteur du labyrinthe.
+	 * @param maze_width La largeur du labyrinthe.
+	 * @param gap_X L'espacement horizontal entre les cellules du labyrinthe.
+	 * @param gap_Y L'espacement vertical entre les cellules du labyrinthe.
+	 * @param zoom Le niveau de zoom pour l'affichage du labyrinthe.
+	 */
+	public void generatePlayMenu(int probability, int gap_X, int gap_Y, int zoom) {
+		Label title = this.generateTitle("Main Menu");
+
+		TextField tf_name_monster = this.generateTextField("Monster", this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
+		TextField tf_name_hunter = this.generateTextField("Hunter", this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
+
+		Label l_nameM = this.generateLabel("Monster Name", tf_name_monster.getLayoutX(),tf_name_monster.getLayoutY()-15, this.LABEL_MIN_WIDTH);
+		Label l_nameH = this.generateLabel("Hunter Name", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
+
+		ComboBox<String> choixIA_Monster = this.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 50));
+		ComboBox<String> choixIA_Hunter = this.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 50));
+
+		Button bSettings = this.generateButton("Modify Settings", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height,80));
+		bSettings.setOnAction(e->{
+			this.setScene(this.getScene(this.ID_SETTINGS));
+		});
+
+		Button bPlay = this.generateButton("PLAY", this.calculPercentage(this.window_width, 45), this.calculPercentage(this.window_height,90));
+		bPlay.setOnAction(e->{
+			//intantiation of the settings
+			this.monster_name=l_nameM.getText();
+			this.monster_IA=choixIA_Monster.getValue();
+			this.hunter_name=l_nameH.getText();
+			this.monster_IA=choixIA_Monster.getValue();
+			//Creation of the maze
+
+			System.out.println("maze_height:"+this.maze_height+"maze_width:"+this.maze_width);
+			this.maze=new Maze(probability, this.maze_height, this.maze_width);
+			this.maze=new Maze();
+			this.maze.attach(this);
+			this.mv=new MonsterView(window_height,window_width,gap_X,gap_Y,zoom,colorOfWalls,colorOfFloors,this.maze);
+			this.hv=new HunterView(window_height,window_width,gap_X,gap_Y,zoom,colorOfWalls,colorOfFloors,this.maze);
+			this.setScene(hv.scene);
+		});
+
+
+
+		Group group = new Group();
+		group.getChildren().addAll(title, l_nameM, tf_name_monster, choixIA_Monster, l_nameH, tf_name_hunter, choixIA_Hunter, bSettings, bPlay);
+
+		Scene scene =  new Scene(group, this.window_height, this.window_width, this.colorOfFloors);
+
+		this.menus.put(Integer.valueOf(this.ID_PLAY),scene);
+	}
+	
+	
 	/**
 	 * Genere le menu des parametres du jeu, permettant  l'utilisateur de personnaliser diverses options telles que
 	 * la taille du labyrinthe, le theme, etc.
@@ -226,6 +325,7 @@ public class Management extends Stage implements Observer{
 
 		TextField tf_maze_height = this.generateTextField("10",this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,50), 2, '0', '9');
 		TextField tf_maze_width = this.generateTextField("10", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,60), 2, '0', '9');
+		
 		Label l_height = this.generateLabel("Maze Height", tf_maze_height.getLayoutX()-this.LABEL_MIN_WIDTH, tf_maze_height.getLayoutY(), this.LABEL_MIN_WIDTH);
 		Label l_width= this.generateLabel("Maze Width", tf_maze_width.getLayoutX()-this.LABEL_MIN_WIDTH, tf_maze_width.getLayoutY(), this.LABEL_MIN_WIDTH);
 
@@ -247,6 +347,10 @@ public class Management extends Stage implements Observer{
 		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_PLAY));
+			this.maze_height=Integer.parseInt(tf_maze_height.getText());
+			this.maze_width=Integer.parseInt(tf_maze_width.getText());
+			System.out.println("maze_height:"+this.maze_height+"maze_width:"+this.maze_width);
+			this.theme=theme.getValue();
 		});
 
 		Group group = new Group();
@@ -255,53 +359,6 @@ public class Management extends Stage implements Observer{
 	}
 
 
-	/**
-	 * Genere le menu principal du jeu, permettant  l'utilisateur de definir des parametres pour le jeu
-	 * (noms des personnages, niveaux d'IA, etc.) et de lancer une partie.
-	 *
-	 * @param probability le taux de chances que la case du labyrinthe soit un mur.
-	 * @param maze_height La hauteur du labyrinthe.
-	 * @param maze_width La largeur du labyrinthe.
-	 * @param gap_X L'espacement horizontal entre les cellules du labyrinthe.
-	 * @param gap_Y L'espacement vertical entre les cellules du labyrinthe.
-	 * @param zoom Le niveau de zoom pour l'affichage du labyrinthe.
-	 */
-	public void generatePlayMenu(int probability, int maze_height, int maze_width, int gap_X, int gap_Y, int zoom) {
-		Label title = this.generateTitle("Main Menu");
-
-		TextField tf_name_monster = this.generateTextField("Monster", this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
-		TextField tf_name_hunter = this.generateTextField("Hunter", this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
-
-		Label l_nameM = this.generateLabel("Monster Name", tf_name_monster.getLayoutX(),tf_name_monster.getLayoutY()-15, this.LABEL_MIN_WIDTH);
-		Label l_nameH = this.generateLabel("Hunter Name", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
-
-		ComboBox<String> choixIA_Monster = this.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 50));
-		ComboBox<String> choixIA_Hunter = this.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 50));
-
-		Button bSettings = this.generateButton("Modify Settings", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height,80));
-		bSettings.setOnAction(e->{
-			this.setScene(this.getScene(this.ID_SETTINGS));
-		});
-
-		Button bPlay = this.generateButton("PLAY", this.calculPercentage(this.window_width, 45), this.calculPercentage(this.window_height,90));
-		bPlay.setOnAction(e->{
-			this.maze=new Maze(probability, maze_height, maze_width);
-			this.maze=new Maze();
-			this.maze.attach(this);
-			this.mv=new MonsterView(window_height,window_width,gap_X,gap_Y,zoom,colorOfWalls,colorOfFloors,this.maze);
-			this.hv=new HunterView(window_height,window_width,gap_X,gap_Y,zoom,colorOfWalls,colorOfFloors,this.maze);
-			this.setScene(hv.scene);
-		});
-
-
-
-		Group group = new Group();
-		group.getChildren().addAll(title, l_nameM, tf_name_monster, choixIA_Monster, l_nameH, tf_name_hunter, choixIA_Hunter, bSettings, bPlay);
-
-		Scene scene =  new Scene(group, this.window_height, this.window_width, this.colorOfFloors);
-
-		this.menus.put(Integer.valueOf(this.ID_PLAY),scene);
-	}
 	
 	
 	public void generateGameOverScreen() {
