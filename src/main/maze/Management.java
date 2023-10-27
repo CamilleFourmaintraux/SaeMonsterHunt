@@ -298,7 +298,6 @@ public class Management extends Stage implements Observer{
 
 			System.out.println("maze_height:"+this.maze_height+"maze_width:"+this.maze_width);
 			this.maze=new Maze(probability, this.maze_height, this.maze_width);
-			this.maze=new Maze();
 			this.maze.attach(this);
 			this.mv=new MonsterView(window_height,window_width,gap_X,gap_Y,zoom,colorOfWalls,colorOfFloors,this.maze);
 			this.hv=new HunterView(window_height,window_width,gap_X,gap_Y,zoom,colorOfWalls,colorOfFloors,this.maze);
