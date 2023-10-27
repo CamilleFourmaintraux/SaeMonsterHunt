@@ -50,8 +50,10 @@ public class Management extends Stage implements Observer{
 		this.colorOfFloors=colorOfFloors;
 		this.colorOfWalls=colorOfWalls;
 		this.sameScreen=true;
+		
 		this.generateSettingsMenu();
 		this.generatePlayMenu(probability,maze_height,maze_width,gap_X,gap_Y,zoom);
+		
 		this.setScene(this.getScene(this.ID_PLAY));
 		this.setTitle("MONSTER-HUNTER");
 		this.show();
@@ -157,7 +159,9 @@ public class Management extends Stage implements Observer{
 		Group group = new Group();
 		group.getChildren().addAll(title, l_nameM, tf_name_monster, choixIA_Monster, l_nameH, tf_name_hunter, choixIA_Hunter, bSettings, bPlay);
 		
-		this.menus.put(Integer.valueOf(this.ID_PLAY), new Scene(group, this.window_height, this.window_width, this.colorOfFloors));
+		Scene scene =  new Scene(group, this.window_height, this.window_width, this.colorOfFloors);
+		
+		this.menus.put(Integer.valueOf(this.ID_PLAY),scene);
 	}
 	
 	public void applyStyleToButton(Button b) {
