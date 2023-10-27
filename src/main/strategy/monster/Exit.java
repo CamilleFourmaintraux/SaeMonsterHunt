@@ -1,9 +1,10 @@
 package main.strategy.monster;
 
-import main.maze.cells.ICoordinate;
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+
 /**
- * La classe Exit représente la sortie du labyrinthe, définie par des coordonnées spécifiques (ICoordinate).
- * Cette classe permet de stocker les coordonnées de la sortie et de fournir des méthodes pour accéder à ces coordonnées.
+ * La classe Exit reprï¿½sente la sortie du labyrinthe, dï¿½finie par des coordonnï¿½es spï¿½cifiques (ICoordinate).
+ * Cette classe permet de stocker les coordonnï¿½es de la sortie et de fournir des mï¿½thodes pour accï¿½der ï¿½ ces coordonnï¿½es.
  * 
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -13,37 +14,37 @@ import main.maze.cells.ICoordinate;
  */
 public class Exit {
 	/**
-	 * Les coordonées de la sortie du labyrinthe.
+	 * Les coordonï¿½es de la sortie du labyrinthe.
 	 */
 	ICoordinate coord;
 	/**
-     * Crée un objet Exit avec les coordonnées de la sortie du labyrinthe.
+     * Crï¿½e un objet Exit avec les coordonnï¿½es de la sortie du labyrinthe.
      *
-     * @param coord Les coordonnées de la sortie.
+     * @param coord Les coordonnï¿½es de la sortie.
      */
 	public Exit(ICoordinate coord) {
 		this.coord=coord;
 	}
 	/**
-     * Récupère la ligne de la sortie.
+     * Rï¿½cupï¿½re la ligne de la sortie.
      *
-     * @return  un entier représentant la ligne de la coordonnée de la sortie.
+     * @return  un entier reprï¿½sentant la ligne de la coordonnï¿½e de la sortie.
      */
 	public int getRow() {
 		return this.coord.getRow();
 	}
 	/**
-     * Récupère la colonne de la sortie.
+     * Rï¿½cupï¿½re la colonne de la sortie.
      *
-     * @return un entier représentant la colonne de la coordonnée de la sortie.
+     * @return un entier reprï¿½sentant la colonne de la coordonnï¿½e de la sortie.
      */
 	public int getCol() {
 		return this.coord.getCol();
 	}
 	/**
-     * Récupère les coordonnées de la sortie.
+     * Rï¿½cupï¿½re les coordonnï¿½es de la sortie.
      *
-     * @return un objet ICoordinate contenant les coordonnées de la sortie.
+     * @return un objet ICoordinate contenant les coordonnï¿½es de la sortie.
      */
 	public ICoordinate getCoord() {
 		return this.coord;

@@ -1,6 +1,7 @@
 package main.maze;
 
 
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -8,7 +9,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import main.maze.cells.ICoordinate;
 import main.maze.cells.CellWithText;
 import main.maze.cells.Coordinate;
 import main.utils.Observer;

@@ -2,7 +2,7 @@ package main.strategy.hunter;
 
 import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
-import main.maze.cells.ICoordinate;
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class Hunter implements IHunterStrategy{
 	public int[][] traces;

@@ -2,7 +2,7 @@ package main.strategy.monster;
 
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
-import main.maze.cells.ICoordinate;
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class Monster implements IMonsterStrategy{
 	public boolean[][] walls;

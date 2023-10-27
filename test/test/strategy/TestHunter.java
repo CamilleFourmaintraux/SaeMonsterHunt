@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import main.maze.cells.Coordinate;
-import main.maze.cells.ICoordinate;
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import main.strategy.hunter.Hunter;
 
 public class TestHunter {

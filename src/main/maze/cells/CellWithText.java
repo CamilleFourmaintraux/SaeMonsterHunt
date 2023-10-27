@@ -1,15 +1,18 @@
 package main.maze.cells;
 
+import java.util.Objects;
+
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 /**
- * La classe `CellWithText` représente une cellule d'un labyrinthe avec un texte associé.
- * Elle hérite de `Cell` et ajoute la capacité d'afficher du texte.
+ * La classe `CellWithText` reprï¿½sente une cellule d'un labyrinthe avec un texte associï¿½.
+ * Elle hï¿½rite de `Cell` et ajoute la capacitï¿½ d'afficher du texte.
  */
 public class CellWithText extends Cell{
 	/**
-     * Le texte associé à la cellule.
+     * Le texte associï¿½ ï¿½ la cellule.
      */
 	protected Text text;
 	
@@ -43,7 +46,7 @@ public class CellWithText extends Cell{
 	}
 	
 	/**
-     * Retourne le texte associé à la cellule.
+     * Retourne le texte associï¿½ ï¿½ la cellule.
      *
      * @return Le texte de la cellule.
      */
@@ -52,38 +55,53 @@ public class CellWithText extends Cell{
 	}
 	
 	/**
-     * Définit le texte associé à la cellule.
+     * Dï¿½finit le texte associï¿½ ï¿½ la cellule.
      *
-     * @param text Le texte à afficher dans la cellule.
+     * @param text Le texte ï¿½ afficher dans la cellule.
      */
 	public void setText(Text text) {
 		this.text = text;
 	}
 	
 	 /**
-     * Définit le texte associé à la cellule en utilisant une chaîne de caractères.
+     * Dï¿½finit le texte associï¿½ ï¿½ la cellule en utilisant une chaï¿½ne de caractï¿½res.
      *
-     * @param text La chaîne de caractères à afficher dans la cellule.
+     * @param text La chaï¿½ne de caractï¿½res ï¿½ afficher dans la cellule.
      */
 	public void setText(String text) {
 		this.text.setText(text);
 	}
 	
 	/**
-     * Définit la position horizontale du texte dans la cellule.
+     * Dï¿½finit la position horizontale du texte dans la cellule.
      *
      * @param x La position horizontale du texte.
      */
-	public void setTextX(double x) {
+	public void setPosTextX(double x) {
 		this.text.setX(x);
 	}
 	
 	/**
-     * Définit la position verticale du texte dans la cellule.
+     * Dï¿½finit la position verticale du texte dans la cellule.
      *
      * @param y La position verticale du texte.
      */
-	public void setTextY(double y) {
+	public void setPosTextY(double y) {
 		this.text.setY(y);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CellWithText other = (CellWithText) obj;
+		return Objects.equals(text.getText(), other.text.getText());
+	}
+	
+	
+	
 }

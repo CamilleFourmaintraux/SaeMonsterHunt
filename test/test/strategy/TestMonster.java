@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import main.maze.cells.Coordinate;
-import main.maze.cells.ICoordinate;
 import main.strategy.monster.Monster;
 
 public class TestMonster {

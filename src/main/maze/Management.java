@@ -15,7 +15,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import main.strategy.monster.Monster;
 import main.utils.Observer;
 import main.utils.Subject;
 import main.utils.Utils;

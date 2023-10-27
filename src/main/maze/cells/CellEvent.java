@@ -1,10 +1,13 @@
 package main.maze.cells;
 
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+
 /**
- * Classe représentant un événement de cellule.
+ * Classe reprï¿½sentant un ï¿½vï¿½nement de cellule.
  *
- * Elle implémente l'interface ICellEvent et permet de stocker des informations
- * sur un événement survenu dans une cellule d'un labyrinthe.
+ * Elle implï¿½mente l'interface ICellEvent et permet de stocker des informations
+ * sur un ï¿½vï¿½nement survenu dans une cellule d'un labyrinthe.
  * 
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -14,23 +17,23 @@ package main.maze.cells;
  */
 public class CellEvent implements ICellEvent{
 	/**
-	 * Les coordonnées de la cellule où l'événement a eu lieu.
+	 * Les coordonnï¿½es de la cellule oï¿½ l'ï¿½vï¿½nement a eu lieu.
 	 */
 	ICoordinate coord;
 	/**
-	 * Le numéro du tour auquel l'evenement a eu lieu.
+	 * Le numï¿½ro du tour auquel l'evenement a eu lieu.
 	 */
 	int turn;
 	/**
-	 * L'état de la cellule actuellement.
+	 * L'ï¿½tat de la cellule actuellement.
 	 */
 	CellInfo state;
 	
 	/**
-	 * Constructeur, crée un événement de cellule.
+	 * Constructeur, crï¿½e un ï¿½vï¿½nement de cellule.
      *
-     * @param coord Les coordonnées de la cellule où l'événement a eu lieu.
-     * @param turn Le numéro du tour auquel l'événement a eu lieu.
+     * @param coord Les coordonnï¿½es de la cellule oï¿½ l'ï¿½vï¿½nement a eu lieu.
+     * @param turn Le numï¿½ro du tour auquel l'ï¿½vï¿½nement a eu lieu.
 	 */
 	public CellEvent(ICoordinate coord, int turn) {
 		this.coord = coord;
@@ -39,9 +42,9 @@ public class CellEvent implements ICellEvent{
 	}
 	
 	/**
-     * Obtient l'état (CellInfo) de la cellule au moment de l'événement.
+     * Obtient l'ï¿½tat (CellInfo) de la cellule au moment de l'ï¿½vï¿½nement.
      *
-     * @return un objet CellInfo indiquant l'état de la cellule.
+     * @return un objet CellInfo indiquant l'ï¿½tat de la cellule.
      */
 	@Override
 	public CellInfo getState() {
@@ -49,9 +52,9 @@ public class CellEvent implements ICellEvent{
 	}
 	
 	 /**
-     * Obtient le numéro du tour auquel l'événement a eu lieu.
+     * Obtient le numï¿½ro du tour auquel l'ï¿½vï¿½nement a eu lieu.
      *
-     * @return Le numéro du tour de l'événement.
+     * @return Le numï¿½ro du tour de l'ï¿½vï¿½nement.
      */
 	@Override
 	public int getTurn() {
@@ -59,9 +62,9 @@ public class CellEvent implements ICellEvent{
 	}
 	
 	/**
-    * Obtient les coordonnées de la cellule où l'événement a eu lieu.
+    * Obtient les coordonnï¿½es de la cellule oï¿½ l'ï¿½vï¿½nement a eu lieu.
     *
-    * @return Les coordonnées de la cellule.
+    * @return Les coordonnï¿½es de la cellule.
     */
 	@Override
 	public ICoordinate getCoord() {

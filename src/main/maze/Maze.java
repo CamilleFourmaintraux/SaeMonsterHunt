@@ -1,6 +1,7 @@
 package main.maze;
 
 
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /*import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;*/

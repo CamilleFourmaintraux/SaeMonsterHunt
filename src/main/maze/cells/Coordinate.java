@@ -1,8 +1,10 @@
 package main.maze.cells;
 
 import java.util.Objects;
+
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /**
- * Une classe représentant les coordonnées (ligne & colonne) d'une cellule dans un labyrinthe.
+ * Une classe reprï¿½sentant les coordonnï¿½es (ligne & colonne) d'une cellule dans un labyrinthe.
  * 
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -12,25 +14,25 @@ import java.util.Objects;
  */
 public class Coordinate implements ICoordinate{
 	/**
-	 * Le numéro de la ligne.
+	 * Le numï¿½ro de la ligne.
 	 */
 	int row;
 	/**
-	 * Le numéro de colonne.
+	 * Le numï¿½ro de colonne.
 	 */
 	int col;
 	
 	/**
-     * Constructeur par défaut.
+     * Constructeur par dï¿½faut.
      */
 	public Coordinate() {}
 
 	/**
-     * Constructeur avec des coordonnées spécifiées.
-     * Crée des coordonnées avec le numéro de ligne & colonne.
+     * Constructeur avec des coordonnï¿½es spï¿½cifiï¿½es.
+     * Crï¿½e des coordonnï¿½es avec le numï¿½ro de ligne & colonne.
      *
-     * @param row Le numéro de ligne.
-     * @param col Le numéro de colonne.
+     * @param row Le numï¿½ro de ligne.
+     * @param col Le numï¿½ro de colonne.
      */
 	public Coordinate(int row, int col) {
 		this.row = row;
@@ -38,9 +40,9 @@ public class Coordinate implements ICoordinate{
 	}
 
 	/**
-     * Obtient le numéro de la ligne de la coordonnée.
+     * Obtient le numï¿½ro de la ligne de la coordonnï¿½e.
      *
-     * @return Le numéro de la ligne de la coordonnée.
+     * @return Le numï¿½ro de la ligne de la coordonnï¿½e.
      */
 	@Override
 	public int getRow() {
@@ -49,9 +51,9 @@ public class Coordinate implements ICoordinate{
 	}
 
 	/**
-     * Obtient le numéro de la colonne de la coordonnée.
+     * Obtient le numï¿½ro de la colonne de la coordonnï¿½e.
      *
-     * @return Le numéro de la colonne de la coordonnée.
+     * @return Le numï¿½ro de la colonne de la coordonnï¿½e.
      */
 	@Override
 	public int getCol() {
@@ -60,10 +62,10 @@ public class Coordinate implements ICoordinate{
 	}
 	
 	 /**
-     * Définit les coordonnées à partir d'une ligne et d'une colonne spécifiées.
+     * Dï¿½finit les coordonnï¿½es ï¿½ partir d'une ligne et d'une colonne spï¿½cifiï¿½es.
      *
-     * @param row Le nouveau numéro de ligne de la coordonnée.
-     * @param col Le nouveau numéro de colonne de la coordonnée.
+     * @param row Le nouveau numï¿½ro de ligne de la coordonnï¿½e.
+     * @param col Le nouveau numï¿½ro de colonne de la coordonnï¿½e.
      */
 	public void setCoordinate(int row, int col) {
 		this.row = row;
@@ -71,38 +73,28 @@ public class Coordinate implements ICoordinate{
 	}
 
 	 /**
-     * Définit le nouveau numéro de ligne de la coordonné.
+     * Dï¿½finit le nouveau numï¿½ro de ligne de la coordonnï¿½.
      *
-     * @param row Le nouveau numéro de ligne de la coordonnée.
+     * @param row Le nouveau numï¿½ro de ligne de la coordonnï¿½e.
      */
 	public void setRow(int row) {
 		this.row = row;
 	}
 
 	/**
-     * Définit le nouveau numéro de colonne de la coordonné.
+     * Dï¿½finit le nouveau numï¿½ro de colonne de la coordonnï¿½.
      *
-     * @param row Le nouveau numéro de colonne de la coordonnée.
+     * @param row Le nouveau numï¿½ro de colonne de la coordonnï¿½e.
      */
 	public void setCol(int col) {
 		this.col = col;
 	}
 
 	/**
-     * Calcule le code de hachage pour l'objet Coordinate.
+     * Compare si cet objet Coordinate est ï¿½gal ï¿½ un autre objet spï¿½cifiï¿½.
      *
-     * @return Le code de hachage calculé à partir des coordonnées de la ligne et de la colonne.
-     */
-	@Override
-	public int hashCode() {
-		return Objects.hash(col, row);
-	}
-
-	/**
-     * Compare si cet objet Coordinate est égal à un autre objet spécifié.
-     *
-     * @param obj L'objet à comparer à cette instance de Coordinate.
-     * @return true si les objets sont égaux en termes de coordonnées de ligne et de colonne, sinon false.
+     * @param obj L'objet ï¿½ comparer ï¿½ cette instance de Coordinate.
+     * @return true si les objets sont ï¿½gaux en termes de coordonnï¿½es de ligne et de colonne, sinon false.
      */
 	@Override
 	public boolean equals(Object obj) {
