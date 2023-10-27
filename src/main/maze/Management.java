@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -12,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
@@ -75,6 +77,7 @@ public class Management extends Stage implements Observer{
 	
 	public boolean gameOver() {
 		if(this.maze.isGameOver) {
+			gameOverScreen();
 			this.setScene(this.getScene(this.ID_PLAY));
 			maze.isGameOver=false;
 			return true;
@@ -266,7 +269,31 @@ public class Management extends Stage implements Observer{
 	public double calculPercentage(double total, double percentage) {//percentage must be between 0 and 100
 		return (percentage/100)*total;
 	}
-	
-	
+
+	public void gameOverScreen() {
+		Stage gameOverStage = new Stage();
+		gameOverStage.setTitle("Game Over");
+		gameOverStage.setWidth(400);
+		gameOverStage.setHeight(200);
+
+		// Créez des éléments pour l'interface "perdu"
+		Button restartButton = new Button("Rejouer");
+		restartButton.setOnAction(e -> {
+			// Gérez l'action de redémarrage du jeu ici
+			gameOverStage.close(); // Fermez la fenêtre "perdu" après avoir cliqué sur le bouton "Rejouer"
+		});
+
+		// Ajoutez ces éléments à la scène
+		VBox layout = new VBox(20);
+		layout.getChildren().addAll(restartButton);
+
+		// Créez une scène et ajoutez le conteneur à la scène
+		Scene scene = new Scene(layout);
+		gameOverStage.setScene(scene);
+
+		// Affichez la fenêtre "perdu"
+		gameOverStage.show();
+	}
 	
 }
+
