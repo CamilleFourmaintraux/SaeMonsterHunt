@@ -43,6 +43,7 @@ public class Management extends Stage implements Observer{
 	public Color colorOfFloors;
 	public Map<Integer, Scene> menus;
 	public boolean sameScreen;
+
 	
 	
 	public Management(int probability, int maze_height, int maze_width, int window_height, int window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls, Color colorOfFloors) {
@@ -77,8 +78,8 @@ public class Management extends Stage implements Observer{
 	
 	public boolean gameOver() {
 		if(this.maze.isGameOver) {
+			this.hide();
 			gameOverScreen();
-			this.setScene(this.getScene(this.ID_PLAY));
 			maze.isGameOver=false;
 			return true;
 		}
@@ -271,24 +272,36 @@ public class Management extends Stage implements Observer{
 	}
 
 	public void gameOverScreen() {
+
 		Stage gameOverStage = new Stage();
 		gameOverStage.setTitle("Game Over");
-		gameOverStage.setWidth(400);
-		gameOverStage.setHeight(200);
+		gameOverStage.setWidth(this.window_width);
+		gameOverStage.setHeight(this.window_height);
 
-		// Créez des éléments pour l'interface "perdu"
+		// Créez des boutons "Rejouer" et "Quitter"
 		Button restartButton = new Button("Rejouer");
+		Button quitButton = new Button("Quitter");
+
 		restartButton.setOnAction(e -> {
-			// Gérez l'action de redémarrage du jeu ici
-			gameOverStage.close(); // Fermez la fenêtre "perdu" après avoir cliqué sur le bouton "Rejouer"
+			this.show();
+			this.setScene(this.getScene(this.ID_PLAY));
+			gameOverStage.close();
 		});
 
-		// Ajoutez ces éléments à la scène
-		VBox layout = new VBox(20);
-		layout.getChildren().addAll(restartButton);
+		quitButton.setOnAction(e -> {
+			// Gérez l'action de quitter le jeu ici
+			System.exit(0); // Quitte l'application
+		});
 
-		// Créez une scène et ajoutez le conteneur à la scène
-		Scene scene = new Scene(layout);
+		// Organisez les boutons verticalement
+		VBox buttonLayout = new VBox(20);
+		buttonLayout.getChildren().addAll(restartButton, quitButton);
+
+		// Centrez les boutons verticalement
+		buttonLayout.setAlignment(Pos.CENTER);
+
+		// Créez une scène et ajoutez le conteneur de boutons à la scène
+		Scene scene = new Scene(buttonLayout);
 		gameOverStage.setScene(scene);
 
 		// Affichez la fenêtre "perdu"
