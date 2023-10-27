@@ -11,7 +11,13 @@ import java.util.Objects;
  *
  */
 public class Coordinate implements ICoordinate{
+	/**
+	 * Le numéro de la ligne.
+	 */
 	int row;
+	/**
+	 * Le numéro de colonne.
+	 */
 	int col;
 	
 	/**
