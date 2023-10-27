@@ -93,8 +93,8 @@ public class Management extends Stage implements Observer{
 	public void generateSettingsMenu() {
 		Label title = this.generateTitle("Settings");
 		
-		TextField tf_maze_height = this.generateTextField("10",this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,50),2);
-		TextField tf_maze_width = this.generateTextField("10", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,60), 2);
+		TextField tf_maze_height = this.generateTextField("10",this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,50), 2, '0', '9');
+		TextField tf_maze_width = this.generateTextField("10", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,60), 2, '0', '9');
 		Label l_height = this.generateLabel("Maze Height", tf_maze_height.getLayoutX()-this.LABEL_MIN_WIDTH, tf_maze_height.getLayoutY(), this.LABEL_MIN_WIDTH);
 		Label l_width= this.generateLabel("Maze Width", tf_maze_width.getLayoutX()-this.LABEL_MIN_WIDTH, tf_maze_width.getLayoutY(), this.LABEL_MIN_WIDTH);
 		
@@ -121,7 +121,6 @@ public class Management extends Stage implements Observer{
 		Group group = new Group();
 		group.getChildren().addAll(title, l_height, tf_maze_height, l_width, tf_maze_width, bScreenType, l_theme, theme, bBack);
 		this.menus.put(Integer.valueOf(this.ID_SETTINGS), new Scene(group, this.window_height, this.window_width, this.colorOfFloors));
-
 	}
 	
 	
@@ -129,8 +128,8 @@ public class Management extends Stage implements Observer{
 	public void generatePlayMenu(int probability, int maze_height, int maze_width, int gap_X, int gap_Y, int zoom) {
 		Label title = this.generateTitle("Main Menu");
 		
-		TextField tf_name_monster = this.generateTextField("Monster", this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 40), 16);
-		TextField tf_name_hunter = this.generateTextField("Hunter", this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 40), 16);
+		TextField tf_name_monster = this.generateTextField("Monster", this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
+		TextField tf_name_hunter = this.generateTextField("Hunter", this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
 		
 		Label l_nameM = this.generateLabel("Monster Name", tf_name_monster.getLayoutX(),tf_name_monster.getLayoutY()-15, this.LABEL_MIN_WIDTH);
 		Label l_nameH = this.generateLabel("Hunter Name", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
@@ -205,18 +204,22 @@ public class Management extends Stage implements Observer{
 		return label;
 	}
 	
-	public TextField generateTextField(String defaultValue, double x, double y, int maxLength) { //maxLength devrait être <=16 pour des raisons d'affichage (sinon affichage moins beau)
+	public TextField generateTextField(String defaultValue, double x, double y, int maxLength, char limit1, char limit2) { //maxLength devrait être <=16 pour des raisons d'affichage (sinon affichage moins beau)
 		TextField tf = new TextField(defaultValue);
 		tf.setMaxWidth(8*maxLength+30);
 		this.setLayout(tf, x,y);
 		tf.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-				if (tf.getText().length() > maxLength) {
-	                String s = tf.getText().substring(0, maxLength);
-	                tf.setText(s);
-	            }
-			
+				if(!tf.getText().isEmpty()) {
+					if (tf.getText().length() > maxLength) {
+		                String s = tf.getText().substring(0, maxLength);
+		                tf.setText(s);
+		            }
+					if(tf.getText().charAt(tf.getText().length()-1)<limit1 || tf.getText().charAt(tf.getText().length()-1)>limit2) {
+						tf.setText(oldValue);
+					}
+				}
 			}
 		});
 		return tf;
