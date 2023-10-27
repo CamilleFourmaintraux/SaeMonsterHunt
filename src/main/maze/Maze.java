@@ -187,7 +187,7 @@ public class Maze extends Subject{
 				System.out.println("MONSTER GAGNE");
 			}
 			this.turn++;
-			this.notifyObservers(c);
+			this.notifyObservers();
 			return true; 
 		}
 		return false;
@@ -202,7 +202,7 @@ public class Maze extends Subject{
 				this.isGameOver=true;
 				System.out.println("HUNTER GAGNE");
 			}
-			this.notifyObservers(c);
+			this.notifyObservers();
 			return true;
 		}
 		return false;

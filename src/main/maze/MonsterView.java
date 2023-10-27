@@ -4,7 +4,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import main.maze.cells.ICoordinate;
 import main.maze.cells.Cell;
 import main.maze.cells.CellWithText;
@@ -12,7 +11,7 @@ import main.maze.cells.CellWithText;
 import main.utils.Observer;
 import main.utils.Subject;
 
-public class MonsterView extends Stage implements Observer{
+public class MonsterView implements Observer{
 	//Affichage
 	public int window_height = 500; //500 par défault
 	public int window_width = 500; //500 par défault
@@ -39,8 +38,9 @@ public class MonsterView extends Stage implements Observer{
 	Group group_sprite;
 	Group group_map;
 	
-	public MonsterView(int window_height, int window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls,
-			Color colorOfFloors, Maze maze) {
+	Scene scene;
+	
+	public MonsterView(int window_height, int window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls, Color colorOfFloors, Maze maze) {
 		this.window_height = window_height;
 		this.window_width = window_width;
 		this.gap_X = gap_X;
@@ -56,9 +56,8 @@ public class MonsterView extends Stage implements Observer{
 		this.group_stage=new Group();
 		this.group_stage.getChildren().add(this.group_map);
 		this.group_stage.getChildren().add(this.group_sprite);
-		Scene scene = new Scene(this.group_stage,this.window_height,this.window_width);
-		this.setScene(scene);
-		this.setTitle("MONSTERHUNTER - MonsterView");
+		this.scene=new Scene(this.group_stage,this.window_height,this.window_width);
+		//this.setTitle("MONSTERHUNTER - MonsterView");
 	}
 
 	//A corriger
