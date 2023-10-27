@@ -107,6 +107,11 @@ public class Management extends Stage implements Observer{
 		
 	}
 
+	/**
+     * Met à jour l'observateur en réagissant à un changement dans le sujet observé.
+	 * 
+	 * @param s Le sujet observé dont l'état a été modifié.
+	 */
 	@Override
 	public void update(Subject s) {
 		if(!this.gameOver()) {
@@ -114,6 +119,12 @@ public class Management extends Stage implements Observer{
 		}
 	}
 
+	/**
+     * Met à jour l'observateur en réagissant à un changement dans le sujet observé avec des données spécifiques.
+	 * 
+	 * @param s Le sujet observé dont l'état a été modifié.
+	 * @param o Un objet contenant des informations spécifiques sur la mise à jour.
+	 */
 	@Override
 	public void update(Subject s, Object o) {
 		if(!this.gameOver()) {
