@@ -52,6 +52,11 @@ public class Management extends Stage implements Observer{
 	final int ID_PLAY = 2;
 	
 	/**
+	 * Constante ID du menu de GameOver.
+	 */
+	final int ID_GAMEOVER = 3;
+	
+	/**
 	 * Constante utilise dans les comboBox pour le choix des joueurs.
 	 */
 	final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
@@ -121,6 +126,7 @@ public class Management extends Stage implements Observer{
 
 		this.generateSettingsMenu();
 		this.generatePlayMenu(probability,maze_height,maze_width,gap_X,gap_Y,zoom);
+		this.generateGameOverScreen();
 
 		this.setScene(this.getScene(this.ID_PLAY));
 		this.setTitle("MONSTER-HUNTER");
@@ -161,8 +167,7 @@ public class Management extends Stage implements Observer{
 	 */
 	public boolean gameOver() {
 		if(this.maze.isGameOver) {
-			this.hide();
-			gameOverScreen();
+			this.setScene(this.getScene(this.ID_GAMEOVER));
 			maze.isGameOver=false;
 			return true;
 		}
@@ -296,6 +301,35 @@ public class Management extends Stage implements Observer{
 		Scene scene =  new Scene(group, this.window_height, this.window_width, this.colorOfFloors);
 
 		this.menus.put(Integer.valueOf(this.ID_PLAY),scene);
+	}
+	
+	
+	public void generateGameOverScreen() {
+		Label title = this.generateTitle("Game Over Menu");
+
+		Button restartButton = this.generateButton("Rejouer", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height, 80));
+		Button quitButton = this.generateButton("Quitter", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height, 80));
+
+		restartButton.setOnAction(e -> {
+			this.setScene(this.getScene(this.ID_PLAY));
+		});
+
+		quitButton.setOnAction(e -> {
+			System.exit(0);
+		});
+
+		StackPane layout = new StackPane();
+
+		// Placez le titre en haut à gauche en définissant l'alignement
+		StackPane.setAlignment(title, Pos.TOP_LEFT);
+
+		VBox buttonLayout = new VBox(20);
+		buttonLayout.getChildren().addAll(restartButton, quitButton);
+		buttonLayout.setAlignment(Pos.CENTER);
+
+		// Superposez le titre et les boutons
+		layout.getChildren().addAll(title, buttonLayout);
+		this.menus.put(Integer.valueOf(this.ID_GAMEOVER), new Scene(layout, this.window_height, this.window_width, this.colorOfFloors));
 	}
 
 	/**
@@ -481,47 +515,6 @@ public class Management extends Stage implements Observer{
 	 */
 	public double calculPercentage(double total, double percentage) {//percentage must be between 0 and 100
 		return (percentage/100)*total;
-	}
-
-	public void gameOverScreen() {
-
-		Stage gameOverStage = new Stage();
-
-		gameOverStage.setTitle("Game Over Menu");
-		gameOverStage.setWidth(this.window_width);
-		gameOverStage.setHeight(this.window_height);
-
-		Label title = this.generateTitle("Game Over Menu");
-
-		Button restartButton = this.generateButton("Rejouer", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height, 80));
-		Button quitButton = this.generateButton("Quitter", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height, 80));
-
-		restartButton.setOnAction(e -> {
-			this.show();
-			this.setScene(this.getScene(this.ID_PLAY));
-			gameOverStage.close();
-		});
-
-		quitButton.setOnAction(e -> {
-			System.exit(0);
-		});
-
-		StackPane layout = new StackPane();
-
-		// Placez le titre en haut à gauche en définissant l'alignement
-		StackPane.setAlignment(title, Pos.TOP_LEFT);
-
-		VBox buttonLayout = new VBox(20);
-		buttonLayout.getChildren().addAll(restartButton, quitButton);
-		buttonLayout.setAlignment(Pos.CENTER);
-
-		// Superposez le titre et les boutons
-		layout.getChildren().addAll(title, buttonLayout);
-
-		Scene sceneButton = new Scene(layout);
-		gameOverStage.setScene(sceneButton);
-
-		gameOverStage.show();
 	}
 
 }
