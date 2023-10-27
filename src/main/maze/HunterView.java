@@ -8,14 +8,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import main.maze.cells.ICoordinate;
 import main.maze.cells.CellWithText;
 import main.maze.cells.Coordinate;
 import main.utils.Observer;
 import main.utils.Subject;
 
-public class HunterView extends Stage implements Observer{
+public class HunterView implements Observer{
 	//Affichage
 	public int window_height; //500 par défault
 	public int window_width; //500 par défault
@@ -36,6 +35,8 @@ public class HunterView extends Stage implements Observer{
 	Group group_sprite;
 	Group group_map;
 	Group group_texts;
+	
+	Scene scene;
 
 	public HunterView(int window_height, int window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
 		Color colorOfFloors, Maze maze) {
@@ -66,9 +67,8 @@ public class HunterView extends Stage implements Observer{
 		this.group_stage.getChildren().add(group_texts);
 		
 		//Scene
-		Scene scene = new Scene(this.group_stage, this.window_height, this.window_width);
-		this.setScene(scene);
-		this.setTitle("MONSTERHUNTER - HunterView");
+		this.scene=new Scene(this.group_stage, this.window_height, this.window_width);
+		//this.setTitle("MONSTERHUNTER - HunterView");
 	}
 
 	
