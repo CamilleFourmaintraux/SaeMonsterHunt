@@ -7,43 +7,54 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import javafx.scene.paint.Color;
+import main.maze.cells.CellEvent;
 import main.maze.cells.Coordinate;
 import main.strategy.monster.Monster;
 
 public class TestMonster {
-
+	boolean[][] walls = {{true, false, true}, {false, true, true}, {false, false, true}};
+	Monster monster = new Monster(walls,new Coordinate(4,5));
 	
-	//pas de test pour les m�thodes play & update car pas encore impl�ment�.
 	
-	
-	/*@Test
+	@Test
 	public void test_constructor_monster() {
-		// Instanciation d'un monstre.
-		boolean[][] walls = {{true, false, true}, {false, true, true}, {false, false, true}};
-		ICoordinate coord = new Coordinate(1, 1);
-		ICoordinate coord_exit = new Coordinate(2, 2);
-		ICoordinate coord_hunted = new Coordinate(0, 0);
-		Monster monster = new Monster(walls, coord, coord_exit, coord_hunted);
-
-		// Test de la bonne instanciation du monstre.
-		assertTrue(monster.isMonsterTurn());
-		assertArrayEquals(walls, monster.getWalls());
-		assertEquals(coord, monster.getCoord());
-		assertEquals(coord_exit, monster.getCoord_exit());
-		assertEquals(coord_hunted, monster.getCoord_hunted());
-	}*/
-
-	/*@Test
-	public void test_initialize_walls() {
-		Monster monster = new Monster(null, null, null, null);
-
-		// Cr�ation un tableau de murs de test
-		boolean[][] testWalls = {{true, false, true}, {false, true, true}, {false, false, true}};
+		//assertEquals(monster, new Monster(walls,new Coordinate(4,5))); //Pas bvesoin de faire ce test, car pas besoin d'une fonction equals (pas plus de 1 monstre par map)
+		assertEquals(monster.getCoord(),new Coordinate(4,5));
+		assertEquals(monster.getRow(),4);
+		assertEquals(monster.getCol(),5);
+	}
+	
+	@Test
+	public void test_initialize_walls_monster() {
+		Monster monster = new Monster(null, null);
+		assertArrayEquals(null, monster.getWalls());
 		// Appel � la m�thode initialize avec le tableau de murs de test
-		monster.initialize(testWalls);
+		monster.initialize(walls);
 		// Test que la propri�t� walls de l'objet Monster a �t� correctement initialis�e
-		assertArrayEquals(testWalls, monster.getWalls());
-	}*/
+		assertArrayEquals(walls, monster.getWalls());
+	}
+	
+	@Test
+	public void test_setters_monster() {
+		assertEquals(monster.getCoord(),new Coordinate(4,5));
+		monster.setCoord(new Coordinate(4,2));
+		assertEquals(monster.getCoord(),new Coordinate(4,2));
+		monster.setCoord(new Coordinate(9,6));
+		assertEquals(monster.getCoord(),new Coordinate(9,6));
+		
+	}
+	
+	//pas de test pour les methodes play & update car pas encore implemente.
+	@Test
+	public void test_play() {
+		assertEquals(monster.play(),null);
+	}
+	
+	@Test
+	public void test_update() {
+		monster.update(new CellEvent(null, 0));
+	}
 
 	/*@Test
 	public void test_move_action() {

@@ -25,50 +25,74 @@ import main.utils.Utils;
  *
  */
 public class Maze extends Subject{
+	
+	private static final boolean[][] DEFAULT_MAP = new boolean[][] {
+		{false,true,false,true,true,false,true,false,true,false}, 	// X . X . . X . X . X 
+		{false,true,true,true,true,false,true,false,true,true},		// X . . . . X . X . .
+		{true,true,true,true,false,false,true,false,false,true},	// . . . . X X . X X . 
+		{true,true,false,true,true,false,true,true,true,true},		// . . X . . X . . . . 
+		{false,true,false,false,true,false,true,true,true,false},	// X . X X . X . . . X 
+		{false,true,true,false,false,false,true,true,true,false},	// X . . X X X . . . X 
+		{false,true,true,true,false,true,true,true,true,true},		// X . . . X . . . . . 
+		{true,true,true,true,true,true,true,false,true,false},		// . . . . . . . X . X 
+		{true,true,false,true,true,false,true,false,false,false},	// . . X . . X . X X X 
+		{false,false,true,true,false,false,true,true,true,false}	// X X . . X X . . . X 
+	};
+	
+	
+	
+	
 	/**
 	 * Tableau de boolean repr�sentant les murs plein ou non du labyrinthe (false=mur true=pas de mur).
 	 */
 	protected boolean[][] walls;
+	
 	/**
 	 * Tableau d'entier stockant les num�ros de tours ou le monstre est d�j� pass�.
 	 */
 	protected int[][] traces;//TODO message ou alerte si le monstre passe sur une case déjà découverte
+	
 	/**
 	 * La sortie (les coordonn�es) du labyrinthe.
 	 */
 	protected Exit exit;
+	
 	/**
-	 * Le Monstre.
+	 * Le Monstre associé au labyrinthe.
 	 */
 	protected Monster monster;
+	
 	/**
-	 * Le Chasseur.
+	 * Le Chasseur associé au labyrinthe.
 	 */
 	protected Hunter hunter;
+	
 	/**
 	 * Le num�ro du tour actuel.
 	 */
 	public int turn;
+	
 	/**
 	 * Boolean qui permet de savoir si c'est le tour du monstre ou non.
 	 */
 	public boolean isMonsterTurn;
+	
 	/**
-	 * Boolean utilis� dans les actions move du monstre & shoot du chasseur pour indique si la partie est fini.
-	 * (i.e si le monstre/chasseur s'est �chapp�/fait tirer dessus).
+	 * Boolean utilise dans les actions move du monstre & shoot du chasseur pour indique si la partie est fini.
+	 * (i.e si le monstre/chasseur s'est echappe/fait tirer dessus).
 	 */
 	public boolean isGameOver;
 	
 	/**
-	 * Constructeur vide, cr�er un labyrinthe Maze � partir d'une m�thode pr�d�fini ou g�n�r� al�atoirement 
-	 * (generateBasicMap() & generateRandomMap()).
+	 * Constructeur vide, cree un labyrinthe Maze a partir d'un labyrinthe prédéfini.
+	 * @see Maze#Maze(boolean[][] maze)
 	 */
 	public Maze() {
 		this(Maze.generateBasicMap());
 	}
 	
 	/**
-	 * Cr�er un labyrinthe Maze � partir d'un labyrinthe existant en param�tre.
+	 * Constructeur originel, cree un labyrinthe Maze a partir d'un labyrinthe existant donne en parametre.
 	 * @see Maze#Maze()
 	 * @param maze
 	 */
@@ -82,18 +106,19 @@ public class Maze extends Subject{
 	}
 	
 	/**
-	 * Cr�er un labyrinthe Maze personnalis� � partir de la largeur, la hauteur et le taux d'apparition de mur.
-	 * @param probability le taux de chances que la case du labyrinthe soit un mur plein.
+	 * Constructeur special, cree un labyrinthe Maze personnalise et genere aleatoirement a partir de la largeur, la hauteur et la probabilite d'apparition de murs.
+	 * @param probability le taux de chances qu'une case du labyrinthe soit un mur.
 	 * @param height la hauteur du labyrinthe.
 	 * @param width la largeur du labyrinthe.
 	 */
 	public Maze(int probability, int height, int width) {
 		this(Maze.generateRandomMap(probability, height, width));
+		System.out.println("TESTS_IN_MAZE:"+probability);
 	}
 	
 	/**
 	 * Initialisation du tableau des traces du monstre vu par le chasseur.
-	 * @return un talbeau d'entier initialis� � z�ro et -1 l� ou il y a des murs.
+	 * @return un tableau d'entier initialise a zero si la case correspond à une case vide et -1 si la case correspond à un mur.
 	 */
 	public int[][] initTraces(){
 		int[][] traces = new int[this.walls.length][this.walls[0].length];
@@ -108,34 +133,15 @@ public class Maze extends Subject{
 		}
 		return traces;
 	}
-	/**
-	 * Affichage du tableau des traces du monstre vu par le chasseur.
-	 */
-	public void printTraces() {
-		for(int h=0; h<this.walls.length;h++) {
-			for(int l=0; l<this.walls[h].length;l++) {
-				System.out.print(" "+this.traces[h][l]+" ");
-			}
-			System.out.println();
-		}
-	}
+	
+	
 
 	/**
 	 * M�thode de g�n�ration pr�d�fini du labyrinthe.
 	 * @return un tableau de boolean qui repr�sente le labyrithe avec ses murs.
 	 */
 	public static boolean[][] generateBasicMap() {
-		return new boolean[][] {
-			{false,false,false,true,true,false,true,false,true,false}, 	// X X X . . X . X . X 
-			{false,true,true,true,true,false,true,false,true,true},		// X . . . . X . X . .
-			{true,true,true,true,false,false,true,true,false,true},		// . . . . X X . . X . 
-			{true,true,false,true,true,false,true,true,true,true},		// . . X . . X . . . . 
-			{false,true,true,false,true,false,true,true,true,false},	// X . . X . X . . . X 
-			{false,true,true,true,false,true,true,true,true,false},		// X . . . X . . . . X 
-			{false,true,true,true,false,true,true,true,true,true},		// X . . . X . . . . . 
-			{true,true,true,true,true,true,true,false,true,false},		// . . . . . . . X . X 
-			{true,true,false,true,true,false,true,false,false,false},	// . . X . . X . X X X 
-			{false,true,true,true,false,false,true,true,true,false}};	// X . . . X X . . . X 
+		return DEFAULT_MAP;
 	}
 	
 	/**
@@ -147,28 +153,34 @@ public class Maze extends Subject{
 	 */
 	public static boolean[][] generateRandomMap(int probability, int height, int width) {
 		boolean[][] maze = new boolean[height][width];
+		boolean onlyWalls;
 		for(int h=1; h<maze.length; h+=2) {
-			
+			onlyWalls=true;
 			for(int l=0; l<maze[h].length; l++) {
 				maze[h-1][l]=true;
-				if(probability>Utils.random.nextInt(100)) {
+				if(probability<Utils.random.nextInt(99)+1) {
 					maze[h][l]=true;
+					onlyWalls=false;
 				}else {
 					maze[h][l]=false;
-				}
-					
+				}	
+			}
+			if(onlyWalls) {
+				maze[h][Utils.random.nextInt(maze[h].length)]=true;
 			}
 		}
 		return maze;
 	}
 	
 	/**
-	 * Calcule le nombre de mur du labyrinthe pr�sent autour de la coordonn�e.
-	 * @param c une coordonn�e du labyrinthe.
-	 * @return un entier repr�sentant le nombre de mur autour de cette coordonn�e.
+	 * Calcule le nombre de mur du labyrinthe present autour de la coordonnee.
+	 * Si la coordonne correspond a un bord du labyrinthe, la fonction comptera les bordures comme des murs.
+	 * Par exemple, si la coordonnee est (0,0) et qu'il n'y a aucun mur, la fonction va renvoyer 5, à cause des bordures du coin de la map.
+	 * @param c une coordonnee du labyrinthe.
+	 * @return un entier correspondant au nombre de murs autour de cette coordonnee.
 	 */
 	//Inutilisé pour le moment
-	public int numberOfWallsAround(ICoordinate c){
+	/*public int numberOfWallsAround(ICoordinate c){
 		int cpt=0;
 		for(int y=c.getRow()-1; y<c.getRow()+2; y++) {
 			for(int x=c.getCol()-1; x<c.getCol()+2; x++) {
@@ -182,10 +194,10 @@ public class Maze extends Subject{
 			}
 		}
 		return cpt;
-	}
+	}*/
 	
 	/**
-	 * Initialise les coordonn�es de la sortie du labyrinthe.
+	 * Initialise les coordonnees de la sortie du labyrinthe.
 	 */
 	public void initMonsterExitHunter() {
 		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
@@ -213,7 +225,18 @@ public class Maze extends Subject{
 			
 		}
 		return sb.toString();
-		
+	}
+	
+	/**
+	 * Affichage en ASCII (Terminal ) du tableau des traces laissees par le monstre.
+	 */
+	public void printTraces() {
+		for(int h=0; h<this.walls.length;h++) {
+			for(int l=0; l<this.walls[h].length;l++) {
+				System.out.print(" "+this.traces[h][l]+" ");
+			}
+			System.out.println();
+		}
 	}
 	
 	//Inutilisé
@@ -342,10 +365,9 @@ public class Maze extends Subject{
 		return (this.calculDistance(c1, c2)[0]<reach+1 && this.calculDistance(c1, c2)[1]<reach+1);
 	}
 	/**
-	 * Ajoute le num�ro du tour actuel � la coordonn�e indiqu� dans le tableau de trace qui
-	 * repr�sente au nouveau d�placement du Monstre.
+	 * modifie le tableau de traces à la coordonnées c pour ajouter la nouvelle trace. 
 	 * @param c une coordonn�e du labyrinthe.
-	 * @param trace le num�ro du tour actuel lors de l'appel de la m�thode.
+	 * @param trace la trace que le monstre laisse (correspondant au numero du tour actuel)
 	 */
 	public void setTrace(ICoordinate c, int trace) {
 		this.traces[c.getRow()][c.getCol()]=trace;
@@ -353,47 +375,17 @@ public class Maze extends Subject{
 	/**
 	 * Renvoie la potentielle trace du Monstre sur la coordonn�e indiqu�e.
 	 * @param c une coordonn�e du labyrinthe.
-	 * @return un entier correspondant au num�ro du tour du passage du Monstre sur la coordonn�e du labyrinthe.
+	 * @return un entier correspondant au num�ro du tour du passage du Monstre sur la coordonn�e du labyrinthe (0 si le monstre n'y est jamais passé).
 	 */
 	public int getTrace(ICoordinate c) {
 		return this.traces[c.getRow()][c.getCol()];
 	}
-			
-	/*@Override //Smelly code
-	public void update(Subject s, Object o) {
-		System.out.println(this.monster.getCoord());
-		//Permet les déplacements en updatant les vues et le labyrinthe.
-		/*if(s.getClass()==Monster.class) {
-			this.turn=this.turn+1;
-			this.coord_monster=(Coordinate)o;
-			this.traces[coord_monster.getRow()][coord_monster.getCol()]=this.turn;
-			if(this.coord_monster.equals(this.coord_exit)) {
-				System.out.println("Monstre - Vous avez atteint la sortie ! Bien joué !");
-				this.isGameOver=true;
-			}
-			this.itIsMonsterTurn=false;
-			this.hunter.setMonsterTurn(itIsMonsterTurn);
-			
-			
-		}else if(s.getClass()==Hunter.class) {
-			Coordinate c = (Coordinate) o;
-			this.coord_hunter=c;
-			this.monster.actualizeShot(c);
-			if(this.coord_hunter.equals(this.coord_monster)) {
-				System.out.println("Chasseur - Vous avez tiré sur le monste ! Bien joué !");
-				this.isGameOver=true;
-			}
-			this.hunter.actualizeTraces(coord_hunter, this.traces[coord_hunter.getRow()][coord_hunter.getCol()]);
-			this.itIsMonsterTurn=true;
-		}
-		
-	}*/
 	
 	/**
-	 * R�v�le une cellule donn�e en modifiant sa couleur de contour et de remplissage.
-	 * @param cwt La cellule avec du texte � r�v�ler.
-	 * @param colorOfWalls La couleur des murs de la cellule r�v�l�e.
-	 * @param colorOfFloors La couleur du sol de la cellule r�v�l�e.
+	 * Revele une cellule donnee en modifiant sa couleur en fonction de si c'est un mur ou un sol.
+	 * @param cwt La cellule avec texte que l'on veut révéler
+	 * @param colorOfWalls La couleur associé au mur, future couleur de la cellule si la cellule se révèle être un mur.
+	 * @param colorOfFloors La couleur associé au sol, future couleur de la cellule si la cellule se révèle être un sol.
 	 */
 	public void revealCell(CellWithText cwt, Color colorOfWalls, Color colorOfFloors) {
 		cwt.setStroke(Color.TRANSPARENT);

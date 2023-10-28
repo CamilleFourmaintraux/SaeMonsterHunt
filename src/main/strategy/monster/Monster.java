@@ -19,19 +19,6 @@ public class Monster implements IMonsterStrategy{
 		this.walls=walls;
 	}
 	
-	/* méthodes à déplacer dans maze
-	public void move(ICoordinate newCoord) {
-		this.coord=newCoord;
-		this.notifyObservers(newCoord);
-		this.monsterTurn=false;
-	}*/
-	
-	/*public void actualizeShot(ICoordinate newCoord) {
-		this.coord_hunted=newCoord;
-		this.monsterTurn=true;
-		this.notifyObservers();
-	}*/
-	
 	// Getters & Setters
 	
 	public int getRow() {
@@ -53,6 +40,7 @@ public class Monster implements IMonsterStrategy{
 	public boolean[][] getWalls() {
 		return walls;
 	}
+	
 	@Override
 	public fr.univlille.iutinfo.cam.player.perception.ICoordinate play() {
 		// TODO Auto-generated method stub

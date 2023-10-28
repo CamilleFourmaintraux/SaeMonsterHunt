@@ -1,51 +1,65 @@
 package test.strategy;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import main.maze.cells.CellEvent;
 import main.maze.cells.Coordinate;
-import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import main.strategy.hunter.Hunter;
 
 public class TestHunter {
 
-	//pas de test pour les m�thodes play & update car pas encore impl�ment�.
+	Hunter hunter = new Hunter(6, 6, new Coordinate(0,0));
 	
 	@Test
 	public void test_constructor_hunter() {
-		// Instanciation d'un chasseur.
-		ICoordinate coord_hunter = new Coordinate(2, 3);
-		Hunter hunter = new Hunter(0, 0, coord_hunter);
-
-		// Test de la bonne instanciation du chasseur.
-		assertEquals(coord_hunter, hunter.getCoord());
-		assertEquals(2, hunter.getRow());
-		assertEquals(3, hunter.getCol());
-		//assertTrue(hunter.isMonsterTurn()); //TODO
+		assertEquals(new Coordinate(0,0), hunter.getCoord());
+		assertEquals(0, hunter.getRow());
+		assertEquals(0, hunter.getCol());
 	}
 	
-	/*@Test
-	public void test_initialize_traces() {
-		int nbrRows = 3; int nbrCols = 4;
+		//pas de test pour les methodes play & update car pas encore implemente.
+		@Test
+		public void test_play_hunter() {
+			assertEquals(hunter.play(),null);
+		}
+		
+		@Test
+		public void test_update_hunter() {
+			hunter.update(new CellEvent(null, 0));
+		}
 
-		Hunter hunter = new Hunter();
-		hunter.initialize(nbrRows, nbrCols);
+	
+	@Test
+	public void test_initialize_traces_hunter() {
+		hunter.initialize(3 ,4);
+		assertEquals(3, hunter.traces.length);
+		assertEquals(4, hunter.traces[0].length);
 
-		int[][] traces = hunter.getTraces();
-
-		// Test si le tableau de traces a �t� initialis� correctement.
-		assertEquals(nbrRows, traces.length);
-		assertEquals(nbrCols, traces[0].length);
-
-		// Test si toutes les valeurs du tableau de traces sont � z�ro.
-		for (int h = 0; h < nbrRows; h++) {
-			for (int l = 0; l < nbrCols; l++) {
-				assertEquals(0, traces[h][l]);
+		// Test si toutes les valeurs du tableau de traces sont bien a zero.
+		for (int h = 0; h < 3; h++) {
+			for (int l = 0; l < 4; l++) {
+				assertEquals(-2, hunter.traces[h][l]);
 			}
 		}
-	}*///TODO
+	}
+	
+	@Test
+	public void test_methods_trace_hunter() {
+		assertEquals(-2, hunter.getTrace(new Coordinate(1,2)));
+		hunter.setTrace(new Coordinate(1,2), 9);
+		assertEquals(9, hunter.getTrace(new Coordinate(1,2)));
+	}
+	
+	@Test
+	public void test_setters_hunter() {
+		assertEquals(new Coordinate(0,0),hunter.getCoord());
+		hunter.setCoord(new Coordinate(9,9));
+		assertEquals(new Coordinate(9,9), hunter.getCoord());
+		hunter.setCoord(null);
+		assertEquals(null, hunter.getCoord());
+	}
 	
 	/*@Test
     public void test_shoot_action() {
