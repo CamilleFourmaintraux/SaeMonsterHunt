@@ -4,6 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ import main.strategy.monster.Monster;
 
 public class TestMonster {
 	boolean[][] walls = {{true, false, true}, {false, true, true}, {false, false, true}};
-	Monster monster = new Monster(walls,new Coordinate(4,5));
+	Monster monster = new Monster(walls,new Coordinate(4,5),"Player");
 	
 	
 	@Test
@@ -27,7 +28,7 @@ public class TestMonster {
 	
 	@Test
 	public void test_initialize_walls_monster() {
-		Monster monster = new Monster(null, null);
+		Monster monster = new Monster(null, null,null);
 		assertArrayEquals(null, monster.getWalls());
 		// Appel � la m�thode initialize avec le tableau de murs de test
 		monster.initialize(walls);
@@ -48,7 +49,7 @@ public class TestMonster {
 	//pas de test pour les methodes play & update car pas encore implemente.
 	@Test
 	public void test_play() {
-		assertEquals(monster.play(),null);
+		assertNotEquals(monster.play(),null);
 	}
 	
 	@Test

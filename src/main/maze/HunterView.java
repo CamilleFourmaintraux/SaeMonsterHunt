@@ -23,6 +23,7 @@ public class HunterView implements Observer{
 	public int zoom; //30 par défault
 	public Color colorOfWalls;
 	public Color colorOfFloors;
+	Color colorOfFog;
 	
 	//Subject
 	Maze maze;
@@ -39,7 +40,7 @@ public class HunterView implements Observer{
 	Scene scene;
 
 	public HunterView(int window_height, int window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
-		Color colorOfFloors, Maze maze) {
+		Color colorOfFloors, Color colorOfFog, Maze maze) {
 		
 		//Initiation de la fenetre
 		this.window_height = window_height;
@@ -49,6 +50,7 @@ public class HunterView implements Observer{
 		this.zoom = zoom;
 		this.colorOfWalls = colorOfWalls;
 		this.colorOfFloors = colorOfFloors;
+		this.colorOfFog = colorOfFog;
 		
 		this.maze = maze;
 		this.maze.attach(this);
@@ -91,7 +93,7 @@ public class HunterView implements Observer{
 		for(int h=0; h<this.maze.hunter.traces.length; h++) {
 			for(int l=0; l<this.maze.hunter.traces[h].length; l++) {
 				//Codage des rectangles
-				CellWithText cell = new CellWithText(l, h, zoom, Color.BLACK,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""));
+				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""));
 				cell.setOnMouseClicked(e->{
 					this.select(cell,e);
 				});

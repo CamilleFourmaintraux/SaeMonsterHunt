@@ -35,6 +35,12 @@ public class Coordinate implements ICoordinate{
      * @param col Le num�ro de colonne.
      */
 	public Coordinate(int row, int col) {
+		if(row<0) {
+			row=0;
+		}
+		if(col<0) {
+			col=0;
+		}
 		this.row = row;
 		this.col = col;
 	}

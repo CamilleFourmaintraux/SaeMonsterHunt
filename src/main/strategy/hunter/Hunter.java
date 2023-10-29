@@ -3,14 +3,18 @@ package main.strategy.hunter;
 import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import main.maze.cells.Coordinate;
+import main.utils.Utils;
 
 public class Hunter implements IHunterStrategy{
 	public int[][] traces;
 	public ICoordinate coord;
+	public String IA_level;
 	
-	public Hunter(int height, int width, ICoordinate coord_hunter) {
+	public Hunter(int height, int width, ICoordinate coord_hunter, String IA_level) {
 		this.coord=coord_hunter;
 		this.initialize(height, width);
+		this.IA_level=IA_level;
 	}
 	@Override
 	public void initialize(int nbrRows, int nbrCols) {
@@ -61,10 +65,28 @@ public class Hunter implements IHunterStrategy{
 	public void setCoord(ICoordinate c) {
 		this.coord=c;
 	}
+	
+	
+	public ICoordinate easy_IA_action() {
+		int y = Utils.random.nextInt(this.traces.length);
+		int x = Utils.random.nextInt(this.traces[y].length);
+		return new Coordinate(y,x);
+	}
+	
+	public ICoordinate moderate_IA_action() {
+		return this.easy_IA_action(); //TODO
+	}
+	
+	public ICoordinate hardcore_IA_action() {
+		return this.easy_IA_action(); //TODO
+	}
+	
+	
+	
 	@Override
-	public fr.univlille.iutinfo.cam.player.perception.ICoordinate play() {
+	public ICoordinate play() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.easy_IA_action();
 	}
 	@Override
 	public void update(ICellEvent arg0) {

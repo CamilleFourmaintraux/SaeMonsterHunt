@@ -1,6 +1,8 @@
 package test.strategy;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
@@ -10,7 +12,7 @@ import main.strategy.hunter.Hunter;
 
 public class TestHunter {
 
-	Hunter hunter = new Hunter(6, 6, new Coordinate(0,0));
+	Hunter hunter = new Hunter(6, 6, new Coordinate(0,0),"Player");
 	
 	@Test
 	public void test_constructor_hunter() {
@@ -22,7 +24,7 @@ public class TestHunter {
 		//pas de test pour les methodes play & update car pas encore implemente.
 		@Test
 		public void test_play_hunter() {
-			assertEquals(hunter.play(),null);
+			assertNotEquals(hunter.play(),null);
 		}
 		
 		@Test

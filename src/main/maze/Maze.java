@@ -88,7 +88,7 @@ public class Maze extends Subject{
 	 * @see Maze#Maze(boolean[][] maze)
 	 */
 	public Maze() {
-		this(Maze.generateBasicMap());
+		this(Maze.generateBasicMap(),"Player","Player");
 	}
 	
 	/**
@@ -96,10 +96,10 @@ public class Maze extends Subject{
 	 * @see Maze#Maze()
 	 * @param maze
 	 */
-	public Maze(boolean[][] maze) {
+	public Maze(boolean[][] maze, String monster_IA, String hunter_IA) {
 		this.walls=maze;
 		this.turn=1;
-		this.initMonsterExitHunter();
+		this.initMonsterExitHunter(monster_IA, hunter_IA);
 		this.traces = this.initTraces();
 		this.isMonsterTurn=true;
 		this.move(this.monster.getCoord());
@@ -111,9 +111,8 @@ public class Maze extends Subject{
 	 * @param height la hauteur du labyrinthe.
 	 * @param width la largeur du labyrinthe.
 	 */
-	public Maze(int probability, int height, int width) {
-		this(Maze.generateRandomMap(probability, height, width));
-		System.out.println("TESTS_IN_MAZE:"+probability);
+	public Maze(int probability, int height, int width, String monster_IA, String hunter_IA) {
+		this(Maze.generateRandomMap(probability, height, width), monster_IA, hunter_IA);
 	}
 	
 	/**
@@ -198,13 +197,15 @@ public class Maze extends Subject{
 	
 	/**
 	 * Initialise les coordonnees de la sortie du labyrinthe.
+	 * @param hunter_IA -> niveau de l'IA du chasseur
+	 * @param monster_IA -> niveau de l'IA du monstre
 	 */
-	public void initMonsterExitHunter() {
+	public void initMonsterExitHunter(String monster_IA, String hunter_IA) {
 		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
 		this.setFloor(this.exit.getCoord(),true);
-		this.monster = new Monster(this.walls,new Coordinate(0,Utils.random.nextInt(this.walls[0].length)));
+		this.monster = new Monster(this.walls,new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),monster_IA);
 		this.setFloor(this.monster.getCoord(),true);
-		this.hunter = new Hunter(this.walls.length,this.walls[0].length,new Coordinate(0,0));
+		this.hunter = new Hunter(this.walls.length,this.walls[0].length,new Coordinate(0,0),hunter_IA);
 	}
 	
 	/**

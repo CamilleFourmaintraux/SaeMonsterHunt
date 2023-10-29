@@ -12,6 +12,11 @@ import main.utils.Observer;
 import main.utils.Subject;
 
 public class MonsterView implements Observer{
+	
+	final Color MONSTER_COLOR = Color.CRIMSON;
+	final Color EXIT_COLOR = Color.VIOLET;
+	
+	
 	//Affichage
 	public int window_height;
 	public int window_width;
@@ -82,7 +87,7 @@ public class MonsterView implements Observer{
 	
 	private void initiateSprites() {
 		//Initialisation du sprite du monstre
-		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, Color.MAROON, this.gap_X, this.gap_Y, "Monster");
+		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, this.MONSTER_COLOR, this.gap_X, this.gap_Y, "Monster");
 		this.sprite_monster.setOnMouseClicked(e->{
 			this.select(e, this.sprite_monster.getCoord());
 		});
@@ -95,7 +100,7 @@ public class MonsterView implements Observer{
 		this.sprite_shot.setVisible(false);
 		
 		//Initialisation du sprite de la sortie
-		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, Color.GREEN, this.gap_X, this.gap_Y, "Exit");
+		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, this.EXIT_COLOR, this.gap_X, this.gap_Y, "Exit");
 		this.sprite_exit.setOnMouseClicked(e->{
 			this.sprite_exit.toBack();
 			this.select(e, this.sprite_exit.getCoord());

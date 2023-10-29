@@ -60,8 +60,14 @@ public class Management extends Stage implements Observer{
 	 */
 	final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
 	
+
 	/**
-	 * Constante de pour le decalage lors de la generation des labels
+	 * Constante utilise dans les comboBox pour le choix des themes
+	 */
+	final String[] THEMES = new String[] {"Cave","Forest","Ocean"};
+	
+	/**
+	 * Constante pour le decalage lors de la generation des labels
 	 */
 	final int SPACING = 5;
 	
@@ -69,6 +75,17 @@ public class Management extends Stage implements Observer{
 	 * Constante de largeur minimum des labels.
 	 */
 	final int LABEL_MIN_WIDTH = 120;
+	
+	/**
+	 * Constante de taille minimal du labyrinthe.
+	 */
+	final int MIN_MAZE_SIZE = 3;
+	
+	/**
+	 * Constante de taille maximal du labyrinthe.
+	 */
+	final int MAX_MAZE_SIZE = 75;
+
 
 	/**
 	 * Le labyrinthe.
@@ -90,6 +107,7 @@ public class Management extends Stage implements Observer{
 	public int window_width;//500 par défault
 	public Color colorOfWalls;
 	public Color colorOfFloors;
+	public Color colorOfFog;
 	
 	//Maze settings	
 	/**
@@ -106,6 +124,12 @@ public class Management extends Stage implements Observer{
 	 * probability-> taux d'apparrition des murs
 	 */
 	public int probability;
+	
+
+	/**
+	 * zoom-> niveau de zoom sur le labyrinthe
+	 */
+	public int zoom;
 	
 	/**
 	 * monster_name -> stocke le nom du joueur Monster
@@ -160,12 +184,14 @@ public class Management extends Stage implements Observer{
 	 * @param colorOfWalls La couleur des murs.
 	 * @param colorOfFloors La couleur du sol.
 	 */
-	public Management(int window_height, int window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls, Color colorOfFloors) {
+	public Management(int window_height, int window_width, int gap_X, int gap_Y) {
 		this.menus=new HashMap<Integer,Scene>();
 		this.window_height = window_height;
 		this.window_width = window_width;
-		this.colorOfFloors=colorOfFloors;
-		this.colorOfWalls=colorOfWalls;
+		this.colorOfFloors=Color.LIGHTGRAY;
+		this.colorOfWalls=Color.DARKGRAY;
+		this.colorOfFog=Color.BLACK;
+		this.zoom=50;
 		
 		this.sameScreen=true;
 		this.maze_height=10;
@@ -174,11 +200,12 @@ public class Management extends Stage implements Observer{
 		this.theme="Cave";
 
 		this.generateSettingsMenu();
-		this.generatePlayMenu(gap_X,gap_Y,zoom);
+		this.generatePlayMenu(gap_X,gap_Y);
 		this.generateGameOverScreen();
 
 		this.setScene(this.getScene(this.ID_PLAY));
 		this.setTitle("MONSTER-HUNTER");
+		
 	}
 
 	/**
@@ -225,42 +252,80 @@ public class Management extends Stage implements Observer{
 	 * Affiche une boite de dialogue indiquant a qui est le tour.
 	 * @param joueur Le nom du joueur.
 	 */
-	public void TurnView(String joueur) {
+	public void turnView(String joueur) {
 		this.hide();
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Au tour du " + joueur);
-		alert.setHeaderText("Voulez vous commencer votre Tour ?");
+		alert.setHeaderText("Voulez-vous commencer votre tour ?");
 
 		// Personnaliser l'apparence de la boîte de dialogue
 		DialogPane dialogPane = alert.getDialogPane();
 		dialogPane.setMinHeight(Region.USE_PREF_SIZE);
 
 		// Boutons de confirmation et d'annulation
-		ButtonType bouttonJouer = new ButtonType("Jouer");
-		alert.getButtonTypes().setAll(bouttonJouer);
+		ButtonType boutonJouer = new ButtonType("Jouer");
+		alert.getButtonTypes().setAll(boutonJouer);
 
 		// Attendre la réponse de l'utilisateur
 		alert.showAndWait().ifPresent(response -> {
-			if(response == bouttonJouer){
+			if(response == boutonJouer){
 				if(joueur.equals("Monstre")){
 					this.setScene(mv.scene);
-					this.show();
 				} else {
 					this.setScene(hv.scene);
-					this.show();
 				}
+				this.show();
 			}
 		});
+	}
+	
+	public void wait(int secondes) {
+		try {
+			Thread.sleep(secondes*1000);
+		} catch (InterruptedException e) {
+			System.out.println("InterruptedException");
+		}
+	}
+	
+	public void monsterIAplay() {
+			this.maze.move(this.maze.monster.play());
+	}
+	
+	public void hunterIAplay() {
+			this.maze.shoot(this.maze.hunter.play());
 	}
 
 	/**
 	 * Bascule entre la vue du monstre et la vue du chasseur en fonction du tour actuel du jeu.
 	 */
 	public void switchInGameView() {
-		if(this.maze.isMonsterTurn) {
-			TurnView("Monstre");
-		}else {
-			TurnView("Chasseur");
+		if(this.hunter_IA.equals("Player")&&this.monster_IA.equals("Player")) {
+			if(this.maze.isMonsterTurn) {
+				this.turnView("Monstre");
+			}else {
+				this.turnView("Chasseur");
+			}
+		}else if(this.hunter_IA.equals("Player")||this.monster_IA.equals("Player")) {
+			if(this.maze.isMonsterTurn) {
+				if(this.monster_IA.equals("Player")) {
+					this.setScene(mv.scene);
+				}else {
+					this.monsterIAplay();
+				}
+				
+			}else {
+				if(this.hunter_IA.equals("Player")) {
+					this.setScene(hv.scene);
+				}else {
+					this.hunterIAplay();
+				}
+			}
+		}else if((!this.hunter_IA.equals("Player")) && (!this.monster_IA.equals("Player"))) {
+			if(this.maze.isMonsterTurn) {
+				this.monsterIAplay();
+			}else {
+				this.hunterIAplay();
+			}
 		}
 	}
 
@@ -277,7 +342,7 @@ public class Management extends Stage implements Observer{
 	 * @param gap_Y L'espacement vertical entre les cellules du labyrinthe.
 	 * @param zoom Le niveau de zoom pour l'affichage du labyrinthe.
 	 */
-	public void generatePlayMenu(int gap_X, int gap_Y, int zoom) {
+	public void generatePlayMenu(int gap_X, int gap_Y) {
 		Label title = this.generateTitle("Main Menu");
 
 		TextField tf_name_monster = this.generateTextField("Monster", this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
@@ -285,6 +350,8 @@ public class Management extends Stage implements Observer{
 
 		Label l_nameM = this.generateLabel("Monster Name", tf_name_monster.getLayoutX(),tf_name_monster.getLayoutY()-15, this.LABEL_MIN_WIDTH);
 		Label l_nameH = this.generateLabel("Hunter Name", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
+		
+		//Label l_invalidSettings = this.generateLabel("Invalid Settings", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
 
 		ComboBox<String> choixIA_Monster = this.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 50));
 		ComboBox<String> choixIA_Hunter = this.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 50));
@@ -300,23 +367,39 @@ public class Management extends Stage implements Observer{
 			this.monster_name=l_nameM.getText();
 			this.monster_IA=choixIA_Monster.getValue();
 			this.hunter_name=l_nameH.getText();
-			this.monster_IA=choixIA_Monster.getValue();
+			this.hunter_IA=choixIA_Hunter.getValue();
+			System.out.println("TEST+"+this.hunter_IA);
+			
+			this.zoom=(this.window_height/this.maze_height);
+			
 			//Creation of the maze
-
-			System.out.println("maze_height:"+this.maze_height+"maze_width:"+this.maze_width);
-			this.maze=new Maze(this.probability, this.maze_height, this.maze_width);
+			this.maze=new Maze(this.probability, this.maze_height, this.maze_width, monster_IA, hunter_IA);
 			this.maze.attach(this);
-			this.mv=new MonsterView(window_height,window_width,gap_X,gap_Y,zoom,colorOfWalls,colorOfFloors,this.maze);
-			this.hv=new HunterView(window_height,window_width,gap_X,gap_Y,zoom,colorOfWalls,colorOfFloors,this.maze);
+			this.mv=new MonsterView(window_height,window_width,gap_X,gap_Y,this.zoom,colorOfWalls,colorOfFloors,this.maze);
+			this.hv=new HunterView(window_height,window_width,gap_X,gap_Y,this.zoom,colorOfWalls,colorOfFloors,colorOfFog,this.maze);
 			this.setScene(hv.scene);
 		});
 
 
 
-		Group group = new Group();
-		group.getChildren().addAll(title, l_nameM, tf_name_monster, choixIA_Monster, l_nameH, tf_name_hunter, choixIA_Hunter, bSettings, bPlay);
+		
 
-		Scene scene =  new Scene(group, this.window_height, this.window_width, this.colorOfFloors);
+		// Placez le titre en haut à gauche en définissant l'alignement
+		StackPane.setAlignment(title, Pos.TOP_CENTER);
+		
+		VBox buttonsLayout = new VBox(20);
+		buttonsLayout.getChildren().addAll(l_nameM, tf_name_monster, choixIA_Monster,l_nameH, tf_name_hunter, choixIA_Hunter, bSettings,bPlay);
+		StackPane.setAlignment(buttonsLayout, Pos.CENTER);
+		
+		StackPane root = new StackPane();
+		root.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
+		
+		root.getChildren().addAll(title,  buttonsLayout);
+		
+		StackPane.setAlignment(buttonsLayout, Pos.CENTER);
+		StackPane.setAlignment(root, Pos.CENTER);
+
+		Scene scene =  new Scene(root, this.window_height, this.window_width, this.colorOfFloors);
 
 		this.menus.put(Integer.valueOf(this.ID_PLAY),scene);
 	}
@@ -331,13 +414,16 @@ public class Management extends Stage implements Observer{
 
 		TextField tf_maze_height = this.generateTextField("10",this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,50), 2, '0', '9');
 		TextField tf_maze_width = this.generateTextField("10", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,60), 2, '0', '9');
+		this.addCheckNumericalValueToTextField(tf_maze_height, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
+		this.addCheckNumericalValueToTextField(tf_maze_width, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
 		
-		TextField tf_probability= this.generateTextField("20", this.calculPercentage(this.window_width,72), this.calculPercentage(this.window_height,50), 2, '0', '9');
+		TextField tf_probability= this.generateTextField("20", this.calculPercentage(this.window_width,77), this.calculPercentage(this.window_height,50), 3, '0', '9');
+		this.addCheckNumericalValueToTextField(tf_probability, 0, 100);
 		
-		Label l_height = this.generateLabel("Maze Height", tf_maze_height.getLayoutX()-this.LABEL_MIN_WIDTH, tf_maze_height.getLayoutY(), this.LABEL_MIN_WIDTH);
-		Label l_width= this.generateLabel("Maze Width", tf_maze_width.getLayoutX()-this.LABEL_MIN_WIDTH, tf_maze_width.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Label l_height = this.generateLabel("Maze Height ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+")", tf_maze_height.getLayoutX()-this.LABEL_MIN_WIDTH-this.SPACING, tf_maze_height.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Label l_width= this.generateLabel("Maze Width ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+")", tf_maze_width.getLayoutX()-this.LABEL_MIN_WIDTH-this.SPACING, tf_maze_width.getLayoutY(), this.LABEL_MIN_WIDTH);
 		
-		Label l_probability= this.generateLabel("Spawn Rate of walls", tf_probability.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*3), tf_probability.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Label l_probability= this.generateLabel("Spawn Rate of walls (%)", tf_probability.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_probability.getLayoutY(), this.LABEL_MIN_WIDTH);
 
 		Button bScreenType = this.generateButton("Same Screen", this.calculPercentage(this.window_width,35),this.calculPercentage(this.window_height,15));
 		bScreenType.setOnAction(e->{
@@ -351,7 +437,11 @@ public class Management extends Stage implements Observer{
 		});
 		bScreenType.setMinWidth(150);
 
-		ComboBox<String> theme = this.generateComboBox(new String[]{"Cave", "Forest", "Ocean"}, this.calculPercentage(this.window_width, 70), this.calculPercentage(this.window_height,60));
+		ComboBox<String> theme = this.generateComboBox(this.THEMES, this.calculPercentage(this.window_width, 70), this.calculPercentage(this.window_height,60));
+		theme.setOnAction(e->{
+			this.theme=theme.getValue();
+			this.applyTheme(this.theme);
+		});
 		Label l_theme = this.generateLabel("Choose a theme", theme.getLayoutX()-this.LABEL_MIN_WIDTH,theme.getLayoutY(), this.LABEL_MIN_WIDTH);
 
 		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
@@ -359,24 +449,19 @@ public class Management extends Stage implements Observer{
 			this.setScene(this.getScene(this.ID_PLAY));
 			this.maze_height=Integer.parseInt(tf_maze_height.getText());
 			this.maze_width=Integer.parseInt(tf_maze_width.getText());
-			this.probability=Integer.parseInt(tf_probability.getText());
-			System.out.println("probability"+this.probability);
-			this.theme=theme.getValue();
 		});
 
 		Group group = new Group();
 		group.getChildren().addAll(title, bScreenType, l_height, tf_maze_height, l_width, tf_maze_width, l_probability, tf_probability, l_theme, theme, bBack);
 		this.menus.put(Integer.valueOf(this.ID_SETTINGS), new Scene(group, this.window_height, this.window_width, this.colorOfFloors));
 	}
-
-
 	
 	
 	public void generateGameOverScreen() {
 		Label title = this.generateTitle("Game Over Menu");
 
-		Button restartButton = this.generateButton("Rejouer", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height, 80));
-		Button quitButton = this.generateButton("Quitter", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height, 80));
+		Button restartButton = this.generateButton("Rejouer", 0, 0);
+		Button quitButton = this.generateButton("Quitter", 0, 0);
 
 		restartButton.setOnAction(e -> {
 			this.setScene(this.getScene(this.ID_PLAY));
@@ -387,6 +472,7 @@ public class Management extends Stage implements Observer{
 		});
 
 		StackPane layout = new StackPane();
+		layout.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 
 		// Placez le titre en haut à gauche en définissant l'alignement
 		StackPane.setAlignment(title, Pos.TOP_LEFT);
@@ -398,6 +484,25 @@ public class Management extends Stage implements Observer{
 		// Superposez le titre et les boutons
 		layout.getChildren().addAll(title, buttonLayout);
 		this.menus.put(Integer.valueOf(this.ID_GAMEOVER), new Scene(layout, this.window_height, this.window_width, this.colorOfFloors));
+	}
+	
+	public void applyTheme(String theme) {
+		if(theme.equals("Cave")) {
+			this.colorOfFloors=Color.LIGHTGRAY;
+			this.colorOfWalls=Color.DARKGRAY;
+			this.colorOfFog=Color.BLACK;
+		}else if(theme.equals("Forest")) {
+			this.colorOfFloors=Color.LIGHTGREEN;
+			this.colorOfWalls=Color.FORESTGREEN;
+			this.colorOfFog=Color.DARKGREEN;
+		}else if(theme.equals("Ocean")) {
+			this.colorOfFloors=Color.AQUAMARINE;
+			this.colorOfWalls=Color.SEAGREEN;
+			this.colorOfFog=Color.DARKBLUE;
+		}
+		for(Scene s:this.menus.values()) {
+			s.setFill(colorOfFloors);
+		}
 	}
 
 	/**
@@ -504,6 +609,22 @@ public class Management extends Stage implements Observer{
 			}
 		});
 		return tf;
+	}
+	
+	public void addCheckNumericalValueToTextField(TextField tf, int min, int max) {
+		tf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {
+				if(!tf.getText().isEmpty()) {
+					if(Integer.parseInt(tf.getText())<min) {
+						tf.setText(""+min);
+					}else if(Integer.parseInt(tf.getText())>max) {
+						tf.setText(""+max);
+					}
+				}
+				
+			}
+		});
 	}
 
 	/**

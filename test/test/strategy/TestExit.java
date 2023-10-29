@@ -17,7 +17,7 @@ public class TestExit {
 		assertEquals(5, exit.getCol());
 		Exit exit2 = new Exit(new Coordinate(-42,-24));
 		assertEquals(new Coordinate(-42,-24), exit2.getCoord());
-		assertEquals(-42, exit2.getRow());
-		assertEquals(-24, exit2.getCol());
+		assertEquals(0, exit2.getRow());
+		assertEquals(0, exit2.getCol());
 	}
 }
