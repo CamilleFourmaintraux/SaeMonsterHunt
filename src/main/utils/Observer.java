@@ -1,3 +1,9 @@
+/**
+ * Le package main.utils contient des classes et des méthodes utilitaires pour diverses opérations
+ * au sein de l'application. Il comprend des fonctionnalités pour la gestion de l'observateur (Observer)
+ * et du sujet (Subject) pour le modèle de conception Observer, ainsi que des méthodes utilitaires
+ * pour la génération de nombres aléatoires et la création d'arrière-plans graphiques.
+ */
 package main.utils;
 /**
  * L'interface Observer définit les méthodes que les objets observateurs doivent implémenter

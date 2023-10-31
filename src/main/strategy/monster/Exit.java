@@ -1,3 +1,8 @@
+/**
+ * Le package main.strategy.monster contient les classes relatives à la gestion
+ * des monstres dans le jeu. Il propose des stratégies pour le comportement des monstres
+ * et les informations concernant la sortie du labyrinthe.
+ */
 package main.strategy.monster;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
