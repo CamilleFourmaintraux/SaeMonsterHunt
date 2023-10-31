@@ -1,3 +1,8 @@
+/**
+ * Le package main.maze contient les classes nécessaires pour la mise en œuvre
+ * du jeu Monster Hunt. Il gère la logique du jeu, y compris la gestion du labyrinthe,
+ * les déplacements du monstre, le tir du chasseur, et les vues associées.
+ */
 package main.maze;
 
 
@@ -53,7 +58,7 @@ public class Maze extends Subject{
 	protected int[][] traces;//TODO message ou alerte si le monstre passe sur une case déjà découverte
 	
 	/**
-	 * La sortie (les coordonn�es) du labyrinthe.
+	 * La sortie (les coordonnées) du labyrinthe.
 	 */
 	protected Exit exit;
 	
