@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package main.maze.cells;
 
 import java.util.Objects;

@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /**
- * Une classe repr�sentant les coordonn�es (ligne & colonne) d'une cellule dans un labyrinthe.
+ * Une classe repr�sentant les coordonn�es (ligne et colonne) d'une cellule dans un labyrinthe.
  * 
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -29,7 +29,7 @@ public class Coordinate implements ICoordinate{
 
 	/**
      * Constructeur avec des coordonn�es sp�cifi�es.
-     * Cr�e des coordonn�es avec le num�ro de ligne & colonne.
+     * Cr�e des coordonn�es avec le num�ro de ligne et colonne.
      *
      * @param row Le num�ro de ligne.
      * @param col Le num�ro de colonne.
@@ -90,7 +90,7 @@ public class Coordinate implements ICoordinate{
 	/**
      * D�finit le nouveau num�ro de colonne de la coordonn�.
      *
-     * @param row Le nouveau num�ro de colonne de la coordonn�e.
+     * @param col Le nouveau num�ro de colonne de la coordonn�e.
      */
 	public void setCol(int col) {
 		this.col = col;

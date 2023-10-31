@@ -44,9 +44,6 @@ public class Maze extends Subject{
 		{false,false,true,true,false,false,true,true,true,false}	// X X . . X X . . . X 
 	};
 	
-	
-	
-	
 	/**
 	 * Tableau de boolean représentant les murs plein ou non du labyrinthe (false=mur true=pas de mur).
 	 */
@@ -83,23 +80,25 @@ public class Maze extends Subject{
 	public boolean isMonsterTurn;
 	
 	/**
-	 * Boolean utilise dans les actions move du monstre & shoot du chasseur pour indique si la partie est fini.
+	 * Boolean utilisé dans les actions move du monstre et shoot du chasseur pour indique si la partie est fini.
 	 * (i.e si le monstre/chasseur s'est échappé/fait tirer dessus).
 	 */
 	public boolean isGameOver;
 	
 	/**
-	 * Constructeur vide, cree un labyrinthe Maze a partir d'un labyrinthe prédéfini.
-	 * @see Maze#Maze(boolean[][] maze)
+	 * Constructeur vide, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
+	 * @see Maze#Maze(boolean[][], String, String)
 	 */
 	public Maze() {
 		this(Maze.generateBasicMap(),"Player","Player");
 	}
 	
 	/**
-	 * Constructeur originel, cree un labyrinthe Maze a partir d'un labyrinthe existant donne en parametre.
+	 * Constructeur originel, crée un labyrinthe Maze à partir d'un labyrinthe existant donné en parametre.
 	 * @see Maze#Maze()
-	 * @param maze
+	 * @param maze 			un labyrinthe.
+	 * @param monster_IA 	Nom du Monstre.
+	 * @param hunter_IA		Nom du Chasseur.
 	 */
 	public Maze(boolean[][] maze, String monster_IA, String hunter_IA) {
 		this.walls=maze;
@@ -111,10 +110,13 @@ public class Maze extends Subject{
 	}
 	
 	/**
-	 * Constructeur special, cree un labyrinthe Maze personnalise et genere aleatoirement a partir de la largeur, la hauteur et la probabilite d'apparition de murs.
+	 * Constructeur spécial, crée un labyrinthe Maze personnalisé et génére aléatoirement à partir de la largeur, la hauteur et la probabilité d'apparition de murs.
+	 * 
 	 * @param probability le taux de chances qu'une case du labyrinthe soit un mur.
 	 * @param height la hauteur du labyrinthe.
 	 * @param width la largeur du labyrinthe.
+	 * @param monster_IA 	Nom du Monstre.
+	 * @param hunter_IA		Nom du Chasseur.
 	 */
 	public Maze(int probability, int height, int width, String monster_IA, String hunter_IA) {
 		this(Maze.generateRandomMap(probability, height, width), monster_IA, hunter_IA);
@@ -122,6 +124,7 @@ public class Maze extends Subject{
 	
 	/**
 	 * Initialisation du tableau des traces du monstre vu par le chasseur.
+	 * 
 	 * @return un tableau d'entier initialise a zero si la case correspond à une case vide et -1 si la case correspond à un mur.
 	 */
 	public int[][] initTraces(){
@@ -138,10 +141,9 @@ public class Maze extends Subject{
 		return traces;
 	}
 	
-	
-
 	/**
 	 * Méthode de génération prédéfini du labyrinthe.
+	 * 
 	 * @return un tableau de boolean qui représente le labyrithe avec ses murs.
 	 */
 	public static boolean[][] generateBasicMap() {
@@ -150,6 +152,7 @@ public class Maze extends Subject{
 	
 	/**
 	 * Méthode de génération personnalisé du labyrinthe avec sa taille voulu ainsi que le taux d'apparition des murs.
+	 * 
 	 * @param probability le taux de chances que la case du labyrinthe soit un mur plein.
 	 * @param height la hauteur du labyrinthe.
 	 * @param width la largeur du labyrinthe.
@@ -177,11 +180,12 @@ public class Maze extends Subject{
 	}
 	
 	/**
-	 * Calcule le nombre de mur du labyrinthe present autour de la coordonnee.
-	 * Si la coordonne correspond a un bord du labyrinthe, la fonction comptera les bordures comme des murs.
+	 * Calcule le nombre de mur du labyrinthe présent autour de la coordonnée.
+	 * Si la coordonnée correspond à un bord du labyrinthe, la fonction comptera les bordures comme des murs.
 	 * Par exemple, si la coordonnee est (0,0) et qu'il n'y a aucun mur, la fonction va renvoyer 5, à cause des bordures du coin de la map.
-	 * @param c une coordonnee du labyrinthe.
-	 * @return un entier correspondant au nombre de murs autour de cette coordonnee.
+	 *
+	 * @param c une coordonnée du labyrinthe.
+	 * @return un entier correspondant au nombre de murs autour de cette coordonnée.
 	 */
 	//Inutilisé pour le moment
 	/*public int numberOfWallsAround(ICoordinate c){
@@ -201,9 +205,9 @@ public class Maze extends Subject{
 	}*/
 	
 	/**
-	 * Initialise les coordonnees de la sortie du labyrinthe.
-	 * @param hunter_IA -> niveau de l'IA du chasseur
-	 * @param monster_IA -> niveau de l'IA du monstre
+	 * Initialise les coordonnées de la sortie du labyrinthe.
+	 * @param hunter_IA niveau de l'IA du chasseur.
+	 * @param monster_IA niveau de l'IA du monstre.
 	 */
 	public void initMonsterExitHunter(String monster_IA, String hunter_IA) {
 		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
@@ -234,7 +238,7 @@ public class Maze extends Subject{
 	}
 	
 	/**
-	 * Affichage en ASCII (Terminal ) du tableau des traces laissees par le monstre.
+	 * Affichage en ASCII (Terminal ) du tableau des traces laissées par le monstre.
 	 */
 	public void printTraces() {
 		for(int h=0; h<this.walls.length;h++) {
@@ -263,6 +267,7 @@ public class Maze extends Subject{
 	
 	/**
 	 * Vérifie si la coordonnée donnée est mur du labyrinthe ou non.
+	 * 
 	 * @param c une coordonnée du labyrinthe.
 	 * @return true si la coordonnée indiqué est un mur, sinon false.
 	 */
@@ -272,6 +277,7 @@ public class Maze extends Subject{
 	
 	/**
 	 * Supprime un mur du labyrinthe à la case de la coordonnée. 
+	 * 
 	 * @param c une coordonnée du labyrinthe.
 	 * @param willBeWall un boolean qui supprime le mur du labyrinthe.
 	 */
@@ -281,6 +287,7 @@ public class Maze extends Subject{
 	
 	/**
 	 * Action de déplacement du Monstre. 
+	 * 
 	 * @param c la coordonnée ou laquelle veut se déplacer le monstre.
 	 * @return true si l'action a reussi, sinon false.
 	 */
@@ -314,6 +321,7 @@ public class Maze extends Subject{
 	
 	/**
 	 * Action de tir du Chasseur.
+	 * 
 	 * @param c la coordonnée à laquelle le chasseur tire.
 	 * @return true si l'action a reussi,sinon false.
 	 */
@@ -334,6 +342,7 @@ public class Maze extends Subject{
 	
 	/**
 	 * Vérifie si le Monstre a la possibilté de se déplacer à la coordonnée du labyrinthe donnée.
+	 * 
 	 * @param c une coordonnée du labyrinthe.
 	 * @return true si le Monstre peut se déplacer à la case demandé, sinon false.
 	 */
@@ -346,6 +355,7 @@ public class Maze extends Subject{
 	
 	/**
 	 * Calcule la distance en largeur et hauteur entre deux coordonnée du labyrinthe.
+	 * 
 	 * @param c1 une première coordonnée du labyrinthe.
 	 * @param c2 une seconde coordonnée du labyrinthe.
 	 * @return un tableau d'entier de 2 cases contenant la distance en largeur en première case
@@ -362,17 +372,19 @@ public class Maze extends Subject{
 	
 	/**
 	 * Détermine si deux coordonnées sont à portée.
-	 * @param c1 une première coordonnée du labyrinthe.
-	 * @param c2 une seconde coordonnée du labyrinthe.
-	 * @param reach portée maximale à laquelle les coordonnées doivent être l'une de l'autre.
+	 * 
+	 * @param c1 		une première coordonnée du labyrinthe.
+	 * @param c2 		une seconde coordonnée du labyrinthe.
+	 * @param reach 	portée maximale à laquelle les coordonnées doivent être l'une de l'autre.
 	 * @return true si les deux coordonnées sont à portée,sinon false.
 	 */
 	public boolean inReach(ICoordinate c1, ICoordinate c2, int reach) {
 		return (this.calculDistance(c1, c2)[0]<reach+1 && this.calculDistance(c1, c2)[1]<reach+1);
 	}
 	/**
-	 * modifie le tableau de traces à la coordonnées c pour ajouter la nouvelle trace. 
-	 * @param c une coordonnée du labyrinthe.
+	 * Modifie le tableau de traces à la coordonnée c pour ajouter la nouvelle trace. 
+	 * 
+	 * @param c 	une coordonnée du labyrinthe.
 	 * @param trace la trace que le monstre laisse (correspondant au numero du tour actuel)
 	 */
 	public void setTrace(ICoordinate c, int trace) {
@@ -380,6 +392,7 @@ public class Maze extends Subject{
 	}
 	/**
 	 * Renvoie la potentielle trace du Monstre sur la coordonnée indiquée.
+	 * 
 	 * @param c une coordonnée du labyrinthe.
 	 * @return un entier correspondant au numéro du tour du passage du Monstre sur la coordonnée du labyrinthe (0 si le monstre n'y est jamais passé).
 	 */
@@ -388,9 +401,10 @@ public class Maze extends Subject{
 	}
 	
 	/**
-	 * Revele une cellule donnee en modifiant sa couleur en fonction de si c'est un mur ou un sol.
-	 * @param cwt La cellule avec texte que l'on veut révéler
-	 * @param colorOfWalls La couleur associé au mur, future couleur de la cellule si la cellule se révèle être un mur.
+	 * Révèle une cellule donnee en modifiant sa couleur en fonction de si c'est un mur ou un sol.
+	 * 
+	 * @param cwt 			La cellule avec texte que l'on veut révéler
+	 * @param colorOfWalls 	La couleur associé au mur, future couleur de la cellule si la cellule se révèle être un mur.
 	 * @param colorOfFloors La couleur associé au sol, future couleur de la cellule si la cellule se révèle être un sol.
 	 */
 	public void revealCell(CellWithText cwt, Color colorOfWalls, Color colorOfFloors) {
