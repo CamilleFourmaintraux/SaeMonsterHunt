@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /**
- * Une classe repr�sentant les coordonn�es (ligne et colonne) d'une cellule dans un labyrinthe.
+ * Une classe représentant les coordonnées (ligne et colonne) d'une cellule dans un labyrinthe.
  * 
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -14,25 +14,25 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  */
 public class Coordinate implements ICoordinate{
 	/**
-	 * Le num�ro de la ligne.
+	 * Le numéro de la ligne.
 	 */
 	int row;
 	/**
-	 * Le num�ro de colonne.
+	 * Le numéro de colonne.
 	 */
 	int col;
 	
 	/**
-     * Constructeur par d�faut.
+     * Constructeur par défaut.
      */
 	public Coordinate() {}
 
 	/**
-     * Constructeur avec des coordonn�es sp�cifi�es.
-     * Cr�e des coordonn�es avec le num�ro de ligne et colonne.
+     * Constructeur avec des coordonnées spécifiées.
+     * Crée des coordonnées avec le numéro de ligne et colonne.
      *
-     * @param row Le num�ro de ligne.
-     * @param col Le num�ro de colonne.
+     * @param row Le numéro de ligne.
+     * @param col Le numéro de colonne.
      */
 	public Coordinate(int row, int col) {
 		if(row<0) {
@@ -46,9 +46,9 @@ public class Coordinate implements ICoordinate{
 	}
 
 	/**
-     * Obtient le num�ro de la ligne de la coordonn�e.
+     * Obtient le numéro de la ligne de la coordonnée.
      *
-     * @return Le num�ro de la ligne de la coordonn�e.
+     * @return Le numéro de la ligne de la coordonnée.
      */
 	@Override
 	public int getRow() {
@@ -57,9 +57,9 @@ public class Coordinate implements ICoordinate{
 	}
 
 	/**
-     * Obtient le num�ro de la colonne de la coordonn�e.
+     * Obtient le numéro de la colonne de la coordonnée.
      *
-     * @return Le num�ro de la colonne de la coordonn�e.
+     * @return Le numéro de la colonne de la coordonnée.
      */
 	@Override
 	public int getCol() {
@@ -68,10 +68,10 @@ public class Coordinate implements ICoordinate{
 	}
 	
 	 /**
-     * D�finit les coordonn�es � partir d'une ligne et d'une colonne sp�cifi�es.
+     * Définit les coordonnées à partir d'une ligne et d'une colonne spécifiées.
      *
-     * @param row Le nouveau num�ro de ligne de la coordonn�e.
-     * @param col Le nouveau num�ro de colonne de la coordonn�e.
+     * @param row Le nouveau numéro de ligne de la coordonnée.
+     * @param col Le nouveau numéro de colonne de la coordonnée.
      */
 	public void setCoordinate(int row, int col) {
 		this.row = row;
@@ -79,28 +79,28 @@ public class Coordinate implements ICoordinate{
 	}
 
 	 /**
-     * D�finit le nouveau num�ro de ligne de la coordonn�.
+     * Définit le nouveau numéro de ligne de la coordonnée.
      *
-     * @param row Le nouveau num�ro de ligne de la coordonn�e.
+     * @param row Le nouveau numéro de ligne de la coordonnée.
      */
 	public void setRow(int row) {
 		this.row = row;
 	}
 
 	/**
-     * D�finit le nouveau num�ro de colonne de la coordonn�.
+     * Définit le nouveau numéro de colonne de la coordonnée.
      *
-     * @param col Le nouveau num�ro de colonne de la coordonn�e.
+     * @param col Le nouveau numéro de colonne de la coordonnée.
      */
 	public void setCol(int col) {
 		this.col = col;
 	}
 
 	/**
-     * Compare si cet objet Coordinate est �gal � un autre objet sp�cifi�.
+     * Compare si cet objet Coordinate est égal à un autre objet spécifié.
      *
-     * @param obj L'objet � comparer � cette instance de Coordinate.
-     * @return true si les objets sont �gaux en termes de coordonn�es de ligne et de colonne, sinon false.
+     * @param obj L'objet a comparer à cette instance de Coordinate.
+     * @return true si les objets sont égaux en termes de coordonnées de ligne et de colonne, sinon false.
      */
 	@Override
 	public boolean equals(Object obj) {

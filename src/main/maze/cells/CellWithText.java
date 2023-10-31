@@ -7,12 +7,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 /**
- * La classe `CellWithText` repr�sente une cellule d'un labyrinthe avec un texte associ�.
- * Elle h�rite de `Cell` et ajoute la capacit� d'afficher du texte.
+ * La classe CellWithText représente une cellule d'un labyrinthe avec un texte associé.
+ * Elle hérite de Cell et ajoute la capacité d'afficher du texte.
  */
 public class CellWithText extends Cell{
 	/**
-     * Le texte associ� � la cellule.
+     * Le texte associé à la cellule.
      */
 	protected Text text;
 	
@@ -46,7 +46,7 @@ public class CellWithText extends Cell{
 	}
 	
 	/**
-     * Retourne le texte associ� � la cellule.
+     * Retourne le texte associé à la cellule.
      *
      * @return Le texte de la cellule.
      */
@@ -55,25 +55,25 @@ public class CellWithText extends Cell{
 	}
 	
 	/**
-     * D�finit le texte associ� � la cellule.
+     * Définit le texte associé à la cellule.
      *
-     * @param text Le texte � afficher dans la cellule.
+     * @param text Le texte a afficher dans la cellule.
      */
 	public void setText(Text text) {
 		this.text = text;
 	}
 	
 	 /**
-     * D�finit le texte associ� � la cellule en utilisant une cha�ne de caract�res.
+     * Définit le texte associé à la cellule en utilisant une chaîne de caractères.
      *
-     * @param text La cha�ne de caract�res � afficher dans la cellule.
+     * @param text La chaîne de caractères a afficher dans la cellule.
      */
 	public void setText(String text) {
 		this.text.setText(text);
 	}
 	
 	/**
-     * D�finit la position horizontale du texte dans la cellule.
+     * Définit la position horizontale du texte dans la cellule.
      *
      * @param x La position horizontale du texte.
      */
@@ -82,7 +82,7 @@ public class CellWithText extends Cell{
 	}
 	
 	/**
-     * D�finit la position verticale du texte dans la cellule.
+     * Définit la position verticale du texte dans la cellule.
      *
      * @param y La position verticale du texte.
      */

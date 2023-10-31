@@ -10,8 +10,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * La classe `Cell` repr�sente une cellule rectangulaire utilis�e dans un labyrinthe. 
- * Elle extend la classe `Rectangle` de JavaFX pour repr�senter graphiquement une cellule.
+ * La classe `Cell` représente une cellule rectangulaire utilisée dans un labyrinthe. 
+ * Elle extend la classe `Rectangle` de JavaFX pour représenter graphiquement une cellule.
  * 
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -21,36 +21,36 @@ import javafx.scene.shape.Rectangle;
  */
 public class Cell extends Rectangle{
 	/**
-	 * Coordonn�es construite � partir du x & y.
+	 * Coordonnées construite à partir du x et y.
 	 */
 	ICoordinate coord;
 	
 	/**
-	 * Constructeur avec des param�tres limit�s. 
-	 * Cr�e une cellule avec des valeurs de remplissage et d'�paisseur de contour par d�faut.
-	 * @param x La coordonn�e en X de la cellule dans le labyrinthe.
-	 * @param y La coordonn�e en Y de la cellule dans le labyrinthe.
+	 * Constructeur avec des paramètres limit�s. 
+	 * Crée une cellule avec des valeurs de remplissage et d'épaisseur de contour par défaut.
+	 * @param x La coordonnée en X de la cellule dans le labyrinthe.
+	 * @param y La coordonnée en Y de la cellule dans le labyrinthe.
 	 * @param zoom Le facteur de zoom pour la taille de la cellule.
 	 * @param fill La couleur de remplissage de la cellule.
-	 * @param gap_X La valeur de d�calage en X pour la position de la cellule.
-	 * @param gap_Y La valeur de d�calage en Y pour la position de la cellule.
+	 * @param gap_X La valeur de décalage en X pour la position de la cellule.
+	 * @param gap_Y La valeur de décalage en Y pour la position de la cellule.
 	 */
 	public Cell(int x, int y, int zoom, Color fill, int gap_X, int gap_Y) {
 		this(x,y,zoom,fill,fill, 0, gap_X, gap_Y);
 	}
 	
 	/**
-	 * Constructeur avec des param�tres complets.
-	 * Cr�e une cellule avec des valeurs de remplissage, couleur de contour, et �paisseur de contour personnalis�es.
+	 * Constructeur avec des paramètres complets.
+	 * Crée une cellule avec des valeurs de remplissage, couleur de contour, et épaisseur de contour personnalisées.
 	 * @see Cell#Cell(int, int, int, Color, int, int)
-	 * @param x La coordonn�e en X de la cellule dans le labyrinthe.
-	 * @param y La coordonn�e en Y de la cellule dans le labyrinthe.
+	 * @param x La coordonnée en X de la cellule dans le labyrinthe.
+	 * @param y La coordonnée en Y de la cellule dans le labyrinthe.
 	 * @param zoom Le facteur de zoom pour la taille de la cellule.
 	 * @param fill La couleur de remplissage de la cellule.
 	 * @param stroke La couleur de contour de la cellule.
 	 * @param strokeWidth L'�paisseur du contour de la cellule.
-	 * @param gap_X La valeur de d�calage en X pour la position de la cellule.
-	 * @param gap_Y La valeur de d�calage en Y pour la position de la cellule.
+	 * @param gap_X La valeur de décalage en X pour la position de la cellule.
+	 * @param gap_Y La valeur de décalage en Y pour la position de la cellule.
 	 */
 	public Cell(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y) {
 		super(x*zoom+gap_X,y*zoom+gap_X,zoom, zoom);
@@ -61,37 +61,37 @@ public class Cell extends Rectangle{
 	}
 	
 	 /**
-     * Retourne les coordonn�es associ�es � la cellule.
+     * Retourne les coordonnées associées à la cellule.
      *
-     * @return Les coordonn�es de la cellule.
+     * @return Les coordonnées de la cellule.
      */
 	public ICoordinate getCoord() {
 		return this.coord;
 	}
 	
 	/**
-     * D�finit les coordonn�es associ�es � la cellule.
+     * Définit les coordonnées associées à la cellule.
      *
-     * @param c Les nouvelles coordonn�es de la cellule.
-     * @return Les coordonn�es mises � jour.
+     * @param c Les nouvelles coordonnées de la cellule.
+     * @return Les coordonnées mises à jour.
      */
 	public ICoordinate setCoord(ICoordinate c) {
 		return this.coord=c;
 	}
 	
 	/**
-     * Obtient le num�ro de ligne de la cellule dans le labyrinthe.
+     * Obtient le numéro de ligne de la cellule dans le labyrinthe.
      *
-     * @return un entier repr�sentant le num�ro de ligne de la cellule.
+     * @return un entier représentant le numéro de ligne de la cellule.
      */
 	public int getRow() {
 		return this.coord.getRow();
 	}
 	
 	 /**
-     * Obtient le num�ro de colonne de la cellule dans le labyrinthe.
+     * Obtient le numéro de colonne de la cellule dans le labyrinthe.
      *
-     * @return un entier repr�sentant le num�ro de colonne de la cellule.
+     * @return un entier représentant le numéro de colonne de la cellule.
      */
 	public int getCol() {
 		return this.coord.getCol();

@@ -2,9 +2,9 @@ package main.utils;
 
 import java.util.ArrayList;
 /**
- * Classe abstraite représentant un sujet observé (observable) dans le modèle de conception Observer-Observe.
- * Les classes dérivées de cette classe peuvent avoir des observateurs attachés et notifier ces observateurs
- * en cas de modifications de leur état.
+ * Classe abstraite reprÃ©sentant un sujet observÃ© (observable) dans le modÃ¨le de conception Observer-Observe.
+ * Les classes dÃ©rivÃ©es de cette classe peuvent avoir des observateurs attachÃ©s et notifier ces observateurs
+ * en cas de modifications de leur Ã©tat.
  * 
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -14,12 +14,12 @@ import java.util.ArrayList;
  */
 public abstract class Subject {
 	/**
-	 * Liste des observateurs attachés à ce sujet.
+	 * Liste des observateurs attachÃ©s Ã  ce sujet.
 	 */
 	protected ArrayList<Observer> subs;
 	/**
-     * Constructeur par défaut de la classe Subject.
-     * Initialise la liste des observateurs à une nouvelle liste vide.	 
+     * Constructeur par dÃ©faut de la classe Subject.
+     * Initialise la liste des observateurs Ã  une nouvelle liste vide.	 
      */
 	protected Subject() {
 		this.subs=new ArrayList<Observer>();
@@ -27,24 +27,24 @@ public abstract class Subject {
 	/**
 	 * Attache un observateur au sujet.
 	 * 
-	 * @param obs L'observateur à attacher.
+	 * @param obs L'observateur a attacher.
 	 */
 	public void attach(Observer obs) {
 		this.subs.add(obs);
 	}
 	
 	/**
-     * Détache un observateur du sujet.
+     * DÃ©tache un observateur du sujet.
 	 * 
-	 * @param obs L'observateur à détacher.
+	 * @param obs L'observateur a dÃ©tacher.
 	 */
 	public void detach(Observer obs) {
 		this.subs.remove(obs);
 	}
 	
 	/**
-     * Notifie tous les observateurs attachés sans fournir de données supplémentaires.
-     * Chaque observateur est informé de la mise à jour de l'état du sujet.
+     * Notifie tous les observateurs attachÃ©s sans fournir de donnÃ©es supplÃ©mentaires.
+     * Chaque observateur est informÃ© de la mise Ã  jour de l'Ã©tat du sujet.
 	 */
 	protected void notifyObservers() {
 		for(Observer obs:this.subs) {
@@ -53,11 +53,11 @@ public abstract class Subject {
 	}
 	
 	/**
-     * Notifie tous les observateurs attachés en fournissant des données supplémentaires.
-     * Chaque observateur est informé de la mise à jour de l'état du sujet et peut recevoir
-     * des données associées à cette mise à jour.
+     * Notifie tous les observateurs attachÃ©s en fournissant des donnÃ©es supplÃ©mentaires.
+     * Chaque observateur est informÃ© de la mise Ã  jour de l'Ã©tat du sujet et peut recevoir
+     * des donnÃ©es associÃ©es ï¿½ cette mise Ã  jour.
      * 
-     * @param data Les données à transmettre aux observateurs.
+     * @param data Les donnÃ©es Ã  transmettre aux observateurs.
 	 */
 	protected void notifyObservers(Object data) {
 		for(Observer obs:this.subs) {

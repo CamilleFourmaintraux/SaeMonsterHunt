@@ -1,7 +1,7 @@
 package main.utils;
 /**
- * L'interface Observer définit les méthodes que les objets observateurs doivent implémenter
- * pour être notifiés des changements dans un objet observable (implémentant l'interface Subject).
+ * L'interface Observer dÃ©finit les mÃ©thodes que les objets observateurs doivent implÃ©menter
+ * pour Ãªtre notifiÃ©s des changements dans un objet observable (implÃ©mentant l'interface Subject).
  * 
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -11,17 +11,17 @@ package main.utils;
  */
 public interface Observer {
 	/**
-     * Cette méthode est appelée lorsqu'un changement est notifié par le sujet observé.
+     * Cette mÃ©thode est appelÃ©e lorsqu'un changement est notifiÃ© par le sujet observÃ©.
 	 * 
-	 * @param s Le sujet observable ayant émis la notification de changement.
+	 * @param s Le sujet observable ayant Ã©mis la notification de changement.
 	 */
 	public void update(Subject s);
 	/**
-     * Cette méthode est appelée lorsqu'un changement est notifié par le sujet observé,
-     * et elle peut recevoir des informations supplémentaires sous la forme d'un objet.
+     * Cette mÃ©thode est appelÃ©e lorsqu'un changement est notifiÃ© par le sujet observÃ©,
+     * et elle peut recevoir des informations supplï¿½mentaires sous la forme d'un objet.
 	 * 
-	 * @param s Le sujet observable ayant émis la notification de changement.
-	 * @param o Un objet contenant des informations supplémentaires sur le changement.
+	 * @param s Le sujet observable ayant Ã©mis la notification de changement.
+	 * @param o Un objet contenant des informations supplÃ©mentaires sur le changement.
 	 */
 	public void update(Subject s, Object o);
 }
