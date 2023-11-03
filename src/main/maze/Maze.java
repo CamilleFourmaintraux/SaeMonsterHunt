@@ -271,7 +271,7 @@ public class Maze extends Subject{
 	 * @param c une coordonnée du labyrinthe.
 	 * @return true si la coordonnée indiqué est un mur, sinon false.
 	 */
-	protected boolean isWall(Coordinate c) {
+	public boolean isWall(Coordinate c) {
 		return this.walls[c.getRow()][c.getCol()];
 	}
 	
