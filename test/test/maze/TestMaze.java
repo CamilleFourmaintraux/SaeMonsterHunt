@@ -3,14 +3,12 @@ package test.maze;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.awt.Color;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.Test;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import main.maze.Maze;
-import main.maze.cells.CellWithText;
 import main.maze.cells.Coordinate;
 
 public class TestMaze {
@@ -50,7 +48,7 @@ public class TestMaze {
 	 
 	 @Test
 	 public void testGetTrace() {
-		 assertEquals(-1, maze_defaultMap.getTrace(new Coordinate(0,0)));
+		 assertEquals(-1, maze_defaultMap.getTrace(new Coordinate(6,0)));
 		 assertEquals(0, maze_defaultMap.getTrace(new Coordinate(3,1)));
 	 }
 	 
@@ -71,45 +69,44 @@ public class TestMaze {
 	 
 	 @Test
 	 public void testIsWall() {
-		 assertFalse(maze_defaultMap.isWall(new Coordinate(0, 0)));
-		 assertTrue(maze_defaultMap.isWall(new Coordinate(0, 1)));
+		 assertTrue(maze_defaultMap.isWall(new Coordinate(7, 6)));
+		 assertFalse(maze_defaultMap.isWall(new Coordinate(6, 0)));
 	 }
-	 
-	 // il faudrait qu'on ait un moyen de recuperer les coordonnées
-	 // du chasseur pour verifier qu'il a bien tirer a cet endroit
-	 // et verifier la condition de victoire.
 	 
 	 @Test
-	 public void testShoot() {
-		 ICoordinate target = new Coordinate(5,8); 
-		 boolean shootResult = maze_defaultMap.shoot(target);
-
-		 // Vérifiez si le tir a réussi
-		 assertTrue(shootResult);
-		 
-		 maze_defaultMap.move(target);
-		 boolean shootResultWin = maze_defaultMap.shoot(target);
-		 
-		 assertTrue(shootResult);
+	 public void testInvalidSboot() {
+		 maze_defaultMap.isMonsterTurn=true;
+		 assertFalse(maze_defaultMap.shoot(maze_defaultMap.monster.getCoord()));
 	 }
-	 
-	 // il faudrait qu'on ait un moyen de recuperer les coordonnées
-	 // du monstre pour verifier qu'il s'est bien déplacer à cet endroit
-	 // et verifier qu'il est dans la possibilité de le faire.
 	 
 	 @Test
-	 public void testMove() {
-		 ICoordinate destination = new Coordinate(4,8); 
-		 boolean moveResult = maze_defaultMap.move(destination);
-
-		 // Vérifiez si le déplacement a réussi
-		 assertTrue(moveResult);
+	 public void testInvalidMove() {
+		 ICoordinate invalidCoorMonster = new Coordinate(maze_defaultMap.monster.getRow()+3,maze_defaultMap.monster.getCol()+3);
+		 assertFalse(maze_defaultMap.move(invalidCoorMonster));
 	 }
 	 
-	 /*@Test
+	 @Test
 	 public void testCanMonsterMoveAt() {
-		 assertTrue(maze_defaultMap.canMonsterMoveAt(new Coordinate(0,1)));
-		 assertFalse(maze_defaultMap.canMonsterMoveAt(new Coordinate(0,0)));
-		 assertFalse(maze_defaultMap.canMonsterMoveAt(new Coordinate(32,42)));
-	 }*/
+		 ICoordinate coorMonster = maze_defaultMap.monster.getCoord();
+		 maze_defaultMap.isMonsterTurn=true;
+		 assertTrue(maze_defaultMap.canMonsterMoveAt(new Coordinate(coorMonster.getRow()+1,coorMonster.getCol()+1)));
+		 assertFalse(maze_defaultMap.canMonsterMoveAt(new Coordinate(coorMonster.getRow()+2,coorMonster.getCol()+2)));
+		 assertThrows(IndexOutOfBoundsException.class, () -> maze_defaultMap.canMonsterMoveAt(new Coordinate(32,42)));
+	 }
+	 
+	 @Test
+	 public void testExitMove() {
+		 maze_defaultMap.isMonsterTurn=true;
+		 ICoordinate exitCoorMonster = new Coordinate(maze_defaultMap.exit.getRow(),maze_defaultMap.exit.getCol());
+		 maze_defaultMap.monster.setCoord(new Coordinate(exitCoorMonster.getRow()-1,exitCoorMonster.getCol()-1));
+		 assertTrue(maze_defaultMap.move(exitCoorMonster));
+		 assertTrue(maze_defaultMap.isGameOver);
+	 }
+	 
+	 @Test
+	 public void testValidSboot() {
+		 maze_defaultMap.isMonsterTurn=false;
+		 assertTrue(maze_defaultMap.shoot(maze_defaultMap.monster.getCoord()));
+		 assertTrue(maze_defaultMap.isGameOver);
+	 }
 }

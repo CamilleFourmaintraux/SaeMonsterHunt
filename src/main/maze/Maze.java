@@ -57,17 +57,17 @@ public class Maze extends Subject{
 	/**
 	 * La sortie (les coordonnées) du labyrinthe.
 	 */
-	protected Exit exit;
+	public Exit exit;
 	
 	/**
 	 * Le Monstre associé au labyrinthe.
 	 */
-	protected Monster monster;
+	public Monster monster;
 	
 	/**
 	 * Le Chasseur associé au labyrinthe.
 	 */
-	protected Hunter hunter;
+	public Hunter hunter;
 	
 	/**
 	 * Le numéro du tour actuel.
