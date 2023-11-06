@@ -30,6 +30,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
 /**
@@ -355,6 +356,7 @@ public class Management extends Stage implements Observer{
 	 * @param gap_Y 		L'espacement vertical entre les cellules du labyrinthe.
 	 */
 	public void generatePlayMenu(int gap_X, int gap_Y) {
+
 		Label title = this.generateTitle("Main Menu");
 
 		TextField tf_name_monster = this.generateTextField("Monster", this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
@@ -392,29 +394,39 @@ public class Management extends Stage implements Observer{
 			this.setScene(hv.scene);
 		});
 
+		 // Créez un layout vertical pour les boutons
+		  VBox buttonsLayout = new VBox(20);
+
+		  // Ajoutez les éléments du menu aux boutons
+		  buttonsLayout.getChildren().addAll(title, l_nameM, tf_name_monster, choixIA_Monster, l_nameH, tf_name_hunter, choixIA_Hunter, bSettings, bPlay);
+
+		  // Centrez les boutons horizontalement et verticalement
+		  buttonsLayout.setAlignment(Pos.TOP_CENTER);
+
+		  // Créez un layout pour le titre et les boutons
+		  StackPane root = new StackPane();
+		  root.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
+
+		  // Ajoutez le titre et les boutons au layout
+		  root.getChildren().addAll(buttonsLayout);
+
+		  // Centrez le layout sur l'écran
+		  StackPane.setAlignment(root, Pos.CENTER);
+
+		  // Positionnez le titre tout en haut de la page
 
 
-		
+		  // Laissez un espace en haut de la page
+		  root.setPadding(new Insets(30));
+		  
 
-		// Placez le titre en haut à gauche en définissant l'alignement
-		StackPane.setAlignment(title, Pos.TOP_CENTER);
-		
-		VBox buttonsLayout = new VBox(20);
-		buttonsLayout.getChildren().addAll(l_nameM, tf_name_monster, choixIA_Monster,l_nameH, tf_name_hunter, choixIA_Hunter, bSettings,bPlay);
-		StackPane.setAlignment(buttonsLayout, Pos.CENTER);
-		
-		StackPane root = new StackPane();
-		root.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		
-		root.getChildren().addAll(title,  buttonsLayout);
-		
-		StackPane.setAlignment(buttonsLayout, Pos.CENTER);
-		StackPane.setAlignment(root, Pos.CENTER);
+		  // Créez une scène avec le layout
+		  Scene scene = new Scene(root, this.window_height, this.window_width, this.colorOfFloors);
 
-		Scene scene =  new Scene(root, this.window_height, this.window_width, this.colorOfFloors);
+		  // Ajoutez la scène aux menus
+		  this.menus.put(Integer.valueOf(this.ID_PLAY), scene);
 
-		this.menus.put(Integer.valueOf(this.ID_PLAY),scene);
-	}
+		}
 	
 	
 	/**
