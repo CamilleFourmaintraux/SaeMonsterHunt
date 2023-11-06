@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"main.application"},{"l":"main.maze"},{"l":"main.maze.cells"},{"l":"main.strategy.hunter"},{"l":"main.strategy.monster"},{"l":"main.utils"}];updateSearchResults();
