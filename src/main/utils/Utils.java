@@ -39,4 +39,16 @@ public class Utils {
 	public static Background setBackGroungFill(Color fill) {
 		return new Background(new BackgroundFill(fill, new CornerRadii(0), Insets.EMPTY));
 	}
+	
+	/**
+     * Met en pause l'exécution du jeu pendant un certain nombre de secondes.
+	 * @param secondes Le nombre de secondes à attendre.
+	 */
+	public static void wait(int secondes) {
+		try {
+			Thread.sleep(secondes*1000);
+		} catch (InterruptedException e) {
+			System.out.println("InterruptedException");
+		}
+	}
 }

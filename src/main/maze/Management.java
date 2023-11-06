@@ -8,6 +8,7 @@ package main.maze;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
@@ -84,7 +85,7 @@ public class Management extends Stage implements Observer{
 	/**
 	 * Constante de taille minimal du labyrinthe.
 	 */
-	final int MIN_MAZE_SIZE = 3;
+	final int MIN_MAZE_SIZE = 1;
 	
 	/**
 	 * Constante de taille maximal du labyrinthe.
@@ -182,6 +183,10 @@ public class Management extends Stage implements Observer{
 	 */
 	public Map<Integer, Scene> menus;
 	
+	public Stage viewM;
+	public Stage viewH;
+	public Stage viewCommon;
+	
 	/**
 	 * Constructeur de la classe Management.
 	 *
@@ -208,6 +213,10 @@ public class Management extends Stage implements Observer{
 		this.generateSettingsMenu();
 		this.generatePlayMenu(gap_X,gap_Y);
 		this.generateGameOverScreen();
+		
+		this.viewM = new Stage();
+		this.viewH = new Stage();
+		this.viewCommon = new Stage();
 
 		this.setScene(this.getScene(this.ID_PLAY));
 		this.setTitle("MONSTER-HUNTER");
@@ -221,7 +230,10 @@ public class Management extends Stage implements Observer{
 	 */
 	@Override
 	public void update(Subject s) {
-		if(!this.gameOver()) {
+		if((!this.gameOver())) {
+			if((!this.hunter_IA.equals("Player"))&&(!this.monster_IA.equals("Player"))) {
+				Utils.wait(1);
+			}
 			this.switchInGameView();
 		}
 	}
@@ -234,7 +246,10 @@ public class Management extends Stage implements Observer{
 	 */
 	@Override
 	public void update(Subject s, Object o) {
-		if(!this.gameOver()) {
+		if((!this.gameOver())) {
+			if((!this.hunter_IA.equals("Player"))&&(!this.monster_IA.equals("Player"))) {
+				Utils.wait(1);
+			}
 			this.switchInGameView();
 		}
 
@@ -248,74 +263,77 @@ public class Management extends Stage implements Observer{
 	public boolean gameOver() {
 		if(this.maze.isGameOver) {
 			this.setScene(this.getScene(this.ID_GAMEOVER));
+			this.show();
+			if(this.sameScreen) {
+				this.viewCommon.hide();
+			}else {
+				this.viewM.hide();
+				this.viewH.hide();
+			}
+			
 			maze.isGameOver=false;
 			return true;
 		}
 		return false;
 	}
 
-	/**
-	 * Affiche une boite de dialogue indiquant à qui est le tour.
-	 * @param joueur Le nom du joueur.
-	 */
-	public void turnView(String joueur) {
-		this.hide();
+	
+	
+	public Alert generateAlert(String title, String text, ButtonType boutonJouer) {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Au tour du " + joueur);
-		alert.setHeaderText("Voulez-vous commencer votre tour ?");
+		alert.setTitle(title);
+		alert.setHeaderText(text);
 
 		// Personnaliser l'apparence de la boîte de dialogue
 		DialogPane dialogPane = alert.getDialogPane();
 		dialogPane.setMinHeight(Region.USE_PREF_SIZE);
 
 		// Boutons de confirmation et d'annulation
-		ButtonType boutonJouer = new ButtonType("Jouer");
 		alert.getButtonTypes().setAll(boutonJouer);
-
-		// Attendre la réponse de l'utilisateur
-		alert.showAndWait().ifPresent(response -> {
-			if(response == boutonJouer){
-				if(joueur.equals("Monstre")){
-					this.setScene(mv.scene);
-				} else {
-					this.setScene(hv.scene);
-				}
-				this.show();
-			}
-		});
+		
+		return alert;
 	}
 	
-	/**
-     * Met en pause l'exécution du jeu pendant un certain nombre de secondes.
-	 * @param secondes Le nombre de secondes à attendre.
-	 */
-	public void wait(int secondes) {
-		try {
-			Thread.sleep(secondes*1000);
-		} catch (InterruptedException e) {
-			System.out.println("InterruptedException");
-		}
-	}
+	
 	
 	/**
      * Gère le déplacement du monstre par l'IA.
 	 */
-	public void monsterIAplay() {
-			this.maze.move(this.maze.monster.play());
+	public void monsterPlayAt(ICoordinate c) {
+		this.maze.move(c);//this.maze.monster.play());
+
 	}
 	
 	/**
      * Gère le tir du chasseur par l'IA.
 	 */
-	public void hunterIAplay() {
-			this.maze.shoot(this.maze.hunter.play());
+	public void hunterPlayAt(ICoordinate c) {
+		this.maze.shoot(c);//this.maze.hunter.play());
 	}
 
 	/**
 	 * Bascule entre la vue du monstre et la vue du chasseur en fonction du tour actuel du jeu.
 	 */
 	public void switchInGameView() {
-		if(this.hunter_IA.equals("Player")&&this.monster_IA.equals("Player")) {
+		ICoordinate c;
+		if(this.maze.isMonsterTurn) {
+			this.toMonsterView();
+			c = this.maze.monster.play();
+			if(c!=null) {
+				this.monsterPlayAt(c);
+			}
+		}else {
+			this.toHunterView();
+			c = this.maze.hunter.play();
+			if(c!=null) {
+				this.hunterPlayAt(c);
+				this.hv.actualizeCell(c);
+			}
+		}
+		
+		
+		
+		/*if(this.hunter_IA.equals("Player")&&this.monster_IA.equals("Player")) {
 			if(this.maze.isMonsterTurn) {
 				this.turnView("Monstre");
 			}else {
@@ -324,14 +342,14 @@ public class Management extends Stage implements Observer{
 		}else if(this.hunter_IA.equals("Player")||this.monster_IA.equals("Player")) {
 			if(this.maze.isMonsterTurn) {
 				if(this.monster_IA.equals("Player")) {
-					this.setScene(mv.scene);
+					this.viewCommon.setScene(mv.scene);
 				}else {
 					this.monsterIAplay();
 				}
 				
 			}else {
 				if(this.hunter_IA.equals("Player")) {
-					this.setScene(hv.scene);
+					this.viewCommon.setScene(hv.scene);
 				}else {
 					this.hunterIAplay();
 				}
@@ -342,9 +360,63 @@ public class Management extends Stage implements Observer{
 			}else {
 				this.hunterIAplay();
 			}
-		}
+		}*/
 	}
-
+	
+	/**
+	 * Affiche une boite de dialogue indiquant à qui est le tour.
+	 * @param joueur Le nom du joueur.
+	 */
+	public void toHunterView() {
+		//this.viewCommon.hide();
+		/*if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")) {
+			ButtonType boutonJouer = new ButtonType("Jouer");
+			Alert alert = this.generateAlert("Au tour du Chasseur", "Voulez-vous commencer votre tour ?", boutonJouer);// Attendre la réponse de l'utilisateur
+			alert.showAndWait().ifPresent(response -> {
+				if(response == boutonJouer){
+					this.viewCommon.setScene(hv.scene);
+					this.viewCommon.show();
+				}
+			});
+		}else {*/
+		
+		
+		if(this.sameScreen) {
+			this.viewCommon.setScene(hv.scene);
+			this.viewCommon.show();
+		}else {
+			this.viewM.setScene(mv.scene);
+			this.viewH.setScene(hv.scene);
+			this.viewM.show();
+			this.viewH.show();
+		}
+		//}
+		
+	}
+	
+	public void toMonsterView() {
+		//this.viewCommon.hide();
+		/*if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")){
+			ButtonType boutonJouer = new ButtonType("Jouer");
+			Alert alert = this.generateAlert("Au tour du Monstre", "Voulez-vous commencer votre tour ?", boutonJouer);// Attendre la réponse de l'utilisateur
+			alert.showAndWait().ifPresent(response -> {
+				if(response == boutonJouer){
+					this.viewCommon.setScene(mv.scene);
+					this.viewCommon.show();
+				}
+			});
+		}else {*/
+		if(this.sameScreen) {
+			this.viewCommon.setScene(mv.scene);
+			this.viewCommon.show();
+		}else {
+			this.viewM.setScene(mv.scene);
+			this.viewH.setScene(hv.scene);
+			this.viewM.show();
+			this.viewH.show();
+		}
+		//}
+	}
 	
 
 	/**
@@ -380,7 +452,6 @@ public class Management extends Stage implements Observer{
 			this.monster_IA=choixIA_Monster.getValue();
 			this.hunter_name=l_nameH.getText();
 			this.hunter_IA=choixIA_Hunter.getValue();
-			System.out.println("TEST+"+this.hunter_IA);
 			
 			this.zoom=(this.window_height/this.maze_height);
 			
@@ -389,7 +460,17 @@ public class Management extends Stage implements Observer{
 			this.maze.attach(this);
 			this.mv=new MonsterView(window_height,window_width,gap_X,gap_Y,this.zoom,colorOfWalls,colorOfFloors,this.maze);
 			this.hv=new HunterView(window_height,window_width,gap_X,gap_Y,this.zoom,colorOfWalls,colorOfFloors,colorOfFog,this.maze);
-			this.setScene(hv.scene);
+			if(this.sameScreen) {
+				this.viewCommon.show();
+			}else {
+				this.viewM.setScene(mv.scene);
+				this.viewH.setScene(hv.scene);
+				this.viewM.show();
+				this.viewH.show();
+				System.out.println("TEST CORRECTE INIT");
+			}
+			this.hide();
+			this.switchInGameView(); //Ici Vérifie qui joue (IA ou joueur) pour pouvoir démarrer le jeu.
 		});
 
 

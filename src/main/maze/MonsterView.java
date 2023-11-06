@@ -230,21 +230,25 @@ public class MonsterView implements Observer{
 	 * @param e L'événement de la souris associé à la sélection.
 	 */
 	public void select(MouseEvent e, ICoordinate c) {
-		int row=c.getRow();
-		int col=c.getCol();
-		this.selection.setY(this.calculDrawY(row));
-		this.selection.setX(this.calculDrawX(col));
-		this.selection.setCoord(c);
-		this.selection.setVisible(true);
-		this.selection.toFront();
-		if(this.maze.canMonsterMoveAt(c)) {
-			this.validSelection();	
-			if(e.isShiftDown()) {
-				this.maze.move(c);
+		if(this.maze.getMonsterIa().equals("Player")) {
+			int row=c.getRow();
+			int col=c.getCol();
+			this.selection.setY(this.calculDrawY(row));
+			this.selection.setX(this.calculDrawX(col));
+			this.selection.setCoord(c);
+			this.selection.setVisible(true);
+			this.selection.toFront();
+			if(this.maze.canMonsterMoveAt(c)) {
+				this.validSelection();	
+				if(e.isShiftDown()) {
+					this.maze.move(c);
+				}
+			}else{
+				this.invalidSelection();
+				
 			}
-		}else{
-			this.invalidSelection();
-			
+		}else {
+			System.out.println("Pas de sélection : monster IA");
 		}
 	}
 	
