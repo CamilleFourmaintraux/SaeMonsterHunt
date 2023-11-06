@@ -394,32 +394,32 @@ public class Management extends Stage implements Observer{
 			this.setScene(hv.scene);
 		});
 
+		  VBox TitleVbox = new VBox(20);
+		  TitleVbox.getChildren().addAll(title);
+		  TitleVbox.setAlignment(Pos.TOP_CENTER);
+		  
 		 // Créez un layout vertical pour les boutons
 		  VBox buttonsLayout = new VBox(20);
 
 		  // Ajoutez les éléments du menu aux boutons
-		  buttonsLayout.getChildren().addAll(title, l_nameM, tf_name_monster, choixIA_Monster, l_nameH, tf_name_hunter, choixIA_Hunter, bSettings, bPlay);
+		  buttonsLayout.getChildren().addAll(l_nameM, tf_name_monster, choixIA_Monster, l_nameH, tf_name_hunter, choixIA_Hunter, bSettings, bPlay);
 
 		  // Centrez les boutons horizontalement et verticalement
-		  buttonsLayout.setAlignment(Pos.TOP_CENTER);
+		  buttonsLayout.setAlignment(Pos.CENTER);
 
 		  // Créez un layout pour le titre et les boutons
 		  StackPane root = new StackPane();
 		  root.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 
 		  // Ajoutez le titre et les boutons au layout
-		  root.getChildren().addAll(buttonsLayout);
+		  root.getChildren().addAll(TitleVbox, buttonsLayout);
 
 		  // Centrez le layout sur l'écran
 		  StackPane.setAlignment(root, Pos.CENTER);
 
-		  // Positionnez le titre tout en haut de la page
-
-
 		  // Laissez un espace en haut de la page
 		  root.setPadding(new Insets(30));
 		  
-
 		  // Créez une scène avec le layout
 		  Scene scene = new Scene(root, this.window_height, this.window_width, this.colorOfFloors);
 
@@ -500,15 +500,23 @@ public class Management extends Stage implements Observer{
 		StackPane layout = new StackPane();
 		layout.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 
-		// Placez le titre en haut à gauche en définissant l'alignement
-		StackPane.setAlignment(title, Pos.TOP_LEFT);
-
+		// Placez le titre en haut et au centre de la page 
+		StackPane.setAlignment(title, Pos.TOP_CENTER);
+		
+		// Laissez un espace en haut de la page
+		
+		VBox vBoxTitle = new VBox(10);
+		vBoxTitle.getChildren().addAll(title);
+		vBoxTitle.setAlignment(Pos.TOP_CENTER);
+		
 		VBox buttonLayout = new VBox(20);
 		buttonLayout.getChildren().addAll(restartButton, quitButton);
 		buttonLayout.setAlignment(Pos.CENTER);
+		
+		layout.setPadding(new Insets(30));
 
 		// Superposez le titre et les boutons
-		layout.getChildren().addAll(title, buttonLayout);
+		layout.getChildren().addAll(vBoxTitle, buttonLayout);
 		this.menus.put(Integer.valueOf(this.ID_GAMEOVER), new Scene(layout, this.window_height, this.window_width, this.colorOfFloors));
 	}
 	
