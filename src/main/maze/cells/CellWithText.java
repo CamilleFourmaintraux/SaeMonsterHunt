@@ -1,9 +1,19 @@
 package main.maze.cells;
 
+import java.util.Objects;
+
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+/**
+ * La classe CellWithText représente une cellule d'un labyrinthe avec un texte associé.
+ * Elle hérite de Cell et ajoute la capacité d'afficher du texte.
+ */
 public class CellWithText extends Cell{
+	/**
+     * Le texte associé à la cellule.
+     */
 	protected Text text;
 	
 	public CellWithText(int x, int y, int zoom, Color fill,int gap_X, int gap_Y, Text text) {
@@ -35,19 +45,63 @@ public class CellWithText extends Cell{
 		this(c.getCol(), c.getRow(), zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text));
 	}
 	
+	/**
+     * Retourne le texte associé à la cellule.
+     *
+     * @return Le texte de la cellule.
+     */
 	public Text getText() {
 		return this.text;
 	}
+	
+	/**
+     * Définit le texte associé à la cellule.
+     *
+     * @param text Le texte a afficher dans la cellule.
+     */
 	public void setText(Text text) {
 		this.text = text;
 	}
+	
+	 /**
+     * Définit le texte associé à la cellule en utilisant une chaîne de caractères.
+     *
+     * @param text La chaîne de caractères a afficher dans la cellule.
+     */
 	public void setText(String text) {
 		this.text.setText(text);
 	}
-	public void setTextX(double x) {
+	
+	/**
+     * Définit la position horizontale du texte dans la cellule.
+     *
+     * @param x La position horizontale du texte.
+     */
+	public void setPosTextX(double x) {
 		this.text.setX(x);
 	}
-	public void setTextY(double y) {
+	
+	/**
+     * Définit la position verticale du texte dans la cellule.
+     *
+     * @param y La position verticale du texte.
+     */
+	public void setPosTextY(double y) {
 		this.text.setY(y);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CellWithText other = (CellWithText) obj;
+		return Objects.equals(text.getText(), other.text.getText());
+	}
+	
+	
+	
 }
