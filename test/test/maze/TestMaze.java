@@ -7,9 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.Test;
 
+import fr.univlille.info.J2.main.maze.Maze;
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-import main.maze.Maze;
-import main.maze.cells.Coordinate;
 
 public class TestMaze {
 	
