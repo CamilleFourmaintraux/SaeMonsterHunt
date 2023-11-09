@@ -142,6 +142,7 @@ public class Hunter implements IHunterStrategy{
      * @return Les nouvelles coordonnées pour l'action de l'IA facile du chasseur.
 	 */
 	public ICoordinate easy_IA_action() {
+		//Utils.wait(1);
 		int y = Utils.random.nextInt(this.traces.length);
 		int x = Utils.random.nextInt(this.traces[y].length);
 		return new Coordinate(y,x);
@@ -172,8 +173,14 @@ public class Hunter implements IHunterStrategy{
 	 */
 	@Override
 	public ICoordinate play() {
-		// TODO Auto-generated method stub
-		return this.easy_IA_action();
+		if(this.IA_level.equals("IA-Easy")){
+			return this.easy_IA_action();
+		}else if(this.IA_level.equals("IA-Moderate")) {
+			return this.moderate_IA_action();
+		}else if(this.IA_level.equals("IA-Hardcore")) {
+			return this.hardcore_IA_action();
+		}
+		return null;
 	}
 	
 	/**

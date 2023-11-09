@@ -29,6 +29,7 @@ import main.utils.Utils;
  * @author theo.franos.etu
  *
  */
+
 public class Maze extends Subject{
 	
 	private static final boolean[][] DEFAULT_MAP = new boolean[][] {
@@ -297,7 +298,7 @@ public class Maze extends Subject{
 			//Quel endroit le mettre -> pendant ou après le déplacement ?
 			//APRES
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
-				System.out.println("ATTENTION [Tour n°"+this.turn+"]- Le monstre à traversé (est entré et à quitté) l'une de vos cases déjà découverte !");
+				System.out.println("ATTENTION [Tour n°"+this.turn+"]- Le monstre à été détecté dans l'une de vos cases déjà découverte lors du tour précédent !");
 			}
 			//
 			this.monster.setCoord(c);
@@ -312,10 +313,11 @@ public class Maze extends Subject{
 				this.isGameOver=true;
 				System.out.println("MONSTER GAGNE");
 			}
-			this.turn++;
+			this.turn++;  //On passe au tour suivant
 			this.notifyObservers();
 			return true; 
 		}
+		this.notifyObservers();
 		return false;
 	}
 	
@@ -337,6 +339,7 @@ public class Maze extends Subject{
 			this.notifyObservers();
 			return true;
 		}
+		this.notifyObservers();
 		return false;
 	}
 	
@@ -347,10 +350,22 @@ public class Maze extends Subject{
 	 * @return true si le Monstre peut se déplacer à la case demandé, sinon false.
 	 */
 	public boolean canMonsterMoveAt(ICoordinate c) {
-		if(this.isMonsterTurn && this.walls[c.getRow()][c.getCol()] && this.inReach(this.monster.getCoord(), c, 1)) {
-			return true;
+		if(this.isCorrectCoordinate(c)) {
+			if(this.isMonsterTurn && this.walls[c.getRow()][c.getCol()] && this.inReach(this.monster.getCoord(), c, 1)) {
+				return true;
+			}
 		}
 		return false;
+	}
+	
+	
+	public boolean isCorrectCoordinate(ICoordinate c) {
+		if(c.getRow()>=this.walls.length) {
+			return false;
+		}else if(c.getCol()>=this.walls[c.getRow()].length) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -418,6 +433,14 @@ public class Maze extends Subject{
 				cwt.setText(""+trace);
 			}
 		}
+	}
+	
+	public String getMonsterIa() {
+		return this.monster.IA_level;
+	}
+	
+	public String getHunterIa() {
+		return this.hunter.IA_level;
 	}
 	
 	

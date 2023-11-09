@@ -287,20 +287,25 @@ public class HunterView implements Observer{
 	 * @param e L'événement de la souris associé à la sélection.
 	 */
 	public void select(CellWithText r, MouseEvent e) {
-		int y = this.calculCoordY(r);
-		int x = this.calculCoordX(r);
-		this.selection.setY(this.calculDrawY(y));
-		this.selection.setX(this.calculDrawX(x));
-		this.selection.toFront();
-		this.selection.setVisible(true);
-		//System.out.println("("+y+","+x+") est sélectionné.");
-		if(e.isShiftDown()) {
-			ICoordinate c = new Coordinate(y,x);
-			if(this.maze.shoot(c)) {
-				this.actualizeCell(c);
+		if(this.maze.getHunterIa().equals("Player")) {
+			int y = this.calculCoordY(r);
+			int x = this.calculCoordX(r);
+			this.selection.setY(this.calculDrawY(y));
+			this.selection.setX(this.calculDrawX(x));
+			this.selection.toFront();
+			this.selection.setVisible(true);
+			//System.out.println("("+y+","+x+") est sélectionné.");
+			if(e.isShiftDown()) {
+				ICoordinate c = new Coordinate(y,x);
+				if(this.maze.shoot(c)) {
+					this.actualizeCell(c);
+				}
+				
 			}
-			
+		}else {
+			System.out.println("Pas de sélection : hunter IA");
 		}
+		
 	}
 	
 	//TODO Aucun rectangle trouvé

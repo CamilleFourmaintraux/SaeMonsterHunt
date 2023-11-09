@@ -110,6 +110,7 @@ public class Monster implements IMonsterStrategy{
      * @return Les nouvelles coordonnées du monstre après une action de l'IA facile.
 	 */
 	public ICoordinate easy_IA_action() {
+		//Utils.wait(1);
 		int x = this.getCol()+(Utils.random.nextInt(3)-1);
 		int y = this.getRow()+(Utils.random.nextInt(3)-1);
 		return new Coordinate(y,x);
@@ -140,8 +141,14 @@ public class Monster implements IMonsterStrategy{
 	 */
 	@Override
 	public ICoordinate play() {
-		// TODO Auto-generated method stub
-		return this.easy_IA_action();
+		if(this.IA_level.equals("IA-Easy")){
+			return this.easy_IA_action();
+		}else if(this.IA_level.equals("IA-Moderate")) {
+			return this.moderate_IA_action();
+		}else if(this.IA_level.equals("IA-Hardcore")) {
+			return this.hardcore_IA_action();
+		}
+		return null;
 	}
 	
 	/**
