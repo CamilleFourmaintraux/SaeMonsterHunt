@@ -7,6 +7,7 @@ package fr.univlille.info.J2.main.maze;
 
 import fr.univlille.info.J2.main.maze.cells.Cell;
 import fr.univlille.info.J2.main.maze.cells.CellWithText;
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Observer;
 import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
@@ -15,6 +16,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * La classe MonsterView représente la vue du Monstre.
@@ -134,13 +136,13 @@ public class MonsterView implements Observer{
 		this.initiateSprites();
 		this.group_map=new Group();
 		this.group_img_map=new Group();
-		this.draw();
 		this.group_stage=new Group();
 		this.group_stage.getChildren().add(this.group_img_map);
-		this.group_stage.getChildren().add(this.group_map);
 		this.group_stage.getChildren().add(this.group_img_sprite);
 		this.group_stage.getChildren().add(this.group_sprite);
+		this.group_stage.getChildren().add(this.group_map);
 		this.scene=new Scene(this.group_stage,this.window_height,this.window_width);
+		this.draw();
 	}
 
 	/**
@@ -179,6 +181,7 @@ public class MonsterView implements Observer{
 		this.sprite_monster.getImgv().setX(this.calculDrawX(this.maze.monster.getCol()));
 		this.sprite_monster.getImgv().setY(this.calculDrawY(this.maze.monster.getRow()));
 		this.selection.setVisible(false);
+		this.sprite_shot.getImgv().setVisible(true);
 	}
 	
 	/**
@@ -187,29 +190,18 @@ public class MonsterView implements Observer{
 	private void initiateSprites() {
 		//Initialisation du sprite du monstre
 		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster", Utils.monster_ocean);
-		this.sprite_monster.setOnMouseClicked(e->{
-			this.select(e, this.sprite_monster.getCoord());
-		});
+		
 		
 		//initialisation du sprite du dernier tir du chasseur
 		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter", Utils.scope);
-		this.sprite_shot.setOnMouseClicked(e->{
-			this.select(e, this.sprite_shot.getCoord());
-		});	
+		
 		this.sprite_shot.setVisible(false);
 		
 		//Initialisation du sprite de la sortie
 		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit",Utils.exit_dungeon);
-		this.sprite_exit.setOnMouseClicked(e->{
-			this.sprite_exit.toBack();
-			this.select(e, this.sprite_exit.getCoord());
-		});
 		
 		//initialisation du rectangle de sélection
 		this.selection=new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Selection",Utils.empty);
-		this.selection.setOnMouseClicked(e->{
-			this.select(e, this.selection.getCoord());
-		});
 		this.selection.setVisible(false);
 		this.group_sprite.getChildren().add(this.selection);
 		this.group_img_sprite.getChildren().add(this.selection.getImgv());
@@ -222,6 +214,7 @@ public class MonsterView implements Observer{
 		
 		this.group_sprite.getChildren().add(this.sprite_shot);
 		this.group_img_sprite.getChildren().add(this.sprite_shot.getImgv());
+		this.sprite_shot.getImgv().setVisible(false);
 		
 	}
 	
@@ -243,9 +236,13 @@ public class MonsterView implements Observer{
 					//r.setStrokeWidth(1);
 					r.setImage(Utils.wall_dungeon);
 				}
-				r.setOnMouseClicked(e->{
+				r.setOnMouseEntered(e->{
 					this.select(e, r.getCoord());
+					this.scene.setOnMouseClicked(event->{
+						this.selectionLocked(r);
+					});
 				});
+				
 				this.group_map.getChildren().add(r);
 				this.group_img_map.getChildren().add(r.getImgv());
 			}
@@ -268,10 +265,7 @@ public class MonsterView implements Observer{
 			this.selection.setVisible(true);
 			this.selection.toFront();
 			if(this.maze.canMonsterMoveAt(c)) {
-				this.validSelection();	
-				if(e.isShiftDown()) {
-					this.maze.move(c);
-				}
+				this.validSelection();
 			}else{
 				this.invalidSelection();
 				
@@ -280,6 +274,17 @@ public class MonsterView implements Observer{
 			System.out.println("Pas de sélection : monster IA");
 		}
 	}
+	
+	public void selectionLocked(Cell cell) {
+		if(this.maze.getMonsterIa().equals("Player")) {
+			System.out.println(cell.getCoord().toString());
+			int y = this.calculCoordY(cell);
+			int x = this.calculCoordX(cell);
+			ICoordinate c = new Coordinate(y,x);
+			this.maze.move(c);
+		}
+	}
+	
 	
 	/**
      * Invalide la sélection en cours en changeant la couleur de la sélection.
@@ -432,5 +437,25 @@ public class MonsterView implements Observer{
 	 */
 	public int calculDrawY(int y) {
 		return y*zoom+gap_Y;
+	}
+	
+	/**
+     * Calcule la coordonnée X en fonction d'un rectangle.
+     * 
+	 * @param r Le rectangle.
+	 * @return La coordonnée X calculée.
+	 */ 
+	public int calculCoordX(Rectangle r) {
+		return (int)((r.getX()-gap_X)/zoom);
+	}
+	
+	/**
+     * Calcule la coordonnée Y en fonction d'un rectangle.
+     * 
+	 * @param r Le rectangle.
+	 * @return La coordonnée Y calculée.
+	 */
+	public int calculCoordY(Rectangle r) {
+		return (int)((r.getY()-gap_Y)/zoom);
 	}
 }

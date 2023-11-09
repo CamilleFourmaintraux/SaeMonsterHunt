@@ -5,6 +5,8 @@
  */
 package fr.univlille.info.J2.main.maze;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -764,7 +766,7 @@ public class Management extends Stage implements Observer{
 	public Label generateTitle(String title) {
 		Label label = new Label(" "+title+" ");
 		this.setLayout(label, 0, 0);
-		this.applyStyleToTitle(label);
+		this.applyStyleToTitle(label,this.colorOfWalls);
 		label.setTextAlignment(TextAlignment.CENTER);
 		return label;
 	}
@@ -774,8 +776,8 @@ public class Management extends Stage implements Observer{
 	 *
 	 * @param label un Label titre.
 	 */
-	public void applyStyleToTitle(Label label) {
-		label.setBackground(Utils.setBackGroungFill(this.colorOfWalls));
+	public void applyStyleToTitle(Label label, Color color) {
+		label.setBackground(Utils.setBackGroungFill(color));
 		label.setStyle("-fx-font-size: 25px;-fx-text-fill: #000000;");
 	}
 

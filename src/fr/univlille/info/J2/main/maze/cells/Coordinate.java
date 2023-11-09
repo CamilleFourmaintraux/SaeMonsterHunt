@@ -114,6 +114,11 @@ public class Coordinate implements ICoordinate{
 		return col == other.col && row == other.row;
 	}
 	
+
+	public String toString() {
+		return "("+this.getRow()+";"+this.getCol()+")";
+	}
+	
 	
 
 }

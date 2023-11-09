@@ -6,12 +6,16 @@
 package fr.univlille.info.J2.main.maze;
 
 
+import java.awt.Event;
+
+import fr.univlille.info.J2.main.maze.cells.Cell;
 import fr.univlille.info.J2.main.maze.cells.CellWithText;
 import fr.univlille.info.J2.main.maze.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Observer;
 import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -132,8 +136,6 @@ public class HunterView implements Observer{
 		this.group_texts=new Group();
 		this.group_map = new Group();
 		
-		this.initiateSprites();
-		this.draw();
 		//group_texts.getChildren().add(new CellWithText(0,0,50,Color.CORAL,this.gap_X,this.gap_Y,"pomme"));
 		this.group_stage.getChildren().add(group_map);
 		this.group_stage.getChildren().add(group_sprite);
@@ -141,6 +143,9 @@ public class HunterView implements Observer{
 		
 		//Scene
 		this.scene=new Scene(this.group_stage, this.window_height, this.window_width);
+
+		this.initiateSprites();
+		this.draw();
 	}
 
 	
@@ -180,18 +185,32 @@ public class HunterView implements Observer{
 	public void draw() {
 		for(int h=0; h<this.maze.hunter.traces.length; h++) {
 			for(int l=0; l<this.maze.hunter.traces[h].length; l++) {
-				//Codage des rectangles
+				//Codage des rectangles permettant le contrôle
 				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""),Utils.floor_dungeon);
-				cell.setOnMouseClicked(e->{
-					this.select(cell,e);
+				cell.setFocusTraversable(false);
+				cell.setOnMouseEntered(event -> {
+					this.select(cell);
+					this.scene.setOnMouseClicked(e -> { //Vérifie le clic sur la scene et sur sur la cell sinon bug (pour une raison inconnue)
+						this.selectionLocked(cell);
+					});
 				});
+				
 				group_map.getChildren().add(cell);
-				cell.getText().setOnMouseClicked(e->{
-					this.select(cell,e);
-				});
 				this.group_texts.getChildren().add(cell.getText());
 				}
 			}
+	}
+	
+	public void selectionLocked(CellWithText cell) {
+		if(this.maze.getHunterIa().equals("Player")) {
+			System.out.println(cell.getCoord().toString());
+			int y = this.calculCoordY(cell);
+			int x = this.calculCoordX(cell);
+			ICoordinate c = new Coordinate(y,x);
+			if(this.maze.shoot(c)) {
+				this.actualizeCell(c);
+			}
+		}
 	}
 	
 	/*//TODO Corriger et finir les fonctions redraw
@@ -267,14 +286,14 @@ public class HunterView implements Observer{
 		//initialisation du sprite de selection
 		this.selection =  new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Shot",Utils.monster_ocean);
 		this.selection.setOnMouseClicked(e->{
-			this.select(selection, e);
+			this.select(selection);
 		});
 		this.selection.setVisible(false);
 		
 		//initialisation du sprite du tir
 		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot",Utils.monster_ocean);
 		this.sprite_shot.setOnMouseClicked(e->{
-			this.select(this.sprite_shot,e);
+			this.select(this.sprite_shot);
 			//this.sprite_shot.setVisible(false);
 		});
 		this.sprite_shot.setVisible(false);
@@ -290,7 +309,7 @@ public class HunterView implements Observer{
 	 * @param r La cellule à sélectionner.
 	 * @param e L'événement de la souris associé à la sélection.
 	 */
-	public void select(CellWithText r, MouseEvent e) {
+	public void select(CellWithText r) {
 		if(this.maze.getHunterIa().equals("Player")) {
 			int y = this.calculCoordY(r);
 			int x = this.calculCoordX(r);
@@ -299,17 +318,9 @@ public class HunterView implements Observer{
 			this.selection.toFront();
 			this.selection.setVisible(true);
 			//System.out.println("("+y+","+x+") est sélectionné.");
-			if(e.isShiftDown()) {
-				ICoordinate c = new Coordinate(y,x);
-				if(this.maze.shoot(c)) {
-					this.actualizeCell(c);
-				}
-				
-			}
 		}else {
 			System.out.println("Pas de sélection : hunter IA");
 		}
-		
 	}
 	
 	//TODO Aucun rectangle trouvé

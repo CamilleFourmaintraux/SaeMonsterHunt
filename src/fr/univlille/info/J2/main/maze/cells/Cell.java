@@ -32,6 +32,7 @@ public class Cell extends Rectangle{
 	 */
 	ICoordinate coord;
 	ImageView iv;
+	public boolean isLocked;
 	
 	/**
 	 * Constructeur avec des paramètres limit�s. 
@@ -73,6 +74,7 @@ public class Cell extends Rectangle{
 		this.setFill(fill);
 		this.setStroke(stroke);
 		this.setStrokeWidth(strokeWidth);
+		this.isLocked=false;
 	}
 	
 	 /**
@@ -132,6 +134,7 @@ public class Cell extends Rectangle{
 	public void setImage(Image img) {
 		this.iv.setImage(img);
 	}
+	
 	
 	
 	
