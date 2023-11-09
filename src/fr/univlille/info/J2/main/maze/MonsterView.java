@@ -14,9 +14,13 @@ import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 /**
  * La classe MonsterView représente la vue du Monstre.
@@ -41,11 +45,11 @@ public class MonsterView implements Observer{
 	/**
 	 * Hauteur de la fenêtre, par défaut 500
 	 */
-	public int window_height;
+	public double window_height;
 	/**
 	 * Largeur de la fenêtre, par défaut 500
 	 */
-	public int window_width;
+	public double window_width;
 	/**
 	 * Position horizontal, par défaut 0
 	 */
@@ -66,6 +70,11 @@ public class MonsterView implements Observer{
 	 * Couleur des sols
 	 */
 	public Color colorOfFloors=Color.LIGHTGRAY;
+	/**
+	 * Nom du joueur incarnant le monstre
+	 */
+	String monsterName;
+	
 	/**
 	 * Sujet (pour le modèle observé)
 	 */
@@ -102,7 +111,9 @@ public class MonsterView implements Observer{
 	 */
 	Group group_stage;
 	
-	
+	BorderPane bp;
+
+	Text notification;
 	
 	/**
 	 * Scène pour l'affichage.
@@ -121,7 +132,7 @@ public class MonsterView implements Observer{
 	 * @param colorOfFloors		Couleur des sols.
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
-	public MonsterView(int window_height, int window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls, Color colorOfFloors, Maze maze) {
+	public MonsterView(double window_height, double window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls, Color colorOfFloors, Maze maze,  String monsterName) {
 		this.window_height = window_height;
 		this.window_width = window_width;
 		this.gap_X = gap_X;
@@ -129,19 +140,40 @@ public class MonsterView implements Observer{
 		this.zoom = zoom;
 		this.colorOfWalls = colorOfWalls;
 		this.colorOfFloors = colorOfFloors;
+		this.monsterName=monsterName;
+		
 		this.maze = maze;
 		this.maze.attach(this);
+		
 		this.group_sprite=new Group();
 		this.group_img_sprite=new Group();
+		
 		this.initiateSprites();
+		
 		this.group_map=new Group();
 		this.group_img_map=new Group();
 		this.group_stage=new Group();
+		
+		
+		
 		this.group_stage.getChildren().add(this.group_img_map);
 		this.group_stage.getChildren().add(this.group_img_sprite);
 		this.group_stage.getChildren().add(this.group_sprite);
 		this.group_stage.getChildren().add(this.group_map);
-		this.scene=new Scene(this.group_stage,this.window_height,this.window_width);
+
+		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
+		
+		VBox vbox = new VBox();
+		Label player_name = new Label(this.monsterName);
+		player_name.setTextFill(Color.WHITE);
+		this.notification.setFill(Color.WHITE);
+		vbox.getChildren().addAll(player_name,this.notification);
+		this.bp=new BorderPane(group_stage);
+		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
+		this.bp.setTop(vbox);
+		
+		
+		this.scene=new Scene(bp,this.window_width,this.window_height,Color.BLACK);
 		this.draw();
 	}
 
@@ -182,6 +214,11 @@ public class MonsterView implements Observer{
 		this.sprite_monster.getImgv().setY(this.calculDrawY(this.maze.monster.getRow()));
 		this.selection.setVisible(false);
 		this.sprite_shot.getImgv().setVisible(true);
+		if(this.maze.spotted) {
+			this.notification.setText("ATTENTION - Vous avez traversé une case précédemment découverte \npar le chasseur et celui-ci à été averti.");
+		}else {
+			this.notification.setText("");
+		}
 	}
 	
 	/**
@@ -270,18 +307,17 @@ public class MonsterView implements Observer{
 				this.invalidSelection();
 				
 			}
-		}else {
-			System.out.println("Pas de sélection : monster IA");
 		}
 	}
 	
 	public void selectionLocked(Cell cell) {
 		if(this.maze.getMonsterIa().equals("Player")) {
-			System.out.println(cell.getCoord().toString());
 			int y = this.calculCoordY(cell);
 			int x = this.calculCoordX(cell);
 			ICoordinate c = new Coordinate(y,x);
 			this.maze.move(c);
+		}else {
+			this.notification.setText("Pas de sélection possible : "+this.monsterName+" est une IA.");
 		}
 	}
 	
@@ -308,7 +344,7 @@ public class MonsterView implements Observer{
 	 * 
 	 * @return La hauteur de la fenêtre.
 	 */
-	public int getWindow_height() {
+	public double getWindow_height() {
 		return window_height;
 	}
 
@@ -317,8 +353,9 @@ public class MonsterView implements Observer{
 	 * 
 	 * @param window_height La nouvelle hauteur de la fenêtre.
 	 */
-	public void setWindow_height(int window_height) {
+	public void setWindow_height(double window_height) {
 		this.window_height = window_height;
+		
 	}
 
 	/**
@@ -326,7 +363,7 @@ public class MonsterView implements Observer{
 	 * 
 	 * @return La largeur de la fenêtre.
 	 */
-	public int getWindow_width() {
+	public double getWindow_width() {
 		return window_width;
 	}
 
@@ -335,7 +372,7 @@ public class MonsterView implements Observer{
 	 * 
 	 * @param window_width La nouvelle largeur de la fenêtre.
 	 */
-	public void setWindow_width(int window_width) {
+	public void setWindow_width(double window_width) {
 		this.window_width = window_width;
 	}
 

@@ -5,21 +5,18 @@
  */
 package fr.univlille.info.J2.main.maze;
 
-
-import java.awt.Event;
-
-import fr.univlille.info.J2.main.maze.cells.Cell;
 import fr.univlille.info.J2.main.maze.cells.CellWithText;
 import fr.univlille.info.J2.main.maze.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Observer;
 import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -37,11 +34,11 @@ public class HunterView implements Observer{
 	/**
 	 * Hauteur de la fenêtre, par défaut 500
 	 */
-	public int window_height;
+	public double window_height;
 	/**
 	 * Largeur de la fenêtre, par défaut 500
 	 */
-	public int window_width;
+	public double window_width;
 	/**
 	 * Position horizontal, par défaut 0
 	 */
@@ -65,12 +62,18 @@ public class HunterView implements Observer{
 	/**
 	 * Couleur du brouillard
 	 */
-	Color colorOfFog;
+	public Color colorOfFog;
+	
+	/**
+	 * Nom du joueur incarnant le chasseur
+	 */
+	String hunterName;
 	
 	/**
 	 * Sujet (pour le modèle observé)
 	 */
 	Maze maze;
+	
 	/**
 	 * Sprite représentant le tir.
 	 */
@@ -92,10 +95,26 @@ public class HunterView implements Observer{
 	 * Groupe pour la gestion de la map.
 	 */
 	Group group_map;
+	
+	/**
+	 * Groupe pour la gestion des images la map.
+	 */
+	Group group_img_map;
+	
+	/**
+	 * Groupe pour la gestion des images des sprites.
+	 */
+	Group group_img_sprite;
+	
 	/**
 	 * Groupe pour la gestion des textes.
 	 */
 	Group group_texts;
+	
+	BorderPane bp;
+	
+	Text notification;
+	
 	/**
 	 * Scène pour l'affichage.
 	 */
@@ -114,8 +133,8 @@ public class HunterView implements Observer{
 	 * @param colorOfFog		Couleur du brouillard.
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
-	public HunterView(int window_height, int window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
-		Color colorOfFloors, Color colorOfFog, Maze maze) {
+	public HunterView(double window_height, double window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
+		Color colorOfFloors, Color colorOfFog, Maze maze, String hunterName) {
 		
 		//Initiation de la fenetre
 		this.window_height = window_height;
@@ -126,23 +145,39 @@ public class HunterView implements Observer{
 		this.colorOfWalls = colorOfWalls;
 		this.colorOfFloors = colorOfFloors;
 		this.colorOfFog = colorOfFog;
+		this.hunterName=hunterName;
 		
 		this.maze = maze;
 		this.maze.attach(this);
 		
 		//Initiation des groupes
-		this.group_stage=new Group();
+		this.group_img_map = new Group();
+		this.group_img_sprite=new Group();
 		this.group_sprite=new Group();
 		this.group_texts=new Group();
 		this.group_map = new Group();
+		this.group_stage=new Group();
 		
-		//group_texts.getChildren().add(new CellWithText(0,0,50,Color.CORAL,this.gap_X,this.gap_Y,"pomme"));
+		this.group_stage.getChildren().add(group_img_map);
+		this.group_stage.getChildren().add(group_img_sprite);
+		this.group_stage.getChildren().add(group_texts);
 		this.group_stage.getChildren().add(group_map);
 		this.group_stage.getChildren().add(group_sprite);
-		this.group_stage.getChildren().add(group_texts);
+		
+		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
+		
+		VBox vbox = new VBox();
+		Label player_name = new Label(this.hunterName);
+		player_name.setTextFill(Color.WHITE);
+		this.notification.setFill(Color.WHITE);//.setTextFill(Color.WHITE);
+		vbox.getChildren().addAll(player_name,this.notification);
+		this.bp=new BorderPane(group_stage);
+		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
+		this.bp.setTop(vbox);
+		
 		
 		//Scene
-		this.scene=new Scene(this.group_stage, this.window_height, this.window_width);
+		this.scene=new Scene(bp, this.window_width,this.window_height,Color.BLACK);
 
 		this.initiateSprites();
 		this.draw();
@@ -177,6 +212,12 @@ public class HunterView implements Observer{
 		this.sprite_shot.setX(calculDrawX(this.maze.hunter.getCol()));
 		this.sprite_shot.setY(calculDrawY(this.maze.hunter.getRow()));
 		this.sprite_shot.setVisible(true);
+		if(this.maze.spotted) {
+			this.notification.setText("ATTENTION - Le monstre à été détecté dans l'une de vos cases \ndéjà découverte lors d'un tour précédent !");
+		}else {
+			this.notification.setText("");
+		}
+		
 	}
 	
 	/**
@@ -201,17 +242,6 @@ public class HunterView implements Observer{
 			}
 	}
 	
-	public void selectionLocked(CellWithText cell) {
-		if(this.maze.getHunterIa().equals("Player")) {
-			System.out.println(cell.getCoord().toString());
-			int y = this.calculCoordY(cell);
-			int x = this.calculCoordX(cell);
-			ICoordinate c = new Coordinate(y,x);
-			if(this.maze.shoot(c)) {
-				this.actualizeCell(c);
-			}
-		}
-	}
 	
 	/*//TODO Corriger et finir les fonctions redraw
 	public void redraw(int new_gap_X, int new_gap_Y, int new_zoom) {
@@ -285,18 +315,17 @@ public class HunterView implements Observer{
 	private void initiateSprites() {
 		//initialisation du sprite de selection
 		this.selection =  new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Shot",Utils.monster_ocean);
-		this.selection.setOnMouseClicked(e->{
-			this.select(selection);
-		});
 		this.selection.setVisible(false);
 		
 		//initialisation du sprite du tir
 		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot",Utils.monster_ocean);
-		this.sprite_shot.setOnMouseClicked(e->{
-			this.select(this.sprite_shot);
-			//this.sprite_shot.setVisible(false);
-		});
 		this.sprite_shot.setVisible(false);
+		this.sprite_shot.setOnMouseEntered(event -> {
+			this.select(this.sprite_shot);
+			this.scene.setOnMouseClicked(e -> { //Vérifie le clic sur la scene et sur sur la cell sinon bug (pour une raison inconnue)
+				this.selectionLocked(this.sprite_shot);
+			});
+		});
 		
 		//On ajoute les sprites au groupe associé.
 		this.group_sprite.getChildren().add(this.sprite_shot);
@@ -317,11 +346,22 @@ public class HunterView implements Observer{
 			this.selection.setX(this.calculDrawX(x));
 			this.selection.toFront();
 			this.selection.setVisible(true);
-			//System.out.println("("+y+","+x+") est sélectionné.");
-		}else {
-			System.out.println("Pas de sélection : hunter IA");
 		}
 	}
+	
+	public void selectionLocked(CellWithText cell) {
+		if(this.maze.getHunterIa().equals("Player")) {
+			int y = this.calculCoordY(cell);
+			int x = this.calculCoordX(cell);
+			ICoordinate c = new Coordinate(y,x);
+			if(this.maze.shoot(c)) {
+				this.actualizeCell(c);
+			}
+		}else {
+			this.notification.setText("Pas de sélection possible : "+this.hunterName+" est une IA.");
+		}
+	}
+	
 	
 	//TODO Aucun rectangle trouvé
 	public CellWithText searchSprite(Group group, ICoordinate c) {
@@ -346,7 +386,7 @@ public class HunterView implements Observer{
 			CellWithText cwt = searchSprite(this.group_map, c);
 			this.maze.revealCell(cwt,this.colorOfWalls,this.colorOfFloors);
 		}catch(Exception exception) {
-			System.out.println("Error-Aucun Rectangle Correspondant !");
+			System.out.println("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
 		}
 	}
 
@@ -356,7 +396,7 @@ public class HunterView implements Observer{
 	 * 
 	 * @return La hauteur de la fenêtre.
 	 */
-	public int getWindow_height() {
+	public double getWindow_height() {
 		return window_height;
 	}
 
@@ -365,7 +405,7 @@ public class HunterView implements Observer{
 	 * 
 	 * @param window_height La nouvelle hauteur de la fenêtre.
 	 */
-	public void setWindow_height(int window_height) {
+	public void setWindow_height(double window_height) {
 		this.window_height = window_height;
 	}
 
@@ -374,7 +414,7 @@ public class HunterView implements Observer{
 	 * 
 	 * @return La largeur de la fenêtre.
 	 */
-	public int getWindow_width() {
+	public double getWindow_width() {
 		return window_width;
 	}
 
@@ -383,7 +423,7 @@ public class HunterView implements Observer{
 	 * 
 	 * @param window_width La nouvelle largeur de la fenêtre.
 	 */
-	public void setWindow_width(int window_width) {
+	public void setWindow_width(double window_width) {
 		this.window_width = window_width;
 	}
 

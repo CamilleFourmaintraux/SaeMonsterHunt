@@ -113,11 +113,11 @@ public class Management extends Stage implements Observer{
 	/**
 	 * Hauteur de la fenêtre (500 oar défaut).
 	 */
-	public int window_height;
+	public double window_height;
 	/**
 	 * Largeur de la fenêtre (500 oar défaut).
 	 */
-	public int window_width;
+	public double window_width;
 	/**
 	 * Couleur des murs.
 	 */
@@ -199,7 +199,7 @@ public class Management extends Stage implements Observer{
 	 * @param gap_X 			L'écart horizontal dans la vue du labyrinthe. Permet de décaler l'entièreté du labyrinthe sur un axe horizontal.
 	 * @param gap_Y 			L'écart vertical dans la vue du labyrinthe.Permet de décaler l'entièreté du labyrinthe sur un axe vertical.
 	 */
-	public Management(int window_height, int window_width, int gap_X, int gap_Y) {
+	public Management(double window_height, double window_width, int gap_X, int gap_Y) {
 		this.menus=new HashMap<Integer,Scene>();
 		this.window_height = window_height;
 		this.window_width = window_width;
@@ -221,9 +221,20 @@ public class Management extends Stage implements Observer{
 		this.viewM = new Stage();
 		this.viewH = new Stage();
 		this.viewCommon = new Stage();
+		this.viewCommon.setX(500);
+		this.viewCommon.setY(150);
 
 		this.setScene(this.getScene(this.ID_PLAY));
 		this.setTitle("MONSTER-HUNTER");
+		this.viewCommon.setFullScreen(true);
+		
+		this.heightProperty().addListener((obs, oldVal, newVal) -> {
+			this.window_height = newVal.doubleValue();
+		});
+		
+		this.widthProperty().addListener((obs, oldVal, newVal) -> {
+			this.window_width = newVal.doubleValue();
+		});
 		
 	}
 
@@ -330,41 +341,6 @@ public class Management extends Stage implements Observer{
 				this.hv.actualizeCell(c);
 			}
 		}
-		
-		
-		 
-		 
-		
-		
-		
-		/*if(this.hunter_IA.equals("Player")&&this.monster_IA.equals("Player")) {
-			if(this.maze.isMonsterTurn) {
-				this.turnView("Monstre");
-			}else {
-				this.turnView("Chasseur");
-			}
-		}else if(this.hunter_IA.equals("Player")||this.monster_IA.equals("Player")) {
-			if(this.maze.isMonsterTurn) {
-				if(this.monster_IA.equals("Player")) {
-					this.viewCommon.setScene(mv.scene);
-				}else {
-					this.monsterIAplay();
-				}
-				
-			}else {
-				if(this.hunter_IA.equals("Player")) {
-					this.viewCommon.setScene(hv.scene);
-				}else {
-					this.hunterIAplay();
-				}
-			}
-		}else if((!this.hunter_IA.equals("Player")) && (!this.monster_IA.equals("Player"))) {
-			if(this.maze.isMonsterTurn) {
-				this.monsterIAplay();
-			}else {
-				this.hunterIAplay();
-			}
-		}*/
 	}
 	
 	/**
@@ -372,54 +348,42 @@ public class Management extends Stage implements Observer{
 	 * @param joueur Le nom du joueur.
 	 */
 	public void toHunterView() {
-		//this.viewCommon.hide();
-		/*if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")) {
-			ButtonType boutonJouer = new ButtonType("Jouer");
-			Alert alert = this.generateAlert("Au tour du Chasseur", "Voulez-vous commencer votre tour ?", boutonJouer);// Attendre la réponse de l'utilisateur
-			alert.showAndWait().ifPresent(response -> {
-				if(response == boutonJouer){
-					this.viewCommon.setScene(hv.scene);
-					this.viewCommon.show();
-				}
-			});
-		}else {*/
-		
-		
 		if(this.sameScreen) {
-			this.viewCommon.setScene(hv.scene);
-			this.viewCommon.show();
-		}else {
-			this.viewM.setScene(mv.scene);
-			this.viewH.setScene(hv.scene);
-			this.viewM.show();
-			this.viewH.show();
+			if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")) {
+				this.viewCommon.hide();
+				ButtonType boutonJouer = new ButtonType("Jouer");
+				Alert alert = this.generateAlert("Au tour du Chasseur", "Voulez-vous commencer votre tour ?", boutonJouer);// Attendre la réponse de l'utilisateur
+				alert.showAndWait().ifPresent(response -> {
+					if(response == boutonJouer){
+						this.viewCommon.setScene(hv.scene);
+						this.viewCommon.setFullScreen(false);
+						this.viewCommon.show();
+					}
+				});
+			}else {
+				this.viewCommon.setScene(hv.scene);
+			}
 		}
-		//}
 		
 	}
 	
 	public void toMonsterView() {
-		//this.viewCommon.hide();
-		/*if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")){
-			ButtonType boutonJouer = new ButtonType("Jouer");
-			Alert alert = this.generateAlert("Au tour du Monstre", "Voulez-vous commencer votre tour ?", boutonJouer);// Attendre la réponse de l'utilisateur
-			alert.showAndWait().ifPresent(response -> {
-				if(response == boutonJouer){
-					this.viewCommon.setScene(mv.scene);
-					this.viewCommon.show();
-				}
-			});
-		}else {*/
 		if(this.sameScreen) {
-			this.viewCommon.setScene(mv.scene);
-			this.viewCommon.show();
-		}else {
-			this.viewM.setScene(mv.scene);
-			this.viewH.setScene(hv.scene);
-			this.viewM.show();
-			this.viewH.show();
+			if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")){
+				this.viewCommon.hide();
+				ButtonType boutonJouer = new ButtonType("Jouer");
+				Alert alert = this.generateAlert("Au tour du Monstre", "Voulez-vous commencer votre tour ?", boutonJouer);// Attendre la réponse de l'utilisateur
+				alert.showAndWait().ifPresent(response -> {
+					if(response == boutonJouer){
+						this.viewCommon.setScene(mv.scene);
+						this.viewCommon.setFullScreen(false);
+						this.viewCommon.show();
+					} 
+				});
+			}else {
+				this.viewCommon.setScene(mv.scene);
+			}
 		}
-		//}
 	}
 	
 
@@ -453,20 +417,27 @@ public class Management extends Stage implements Observer{
 		Button bPlay = this.generateButton("PLAY", this.calculPercentage(this.window_width, 45), this.calculPercentage(this.window_height,90));
 		bPlay.setOnAction(e->{
 			//intantiation of the settings
-			this.monster_name=l_nameM.getText();
+			this.monster_name=tf_name_monster.getText();
 			this.monster_IA=choixIA_Monster.getValue();
-			this.hunter_name=l_nameH.getText();
+			this.hunter_name=tf_name_hunter.getText();
 			this.hunter_IA=choixIA_Hunter.getValue();
 			
-			this.zoom=(this.window_height/this.maze_height);
+			if(this.window_height>this.window_width) {
+				this.zoom=(int)((this.window_width/this.maze_width)/1.2);
+			}else {
+				this.zoom=(int)((this.window_height/this.maze_height)/1.2);
+			}
+			
 			
 			//Creation of the maze
 			this.maze=new Maze(this.probability, this.maze_height, this.maze_width, monster_IA, hunter_IA);
 			this.maze.attach(this);
-			this.mv=new MonsterView(window_height,window_width,gap_X,gap_Y,this.zoom,colorOfWalls,colorOfFloors,this.maze);
-			this.hv=new HunterView(window_height,window_width,gap_X,gap_Y,this.zoom,colorOfWalls,colorOfFloors,colorOfFog,this.maze);
+
+			this.mv=new MonsterView(this.window_height,this.window_width+100,gap_X,gap_Y,this.zoom,colorOfWalls,this.colorOfFloors,this.maze,this.monster_name);
+			this.hv=new HunterView(this.window_height,this.window_width+100,gap_X,gap_Y,this.zoom,colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.hunter_name);
 			if(this.sameScreen) {
 				this.viewCommon.show();
+				this.setScene(hv.scene);
 			}else {
 				this.viewM.setScene(mv.scene);
 				this.viewH.setScene(hv.scene);
@@ -635,20 +606,23 @@ public class Management extends Stage implements Observer{
 	 */
 	public void applyStyleToButton(Button b) {
 		//Style de base
-		b.setStyle("-fx-background-color: #3498db;\n"
-				+ "    -fx-text-fill: #ffffff;\n"
-				+ "    -fx-font-size: 14px;");
+		b.setStyle("	-fx-background-color: #000000;\n"
+				+ "    	-fx-text-fill: #ffffff;\n"
+				+ "    	-fx-font-size: 14px;\n"
+				+ "		-fx-background-radius: 20px;\n");
 		//Style lorsque l'utilisateur passe la souris sur le button
 		b.setOnMouseEntered(e -> {
-			b.setStyle("-fx-background-color: #e74c3c;\n"
-					+ "    -fx-text-fill: #ffffff;\n"
-					+ "    -fx-font-size: 14px;");
+			b.setStyle("-fx-background-color: #ffffff;\n"
+					+ "    -fx-text-fill: #000000;\n"
+					+ "    -fx-font-size: 14px;\n"
+					+ "		-fx-background-radius: 20px;\n");
 		});
 		// Rétablir le style de base lorsque la souris quitte le bouton
 		b.setOnMouseExited(e -> {
-			b.setStyle("-fx-background-color: #3498db;\n"
-					+ "    -fx-text-fill: #ffffff;\n"
-					+ "    -fx-font-size: 14px;");
+			b.setStyle("	-fx-background-color: #000000;\n"
+					+ "    	-fx-text-fill: #ffffff;\n"
+					+ "    	-fx-font-size: 14px;\n"
+					+ "		-fx-background-radius: 20px;\n");
 		});
 	}
 
@@ -662,7 +636,6 @@ public class Management extends Stage implements Observer{
 	 */
 	public Button generateButton(String msg, double x, double y) {
 		Button button = new Button(msg);
-		//this.download(button);
 		this.setLayout(button, x-(button.getWidth()/2) ,y);
 		this.applyStyleToButton(button);
 		return button;
@@ -680,7 +653,6 @@ public class Management extends Stage implements Observer{
 		ComboBox<String> theme = new ComboBox<String>();
 		theme.getItems().addAll(values);
 		theme.setValue(values[0]);
-		//this.download(theme);
 		this.setLayout(theme, x ,y);
 		return theme;
 	}
@@ -697,7 +669,6 @@ public class Management extends Stage implements Observer{
 	public Label generateLabel(String msg, double x, double y, double minWidth) {
 		Label label = new Label(msg);
 		this.setMinWidth(minWidth);
-		//this.download(label);
 		this.setLayout(label, x,y);
 		return label;
 	}
@@ -766,7 +737,7 @@ public class Management extends Stage implements Observer{
 	public Label generateTitle(String title) {
 		Label label = new Label(" "+title+" ");
 		this.setLayout(label, 0, 0);
-		this.applyStyleToTitle(label,this.colorOfWalls);
+		this.applyStyleToTitle(label,Color.BLACK, Color.WHITE);
 		label.setTextAlignment(TextAlignment.CENTER);
 		return label;
 	}
@@ -776,22 +747,11 @@ public class Management extends Stage implements Observer{
 	 *
 	 * @param label un Label titre.
 	 */
-	public void applyStyleToTitle(Label label, Color color) {
-		label.setBackground(Utils.setBackGroungFill(color));
-		label.setStyle("-fx-font-size: 25px;-fx-text-fill: #000000;");
+	public void applyStyleToTitle(Label label, Color bgColor, Color textColor) {
+		label.setBackground(Utils.setBackGroungFill(bgColor));
+		label.setTextFill(textColor);
+		label.setStyle("-fx-font-size: 25px;");
 	}
-
-	/*
-	//Cette fonction semble très étange, mais elle permet de corriger un bug de javaFX
-	public void download(Node node) {
-		Group test=new Group();
-		test.getChildren().addAll(node);
-		Stage stage = new Stage();
-		stage.setScene(new Scene(test,10,10));
-		stage.show();
-		stage.close();
-	}
-	*/
 
 	/**
 	 * Permet de définir la couleur de fond d'un élément identifié par son ID.

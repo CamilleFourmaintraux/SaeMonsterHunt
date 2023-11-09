@@ -86,6 +86,8 @@ public class Maze extends Subject{
 	 */
 	public boolean isGameOver;
 	
+	public boolean spotted;
+	
 	/**
 	 * Constructeur vide, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
 	 * @see Maze#Maze(boolean[][], String, String)
@@ -301,12 +303,12 @@ public class Maze extends Subject{
 	 * @return true si l'action a reussi, sinon false.
 	 */
 	public boolean move(ICoordinate c) { //Fais le déplcament du monstre, retoure true si le déplacement à été possible.:
-		System.out.println("MONSTER PLAY");
+		this.spotted=false;
 		if(this.canMonsterMoveAt(c)) {
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
-				System.out.println("ATTENTION [Tour n°"+this.turn+"]- Le monstre à été détecté dans l'une de vos cases déjà découverte lors du tour précédent !");
+				//[Tour n°"+this.turn+"]
+				this.spotted=true;
 			}
-			
 			this.setTrace(c, turn);
 			
 			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
@@ -315,7 +317,7 @@ public class Maze extends Subject{
 			
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
-				System.out.println("MONSTER GAGNE");
+				System.out.println("MONSTER GAGNE"); //TODO A ENLEVER ET A PLACER DANS LE MENU GAME OVER
 			}
 			
 			this.turn++;  //On passe au tour suivant
@@ -323,7 +325,9 @@ public class Maze extends Subject{
 			this.notifyObservers();
 			return true; 
 		}
-		this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
+		if(!this.getMonsterIa().equals("Player")) {
+			this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
+		}
 		return false;
 	}
 	
@@ -339,7 +343,7 @@ public class Maze extends Subject{
 			this.hunter.update(ce);
 			if(ce.getState().equals(CellInfo.MONSTER)) {
 				this.isGameOver=true;
-				System.out.println("HUNTER GAGNE");
+				System.out.println("HUNTER GAGNE");//TODO A ENLEVER
 			}
 			this.isMonsterTurn=true;
 			this.notifyObservers();
