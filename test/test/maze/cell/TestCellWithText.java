@@ -11,6 +11,7 @@ import javafx.scene.text.Text;
 import main.maze.cells.Cell;
 import main.maze.cells.CellWithText;
 import main.maze.cells.Coordinate;
+import main.utils.Utils;
 
 public class TestCellWithText {
 	CellWithText cwt1 = new CellWithText(1,2,50,Color.RED,10,10, new Text("test"));
@@ -63,7 +64,7 @@ public class TestCellWithText {
 		assertTrue(cwt1.equals(cwt3));
 		assertFalse(cwt1.equals(null));
 		assertFalse(cwt1.equals(new Object()));
-		assertFalse(cwt2.equals(new Cell(3,4,50,Color.RED,10,10)));
+		assertFalse(cwt2.equals(new Cell(3,4,50,Color.RED,10,10,Utils.caveFloor)));
 		assertFalse(cwt3.equals(cwt4));
 		assertFalse(cwt4.equals(cwt5));
 	}

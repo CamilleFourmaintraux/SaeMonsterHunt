@@ -69,8 +69,8 @@ public class TestMaze {
 	 
 	 @Test
 	 public void testIsWall() {
-		 assertTrue(maze_defaultMap.isWall(new Coordinate(7, 6)));
-		 assertFalse(maze_defaultMap.isWall(new Coordinate(6, 0)));
+		 assertTrue(maze_defaultMap.isFloor(new Coordinate(7, 6)));
+		 assertFalse(maze_defaultMap.isFloor(new Coordinate(6, 0)));
 	 }
 	 
 	 @Test

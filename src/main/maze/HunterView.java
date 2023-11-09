@@ -18,6 +18,7 @@ import main.maze.cells.CellWithText;
 import main.maze.cells.Coordinate;
 import main.utils.Observer;
 import main.utils.Subject;
+import main.utils.Utils;
 /**
  * La classe HunterView représente la vue du chasseur.
  * Elle affiche la vue du chasseur et gère son interaction avec le jeu.
@@ -150,9 +151,7 @@ public class HunterView implements Observer{
 	 */
 	@Override
 	public void update(Subject s) {
-		this.sprite_shot.setX(calculDrawX(this.maze.hunter.getCol()));
-		this.sprite_shot.setY(calculDrawY(this.maze.hunter.getRow()));
-		this.sprite_shot.setVisible(true);
+		this.actualize();
 		
 	}
 
@@ -165,6 +164,11 @@ public class HunterView implements Observer{
      */
 	@Override
 	public void update(Subject s, Object o) {
+		this.actualize();
+	}
+	
+	
+	public void actualize() {
 		this.sprite_shot.setX(calculDrawX(this.maze.hunter.getCol()));
 		this.sprite_shot.setY(calculDrawY(this.maze.hunter.getRow()));
 		this.sprite_shot.setVisible(true);
@@ -177,7 +181,7 @@ public class HunterView implements Observer{
 		for(int h=0; h<this.maze.hunter.traces.length; h++) {
 			for(int l=0; l<this.maze.hunter.traces[h].length; l++) {
 				//Codage des rectangles
-				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""));
+				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""),Utils.floor_dungeon);
 				cell.setOnMouseClicked(e->{
 					this.select(cell,e);
 				});
@@ -261,14 +265,14 @@ public class HunterView implements Observer{
 	 */
 	private void initiateSprites() {
 		//initialisation du sprite de selection
-		this.selection =  new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Shot");
+		this.selection =  new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Shot",Utils.monster_ocean);
 		this.selection.setOnMouseClicked(e->{
 			this.select(selection, e);
 		});
 		this.selection.setVisible(false);
 		
 		//initialisation du sprite du tir
-		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot");
+		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot",Utils.monster_ocean);
 		this.sprite_shot.setOnMouseClicked(e->{
 			this.select(this.sprite_shot,e);
 			//this.sprite_shot.setVisible(false);

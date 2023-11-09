@@ -29,7 +29,7 @@ public class TestHunter {
 		
 		@Test
 		public void test_update_hunter() {
-			hunter.update(new CellEvent(null, 0));
+			hunter.update(new CellEvent(null, 0, null));
 		}
 
 	

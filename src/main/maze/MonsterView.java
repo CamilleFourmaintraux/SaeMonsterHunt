@@ -15,6 +15,7 @@ import main.maze.cells.CellWithText;
 //import main.maze.cells.ICellEvent.CellInfo; //Inutilisé
 import main.utils.Observer;
 import main.utils.Subject;
+import main.utils.Utils;
 
 /**
  * La classe MonsterView représente la vue du Monstre.
@@ -76,17 +77,32 @@ public class MonsterView implements Observer{
 	CellWithText  selection;
 	
 	/**
-	 * Groupe pour la gestion de la scène.
+	 * Groupe pour la gestion des images.
 	 */
-	Group group_stage;
+	Group group_img_map;
+	
 	/**
-	 * Groupe pour la gestion des sprites (rectangle).
+	 * Groupe pour la gestion des images des sprites.
 	 */
-	Group group_sprite;
+	Group group_img_sprite;
+	
 	/**
 	 * Groupe pour la gestion de la map.
 	 */
 	Group group_map;
+	
+	/**
+	 * Groupe pour la gestion des sprites (rectangle).
+	 */
+	Group group_sprite;
+	
+	/**
+	 * Groupe pour la gestion de la scène.
+	 */
+	Group group_stage;
+	
+	
+	
 	/**
 	 * Scène pour l'affichage.
 	 */
@@ -115,10 +131,15 @@ public class MonsterView implements Observer{
 		this.maze = maze;
 		this.maze.attach(this);
 		this.group_sprite=new Group();
+		this.group_img_sprite=new Group();
 		this.initiateSprites();
-		this.group_map=this.draw();
+		this.group_map=new Group();
+		this.group_img_map=new Group();
+		this.draw();
 		this.group_stage=new Group();
+		this.group_stage.getChildren().add(this.group_img_map);
 		this.group_stage.getChildren().add(this.group_map);
+		this.group_stage.getChildren().add(this.group_img_sprite);
 		this.group_stage.getChildren().add(this.group_sprite);
 		this.scene=new Scene(this.group_stage,this.window_height,this.window_width);
 	}
@@ -130,13 +151,7 @@ public class MonsterView implements Observer{
 	 */
 	@Override
 	public void update(Subject s) {
-		this.sprite_monster.setX(this.calculDrawX(this.maze.monster.getCol()));
-		this.sprite_monster.setY(this.calculDrawY(this.maze.monster.getRow()));
-		this.sprite_monster.setCoord(this.maze.monster.coord);
-		this.sprite_shot.setX(this.calculDrawX(this.maze.hunter.getCol()));
-		this.sprite_shot.setY(this.calculDrawY(this.maze.hunter.getRow()));
-		this.sprite_shot.setCoord(this.maze.hunter.getCoord());
-		this.sprite_shot.setVisible(true);
+		this.actualize();
 	}
 
 	/**
@@ -148,14 +163,23 @@ public class MonsterView implements Observer{
      */
 	@Override
 	public void update(Subject s, Object o) {
+		this.actualize();
+	}
+	
+	public void actualize() {
 		this.sprite_monster.setX(this.calculDrawX(this.maze.monster.getCol()));
 		this.sprite_monster.setY(this.calculDrawY(this.maze.monster.getRow()));
 		this.sprite_monster.setCoord(this.maze.monster.coord);
 		this.sprite_monster.setVisible(true);
 		this.sprite_shot.setX(this.calculDrawX(this.maze.hunter.getCol()));
 		this.sprite_shot.setY(this.calculDrawY(this.maze.hunter.getRow()));
+		this.sprite_shot.getImgv().setX(this.calculDrawX(this.maze.hunter.getCol()));
+		this.sprite_shot.getImgv().setY(this.calculDrawY(this.maze.hunter.getRow()));
 		this.sprite_shot.setCoord(this.maze.hunter.getCoord());
 		this.sprite_shot.setVisible(true);
+		this.sprite_monster.getImgv().setX(this.calculDrawX(this.maze.monster.getCol()));
+		this.sprite_monster.getImgv().setY(this.calculDrawY(this.maze.monster.getRow()));
+		this.selection.setVisible(false);
 	}
 	
 	/**
@@ -163,35 +187,42 @@ public class MonsterView implements Observer{
 	 */
 	private void initiateSprites() {
 		//Initialisation du sprite du monstre
-		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, this.MONSTER_COLOR, this.gap_X, this.gap_Y, "Monster");
+		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster", Utils.monster_ocean);
 		this.sprite_monster.setOnMouseClicked(e->{
 			this.select(e, this.sprite_monster.getCoord());
 		});
 		
 		//initialisation du sprite du dernier tir du chasseur
-		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 3, this.gap_X, this.gap_Y, "Hunter");
+		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter", Utils.scope);
 		this.sprite_shot.setOnMouseClicked(e->{
 			this.select(e, this.sprite_shot.getCoord());
-		});
+		});	
 		this.sprite_shot.setVisible(false);
 		
 		//Initialisation du sprite de la sortie
-		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, this.EXIT_COLOR, this.gap_X, this.gap_Y, "Exit");
+		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit",Utils.exit_dungeon);
 		this.sprite_exit.setOnMouseClicked(e->{
 			this.sprite_exit.toBack();
 			this.select(e, this.sprite_exit.getCoord());
 		});
 		
 		//initialisation du rectangle de sélection
-		this.selection=new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Selection");
+		this.selection=new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Selection",Utils.empty);
 		this.selection.setOnMouseClicked(e->{
 			this.select(e, this.selection.getCoord());
 		});
 		this.selection.setVisible(false);
 		this.group_sprite.getChildren().add(this.selection);
+		this.group_img_sprite.getChildren().add(this.selection.getImgv());
+		
 		this.group_sprite.getChildren().add(this.sprite_monster);
+		this.group_img_sprite.getChildren().add(this.sprite_monster.getImgv());
+		
 		this.group_sprite.getChildren().add(this.sprite_exit);
+		this.group_img_sprite.getChildren().add(this.sprite_exit.getImgv());
+		
 		this.group_sprite.getChildren().add(this.sprite_shot);
+		this.group_img_sprite.getChildren().add(this.sprite_shot.getImgv());
 		
 	}
 	
@@ -200,27 +231,26 @@ public class MonsterView implements Observer{
 	 * 
 	 * @return Un groupe contenant les éléments graphiques du labyrinthe.
 	 */
-	public Group draw() {
-		Group root = new Group();
+	public void draw() {
 		for(int h=0; h<this.maze.walls.length; h++) {
 			for(int l=0; l<this.maze.walls[h].length; l++) {
-				Cell r = new Cell(l, h, this.zoom, this.colorOfFloors, this.gap_X, this.gap_Y);
+				Cell r = new Cell(l, h, this.zoom, Color.TRANSPARENT,Color.TRANSPARENT,0, this.gap_X, this.gap_Y, Utils.floor_dungeon);
 				//Codage des rectangles
 				if(this.maze.walls[h][l]) {
 					//Code à calculer si c'est un sol : obsolète car la manière de faire les rectangles à changer
 				}else {
-					r.setFill(this.colorOfWalls);
-					r.setStroke(this.colorOfWalls);
-					r.setStrokeWidth(1);
+					//r.setFill(this.colorOfWalls);
+					//r.setStroke(this.colorOfWalls);
+					//r.setStrokeWidth(1);
+					r.setImage(Utils.wall_dungeon);
 				}
 				r.setOnMouseClicked(e->{
 					this.select(e, r.getCoord());
 				});
-				
-				root.getChildren().add(r);
+				this.group_map.getChildren().add(r);
+				this.group_img_map.getChildren().add(r.getImgv());
 			}
 		}
-		return root;
 	}
 	
 	/**
