@@ -7,13 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.Test;
 
 import main.maze.cells.Coordinate;
+import main.utils.Utils;
 import main.maze.cells.Cell;
 import javafx.scene.paint.Color;
 
 public class TestCell {
 	
 	
-	Cell cell= new Cell(1,2,50,Color.RED,10,10);
+	Cell cell= new Cell(1,2,50,Color.RED,10,10,Utils.caveWall);
 	
 	@Test
 	public void test_constructor_cell() {
@@ -40,8 +41,8 @@ public class TestCell {
 	public void test_equals_cell() {
 		assertTrue(cell.equals(cell));
 		assertFalse(cell.equals(null));
-		assertFalse(cell.equals(new Cell(5,2,50,Color.RED,10,10)));
-		assertTrue(cell.equals(new Cell(1,2,50,Color.RED,10,10)));
+		assertFalse(cell.equals(new Cell(5,2,50,Color.RED,10,10,Utils.caveWall)));
+		assertTrue(cell.equals(new Cell(1,2,50,Color.RED,10,10,Utils.caveWall)));
 	}
 	
 

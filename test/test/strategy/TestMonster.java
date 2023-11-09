@@ -54,7 +54,7 @@ public class TestMonster {
 	
 	@Test
 	public void test_update() {
-		monster.update(new CellEvent(null, 0));
+		monster.update(new CellEvent(null, 0, null));
 	}
 
 	/*@Test

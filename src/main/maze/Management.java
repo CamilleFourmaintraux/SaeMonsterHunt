@@ -179,6 +179,7 @@ public class Management extends Stage implements Observer{
 	 */
 	public boolean sameScreen;
 	
+	
 	/**
 	 * Map contenant les différents menus du jeu.
 	 */
@@ -232,9 +233,6 @@ public class Management extends Stage implements Observer{
 	@Override
 	public void update(Subject s) {
 		if((!this.gameOver())) {
-			if((!this.hunter_IA.equals("Player"))&&(!this.monster_IA.equals("Player"))) {
-				Utils.wait(1);
-			}
 			this.switchInGameView();
 		}
 	}
@@ -248,9 +246,6 @@ public class Management extends Stage implements Observer{
 	@Override
 	public void update(Subject s, Object o) {
 		if((!this.gameOver())) {
-			if((!this.hunter_IA.equals("Player"))&&(!this.monster_IA.equals("Player"))) {
-				Utils.wait(1);
-			}
 			this.switchInGameView();
 		}
 
@@ -302,6 +297,7 @@ public class Management extends Stage implements Observer{
 	 */
 	public void monsterPlayAt(ICoordinate c) {
 		this.maze.move(c);//this.maze.monster.play());
+		this.mv.actualize();
 
 	}
 	
@@ -310,6 +306,7 @@ public class Management extends Stage implements Observer{
 	 */
 	public void hunterPlayAt(ICoordinate c) {
 		this.maze.shoot(c);//this.maze.hunter.play());
+		this.hv.actualize();
 	}
 
 	/**
@@ -331,6 +328,10 @@ public class Management extends Stage implements Observer{
 				this.hv.actualizeCell(c);
 			}
 		}
+		
+		
+		 
+		 
 		
 		
 		
@@ -469,7 +470,6 @@ public class Management extends Stage implements Observer{
 				this.viewH.setScene(hv.scene);
 				this.viewM.show();
 				this.viewH.show();
-				System.out.println("TEST CORRECTE INIT");
 			}
 			this.hide();
 			this.switchInGameView(); //Ici Vérifie qui joue (IA ou joueur) pour pouvoir démarrer le jeu.
@@ -554,6 +554,7 @@ public class Management extends Stage implements Observer{
 			this.setScene(this.getScene(this.ID_PLAY));
 			this.maze_height=Integer.parseInt(tf_maze_height.getText());
 			this.maze_width=Integer.parseInt(tf_maze_width.getText());
+			this.probability=Integer.parseInt(tf_probability.getText());
 		});
 
 		Group group = new Group();

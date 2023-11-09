@@ -9,6 +9,7 @@ package main.utils;
 import java.util.Random;
 
 import javafx.geometry.Insets;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -26,6 +27,27 @@ import javafx.scene.paint.Color;
  *
  */
 public class Utils {
+	
+	public static Image floor_dungeon = new Image("floor_dungeon.png");
+	public static Image wall_dungeon = new Image("wall_dungeon.png");
+	
+	public static Image exit_dungeon = new Image("exit_dungeon.png");
+	
+	
+
+	public static Image floor_forest = new Image("floor.jpg");
+	public static Image wall_forest = new Image("wall.jpg");
+	
+
+	public static Image floor_ocean = new Image("floor.jpg");
+	public static Image wall_ocean = new Image("wall.jpg");
+	
+	public static Image monster_ocean = new Image("krakenV2.png");
+	
+
+	public static Image scope = new Image("scope.png");
+	public static Image empty = new Image("empty.png");
+	
 	/**
 	 * Générateur de nombres aléatoires utilisé pour diverses opérations.
 	 */

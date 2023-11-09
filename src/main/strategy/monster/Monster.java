@@ -154,11 +154,10 @@ public class Monster implements IMonsterStrategy{
 	/**
      * Met à jour l'état du monstre en fonction d'un événement de cellule.
      *
-     * @param arg0 L'événement de cellule qui a eu lieu.
+     * @param ce L'événement de cellule qui a eu lieu.
      */
 	@Override
-	public void update(ICellEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void update(ICellEvent ce) {
+		this.setCoord(ce.getCoord());
 	}
 }

@@ -7,6 +7,7 @@ package main.strategy.hunter;
 import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import main.maze.cells.Coordinate;
 import main.utils.Utils;
 /**
@@ -186,11 +187,16 @@ public class Hunter implements IHunterStrategy{
 	/**
      * Méthode de mise à jour appelée lorsqu'un événement de cellule se produit.
      *
-     * @param arg0 L'événement de cellule.	 
+     * @param ce L'événement de cellule.	 
      */
 	@Override
-	public void update(ICellEvent arg0) {
-		// TODO Auto-generated method stub
+	public void update(ICellEvent ce) {
+		this.setCoord(ce.getCoord());
+		if(ce.getState().equals(CellInfo.WALL)) {
+			this.setTrace(ce.getCoord(), -1);
+		}else {
+			this.setTrace(ce.getCoord(), ce.getTurn());
+		}
 		
 	}
 }

@@ -35,9 +35,9 @@ public class CellEvent implements ICellEvent{
      * @param coord Les coordonnées de la cellule ou l'événement a eu lieu.
      * @param turn Le numéro du tour auquel l'événement a eu lieu.
 	 */
-	public CellEvent(ICoordinate coord, int turn) {
+	public CellEvent(ICoordinate coord, int turn, CellInfo state) {
 		this.coord = coord;
-		this.state = null;
+		this.state = state;
 		this.turn = turn;
 	}
 	

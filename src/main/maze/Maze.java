@@ -6,6 +6,7 @@
 package main.maze;
 
 
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /*import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -98,8 +99,8 @@ public class Maze extends Subject{
 	 * Constructeur originel, crée un labyrinthe Maze à partir d'un labyrinthe existant donné en parametre.
 	 * @see Maze#Maze()
 	 * @param maze 			un labyrinthe.
-	 * @param monster_IA 	Nom du Monstre.
-	 * @param hunter_IA		Nom du Chasseur.
+	 * @param monster_IA 	Niveau de l'ia du monstre
+	 * @param hunter_IA		Niveau de l'ia du chasseur
 	 */
 	public Maze(boolean[][] maze, String monster_IA, String hunter_IA) {
 		this.walls=maze;
@@ -116,8 +117,8 @@ public class Maze extends Subject{
 	 * @param probability le taux de chances qu'une case du labyrinthe soit un mur.
 	 * @param height la hauteur du labyrinthe.
 	 * @param width la largeur du labyrinthe.
-	 * @param monster_IA 	Nom du Monstre.
-	 * @param hunter_IA		Nom du Chasseur.
+	 * @param monster_IA 	Niveau de l'ia du monstre
+	 * @param hunter_IA		Niveau de l'ia du chasseur
 	 */
 	public Maze(int probability, int height, int width, String monster_IA, String hunter_IA) {
 		this(Maze.generateRandomMap(probability, height, width), monster_IA, hunter_IA);
@@ -132,11 +133,12 @@ public class Maze extends Subject{
 		int[][] traces = new int[this.walls.length][this.walls[0].length];
 		for(int h=0; h<this.walls.length;h++) {
 			for(int l=0; l<this.walls[h].length;l++) {
-				if(this.walls[h][l]) {
+				traces[h][l]=0;
+				/*if(this.walls[h][l]) {
 					traces[h][l]=0;
 				}else {
 					traces[h][l]=-1;//Mur
-				}	
+				}*/	
 			}
 		}
 		return traces;
@@ -160,14 +162,13 @@ public class Maze extends Subject{
 	 * @return un tableau de boolean représentant un labyrinthe.
 	 */
 	public static boolean[][] generateRandomMap(int probability, int height, int width) {
-		boolean[][] maze = new boolean[height][width];
+		boolean[][] maze = Maze.initEmptyMaze(height, width);
 		boolean onlyWalls;
 		for(int h=1; h<maze.length; h+=2) {
 			onlyWalls=true;
 			for(int l=0; l<maze[h].length; l++) {
-				maze[h-1][l]=true;
-				if(probability<Utils.random.nextInt(99)+1) {
-					maze[h][l]=true;
+				if(probability<Utils.random.nextInt(100)+1) {
+					//maze[h][l]=true; //De base mit à true, grâce à la fonction intEmptyMaze
 					onlyWalls=false;
 				}else {
 					maze[h][l]=false;
@@ -175,6 +176,16 @@ public class Maze extends Subject{
 			}
 			if(onlyWalls) {
 				maze[h][Utils.random.nextInt(maze[h].length)]=true;
+			}
+		}
+		return maze;
+	}
+	
+	public static boolean[][] initEmptyMaze(int height, int width) {
+		boolean[][] maze = new boolean[height][width];
+		for(int h=0; h<maze.length; h++) {
+			for(int l=0; l<maze[h].length; l++) {
+				maze[h][l]=true;
 			}
 		}
 		return maze;
@@ -250,29 +261,27 @@ public class Maze extends Subject{
 		}
 	}
 	
-	//Inutilisé
-	/*
-	private CellInfo getCellInfo(int y, int x) {
-		if(this.coord_monster.getRow()==y && this.coord_monster.getCol()==x) {
+	public CellInfo getCellInfo(ICoordinate c) {
+		if(this.monster.getCoord().equals(c)) {
 			return CellInfo.MONSTER;
-		}else if(this.coord_hunter.getRow()==y && this.coord_hunter.getCol()==x) {
+		}else if(this.hunter.getCoord().equals(c)) {
 			return CellInfo.HUNTER;
-		}else if(this.coord_exit.getRow()==y && this.coord_exit.getCol()==x) {
+		}else if(this.exit.getCoord().equals(c)) {
 			return CellInfo.EXIT;
-		}else if(this.walls[y][x]) {
+		}else if(this.walls[c.getRow()][c.getCol()]) {
 			return CellInfo.EMPTY;
 		}else {
 			return CellInfo.WALL;
 		}
-	}*/
+	}
 	
 	/**
-	 * Vérifie si la coordonnée donnée est mur du labyrinthe ou non.
+	 * Vérifie si un mur est présent ou non à la coordonné doonné du labyrinthe
 	 * 
 	 * @param c une coordonnée du labyrinthe.
-	 * @return true si la coordonnée indiqué est un mur, sinon false.
+	 * @return false si la coordonnée indiqué est un mur, sinon true.
 	 */
-	public boolean isWall(Coordinate c) {
+	public boolean isFloor(ICoordinate c) {
 		return this.walls[c.getRow()][c.getCol()];
 	}
 	
@@ -293,31 +302,29 @@ public class Maze extends Subject{
 	 * @return true si l'action a reussi, sinon false.
 	 */
 	public boolean move(ICoordinate c) { //Fais le déplcament du monstre, retoure true si le déplacement à été possible.:
+		System.out.println("MONSTER PLAY");
 		if(this.canMonsterMoveAt(c)) {
-			//System.out.println("Tour n°"+this.turn);
-			//Quel endroit le mettre -> pendant ou après le déplacement ?
-			//APRES
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
 				System.out.println("ATTENTION [Tour n°"+this.turn+"]- Le monstre à été détecté dans l'une de vos cases déjà découverte lors du tour précédent !");
 			}
-			//
-			this.monster.setCoord(c);
-			this.isMonsterTurn=false;
+			
 			this.setTrace(c, turn);
-			//PENDANT
-			/*if(this.hunter.getTrace(c)!=-2) {
-				System.out.println("ATTENTION [Tour n°"+this.turn+"]- Le monstre à traversé (est entré et à quitté) l'une de vos cases déjà découverte !");
-			}*/
-			//
-			if(this.monster.coord.equals(exit.getCoord())) {
+			
+			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
+			
+			this.monster.update(ce);
+			
+			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
 				System.out.println("MONSTER GAGNE");
 			}
+			
 			this.turn++;  //On passe au tour suivant
+			this.isMonsterTurn=false;
 			this.notifyObservers();
 			return true; 
 		}
-		this.notifyObservers();
+		this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
 		return false;
 	}
 	
@@ -329,17 +336,17 @@ public class Maze extends Subject{
 	 */
 	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, devrait toujours renvoyer true logiquement, peut etre changer le type de retour.
 		if(!this.isMonsterTurn) {
-			this.hunter.setCoord(c);
-			this.hunter.setTrace(c, this.getTrace(c));
-			this.isMonsterTurn=true;
-			if(this.hunter.coord.equals(monster.getCoord())) {
+			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
+			this.hunter.update(ce);
+			if(ce.getState().equals(CellInfo.MONSTER)) {
 				this.isGameOver=true;
 				System.out.println("HUNTER GAGNE");
 			}
+			this.isMonsterTurn=true;
 			this.notifyObservers();
 			return true;
 		}
-		this.notifyObservers();
+		this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
 		return false;
 	}
 	
@@ -424,14 +431,14 @@ public class Maze extends Subject{
 	 */
 	public void revealCell(CellWithText cwt, Color colorOfWalls, Color colorOfFloors) {
 		cwt.setStroke(Color.TRANSPARENT);
-		if(this.hunter.traces[this.hunter.getRow()][this.hunter.getCol()]==-1) {
-			cwt.setFill(colorOfWalls);
-		}else {
+		if(this.isFloor(cwt.getCoord())) {
 			cwt.setFill(colorOfFloors);
 			int trace = this.hunter.traces[cwt.getRow()][cwt.getCol()];
 			if(trace>0) {
 				cwt.setText(""+trace);
 			}
+		}else {
+			cwt.setFill(colorOfWalls);
 		}
 	}
 	

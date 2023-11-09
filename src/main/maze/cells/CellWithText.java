@@ -3,8 +3,10 @@ package main.maze.cells;
 import java.util.Objects;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import main.utils.Utils;
 
 /**
  * La classe CellWithText représente une cellule d'un labyrinthe avec un texte associé.
@@ -16,20 +18,20 @@ public class CellWithText extends Cell{
      */
 	protected Text text;
 	
-	public CellWithText(int x, int y, int zoom, Color fill,int gap_X, int gap_Y, Text text) {
-		this(x, y, zoom, fill, fill, 0,  gap_X, gap_Y, text);
+	public CellWithText(int x, int y, int zoom, Color fill,int gap_X, int gap_Y, Text text, Image img) {
+		this(x, y, zoom, fill, fill, 0,  gap_X, gap_Y, text, img);
 	}
 	
-	public CellWithText(int x, int y, int zoom, Color fill,int gap_X, int gap_Y, String text) {
-		this(x, y, zoom, fill, fill, 0,  gap_X, gap_Y, new Text(text));
+	public CellWithText(int x, int y, int zoom, Color fill,int gap_X, int gap_Y, String text, Image img) {
+		this(x, y, zoom, fill, fill, 0,  gap_X, gap_Y, new Text(text), img);
 	}
 	
-	public CellWithText(ICoordinate c, int zoom, Color fill,int gap_X, int gap_Y, String text) {
-		this(c.getCol(), c.getRow(), zoom, fill, fill, 0,  gap_X, gap_Y, new Text(text));
+	public CellWithText(ICoordinate c, int zoom, Color fill,int gap_X, int gap_Y, String text, Image img) {
+		this(c.getCol(), c.getRow(), zoom, fill, fill, 0,  gap_X, gap_Y, new Text(text), img);
 	}
 	
-	public CellWithText(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, Text text) {
-		super(x, y, zoom, fill, stroke, strokeWidth, gap_X, gap_Y);
+	public CellWithText(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, Text text, Image img) {
+		super(x, y, zoom, fill, stroke, strokeWidth, gap_X, gap_Y, img);
 		this.text=text;
 		this.text.setX((x*zoom+gap_X)+(zoom/3));
 		this.text.setY((y*zoom+gap_Y)+(zoom/2));
@@ -37,12 +39,12 @@ public class CellWithText extends Cell{
 		this.text.toFront();
 	}
 	
-	public CellWithText(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, String text) {
-		this(x, y, zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text));
+	public CellWithText(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, String text, Image img) {
+		this(x, y, zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text), img);
 	}
 	
-	public CellWithText(ICoordinate c, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, String text) {
-		this(c.getCol(), c.getRow(), zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text));
+	public CellWithText(ICoordinate c, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, String text, Image img) {
+		this(c.getCol(), c.getRow(), zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text), img);
 	}
 	
 	/**

@@ -8,6 +8,10 @@ import java.util.Objects;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import main.utils.Utils;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 
 /**
  * La classe `Cell` représente une cellule rectangulaire utilisée dans un labyrinthe. 
@@ -20,10 +24,14 @@ import javafx.scene.shape.Rectangle;
  *
  */
 public class Cell extends Rectangle{
+	
+	//public final Image floor = new Image("/home/iutinfo/eclipse-workspace/J2_SAE3A/res/img/floor-Cave.jpg");
+	
 	/**
 	 * Coordonnées construite à partir du x et y.
 	 */
 	ICoordinate coord;
+	ImageView iv;
 	
 	/**
 	 * Constructeur avec des paramètres limit�s. 
@@ -35,8 +43,10 @@ public class Cell extends Rectangle{
 	 * @param gap_X La valeur de décalage en X pour la position de la cellule.
 	 * @param gap_Y La valeur de décalage en Y pour la position de la cellule.
 	 */
-	public Cell(int x, int y, int zoom, Color fill, int gap_X, int gap_Y) {
-		this(x,y,zoom,fill,fill, 0, gap_X, gap_Y);
+	public Cell(int x, int y, int zoom, Color fill, int gap_X, int gap_Y, Image img) {
+		this(x,y,zoom,fill,fill, 0, gap_X, gap_Y, img);
+		
+		//System.out.println("TEST IMG:"+iv.getImage().getUrl());
 	}
 	
 	/**
@@ -52,9 +62,14 @@ public class Cell extends Rectangle{
 	 * @param gap_X La valeur de décalage en X pour la position de la cellule.
 	 * @param gap_Y La valeur de décalage en Y pour la position de la cellule.
 	 */
-	public Cell(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y) {
+	public Cell(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, Image img) {
 		super(x*zoom+gap_X,y*zoom+gap_X,zoom, zoom);
 		this.coord=new Coordinate(y,x);
+		this.iv = new ImageView(img);
+		this.iv.setX(x*zoom+gap_X);
+		this.iv.setY(y*zoom+gap_X);
+		this.iv.setFitHeight(zoom);
+		this.iv.setFitWidth(zoom);
 		this.setFill(fill);
 		this.setStroke(stroke);
 		this.setStrokeWidth(strokeWidth);
@@ -109,6 +124,14 @@ public class Cell extends Rectangle{
 		return Objects.equals(coord, other.coord);
 	}
 	
+	
+	public ImageView getImgv() {
+		return this.iv;
+	}
+	
+	public void setImage(Image img) {
+		this.iv.setImage(img);
+	}
 	
 	
 	
