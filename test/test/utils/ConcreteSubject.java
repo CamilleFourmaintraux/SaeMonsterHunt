@@ -1,6 +1,6 @@
 package test.utils;
 
-import main.utils.Subject;
+import fr.univlille.info.J2.main.utils.Subject;
 
 public class ConcreteSubject extends Subject{
 	public void doSomething() {

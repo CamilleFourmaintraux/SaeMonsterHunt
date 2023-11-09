@@ -1,14 +1,15 @@
 /**
  * Le package main.application contient la classe pour le lancement l'application Monster Hunt.
  */
-package main.application;
+package fr.univlille.info.J2.main.application;
+
+import fr.univlille.info.J2.main.maze.Management;
 
 //--module-path /home/iutinfo/eclipse-workspace/Jars/javafx-sdk-21/lib --add-modules=javafx.controls
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
-import main.maze.Management;
 /**
  * 
  * MonsterHunt est la classe de lancement de l'application Monster Hunt.

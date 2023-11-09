@@ -1,14 +1,14 @@
 /**
  * 
  */
-package main.maze.cells;
+package fr.univlille.info.J2.main.maze.cells;
 
 import java.util.Objects;
 
+import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import main.utils.Utils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 

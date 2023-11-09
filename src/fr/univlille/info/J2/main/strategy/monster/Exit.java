@@ -3,7 +3,7 @@
  * des monstres dans le jeu. Il propose des stratégies pour le comportement des monstres
  * et les informations concernant la sortie du labyrinthe.
  */
-package main.strategy.monster;
+package fr.univlille.info.J2.main.strategy.monster;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 

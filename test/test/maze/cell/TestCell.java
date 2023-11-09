@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
-import main.maze.cells.Coordinate;
-import main.utils.Utils;
-import main.maze.cells.Cell;
+import fr.univlille.info.J2.main.maze.cells.Cell;
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.utils.Utils;
 import javafx.scene.paint.Color;
 
 public class TestCell {

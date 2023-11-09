@@ -2,14 +2,14 @@
  * Le package main.strategy.hunter contient les classes relatives à la gestion
  * du chasseur dans le jeu. Il propose des stratégies pour le comportement du chasseur.
  */
-package main.strategy.hunter;
+package fr.univlille.info.J2.main.strategy.hunter;
 
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
-import main.maze.cells.Coordinate;
-import main.utils.Utils;
 /**
  * La classe Hunter représente un chasseur dans le jeu. Elle implémente l'interface IHunterStrategy
  * pour définir différentes stratégies pour le chasseur.

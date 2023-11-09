@@ -8,10 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.Test;
 
+import fr.univlille.info.J2.main.maze.cells.CellEvent;
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.strategy.monster.Monster;
 import javafx.scene.paint.Color;
-import main.maze.cells.CellEvent;
-import main.maze.cells.Coordinate;
-import main.strategy.monster.Monster;
 
 public class TestMonster {
 	boolean[][] walls = {{true, false, true}, {false, true, true}, {false, false, true}};

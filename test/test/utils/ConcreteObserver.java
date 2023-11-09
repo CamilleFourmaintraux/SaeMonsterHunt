@@ -1,7 +1,7 @@
 package test.utils;
 
-import main.utils.Observer;
-import main.utils.Subject;
+import fr.univlille.info.J2.main.utils.Observer;
+import fr.univlille.info.J2.main.utils.Subject;
 
 public class ConcreteObserver implements Observer{
 

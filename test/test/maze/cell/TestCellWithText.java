@@ -6,12 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
+import fr.univlille.info.J2.main.maze.cells.Cell;
+import fr.univlille.info.J2.main.maze.cells.CellWithText;
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.utils.Utils;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import main.maze.cells.Cell;
-import main.maze.cells.CellWithText;
-import main.maze.cells.Coordinate;
-import main.utils.Utils;
 
 public class TestCellWithText {
 	CellWithText cwt1 = new CellWithText(1,2,50,Color.RED,10,10, new Text("test"));
