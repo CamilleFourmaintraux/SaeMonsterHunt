@@ -4,7 +4,7 @@
  * et du sujet (Subject) pour le modèle de conception Observer, ainsi que des méthodes utilitaires
  * pour la génération de nombres aléatoires et la création d'arrière-plans graphiques.
  */
-package main.utils;
+package fr.univlille.info.J2.main.utils;
 
 import java.util.ArrayList;
 /**

@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import main.strategy.monster.Exit;
-import main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.strategy.monster.Exit;
 
 public class TestExit {
 	

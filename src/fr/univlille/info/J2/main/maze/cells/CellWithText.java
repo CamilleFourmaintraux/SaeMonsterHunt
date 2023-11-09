@@ -1,12 +1,12 @@
-package main.maze.cells;
+package fr.univlille.info.J2.main.maze.cells;
 
 import java.util.Objects;
 
+import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import main.utils.Utils;
 
 /**
  * La classe CellWithText représente une cellule d'un labyrinthe avec un texte associé.

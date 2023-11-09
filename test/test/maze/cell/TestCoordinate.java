@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
+import fr.univlille.info.J2.main.maze.cells.Cell;
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
 import javafx.scene.paint.Color;
-import main.maze.cells.Cell;
-import main.maze.cells.Coordinate;
 
 public class TestCoordinate {
 Coordinate c = new Coordinate(1,3);

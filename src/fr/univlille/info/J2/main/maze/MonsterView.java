@@ -3,19 +3,18 @@
  * du jeu Monster Hunt. Il gère la logique du jeu, y compris la gestion du labyrinthe,
  * les déplacements du monstre, le tir du chasseur, et les vues associées.
  */
-package main.maze;
+package fr.univlille.info.J2.main.maze;
 
+import fr.univlille.info.J2.main.maze.cells.Cell;
+import fr.univlille.info.J2.main.maze.cells.CellWithText;
+import fr.univlille.info.J2.main.utils.Observer;
+import fr.univlille.info.J2.main.utils.Subject;
+import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import main.maze.cells.Cell;
-import main.maze.cells.CellWithText;
-//import main.maze.cells.ICellEvent.CellInfo; //Inutilisé
-import main.utils.Observer;
-import main.utils.Subject;
-import main.utils.Utils;
 
 /**
  * La classe MonsterView représente la vue du Monstre.
@@ -234,7 +233,7 @@ public class MonsterView implements Observer{
 	public void draw() {
 		for(int h=0; h<this.maze.walls.length; h++) {
 			for(int l=0; l<this.maze.walls[h].length; l++) {
-				Cell r = new Cell(l, h, this.zoom, Color.TRANSPARENT,Color.TRANSPARENT,0, this.gap_X, this.gap_Y, Utils.floor_dungeon);
+				Cell r = new Cell(l, h, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, Utils.floor_dungeon);
 				//Codage des rectangles
 				if(this.maze.walls[h][l]) {
 					//Code à calculer si c'est un sol : obsolète car la manière de faire les rectangles à changer

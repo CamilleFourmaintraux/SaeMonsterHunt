@@ -3,9 +3,14 @@
  * du jeu Monster Hunt. Il gère la logique du jeu, y compris la gestion du labyrinthe,
  * les déplacements du monstre, le tir du chasseur, et les vues associées.
  */
-package main.maze;
+package fr.univlille.info.J2.main.maze;
 
 
+import fr.univlille.info.J2.main.maze.cells.CellWithText;
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.utils.Observer;
+import fr.univlille.info.J2.main.utils.Subject;
+import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -14,11 +19,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import main.maze.cells.CellWithText;
-import main.maze.cells.Coordinate;
-import main.utils.Observer;
-import main.utils.Subject;
-import main.utils.Utils;
 /**
  * La classe HunterView représente la vue du chasseur.
  * Elle affiche la vue du chasseur et gère son interaction avec le jeu.

@@ -3,13 +3,13 @@
  * du monstree dans le jeu. Il propose des stratégies pour le comportement du monstre
  * et les informations concernant la sortie du labyrinthe.
  */
-package main.strategy.monster;
+package fr.univlille.info.J2.main.strategy.monster;
 
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-import main.maze.cells.Coordinate;
-import main.utils.Utils;
 /**
  * 
  * La classe Monster représente un Monster dans le jeu. Elle implémente l'interface IMonsterStrategy

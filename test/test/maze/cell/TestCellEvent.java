@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import fr.univlille.info.J2.main.maze.cells.CellEvent;
+import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
-import main.maze.cells.Coordinate;
-import main.utils.Utils;
-import main.maze.cells.CellEvent;
 
 public class TestCellEvent {
 	

@@ -1,4 +1,4 @@
-package main.maze.cells;
+package fr.univlille.info.J2.main.maze.cells;
 
 import java.util.Objects;
 

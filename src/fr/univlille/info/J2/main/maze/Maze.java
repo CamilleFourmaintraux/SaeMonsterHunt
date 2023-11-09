@@ -3,21 +3,20 @@
  * du jeu Monster Hunt. Il gère la logique du jeu, y compris la gestion du labyrinthe,
  * les déplacements du monstre, le tir du chasseur, et les vues associées.
  */
-package main.maze;
+package fr.univlille.info.J2.main.maze;
 
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
+import fr.univlille.info.J2.main.maze.cells.*;
+import fr.univlille.info.J2.main.strategy.hunter.*;
+import fr.univlille.info.J2.main.strategy.monster.*;
+import fr.univlille.info.J2.main.utils.Subject;
+import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /*import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;*/
 import javafx.scene.paint.Color;
-import main.maze.cells.*;
-//import main.maze.cells.ICellEvent.CellInfo; //Inutilisé
-import main.strategy.hunter.*;
-import main.strategy.monster.*;
-import main.utils.Subject;
-import main.utils.Utils;
 
 
 /**
