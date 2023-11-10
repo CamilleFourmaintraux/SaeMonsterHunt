@@ -113,6 +113,7 @@ public class MonsterView implements Observer{
 	
 	BorderPane bp;
 
+	Text turnIndication;
 	Text notification;
 	
 	/**
@@ -160,14 +161,16 @@ public class MonsterView implements Observer{
 		this.group_stage.getChildren().add(this.group_img_sprite);
 		this.group_stage.getChildren().add(this.group_sprite);
 		this.group_stage.getChildren().add(this.group_map);
-
+		
+		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
 		
 		VBox vbox = new VBox();
 		Label player_name = new Label(this.monsterName);
 		player_name.setTextFill(Color.WHITE);
-		this.notification.setFill(Color.WHITE);
-		vbox.getChildren().addAll(player_name,this.notification);
+		this.turnIndication.setFill(Color.WHITE);
+		this.notification.setFill(Color.WHITE);//.setTextFill(Color.WHITE);
+		vbox.getChildren().addAll(player_name, this.turnIndication, this.notification);
 		this.bp=new BorderPane(group_stage);
 		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 		this.bp.setTop(vbox);
@@ -214,6 +217,7 @@ public class MonsterView implements Observer{
 		this.sprite_monster.getImgv().setY(this.calculDrawY(this.maze.monster.getRow()));
 		this.selection.setVisible(false);
 		this.sprite_shot.getImgv().setVisible(true);
+		this.turnIndication.setText("Turn n°"+this.maze.turn);
 		if(this.maze.spotted) {
 			this.notification.setText("ATTENTION - Vous avez traversé une case précédemment découverte \npar le chasseur et celui-ci à été averti.");
 		}else {
