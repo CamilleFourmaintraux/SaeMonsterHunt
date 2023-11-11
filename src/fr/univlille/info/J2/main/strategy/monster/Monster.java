@@ -27,6 +27,10 @@ public class Monster implements IMonsterStrategy{
 	 */
 	public boolean[][] walls;
 	/**
+	 * La grille des parties déjà explorés du labyrinthe
+	 */
+	public boolean[][] explored;
+	/**
 	 * Les coordonnées initiales du monstre.
 	 */
 	public ICoordinate coord;
@@ -34,6 +38,10 @@ public class Monster implements IMonsterStrategy{
 	 * Le niveau de l'IA du monstre.
 	 */
 	public String IA_level;
+	/**
+	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
+	 */
+	public int visionRange;
 	
 	/**
      * Constructeur de la classe Monster, crée un Monstre.
@@ -41,12 +49,15 @@ public class Monster implements IMonsterStrategy{
 	 * @param walls 	La grille de murs du labyrinthe.
 	 * @param coord		Les coordonnées initiales du monstre.
 	 * @param IA_level	 Le niveau de l'IA du monstre.
+	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
 	 */
-	public Monster(boolean[][] walls,ICoordinate coord, String IA_level) {
+	public Monster(boolean[][] walls,ICoordinate coord, String IA_level, int visionRange) {
 		super();
 		this.initialize(walls);
+		this.explored=new boolean[walls.length][walls[0].length];
 		this.coord = coord;
 		this.IA_level=IA_level;
+		this.visionRange=visionRange;
 	}
 	
 	/**

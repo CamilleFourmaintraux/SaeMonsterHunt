@@ -93,7 +93,7 @@ public class Maze extends Subject{
 	 * @see Maze#Maze(boolean[][], String, String)
 	 */
 	public Maze() {
-		this(Maze.generateBasicMap(),"Player","Player");
+		this(Maze.generateBasicMap(),"Player","Player", false, -1);
 	}
 	
 	/**
@@ -101,12 +101,13 @@ public class Maze extends Subject{
 	 * @see Maze#Maze()
 	 * @param maze 			un labyrinthe.
 	 * @param monster_IA 	Niveau de l'ia du monstre
-	 * @param hunter_IA		Niveau de l'ia du chasseur
+	 * @param hunter_IA		Niveau de l'ia du chasseur@param limitedVision boolean indiquant si oui ou non la vision du monstre est limité
+	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
 	 */
-	public Maze(boolean[][] maze, String monster_IA, String hunter_IA) {
+	public Maze(boolean[][] maze, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange) {
 		this.walls=maze;
 		this.turn=1;
-		this.initMonsterExitHunter(monster_IA, hunter_IA);
+		this.initMonsterExitHunter(monster_IA, hunter_IA,limitedVision, visionRange);
 		this.traces = this.initTraces();
 		this.isMonsterTurn=true;
 		this.move(this.monster.getCoord());
@@ -121,8 +122,8 @@ public class Maze extends Subject{
 	 * @param monster_IA 	Niveau de l'ia du monstre
 	 * @param hunter_IA		Niveau de l'ia du chasseur
 	 */
-	public Maze(int probability, int height, int width, String monster_IA, String hunter_IA) {
-		this(Maze.generateRandomMap(probability, height, width), monster_IA, hunter_IA);
+	public Maze(int probability, int height, int width, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange) {
+		this(Maze.generateRandomMap(probability, height, width), monster_IA, hunter_IA, limitedVision, visionRange);
 	}
 	
 	/**
@@ -182,6 +183,7 @@ public class Maze extends Subject{
 		return maze;
 	}
 	
+	
 	public static boolean[][] initEmptyMaze(int height, int width) {
 		boolean[][] maze = new boolean[height][width];
 		for(int h=0; h<maze.length; h++) {
@@ -221,11 +223,17 @@ public class Maze extends Subject{
 	 * Initialise les coordonnées de la sortie du labyrinthe.
 	 * @param hunter_IA niveau de l'IA du chasseur.
 	 * @param monster_IA niveau de l'IA du monstre.
+	 * @param limitedVision boolean indiquant si oui ou non la vision du monstre est limité
+	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
 	 */
-	public void initMonsterExitHunter(String monster_IA, String hunter_IA) {
+	public void initMonsterExitHunter(String monster_IA, String hunter_IA, boolean limitedVision, int visionRange) {
 		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
 		this.setFloor(this.exit.getCoord(),true);
-		this.monster = new Monster(this.walls,new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),monster_IA);
+		if(limitedVision) {
+			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),monster_IA, visionRange);
+		}else {
+			this.monster = new Monster(this.walls,new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),monster_IA, -1);
+		}
 		this.setFloor(this.monster.getCoord(),true);
 		this.hunter = new Hunter(this.walls.length,this.walls[0].length,new Coordinate(0,0),hunter_IA);
 	}
@@ -287,13 +295,45 @@ public class Maze extends Subject{
 	}
 	
 	/**
-	 * Supprime un mur du labyrinthe à la case de la coordonnée. 
+	 * Définis la présence d'un ou non d'un mur à une coordonée précise du labyrinthe
 	 * 
 	 * @param c une coordonnée du labyrinthe.
-	 * @param willBeWall un boolean qui supprime le mur du labyrinthe.
+	 * @param empty un boolean -> si True : la case du labyrinthe à c sera vide, -> si False : la case du labyrinthe à c sera un mur
 	 */
-	public void setFloor(ICoordinate c, boolean willBeWall) {
-		this.walls[c.getRow()][c.getCol()]=willBeWall;
+	public void setFloor(ICoordinate c, boolean empty) {
+		this.walls[c.getRow()][c.getCol()]=empty;
+	}
+	
+	/**
+	 * Vérifie si un mur est présent ou non à la coordonné doonné du labyrinthe
+	 * 
+	 * @param c une coordonnée du labyrinthe.
+	 * @return false si la coordonnée indiqué est un mur, sinon true.
+	 */
+	public boolean isExplored(ICoordinate c) {
+		return this.monster.explored[c.getRow()][c.getCol()];
+	}
+	
+	/**
+	 * Définis la présence d'un ou non d'un mur à une coordonée précise du labyrinthe
+	 * 
+	 * @param c une coordonnée du labyrinthe.
+	 * @param empty un boolean -> si True : la case du labyrinthe à c sera vide, -> si False : la case du labyrinthe à c sera un mur
+	 */
+	public void setExplored(ICoordinate c, boolean explored) {
+		this.monster.explored[c.getRow()][c.getCol()]=explored;
+	}
+	
+	public void exploring(ICoordinate c, int visionRange) {
+		for(int y=c.getRow()-visionRange; y<c.getRow()+(visionRange+1); y++) {
+			for(int x=c.getCol()-visionRange; x<c.getCol()+(visionRange+1); x++) {
+				try {
+					this.setExplored(new Coordinate(y,x), true);
+				}catch(Exception e) {
+					//Signifie que l'on est en dehors de la map
+				}
+			}
+		}
 	}
 	
 	/**
@@ -322,6 +362,9 @@ public class Maze extends Subject{
 			
 			this.turn++;  //On passe au tour suivant
 			this.isMonsterTurn=false;
+			if(this.monster.visionRange!=-1) {
+				this.exploring(c, this.monster.visionRange);
+			}
 			this.notifyObservers();
 			return true; 
 		}
@@ -423,6 +466,10 @@ public class Maze extends Subject{
 	 */
 	public int getTrace(ICoordinate c) {
 		return this.traces[c.getRow()][c.getCol()];
+	}
+	
+	public int getVisionRange() {
+		return this.monster.visionRange;
 	}
 	
 	/**

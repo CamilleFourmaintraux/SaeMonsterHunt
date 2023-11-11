@@ -13,6 +13,7 @@ import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -158,9 +159,9 @@ public class MonsterView implements Observer{
 		
 		
 		this.group_stage.getChildren().add(this.group_img_map);
+		this.group_stage.getChildren().add(this.group_map);
 		this.group_stage.getChildren().add(this.group_img_sprite);
 		this.group_stage.getChildren().add(this.group_sprite);
-		this.group_stage.getChildren().add(this.group_map);
 		
 		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
@@ -223,6 +224,17 @@ public class MonsterView implements Observer{
 		}else {
 			this.notification.setText("");
 		}
+		for(Node n:this.group_map.getChildren()) {
+			try {
+				Cell cell = (Cell)n;
+				if(this.maze.isExplored(cell.getCoord())) {
+					cell.setFill(Color.TRANSPARENT);
+					cell.setStroke(Color.TRANSPARENT);
+				}
+			}catch(Exception e) {
+				System.out.println("Error - in class MonsterView -> method actualize");
+			}
+		}
 	}
 	
 	/**
@@ -231,19 +243,22 @@ public class MonsterView implements Observer{
 	private void initiateSprites() {
 		//Initialisation du sprite du monstre
 		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster", Utils.monster_ocean);
-		
+		this.addMouseEvents(sprite_monster);
 		
 		//initialisation du sprite du dernier tir du chasseur
 		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter", Utils.scope);
-		
+		this.addMouseEvents(sprite_shot);
 		this.sprite_shot.setVisible(false);
 		
 		//Initialisation du sprite de la sortie
 		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit",Utils.exit_dungeon);
+		this.addMouseEvents(sprite_exit);
 		
 		//initialisation du rectangle de sélection
 		this.selection=new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Selection",Utils.empty);
 		this.selection.setVisible(false);
+		this.addMouseEvents(selection);
+		
 		this.group_sprite.getChildren().add(this.selection);
 		this.group_img_sprite.getChildren().add(this.selection.getImgv());
 		
@@ -257,6 +272,16 @@ public class MonsterView implements Observer{
 		this.group_img_sprite.getChildren().add(this.sprite_shot.getImgv());
 		this.sprite_shot.getImgv().setVisible(false);
 		
+		
+	}
+	
+	public void addMouseEvents(Cell r) {
+		r.setOnMouseEntered(e->{
+			this.select(e, r.getCoord());
+			this.scene.setOnMouseClicked(event->{
+				this.selectionLocked(r);
+			});
+		});
 	}
 	
 	/**
@@ -277,12 +302,12 @@ public class MonsterView implements Observer{
 					//r.setStrokeWidth(1);
 					r.setImage(Utils.wall_dungeon);
 				}
-				r.setOnMouseEntered(e->{
-					this.select(e, r.getCoord());
-					this.scene.setOnMouseClicked(event->{
-						this.selectionLocked(r);
-					});
-				});
+				if(this.maze.getVisionRange()!=-1) {
+					r.setFill(Color.BLACK);
+					r.setStroke(this.colorOfWalls);
+					r.setStrokeWidth(1);
+				}
+				this.addMouseEvents(r);
 				
 				this.group_map.getChildren().add(r);
 				this.group_img_map.getChildren().add(r.getImgv());
