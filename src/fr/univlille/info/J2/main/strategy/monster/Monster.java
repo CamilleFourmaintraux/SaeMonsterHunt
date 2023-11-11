@@ -75,6 +75,14 @@ public class Monster implements IMonsterStrategy{
 		this.walls=walls;
 	}
 	
+	public void allExplored() {
+		for(int h=0;h<this.explored.length;h++) {
+			for(int l=0;l<this.explored[h].length;l++) {
+				this.explored[h][l]=true;
+			}
+		}
+	}
+	
 	/**
      * Obtient la ligne de la coordonnée du monstre.
      *

@@ -96,7 +96,7 @@ public class Maze extends Subject{
 	 * @see Maze#Maze(boolean[][], String, String)
 	 */
 	public Maze() {
-		this(Maze.generateBasicMap(),"Player","Player", false, -1, 1);
+		this(Maze.generateBasicMap(),"Player","Player", false, -1, 1, 0);
 	}
 	
 	/**
@@ -107,12 +107,13 @@ public class Maze extends Subject{
 	 * @param hunter_IA		Niveau de l'ia du chasseur@param limitedVision boolean indiquant si oui ou non la vision du monstre est limité
 	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
 	 */
-	public Maze(boolean[][] maze, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange) {
+	public Maze(boolean[][] maze, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
 		this.walls=maze;
 		this.turn=1;
-		this.initMonsterExitHunter(monster_IA, hunter_IA,limitedVision, visionRange, movingRange);
+		this.initMonsterExitHunter(monster_IA, hunter_IA,limitedVision, visionRange, movingRange, bonusRange);
 		this.traces = this.initTraces();
 		this.isMonsterTurn=true;
+		this.exploring(this.monster.getCoord(), visionRange);
 		this.move(this.monster.getCoord());
 	}
 	
@@ -125,8 +126,8 @@ public class Maze extends Subject{
 	 * @param monster_IA 	Niveau de l'ia du monstre
 	 * @param hunter_IA		Niveau de l'ia du chasseur
 	 */
-	public Maze(int probability, int height, int width, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange) {
-		this(Maze.generateRandomMap(probability, height, width), monster_IA, hunter_IA, limitedVision, visionRange, movingRange);
+	public Maze(int probability, int height, int width, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
+		this(Maze.generateRandomMap(probability, height, width), monster_IA, hunter_IA, limitedVision, visionRange, movingRange, bonusRange);
 	}
 	
 	/**
@@ -229,16 +230,17 @@ public class Maze extends Subject{
 	 * @param limitedVision boolean indiquant si oui ou non la vision du monstre est limité
 	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
 	 */
-	public void initMonsterExitHunter(String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange) {
+	public void initMonsterExitHunter(String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
 		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
 		this.setFloor(this.exit.getCoord(),true);
 		if(limitedVision) {
 			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),monster_IA, visionRange, movingRange);
 		}else {
 			this.monster = new Monster(this.walls,new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),monster_IA, -1, movingRange);
+			this.monster.allExplored();
 		}
 		this.setFloor(this.monster.getCoord(),true);
-		this.hunter = new Hunter(this.walls.length,this.walls[0].length,new Coordinate(0,0),hunter_IA);
+		this.hunter = new Hunter(this.walls.length,this.walls[0].length,new Coordinate(0,0),hunter_IA, bonusRange);
 	}
 	
 	/**
@@ -373,6 +375,7 @@ public class Maze extends Subject{
 		}
 		if(!this.getMonsterIa().equals("Player")) {
 			this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
+			this.isMonsterTurn=false;
 		}
 		return false;
 	}
@@ -385,7 +388,19 @@ public class Maze extends Subject{
 	 */
 	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, devrait toujours renvoyer true logiquement, peut etre changer le type de retour.
 		if(!this.isMonsterTurn) {
-			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
+			CellEvent ce;
+			Coordinate temp;
+			for(int y=c.getRow()-this.getBonusRange(); y<c.getRow()+(this.getBonusRange()+1); y++) {
+				for(int x=c.getCol()-this.getBonusRange(); x<c.getCol()+(this.getBonusRange()+1); x++) {
+					try {
+						temp = new Coordinate(y,x);
+						ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
+						this.hunter.update(ce);
+					}catch(Exception e) {}//Signifie que l'est est en dehors de la map
+					
+				}
+			}
+			ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c)); 
 			this.hunter.update(ce);
 			if(ce.getState().equals(CellInfo.MONSTER)) {
 				this.isGameOver=true;
@@ -407,8 +422,12 @@ public class Maze extends Subject{
 	 */
 	public boolean canMonsterMoveAt(ICoordinate c) {
 		if(this.isCorrectCoordinate(c)) {
-			if(this.isMonsterTurn && this.walls[c.getRow()][c.getCol()] && this.inReach(this.monster.getCoord(), c, this.monster.movingRange)) {
-				return true;
+			if(this.isMonsterTurn) { //Vérifie que c'est le tour du monstre
+				if(this.inReach(this.monster.getCoord(), c, this.monster.movingRange) && this.isExplored(c)) { //Vérifie que c'est à une bonne distance et que c'est une case explorée
+					if(this.walls[c.getRow()][c.getCol()]) {//Vérifie que ce n'est pas un mur
+						return true;
+					}
+				}
 			}
 		}
 		return false;
@@ -475,25 +494,8 @@ public class Maze extends Subject{
 		return this.monster.visionRange;
 	}
 	
-	/**
-	 * Révèle une cellule donnee en modifiant sa couleur en fonction de si c'est un mur ou un sol.
-	 * 
-	 * @param cwt 			La cellule avec texte que l'on veut révéler
-	 * @param colorOfWalls 	La couleur associé au mur, future couleur de la cellule si la cellule se révèle être un mur.
-	 * @param colorOfFloors La couleur associé au sol, future couleur de la cellule si la cellule se révèle être un sol.
-	 */
-	public void revealCell(CellWithText cwt, Color colorOfWalls, Color colorOfFloors) {
-		cwt.setStroke(Color.TRANSPARENT);
-		cwt.setFill(Color.TRANSPARENT);
-		if(this.isFloor(cwt.getCoord())) {
-			cwt.setImage(Utils.floor_dungeon);
-			int trace = this.hunter.traces[cwt.getRow()][cwt.getCol()];
-			if(trace>0) {
-				cwt.setText(""+trace);
-			}
-		}else {
-			cwt.setImage(Utils.wall_dungeon);
-		}
+	public int getBonusRange() {
+		return this.hunter.bonusRange;
 	}
 	
 	public String getMonsterIa() {

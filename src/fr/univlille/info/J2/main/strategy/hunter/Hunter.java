@@ -35,6 +35,13 @@ public class Hunter implements IHunterStrategy{
 	public String IA_level;
 	
 	/**
+	 * La portée bonus pour la vision du hunter à chachun de ses tirs (sachant que seul le tir précis qui touche le monstre déclenche la fin de jeu)
+	 */
+	public int bonusRange;
+	
+	
+	
+	/**
      * Constructeur de la classe Hunter, crée un Chasseur.
      *
      * @param height     	La hauteur du labyrinthe.
@@ -42,10 +49,11 @@ public class Hunter implements IHunterStrategy{
      * @param coord_hunter 	Les coordonnées du chasseur.
      * @param IA_level   	Le niveau de l'IA du chasseur.
 	 */
-	public Hunter(int height, int width, ICoordinate coord_hunter, String IA_level) {
+	public Hunter(int height, int width, ICoordinate coord_hunter, String IA_level, int bonusRange) {
 		this.coord=coord_hunter;
 		this.initialize(height, width);
 		this.IA_level=IA_level;
+		this.bonusRange=bonusRange;
 	}
 	
 	/**

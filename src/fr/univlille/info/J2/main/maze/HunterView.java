@@ -205,6 +205,7 @@ public class HunterView implements Observer{
 	
 	
 	public void actualize() {
+		System.out.println(this.maze.hunter.getCoord());
 		int x = calculDrawX(this.maze.hunter.getCol());
 		int y = calculDrawY(this.maze.hunter.getRow());
 		this.sprite_shot.setX(x);
@@ -230,7 +231,10 @@ public class HunterView implements Observer{
 		for(int h=0; h<this.maze.hunter.traces.length; h++) {
 			for(int l=0; l<this.maze.hunter.traces[h].length; l++) {
 				//Codage des rectangles permettant le contrôle
-				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""),Utils.empty);
+				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""),Utils.floor_dungeon);
+				if(!this.maze.walls[h][l]) {
+					cell.setImage(Utils.wall_dungeon);
+				}
 				cell.setFocusTraversable(false);
 				cell.setOnMouseEntered(event -> {
 					this.select(cell);
@@ -332,10 +336,29 @@ public class HunterView implements Observer{
 			int x = this.calculCoordX(cell);
 			ICoordinate c = new Coordinate(y,x);
 			if(this.maze.shoot(c)) {
-				this.maze.revealCell(cell,this.colorOfWalls,this.colorOfFloors);
+				//this.revealCell(cell,this.colorOfWalls,this.colorOfFloors);
+				this.actualizeCell(c);
 			}
 		}else {
 			this.notification.setText("Pas de sélection possible : "+this.hunterName+" est une IA.");
+		}
+	}
+	
+	/**
+	 * Révèle une cellule donnee en modifiant sa couleur en fonction de si c'est un mur ou un sol.
+	 * 
+	 * @param cwt 			La cellule avec texte que l'on veut révéler
+	 * @param colorOfWalls 	La couleur associé au mur, future couleur de la cellule si la cellule se révèle être un mur.
+	 * @param colorOfFloors La couleur associé au sol, future couleur de la cellule si la cellule se révèle être un sol.
+	 */
+	public void revealCell(CellWithText cwt, Color colorOfWalls, Color colorOfFloors) {
+		cwt.setFill(Color.TRANSPARENT);
+		cwt.setStroke(Color.TRANSPARENT);
+		if(this.maze.isFloor(cwt.getCoord())) {
+			int trace = this.maze.hunter.traces[cwt.getRow()][cwt.getCol()];
+			if(trace>0) {
+				cwt.setText(""+trace);
+			}
 		}
 	}
 	
@@ -351,25 +374,37 @@ public class HunterView implements Observer{
 		}
 		return null;
 	}
-	
-	/**
-     * Méthode pour actualiser une cellule du labyrinthe après un événement.
-	 * 
-	 * @param c Les coordonnées de la cellule à actualiser.
-	 * 
-	 * 
-	 */
-	public void actualizeCell(CellWithText cwt) {
-		this.maze.revealCell(cwt,this.colorOfWalls,this.colorOfFloors);
-	}
 	public void actualizeCell(ICoordinate c) {
+		CellWithText cwt;
 		try{
-			CellWithText cwt = searchSprite(this.group_map, c);
-			this.maze.revealCell(cwt,this.colorOfWalls,this.colorOfFloors);
+			for(int y=c.getRow()-this.maze.getBonusRange(); y<c.getRow()+(this.maze.getBonusRange()+1); y++) {
+				for(int x=c.getCol()-this.maze.getBonusRange(); x<c.getCol()+(this.maze.getBonusRange()+1); x++) {
+					try {
+						cwt = searchSprite(this.group_map, new Coordinate(y,x));
+						this.revealCell(cwt,this.colorOfWalls,this.colorOfFloors);
+					}catch(Exception e) {
+						//Signifie que c'est en dehors de la map
+					}
+				}
+			}
+			
 		}catch(Exception exception) {
 			System.out.println("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
 		}
 	}
+	
+	/*
+	 * for(int y=cwt.getRow()-1; y<cwt.getRow()+2; y++) {
+			for(int x=cwt.getCol()-1; x<cwt.getCol()+2; x++) {
+				try {
+					
+				}catch(Exception e) {
+					//Signifie que c'est en dehors de la map
+				}
+			}
+		}
+	 */
+	
 
 
 	/**

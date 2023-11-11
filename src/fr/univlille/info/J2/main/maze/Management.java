@@ -68,6 +68,26 @@ public class Management extends Stage implements Observer{
 	final int ID_GAMEOVER = 3;
 	
 	/**
+	 * Constante ID du menu de settings-Miscellaneous.
+	 */
+	final int ID_MISCELLANEOUS_SETTINGS = 4;
+	
+	/**
+	 * Constante ID du menu de settings-Hunter.
+	 */
+	final int ID_MAZE_SETTINGS = 5;
+	
+	/**
+	 * Constante ID du menu de settings-Monster.
+	 */
+	final int ID_MONSTER_SETTINGS = 6;
+	
+	/**
+	 * Constante ID du menu de settings-Hunter.
+	 */
+	final int ID_HUNTER_SETTINGS = 7;
+	
+	/**
 	 * Constante utilisée dans les comboBox pour le choix des joueurs.
 	 */
 	final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
@@ -133,6 +153,13 @@ public class Management extends Stage implements Observer{
 	 * Constante de la portée maximale de la vision du monstre
 	 */
 	final int MAX_VISION_RANGE = 9;
+	
+	
+	/**
+	 * Constante de la portée par défault de la vision bonus du chasseur
+	 * Les constantes MIN_BONUS_RANGE ni MAX_BONUS_RANGEont étés retirés car elles n'étaient pas utiles.
+	 */
+	final int DEFAULT_BONUS_RANGE = 0;
 
 	/**
 	 * Le labyrinthe.
@@ -198,6 +225,12 @@ public class Management extends Stage implements Observer{
 	 */
 	public boolean limitedVision;
 
+	/**
+	 * portée de vision bonus du chasseur
+	 */
+	public int bonus_range;
+	
+	
 	/**
 	 * niveau de zoom sur le labyrinthe
 	 */
@@ -269,9 +302,14 @@ public class Management extends Stage implements Observer{
 		this.probability=this.DEFAULT_PROBABILITY;
 		this.vision_range=this.DEFAULT_VISION_RANGE;
 		this.moving_range=this.DEFAULT_MOVING_RANGE;
+		this.bonus_range=this.DEFAULT_BONUS_RANGE;
 		this.theme="Cave";
 
-		this.generateSettingsMenu();
+		this.generateSettingsMiscellaneous();
+		this.generateSettingsMaze();
+		this.generateSettingsMonster();
+		this.generateSettingsHunter();
+		this.generateSettingsMainMenu();
 		this.generatePlayMenu(gap_X,gap_Y);
 		this.generateGameOverScreen();
 		
@@ -525,7 +563,7 @@ public class Management extends Stage implements Observer{
 			}
 			
 			//Creation of the maze
-			this.maze=new Maze(this.probability, this.maze_height, this.maze_width, monster_IA, hunter_IA, this.limitedVision, this.vision_range, this.moving_range);
+			this.maze=new Maze(this.probability, this.maze_height, this.maze_width, monster_IA, hunter_IA, this.limitedVision, this.vision_range, this.moving_range, this.bonus_range);
 			this.maze.attach(this);
 
 			this.mv=new MonsterView(this.window_height,this.window_width+100,gap_X,gap_Y,this.zoom,colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.monster_name);
@@ -593,96 +631,59 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu des paramètres du jeu, permettant  l'utilisateur de personnaliser diverses options telles que
 	 * la taille du labyrinthe, le thème, etc.
 	 */
-	public void generateSettingsMenu() {
+	public void generateSettingsMainMenu() {
 		Label title = this.generateTitle("Settings");
+		
+		Button toMisc = this.generateButton("Miscellaneous", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,30));
+		toMisc.setOnAction(e->{
+			this.setScene(this.getScene(this.ID_MISCELLANEOUS_SETTINGS));
+		});
+		toMisc.setMinWidth(150);
+		
+		Button toMaze = this.generateButton("Maze", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,40));
+		toMaze.setOnAction(e->{
+			this.setScene(this.getScene(this.ID_MAZE_SETTINGS));
+		});
+		toMaze.setMinWidth(150);
 
-		TextField tf_maze_height = this.generateTextField("10",this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,30));//, 2, '0', '9');
-		TextField tf_maze_width = this.generateTextField("10", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,50));//, 2, '0', '9');
-		this.addCheckNumericalValueToTextField(tf_maze_height, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
-		this.addCheckNumericalValueToTextField(tf_maze_width, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
-		
-		TextField tf_probability = this.generateTextField("20", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,70), 3, '0', '9');
-		this.addCheckNumericalValueToTextField(tf_probability, 0, 100);
-		Label l_probability= this.generateLabel("Spawn Rate of walls (%)", tf_probability.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_probability.getLayoutY(), this.LABEL_MIN_WIDTH);
-		
-		TextField tf_vision = this.generateTextField(""+this.DEFAULT_VISION_RANGE, this.calculPercentage(this.window_width,77), this.calculPercentage(this.window_height,37), 1, '0', '9');
-		this.addCheckNumericalValueToTextField(tf_vision, this.MIN_VISION_RANGE, this.MAX_VISION_RANGE);
-		Button b_vision = this.generateButton("NO", this.calculPercentage(this.window_width,77),this.calculPercentage(this.window_height,30));
-		b_vision.setOnAction(e->{
-			if(limitedVision) {
-				this.limitedVision=false;
-				b_vision.setText("NO");
-			}else {
-				this.limitedVision=true;
-				b_vision.setText("YES");
-			}
+		Button toMons = this.generateButton("Monster", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,50));
+		toMons.setOnAction(e->{
+			this.setScene(this.getScene(this.ID_MONSTER_SETTINGS));
 		});
-		Label l_b_vision= this.generateLabel("Activate limited Vision", b_vision.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), b_vision.getLayoutY(), this.LABEL_MIN_WIDTH);
-		Label l_tf_vision= this.generateLabel("Vision Range", tf_vision.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_vision.getLayoutY(), this.LABEL_MIN_WIDTH);
+		toMons.setMinWidth(150);
 		
-		TextField tf_range = this.generateTextField("1", this.calculPercentage(this.window_width,77), this.calculPercentage(this.window_height,50), 1, '0', '9');
-		this.addCheckNumericalValueToTextField(tf_range, 1, 9);
-		Label l_range = this.generateLabel("Moving Range", tf_range.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_range.getLayoutY(), this.LABEL_MIN_WIDTH);
-		
-		Label l_height = this.generateLabel("Maze Height ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+")", tf_maze_height.getLayoutX()-this.LABEL_MIN_WIDTH-this.SPACING, tf_maze_height.getLayoutY(), this.LABEL_MIN_WIDTH);
-		Label l_width= this.generateLabel("Maze Width ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+")", tf_maze_width.getLayoutX()-this.LABEL_MIN_WIDTH-this.SPACING, tf_maze_width.getLayoutY(), this.LABEL_MIN_WIDTH);
-		
-		Slider slider_height = this.generateSlider(this.MIN_MAZE_SIZE,this.MAX_MAZE_SIZE,this.DEFAULT_MAZE_SIZE,l_height.getLayoutX(),tf_maze_height.getLayoutY()+this.SPACING*5);
-		slider_height.valueProperty().addListener(e->{
-			tf_maze_height.setText(""+(int)slider_height.getValue());
-			this.maze_height=(int)slider_height.getValue();
+		Button toHunt = this.generateButton("Hunter", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,60));
+		toHunt.setOnAction(e->{
+			this.setScene(this.getScene(this.ID_HUNTER_SETTINGS));
 		});
-		tf_maze_height.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-					
-					if(!tf_maze_height.getText().isEmpty()) {
-						if (tf_maze_height.getText().length() > 2) {
-							String s = tf_maze_height.getText().substring(0, 2);
-							tf_maze_height.setText(s);
-						}
-						if(tf_maze_height.getText().charAt(tf_maze_height.getText().length()-1)<'0' || tf_maze_height.getText().charAt(tf_maze_height.getText().length()-1)>'9') {
-							tf_maze_height.setText(oldValue);
-						}
-						slider_height.setValue(Integer.parseInt(tf_maze_height.getText()));
-						maze_height=Integer.parseInt(tf_maze_height.getText());
-					}else {
-						slider_height.setValue(DEFAULT_MAZE_SIZE);
-						maze_height=DEFAULT_MAZE_SIZE;
-						tf_maze_height.setText(""+DEFAULT_MAZE_SIZE);
-					}
-				}
-			});
+		toHunt.setMinWidth(150);
 		
-		Slider slider_width = this.generateSlider(this.MIN_MAZE_SIZE,this.MAX_MAZE_SIZE,this.DEFAULT_MAZE_SIZE,l_width.getLayoutX(),tf_maze_width.getLayoutY()+this.SPACING*5);
-		slider_width.valueProperty().addListener(e->{
-			tf_maze_width.setText(""+(int)slider_width.getValue());
-			this.maze_width=(int)slider_width.getValue();
+		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
+		bBack.setOnAction(e->{
+			this.setScene(this.getScene(this.ID_PLAY));
 		});
-		tf_maze_width.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-				if(!tf_maze_width.getText().isEmpty()) {
-					if (tf_maze_width.getText().length() > 2) {
-						String s = tf_maze_width.getText().substring(0, 2);
-						tf_maze_width.setText(s);
-					}
-					if(tf_maze_width.getText().charAt(tf_maze_width.getText().length()-1)<'0' || tf_maze_width.getText().charAt(tf_maze_width.getText().length()-1)>'9') {
-						tf_maze_width.setText(oldValue);
-					}
-					slider_width.setValue(Integer.parseInt(tf_maze_width.getText()));
-					maze_width=Integer.parseInt(tf_maze_width.getText());
-				}else {
-					slider_width.setValue(DEFAULT_MAZE_SIZE);
-					maze_width=DEFAULT_MAZE_SIZE;
-					tf_maze_width.setText(""+DEFAULT_MAZE_SIZE);
-				}
-			}
-		});
-		
-		
 
-		Button bScreenType = this.generateButton("Same Screen", -15,50);
+		VBox vbox = new VBox(30);
+		vbox.getChildren().addAll(toMisc,toMaze,toMons,toHunt);
+		Group group = new Group(vbox);
+		
+		BorderPane bp = new BorderPane(group);
+		bp.setPadding(new Insets(30, 30, 30, 30));
+		bp.setTop(title);
+		BorderPane.setAlignment(title, Pos.TOP_CENTER);
+		bp.setBottom(bBack);
+		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
+		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
+		this.menus.put(Integer.valueOf(this.ID_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
+	}
+	
+
+	/**
+	 * Génére le menu des paramètres gérant des paramètres généreaux
+	 */
+	public void generateSettingsMiscellaneous() {
+		Label title = this.generateTitle("Settings - Miscellaneous");
+		Button bScreenType = this.generateButton("Same Screen", 0,-50);
 		bScreenType.setOnAction(e->{
 			if(sameScreen) {
 				this.sameScreen=false;
@@ -693,6 +694,8 @@ public class Management extends Stage implements Observer{
 			}
 		});
 		bScreenType.setMinWidth(150);
+		Label l_screenType = this.generateLabel("Choose a display mode", 0, -70, this.LABEL_MIN_WIDTH);
+		
 
 		ComboBox<String> theme = this.generateComboBox(this.THEMES, this.calculPercentage(this.window_width, 70), this.calculPercentage(this.window_height,70));
 		theme.setOnAction(e->{
@@ -700,16 +703,149 @@ public class Management extends Stage implements Observer{
 			this.applyTheme(this.theme);
 		});
 		Label l_theme = this.generateLabel("Choose a theme", theme.getLayoutX()-this.LABEL_MIN_WIDTH,theme.getLayoutY(), this.LABEL_MIN_WIDTH);
-
+		
 		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
 		bBack.setOnAction(e->{
-			this.setScene(this.getScene(this.ID_PLAY));
+			this.setScene(this.getScene(this.ID_SETTINGS));
+		});
+		
+		VBox vbox = new VBox(10);
+		vbox.getChildren().addAll(l_theme, theme);
+		Group group = new Group();
+		group.getChildren().addAll(l_screenType,bScreenType,vbox);
+		
+		BorderPane bp = new BorderPane(group);
+		bp.setPadding(new Insets(30, 30, 30, 30));
+		bp.setTop(title);
+		BorderPane.setAlignment(title, Pos.TOP_CENTER);
+		bp.setBottom(bBack);
+		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
+		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
+		this.menus.put(Integer.valueOf(this.ID_MISCELLANEOUS_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
+	}
+	
+	/**
+	 * Génére le menu des paramètres gérant le labyrinthe
+	 */
+	public void generateSettingsMaze() {
+		Label title = this.generateTitle("Settings - Maze");
+		TextField tf_height = this.generateTextField("10",this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,30));//, 2, '0', '9');
+		TextField tf_width = this.generateTextField("10", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,50));//, 2, '0', '9');
+		this.addCheckNumericalValueToTextField(tf_height, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
+		this.addCheckNumericalValueToTextField(tf_width, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
+		
+		TextField tf_probability = this.generateTextField("20", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,70), 3, '0', '9');
+		this.addCheckNumericalValueToTextField(tf_probability, 0, 100);
+		Label l_probability= this.generateLabel("Spawn Rate of walls (%)", tf_probability.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_probability.getLayoutY(), this.LABEL_MIN_WIDTH);
+	
+		Label l_height = this.generateLabel("Maze Height ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+")", tf_height.getLayoutX()-this.LABEL_MIN_WIDTH-this.SPACING, tf_height.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Label l_width= this.generateLabel("Maze Width ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+")", tf_width.getLayoutX()-this.LABEL_MIN_WIDTH-this.SPACING, tf_width.getLayoutY(), this.LABEL_MIN_WIDTH);
+		
+		Slider slider_height = this.generateSlider(this.MIN_MAZE_SIZE,this.MAX_MAZE_SIZE,this.DEFAULT_MAZE_SIZE,l_height.getLayoutX(),tf_height.getLayoutY()+this.SPACING*5);
+		slider_height.valueProperty().addListener(e->{
+			tf_height.setText(""+(int)slider_height.getValue());
+			this.maze_height=(int)slider_height.getValue();
+		});
+		tf_height.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
+					
+					if(!tf_height.getText().isEmpty()) {
+						if (tf_height.getText().length() > 2) {
+							String s = tf_height.getText().substring(0, 2);
+							tf_height.setText(s);
+						}
+						if(tf_height.getText().charAt(tf_height.getText().length()-1)<'0' || tf_height.getText().charAt(tf_height.getText().length()-1)>'9') {
+							tf_height.setText(oldValue);
+						}
+						slider_height.setValue(Integer.parseInt(tf_height.getText()));
+						maze_height=Integer.parseInt(tf_height.getText());
+					}else {
+						slider_height.setValue(DEFAULT_MAZE_SIZE);
+						maze_height=DEFAULT_MAZE_SIZE;
+						tf_height.setText(""+DEFAULT_MAZE_SIZE);
+					}
+				}
+			});
+		
+		Slider slider_width = this.generateSlider(this.MIN_MAZE_SIZE,this.MAX_MAZE_SIZE,this.DEFAULT_MAZE_SIZE,l_width.getLayoutX(),tf_width.getLayoutY()+this.SPACING*5);
+		slider_width.valueProperty().addListener(e->{
+			tf_width.setText(""+(int)slider_width.getValue());
+			this.maze_width=(int)slider_width.getValue();
+		});
+		tf_width.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
+				if(!tf_width.getText().isEmpty()) {
+					if (tf_width.getText().length() > 2) {
+						String s = tf_width.getText().substring(0, 2);
+						tf_width.setText(s);
+					}
+					if(tf_width.getText().charAt(tf_width.getText().length()-1)<'0' || tf_width.getText().charAt(tf_width.getText().length()-1)>'9') {
+						tf_width.setText(oldValue);
+					}
+					slider_width.setValue(Integer.parseInt(tf_width.getText()));
+					maze_width=Integer.parseInt(tf_width.getText());
+				}else {
+					slider_width.setValue(DEFAULT_MAZE_SIZE);
+					maze_width=DEFAULT_MAZE_SIZE;
+					tf_width.setText(""+DEFAULT_MAZE_SIZE);
+				}
+			}
+		});
+		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
+		bBack.setOnAction(e->{
+			this.setScene(this.getScene(this.ID_SETTINGS));
 			if(tf_probability.getText().isEmpty()) {
 				this.probability=this.DEFAULT_PROBABILITY;
 				tf_probability.setText(""+this.DEFAULT_PROBABILITY);
 			}else {
 				this.probability=Integer.parseInt(tf_probability.getText());
 			}
+		});
+		Group group = new Group();
+		group.getChildren().addAll(slider_height, slider_width, l_height, tf_height, l_width, tf_width, l_probability, tf_probability);
+		
+		BorderPane bp = new BorderPane(group);
+		bp.setPadding(new Insets(30, 30, 30, 30));
+		bp.setTop(title);
+		BorderPane.setAlignment(title, Pos.TOP_CENTER);
+		bp.setBottom(bBack);
+		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
+		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
+		this.menus.put(Integer.valueOf(this.ID_MAZE_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
+	}
+	
+	/**
+	 * Génére le menu des paramètres gérant le monstre
+	 */
+	public void generateSettingsMonster() {
+		Label title = this.generateTitle("Settings - Monster");
+		TextField tf_vision = this.generateTextField(""+this.DEFAULT_VISION_RANGE, this.calculPercentage(this.window_width,70), this.calculPercentage(this.window_height,39), 1, '0', '9');
+		this.addCheckNumericalValueToTextField(tf_vision, this.MIN_VISION_RANGE, this.MAX_VISION_RANGE);
+		tf_vision.setDisable(true);
+		Button b_vision = this.generateButton("NO", this.calculPercentage(this.window_width,70),this.calculPercentage(this.window_height,30));
+		b_vision.setMinWidth(50);
+		b_vision.setOnAction(e->{
+			if(limitedVision) {
+				this.limitedVision=false;
+				b_vision.setText("NO");
+				tf_vision.setDisable(true);
+			}else {
+				this.limitedVision=true;
+				b_vision.setText("YES");
+				tf_vision.setDisable(false);
+			}
+		});
+		Label l_b_vision= this.generateLabel("Activate limited Vision", b_vision.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), b_vision.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Label l_tf_vision= this.generateLabel("Vision Range", tf_vision.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_vision.getLayoutY(), this.LABEL_MIN_WIDTH);
+		
+		TextField tf_range = this.generateTextField("1", this.calculPercentage(this.window_width,70), this.calculPercentage(this.window_height,50), 1, '0', '9');
+		this.addCheckNumericalValueToTextField(tf_range, 1, 9);
+		Label l_range = this.generateLabel("Moving Range", tf_range.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_range.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
+		bBack.setOnAction(e->{
+			this.setScene(this.getScene(this.ID_SETTINGS));
 			if(tf_vision.getText().isEmpty()) {
 				this.vision_range=this.DEFAULT_VISION_RANGE;
 				tf_vision.setText(""+this.DEFAULT_VISION_RANGE);
@@ -723,33 +859,53 @@ public class Management extends Stage implements Observer{
 				this.moving_range=Integer.parseInt(tf_range.getText());
 			}
 		});
-
+		
 		Group group = new Group();
-		group.getChildren().addAll(tf_vision,b_vision,l_b_vision,l_tf_vision,tf_range,l_range,slider_height, slider_width, l_height, tf_maze_height, l_width, tf_maze_width, l_probability, tf_probability, l_theme, theme);
+		group.getChildren().addAll(tf_vision,b_vision,l_b_vision,l_tf_vision,tf_range,l_range);
 		
 		BorderPane bp = new BorderPane(group);
 		bp.setPadding(new Insets(30, 30, 30, 30));
-		Group top_g = new Group();
-		top_g.getChildren().addAll(title,bScreenType);
-		bp.setTop(top_g);
-		BorderPane.setAlignment(top_g, Pos.TOP_CENTER);
+		bp.setTop(title);
+		BorderPane.setAlignment(title, Pos.TOP_CENTER);
 		bp.setBottom(bBack);
 		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(this.ID_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
+		this.menus.put(Integer.valueOf(this.ID_MONSTER_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
 	}
 	
-	public Slider generateSlider(double min, double max, double default_value, double x, double y) {
-		Slider slider = new Slider(min, max, default_value);
-		slider.setLayoutX(x);
-		slider.setLayoutY(y);
-		slider.setMinWidth(180);
-		slider.setShowTickLabels(true);
-		slider.setShowTickMarks(true);
-		slider.setMajorTickUnit(25f);
-		slider.setBlockIncrement(1f);
-		return slider;
+	/**
+	 * Génére le menu des paramètres gérant le chasseur
+	 */
+	public void generateSettingsHunter() {
+		Label title = this.generateTitle("Settings - Hunter");
+		
+		TextField tf_bonusRange = this.generateTextField(""+this.DEFAULT_BONUS_RANGE, this.calculPercentage(this.window_width,70), this.calculPercentage(this.window_height,50), 1, '0', '9');
+		Label l_bonusRange = this.generateLabel("Bonus Vision Range", tf_bonusRange.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_bonusRange.getLayoutY(), this.LABEL_MIN_WIDTH);
+		
+		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
+		bBack.setOnAction(e->{
+			this.setScene(this.getScene(this.ID_SETTINGS));
+			if(tf_bonusRange.getText().isEmpty()) {
+				this.bonus_range=this.DEFAULT_BONUS_RANGE;
+				tf_bonusRange.setText(""+this.DEFAULT_BONUS_RANGE);
+			}else {
+				this.bonus_range=Integer.parseInt(tf_bonusRange.getText());
+			}
+		});
+		
+		Group group = new Group();
+		group.getChildren().addAll(l_bonusRange,tf_bonusRange);
+		
+		BorderPane bp = new BorderPane(group);
+		bp.setPadding(new Insets(30, 30, 30, 30));
+		bp.setTop(title);
+		BorderPane.setAlignment(title, Pos.TOP_CENTER);
+		bp.setBottom(bBack);
+		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
+		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
+		this.menus.put(Integer.valueOf(this.ID_HUNTER_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
 	}
+	
 	
 	/**
 	 * Génére le menu de GameOver.
@@ -856,6 +1012,28 @@ public class Management extends Stage implements Observer{
 		this.setLayout(button, x-(button.getWidth()/2) ,y);
 		this.applyStyleToButton(button);
 		return button;
+	}
+	
+	/**
+	 * Génére un slider avec une valeur minimale, maximale et par défault et le positionne aux coordonnées spécifiés.
+	 *
+	 * @param min 			La valeur minimale que peut prendre le slider
+	 * @param default_value La valeur par défault que prend le slider
+	 * @param max 			La valeur maximale que peut prendre le slider
+	 * @param x 			La position horizontale du slider.
+	 * @param y 			La position verticale du slidern.
+	 * @return Le slider généré.
+	 */
+	public Slider generateSlider(double min, double max, double default_value, double x, double y) {
+		Slider slider = new Slider(min, max, default_value);
+		slider.setLayoutX(x);
+		slider.setLayoutY(y);
+		slider.setMinWidth(180);
+		slider.setShowTickLabels(true);
+		slider.setShowTickMarks(true);
+		slider.setMajorTickUnit(25f);
+		slider.setBlockIncrement(1f);
+		return slider;
 	}
 
 	/**
