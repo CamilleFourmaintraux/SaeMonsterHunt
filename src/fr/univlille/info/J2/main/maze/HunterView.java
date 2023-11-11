@@ -102,11 +102,6 @@ public class HunterView implements Observer{
 	Group group_img_map;
 	
 	/**
-	 * Groupe pour la gestion des images des sprites.
-	 */
-	Group group_img_sprite;
-	
-	/**
 	 * Groupe pour la gestion des textes.
 	 */
 	Group group_texts;
@@ -153,16 +148,14 @@ public class HunterView implements Observer{
 		
 		//Initiation des groupes
 		this.group_img_map = new Group();
-		this.group_img_sprite=new Group();
 		this.group_sprite=new Group();
 		this.group_texts=new Group();
 		this.group_map = new Group();
 		this.group_stage=new Group();
 		
 		this.group_stage.getChildren().add(group_img_map);
-		this.group_stage.getChildren().add(group_img_sprite);
-		this.group_stage.getChildren().add(group_texts);
 		this.group_stage.getChildren().add(group_map);
+		this.group_stage.getChildren().add(group_texts);
 		this.group_stage.getChildren().add(group_sprite);
 		
 		this.turnIndication = new Text("Turn n°1");
@@ -212,15 +205,21 @@ public class HunterView implements Observer{
 	
 	
 	public void actualize() {
-		this.sprite_shot.setX(calculDrawX(this.maze.hunter.getCol()));
-		this.sprite_shot.setY(calculDrawY(this.maze.hunter.getRow()));
+		int x = calculDrawX(this.maze.hunter.getCol());
+		int y = calculDrawY(this.maze.hunter.getRow());
+		this.sprite_shot.setX(x);
+		this.sprite_shot.setY(y);
 		this.sprite_shot.setVisible(true);
+		this.sprite_shot.getImgv().setVisible(true);
+		this.sprite_shot.getImgv().setX(x);
+		this.sprite_shot.getImgv().setY(y);
 		this.turnIndication.setText("Turn n°"+this.maze.turn);
 		if(this.maze.spotted) {
 			this.notification.setText("ATTENTION - Le monstre à été détecté dans l'une de vos cases \ndéjà découverte lors d'un tour précédent !");
 		}else {
 			this.notification.setText("");
 		}
+		
 		
 	}
 	
@@ -231,7 +230,7 @@ public class HunterView implements Observer{
 		for(int h=0; h<this.maze.hunter.traces.length; h++) {
 			for(int l=0; l<this.maze.hunter.traces[h].length; l++) {
 				//Codage des rectangles permettant le contrôle
-				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""),Utils.floor_dungeon);
+				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""),Utils.empty);
 				cell.setFocusTraversable(false);
 				cell.setOnMouseEntered(event -> {
 					this.select(cell);
@@ -239,39 +238,12 @@ public class HunterView implements Observer{
 						this.selectionLocked(cell);
 					});
 				});
-				
-				group_map.getChildren().add(cell);
+				this.group_map.getChildren().add(cell);
+				this.group_img_map.getChildren().add(cell.getImgv());
 				this.group_texts.getChildren().add(cell.getText());
 				}
 			}
 	}
-	
-	
-	/*//TODO Corriger et finir les fonctions redraw
-	public void redraw(int new_gap_X, int new_gap_Y, int new_zoom) {
-		for(Node e:this.group_map.getChildren()) {
-			CellWithText r = (CellWithText)e;
-			this.redrawCell(r, new_gap_X, new_gap_Y, new_zoom);
-		}
-		for(Node e:this.group_sprite.getChildren()) {
-			CellWithText r = (CellWithText)e;
-			this.redrawCell(r, new_gap_X, new_gap_Y, new_zoom);
-		}
-	}
-	
-	public void redrawCell(CellWithText r,int new_gap_X, int new_gap_Y, int new_zoom) {
-		int y = this.calculCoordX(r);
-		int x = this.calculCoordY(r);
-		this.setZoom(new_zoom);
-		this.setGap_X(new_gap_X);
-		this.setGap_Y(new_gap_Y);
-		r.setX(calculDrawX(x));
-		r.setY(calculDrawY(y));
-		r.setWidth(zoom);
-		r.setHeight(zoom);
-		r.setX(x+(zoom/3));
-		r.setY(y+(zoom/2));
-	}*/
 	
 	/**
      * Calcule la coordonnée X en fonction d'un rectangle.
@@ -318,12 +290,13 @@ public class HunterView implements Observer{
 	 */
 	private void initiateSprites() {
 		//initialisation du sprite de selection
-		this.selection =  new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Shot",Utils.monster_ocean);
+		this.selection =  new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Shot",Utils.empty);
 		this.selection.setVisible(false);
 		
 		//initialisation du sprite du tir
-		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot",Utils.monster_ocean);
+		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot",Utils.scope);
 		this.sprite_shot.setVisible(false);
+		this.sprite_shot.getImgv().setVisible(false);
 		this.sprite_shot.setOnMouseEntered(event -> {
 			this.select(this.sprite_shot);
 			this.scene.setOnMouseClicked(e -> { //Vérifie le clic sur la scene et sur sur la cell sinon bug (pour une raison inconnue)
@@ -359,7 +332,7 @@ public class HunterView implements Observer{
 			int x = this.calculCoordX(cell);
 			ICoordinate c = new Coordinate(y,x);
 			if(this.maze.shoot(c)) {
-				this.actualizeCell(c);
+				this.maze.revealCell(cell,this.colorOfWalls,this.colorOfFloors);
 			}
 		}else {
 			this.notification.setText("Pas de sélection possible : "+this.hunterName+" est une IA.");
@@ -367,7 +340,6 @@ public class HunterView implements Observer{
 	}
 	
 	
-	//TODO Aucun rectangle trouvé
 	public CellWithText searchSprite(Group group, ICoordinate c) {
 		for(Node e:group.getChildren()) {
 			if(e.getClass()==CellWithText.class) {
@@ -384,7 +356,12 @@ public class HunterView implements Observer{
      * Méthode pour actualiser une cellule du labyrinthe après un événement.
 	 * 
 	 * @param c Les coordonnées de la cellule à actualiser.
+	 * 
+	 * 
 	 */
+	public void actualizeCell(CellWithText cwt) {
+		this.maze.revealCell(cwt,this.colorOfWalls,this.colorOfFloors);
+	}
 	public void actualizeCell(ICoordinate c) {
 		try{
 			CellWithText cwt = searchSprite(this.group_map, c);

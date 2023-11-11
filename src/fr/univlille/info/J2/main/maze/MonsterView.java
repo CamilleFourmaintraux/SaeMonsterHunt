@@ -66,11 +66,16 @@ public class MonsterView implements Observer{
 	/**
 	 * Couleur des murs
 	 */
-	public Color colorOfWalls=Color.DARKGRAY;
+	public Color colorOfWalls;
 	/**
 	 * Couleur des sols
 	 */
-	public Color colorOfFloors=Color.LIGHTGRAY;
+	public Color colorOfFloors;
+	/**
+	 * Couleur du brouillard
+	 */
+	public Color colorOfFog;
+	
 	/**
 	 * Nom du joueur incarnant le monstre
 	 */
@@ -134,7 +139,7 @@ public class MonsterView implements Observer{
 	 * @param colorOfFloors		Couleur des sols.
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
-	public MonsterView(double window_height, double window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls, Color colorOfFloors, Maze maze,  String monsterName) {
+	public MonsterView(double window_height, double window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls, Color colorOfFloors, Color colorOfFog, Maze maze,  String monsterName) {
 		this.window_height = window_height;
 		this.window_width = window_width;
 		this.gap_X = gap_X;
@@ -142,6 +147,7 @@ public class MonsterView implements Observer{
 		this.zoom = zoom;
 		this.colorOfWalls = colorOfWalls;
 		this.colorOfFloors = colorOfFloors;
+		this.colorOfFog = colorOfFog;
 		this.monsterName=monsterName;
 		
 		this.maze = maze;
@@ -303,7 +309,7 @@ public class MonsterView implements Observer{
 					r.setImage(Utils.wall_dungeon);
 				}
 				if(this.maze.getVisionRange()!=-1) {
-					r.setFill(Color.BLACK);
+					r.setFill(this.colorOfFog);
 					r.setStroke(this.colorOfWalls);
 					r.setStrokeWidth(1);
 				}

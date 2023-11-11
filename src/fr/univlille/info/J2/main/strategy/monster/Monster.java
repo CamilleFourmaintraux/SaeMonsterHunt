@@ -42,6 +42,10 @@ public class Monster implements IMonsterStrategy{
 	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
 	 */
 	public int visionRange;
+	/**
+	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
+	 */
+	public int movingRange;
 	
 	/**
      * Constructeur de la classe Monster, crée un Monstre.
@@ -51,13 +55,14 @@ public class Monster implements IMonsterStrategy{
 	 * @param IA_level	 Le niveau de l'IA du monstre.
 	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
 	 */
-	public Monster(boolean[][] walls,ICoordinate coord, String IA_level, int visionRange) {
+	public Monster(boolean[][] walls,ICoordinate coord, String IA_level, int visionRange, int movingRange) {
 		super();
 		this.initialize(walls);
 		this.explored=new boolean[walls.length][walls[0].length];
 		this.coord = coord;
 		this.IA_level=IA_level;
 		this.visionRange=visionRange;
+		this.movingRange=movingRange;
 	}
 	
 	/**
