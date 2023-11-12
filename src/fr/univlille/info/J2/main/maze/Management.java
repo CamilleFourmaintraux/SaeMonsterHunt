@@ -5,16 +5,16 @@
  */
 package fr.univlille.info.J2.main.maze;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
 
+import fr.univlille.info.J2.main.utils.Generators;
 import fr.univlille.info.J2.main.utils.Observer;
 import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
@@ -27,13 +27,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.geometry.Insets;
@@ -404,26 +400,7 @@ public class Management extends Stage implements Observer{
 			return true;
 		}
 		return false;
-	}
-
-	
-	
-	public Alert generateAlert(String title, String text, ButtonType boutonJouer) {
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle(title);
-		alert.setHeaderText(text);
-
-		// Personnaliser l'apparence de la boîte de dialogue
-		DialogPane dialogPane = alert.getDialogPane();
-		dialogPane.setMinHeight(Region.USE_PREF_SIZE);
-
-		// Boutons de confirmation et d'annulation
-		alert.getButtonTypes().setAll(boutonJouer);
-		
-		return alert;
-	}
-	
-	
+	}	
 	
 	/**
      * Gère le déplacement du monstre par l'IA.
@@ -475,8 +452,10 @@ public class Management extends Stage implements Observer{
 		if(this.sameScreen) {
 			if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")) {
 				this.viewCommon.hide();
-				ButtonType boutonJouer = new ButtonType("Jouer");
-				Alert alert = this.generateAlert("Au tour du Chasseur", "Voulez-vous commencer votre tour ?", boutonJouer);// Attendre la réponse de l'utilisateur
+				ArrayList<ButtonType> alb = new ArrayList<ButtonType>();
+				ButtonType boutonJouer = new ButtonType("Play");
+				alb.add(boutonJouer);
+				Alert alert = Generators.generateAlert("It’s the Hunter’s turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
 				alert.showAndWait().ifPresent(response -> {
 					if(response == boutonJouer){
 						this.viewCommon.setScene(hv.scene);
@@ -504,8 +483,10 @@ public class Management extends Stage implements Observer{
 		if(this.sameScreen) {
 			if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")){
 				this.viewCommon.hide();
-				ButtonType boutonJouer = new ButtonType("Jouer");
-				Alert alert = this.generateAlert("Au tour du Monstre", "Voulez-vous commencer votre tour ?", boutonJouer);// Attendre la réponse de l'utilisateur
+				ArrayList<ButtonType> alb = new ArrayList<ButtonType>();
+				ButtonType boutonJouer = new ButtonType("Play");
+				alb.add(boutonJouer);
+				Alert alert = Generators.generateAlert("It’s the Monster’s turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
 				alert.showAndWait().ifPresent(response -> {
 					if(response == boutonJouer){
 						this.viewCommon.setScene(mv.scene);
@@ -535,20 +516,20 @@ public class Management extends Stage implements Observer{
 	 */
 	public void generatePlayMenu(int gap_X, int gap_Y) {
 
-		Label title = this.generateTitle("Main Menu");
+		Label title = Generators.generateTitle("Main Menu");
 
-		TextField tf_name_monster = this.generateTextField("Monster", this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
-		TextField tf_name_hunter = this.generateTextField("Hunter", this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
+		TextField tf_name_monster = Generators.generateTextField("Monster", this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
+		TextField tf_name_hunter = Generators.generateTextField("Hunter", this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 40), 16, 'A', 'z');
 
-		Label l_nameM = this.generateLabel("Monster Name", tf_name_monster.getLayoutX(),tf_name_monster.getLayoutY()-15, this.LABEL_MIN_WIDTH);
-		Label l_nameH = this.generateLabel("Hunter Name", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
+		Label l_nameM = Generators.generateLabel("Monster Name", tf_name_monster.getLayoutX(),tf_name_monster.getLayoutY()-15, this.LABEL_MIN_WIDTH);
+		Label l_nameH = Generators.generateLabel("Hunter Name", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
 		
-		//Label l_invalidSettings = this.generateLabel("Invalid Settings", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
+		//Label l_invalidSettings = Generators.generateLabel("Invalid Settings", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
 
-		ComboBox<String> choixIA_Monster = this.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 50));
-		ComboBox<String> choixIA_Hunter = this.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 50));
+		ComboBox<String> choixIA_Monster = Generators.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 50));
+		ComboBox<String> choixIA_Hunter = Generators.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 50));
 
-		Button bPlay = this.generateButton("PLAY", this.calculPercentage(this.window_width, 45), this.calculPercentage(this.window_height,90));
+		Button bPlay = Generators.generateButton("PLAY", this.calculPercentage(this.window_width, 45), this.calculPercentage(this.window_height,90),"#ffffff","#000000");
 		bPlay.setOnAction(e->{
 			//intantiation of the settings
 			this.monster_name=tf_name_monster.getText();
@@ -557,9 +538,9 @@ public class Management extends Stage implements Observer{
 			this.hunter_IA=choixIA_Hunter.getValue();
 			
 			if(this.window_height>this.window_width) {
-				this.zoom=(int)((this.window_width/this.maze_width)/1.2);
+				this.zoom=(int)((this.window_width/this.maze_width)/1.5);
 			}else {
-				this.zoom=(int)((this.window_height/this.maze_height)/1.2);
+				this.zoom=(int)((this.window_height/this.maze_height)/1.5);
 			}
 			
 			//Creation of the maze
@@ -581,12 +562,12 @@ public class Management extends Stage implements Observer{
 			this.switchInGameView(); //Ici Vérifie qui joue (IA ou joueur) pour pouvoir démarrer le jeu.
 		});
 		
-		Button bSettings = this.generateButton("Modify Settings", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height,80));
+		Button bSettings = Generators.generateButton("Modify Settings", this.calculPercentage(this.window_width, 38), this.calculPercentage(this.window_height,80),"#ffffff","#000000");
 		bSettings.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_SETTINGS));
 		});
 		
-		Button bQuit = this.generateButton("Quitter", 0, 0);
+		Button bQuit = Generators.generateButton("Quitter", 0, 0,"#ffffff","#000000");
 		bQuit.setOnAction(e -> {
 			System.exit(0);
 		});
@@ -632,33 +613,33 @@ public class Management extends Stage implements Observer{
 	 * la taille du labyrinthe, le thème, etc.
 	 */
 	public void generateSettingsMainMenu() {
-		Label title = this.generateTitle("Settings");
+		Label title = Generators.generateTitle("Settings");
 		
-		Button toMisc = this.generateButton("Miscellaneous", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,30));
+		Button toMisc = Generators.generateButton("Miscellaneous", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,30),"#ffffff","#000000");
 		toMisc.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_MISCELLANEOUS_SETTINGS));
 		});
 		toMisc.setMinWidth(150);
 		
-		Button toMaze = this.generateButton("Maze", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,40));
+		Button toMaze = Generators.generateButton("Maze", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,40),"#ffffff","#000000");
 		toMaze.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_MAZE_SETTINGS));
 		});
 		toMaze.setMinWidth(150);
 
-		Button toMons = this.generateButton("Monster", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,50));
+		Button toMons = Generators.generateButton("Monster", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,50),"#ffffff","#000000");
 		toMons.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_MONSTER_SETTINGS));
 		});
 		toMons.setMinWidth(150);
 		
-		Button toHunt = this.generateButton("Hunter", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,60));
+		Button toHunt = Generators.generateButton("Hunter", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,60),"#ffffff","#000000");
 		toHunt.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_HUNTER_SETTINGS));
 		});
 		toHunt.setMinWidth(150);
 		
-		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
+		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),"#ffffff","#000000");
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_PLAY));
 		});
@@ -682,8 +663,8 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu des paramètres gérant des paramètres généreaux
 	 */
 	public void generateSettingsMiscellaneous() {
-		Label title = this.generateTitle("Settings - Miscellaneous");
-		Button bScreenType = this.generateButton("Same Screen", 0,-50);
+		Label title = Generators.generateTitle("Settings - Miscellaneous");
+		Button bScreenType = Generators.generateButton("Same Screen", 0,-50,"#ffffff","#000000");
 		bScreenType.setOnAction(e->{
 			if(sameScreen) {
 				this.sameScreen=false;
@@ -694,17 +675,17 @@ public class Management extends Stage implements Observer{
 			}
 		});
 		bScreenType.setMinWidth(150);
-		Label l_screenType = this.generateLabel("Choose a display mode", 0, -70, this.LABEL_MIN_WIDTH);
+		Label l_screenType = Generators.generateLabel("Choose a display mode", 0, -70, this.LABEL_MIN_WIDTH);
 		
 
-		ComboBox<String> theme = this.generateComboBox(this.THEMES, this.calculPercentage(this.window_width, 70), this.calculPercentage(this.window_height,70));
+		ComboBox<String> theme = Generators.generateComboBox(this.THEMES, this.calculPercentage(this.window_width, 70), this.calculPercentage(this.window_height,70));
 		theme.setOnAction(e->{
 			this.theme=theme.getValue();
 			this.applyTheme(this.theme);
 		});
-		Label l_theme = this.generateLabel("Choose a theme", theme.getLayoutX()-this.LABEL_MIN_WIDTH,theme.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Label l_theme = Generators.generateLabel("Choose a theme", theme.getLayoutX()-this.LABEL_MIN_WIDTH,theme.getLayoutY(), this.LABEL_MIN_WIDTH);
 		
-		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
+		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),"#ffffff","#000000");
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_SETTINGS));
 		});
@@ -728,20 +709,20 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu des paramètres gérant le labyrinthe
 	 */
 	public void generateSettingsMaze() {
-		Label title = this.generateTitle("Settings - Maze");
-		TextField tf_height = this.generateTextField("10",this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,30));//, 2, '0', '9');
-		TextField tf_width = this.generateTextField("10", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,50));//, 2, '0', '9');
-		this.addCheckNumericalValueToTextField(tf_height, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
-		this.addCheckNumericalValueToTextField(tf_width, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
+		Label title = Generators.generateTitle("Settings - Maze");
+		TextField tf_height = Generators.generateTextField("10",this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,30));//, 2, '0', '9');
+		TextField tf_width = Generators.generateTextField("10", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,50));//, 2, '0', '9');
+		Generators.addCheckNumericalValueToTextField(tf_height, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
+		Generators.addCheckNumericalValueToTextField(tf_width, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
 		
-		TextField tf_probability = this.generateTextField("20", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,70), 3, '0', '9');
-		this.addCheckNumericalValueToTextField(tf_probability, 0, 100);
-		Label l_probability= this.generateLabel("Spawn Rate of walls (%)", tf_probability.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_probability.getLayoutY(), this.LABEL_MIN_WIDTH);
+		TextField tf_probability = Generators.generateTextField("20", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,70), 3, '0', '9');
+		Generators.addCheckNumericalValueToTextField(tf_probability, 0, 100);
+		Label l_probability= Generators.generateLabel("Spawn Rate of walls (%)", tf_probability.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_probability.getLayoutY(), this.LABEL_MIN_WIDTH);
 	
-		Label l_height = this.generateLabel("Maze Height ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+")", tf_height.getLayoutX()-this.LABEL_MIN_WIDTH-this.SPACING, tf_height.getLayoutY(), this.LABEL_MIN_WIDTH);
-		Label l_width= this.generateLabel("Maze Width ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+")", tf_width.getLayoutX()-this.LABEL_MIN_WIDTH-this.SPACING, tf_width.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Label l_height = Generators.generateLabel("Maze Height ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+")", tf_height.getLayoutX()-this.LABEL_MIN_WIDTH-this.SPACING, tf_height.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Label l_width= Generators.generateLabel("Maze Width ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+")", tf_width.getLayoutX()-this.LABEL_MIN_WIDTH-this.SPACING, tf_width.getLayoutY(), this.LABEL_MIN_WIDTH);
 		
-		Slider slider_height = this.generateSlider(this.MIN_MAZE_SIZE,this.MAX_MAZE_SIZE,this.DEFAULT_MAZE_SIZE,l_height.getLayoutX(),tf_height.getLayoutY()+this.SPACING*5);
+		Slider slider_height = Generators.generateSlider(this.MIN_MAZE_SIZE,this.MAX_MAZE_SIZE,this.DEFAULT_MAZE_SIZE,l_height.getLayoutX(),tf_height.getLayoutY()+this.SPACING*5);
 		slider_height.valueProperty().addListener(e->{
 			tf_height.setText(""+(int)slider_height.getValue());
 			this.maze_height=(int)slider_height.getValue();
@@ -768,7 +749,7 @@ public class Management extends Stage implements Observer{
 				}
 			});
 		
-		Slider slider_width = this.generateSlider(this.MIN_MAZE_SIZE,this.MAX_MAZE_SIZE,this.DEFAULT_MAZE_SIZE,l_width.getLayoutX(),tf_width.getLayoutY()+this.SPACING*5);
+		Slider slider_width = Generators.generateSlider(this.MIN_MAZE_SIZE,this.MAX_MAZE_SIZE,this.DEFAULT_MAZE_SIZE,l_width.getLayoutX(),tf_width.getLayoutY()+this.SPACING*5);
 		slider_width.valueProperty().addListener(e->{
 			tf_width.setText(""+(int)slider_width.getValue());
 			this.maze_width=(int)slider_width.getValue();
@@ -793,7 +774,7 @@ public class Management extends Stage implements Observer{
 				}
 			}
 		});
-		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
+		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),"#ffffff","#000000");
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_SETTINGS));
 			if(tf_probability.getText().isEmpty()) {
@@ -820,11 +801,11 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu des paramètres gérant le monstre
 	 */
 	public void generateSettingsMonster() {
-		Label title = this.generateTitle("Settings - Monster");
-		TextField tf_vision = this.generateTextField(""+this.DEFAULT_VISION_RANGE, this.calculPercentage(this.window_width,70), this.calculPercentage(this.window_height,39), 1, '0', '9');
-		this.addCheckNumericalValueToTextField(tf_vision, this.MIN_VISION_RANGE, this.MAX_VISION_RANGE);
+		Label title = Generators.generateTitle("Settings - Monster");
+		TextField tf_vision = Generators.generateTextField(""+this.DEFAULT_VISION_RANGE, this.calculPercentage(this.window_width,70), this.calculPercentage(this.window_height,39), 1, '0', '9');
+		Generators.addCheckNumericalValueToTextField(tf_vision, this.MIN_VISION_RANGE, this.MAX_VISION_RANGE);
 		tf_vision.setDisable(true);
-		Button b_vision = this.generateButton("NO", this.calculPercentage(this.window_width,70),this.calculPercentage(this.window_height,30));
+		Button b_vision = Generators.generateButton("NO", this.calculPercentage(this.window_width,70),this.calculPercentage(this.window_height,30),"#ffffff","#000000");
 		b_vision.setMinWidth(50);
 		b_vision.setOnAction(e->{
 			if(limitedVision) {
@@ -837,13 +818,13 @@ public class Management extends Stage implements Observer{
 				tf_vision.setDisable(false);
 			}
 		});
-		Label l_b_vision= this.generateLabel("Activate limited Vision", b_vision.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), b_vision.getLayoutY(), this.LABEL_MIN_WIDTH);
-		Label l_tf_vision= this.generateLabel("Vision Range", tf_vision.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_vision.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Label l_b_vision= Generators.generateLabel("Activate limited Vision", b_vision.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), b_vision.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Label l_tf_vision= Generators.generateLabel("Vision Range", tf_vision.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_vision.getLayoutY(), this.LABEL_MIN_WIDTH);
 		
-		TextField tf_range = this.generateTextField("1", this.calculPercentage(this.window_width,70), this.calculPercentage(this.window_height,50), 1, '0', '9');
-		this.addCheckNumericalValueToTextField(tf_range, 1, 9);
-		Label l_range = this.generateLabel("Moving Range", tf_range.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_range.getLayoutY(), this.LABEL_MIN_WIDTH);
-		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
+		TextField tf_range = Generators.generateTextField("1", this.calculPercentage(this.window_width,70), this.calculPercentage(this.window_height,50), 1, '0', '9');
+		Generators.addCheckNumericalValueToTextField(tf_range, 1, 9);
+		Label l_range = Generators.generateLabel("Moving Range", tf_range.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_range.getLayoutY(), this.LABEL_MIN_WIDTH);
+		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),"#ffffff","#000000");
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_SETTINGS));
 			if(tf_vision.getText().isEmpty()) {
@@ -877,12 +858,12 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu des paramètres gérant le chasseur
 	 */
 	public void generateSettingsHunter() {
-		Label title = this.generateTitle("Settings - Hunter");
+		Label title = Generators.generateTitle("Settings - Hunter");
 		
-		TextField tf_bonusRange = this.generateTextField(""+this.DEFAULT_BONUS_RANGE, this.calculPercentage(this.window_width,70), this.calculPercentage(this.window_height,50), 1, '0', '9');
-		Label l_bonusRange = this.generateLabel("Bonus Vision Range", tf_bonusRange.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_bonusRange.getLayoutY(), this.LABEL_MIN_WIDTH);
+		TextField tf_bonusRange = Generators.generateTextField(""+this.DEFAULT_BONUS_RANGE, this.calculPercentage(this.window_width,70), this.calculPercentage(this.window_height,50), 1, '0', '9');
+		Label l_bonusRange = Generators.generateLabel("Bonus Vision Range", tf_bonusRange.getLayoutX()-this.LABEL_MIN_WIDTH-(this.SPACING*8), tf_bonusRange.getLayoutY(), this.LABEL_MIN_WIDTH);
 		
-		Button bBack = this.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90));
+		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),"#ffffff","#000000");
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_SETTINGS));
 			if(tf_bonusRange.getText().isEmpty()) {
@@ -911,16 +892,16 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu de GameOver.
 	 */
 	public void generateGameOverScreen() {
-		Label title = this.generateTitle("Game Over Menu");
+		Label title = Generators.generateTitle("Game Over Menu");
 
-		Button restartButton = this.generateButton("Rejouer", 0, 0);
+		Button restartButton = Generators.generateButton("Rejouer", 0, 0,"#ffffff","#000000");
 		restartButton.setOnAction(e -> {
 			this.hide();
 			this.setScene(this.getScene(this.ID_PLAY));
 			this.show();
 		});
 		
-		Button quitButton = this.generateButton("Quitter", 0, 0);
+		Button quitButton = Generators.generateButton("Quitter", 0, 0,"#ffffff","#000000");
 		quitButton.setOnAction(e -> {
 			System.exit(0);
 		});
@@ -972,198 +953,7 @@ public class Management extends Stage implements Observer{
 		}
 	}
 
-	/**
-	 * Applique un style de base à un bouton, y compris le style lors du survol de la souris.
-	 *
-	 * @param b Le bouton auquel on applique le style.
-	 */
-	public void applyStyleToButton(Button b) {
-		//Style de base
-		b.setStyle("	-fx-background-color: #000000;\n"
-				+ "    	-fx-text-fill: #ffffff;\n"
-				+ "    	-fx-font-size: 14px;\n"
-				+ "		-fx-background-radius: 20px;\n");
-		//Style lorsque l'utilisateur passe la souris sur le button
-		b.setOnMouseEntered(e -> {
-			b.setStyle("-fx-background-color: #ffffff;\n"
-					+ "    -fx-text-fill: #000000;\n"
-					+ "    -fx-font-size: 14px;\n"
-					+ "		-fx-background-radius: 20px;\n");
-		});
-		// Rétablir le style de base lorsque la souris quitte le bouton
-		b.setOnMouseExited(e -> {
-			b.setStyle("	-fx-background-color: #000000;\n"
-					+ "    	-fx-text-fill: #ffffff;\n"
-					+ "    	-fx-font-size: 14px;\n"
-					+ "		-fx-background-radius: 20px;\n");
-		});
-	}
-
-	/**
-	 * Génére un bouton avec un texte donné et le positionne aux coordonnées spécifiés.
-	 *
-	 * @param msg 	Le texte affiché sur le bouton.
-	 * @param x 	La position horizontale du bouton.
-	 * @param y 	La position verticale du bouton.
-	 * @return Le bouton généré.
-	 */
-	public Button generateButton(String msg, double x, double y) {
-		Button button = new Button(msg);
-		this.setLayout(button, x-(button.getWidth()/2) ,y);
-		this.applyStyleToButton(button);
-		return button;
-	}
 	
-	/**
-	 * Génére un slider avec une valeur minimale, maximale et par défault et le positionne aux coordonnées spécifiés.
-	 *
-	 * @param min 			La valeur minimale que peut prendre le slider
-	 * @param default_value La valeur par défault que prend le slider
-	 * @param max 			La valeur maximale que peut prendre le slider
-	 * @param x 			La position horizontale du slider.
-	 * @param y 			La position verticale du slidern.
-	 * @return Le slider généré.
-	 */
-	public Slider generateSlider(double min, double max, double default_value, double x, double y) {
-		Slider slider = new Slider(min, max, default_value);
-		slider.setLayoutX(x);
-		slider.setLayoutY(y);
-		slider.setMinWidth(180);
-		slider.setShowTickLabels(true);
-		slider.setShowTickMarks(true);
-		slider.setMajorTickUnit(25f);
-		slider.setBlockIncrement(1f);
-		return slider;
-	}
-
-	/**
-	 * Génére une liste déroulante (ComboBox) avec les valeurs spécifies et la positionne aux coordonnées spécifiés.
-	 *
-	 * @param values 	Les valeurs affiché dans la liste deroulante.
-	 * @param x 		La position horizontale de la liste deroulante.
-	 * @param y 		La position verticale de la liste deroulante.
-	 * @return La liste déroulante générée.
-	 */
-	public ComboBox<String> generateComboBox(String[] values, double x, double y) {
-		ComboBox<String> theme = new ComboBox<String>();
-		theme.getItems().addAll(values);
-		theme.setValue(values[0]);
-		this.setLayout(theme, x ,y);
-		return theme;
-	}
-
-	/**
-	 * Génére un Label avec le texte donné et la positionne aux coordonnées spécifiés.
-	 *
-	 * @param msg 		Le texte affiché sur le label.
-	 * @param x 		La position horizontale du label.
-	 * @param y 		La position verticale du label.
-	 * @param minWidth 	La largeur minimale du label.
-	 * @return Le label généré.
-	 */
-	public Label generateLabel(String msg, double x, double y, double minWidth) {
-		Label label = new Label(msg);
-		this.setMinWidth(minWidth);
-		this.setLayout(label, x,y);
-		return label;
-	}
-
-	/**
-	 * Génére un TextField avec une valeur par défaut et le positionne aux coordonnées spécifiés.
-	 *
-	 * @param defaultValue 	La valeur par défaut du champ de texte.
-	 * @param x 			La position horizontale du champ de texte.
-	 * @param y 			La position verticale du champ de texte.
-	 * @param maxLength 	La longueur maximale du texte autorisé dans le champ.
-	 * @param limit1 		Le premier caractère définissant le début de l'ensemble des caractères autorisés
-	 * @param limit2 		Le deuxime caractère définissant la fin de l'ensemble des caractères autorisés
-	 * @return Le TextField généré.
-	 */
-	public TextField generateTextField(String defaultValue, double x, double y, int maxLength, char limit1, char limit2) { //maxLength devrait être <=16 pour des raisons d'affichage (sinon affichage moins beau)
-		TextField tf = new TextField(defaultValue);
-		tf.setMaxWidth(8*maxLength+30);
-		this.setLayout(tf, x,y);
-		tf.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-				if(!tf.getText().isEmpty()) {
-					if (tf.getText().length() > maxLength) {
-						String s = tf.getText().substring(0, maxLength);
-						tf.setText(s);
-					}
-					if(tf.getText().charAt(tf.getText().length()-1)<limit1 || tf.getText().charAt(tf.getText().length()-1)>limit2) {
-						tf.setText(oldValue);
-					}
-				}
-			}
-		});
-		return tf;
-	}
-	
-	/**
-	 * Génére un TextField avec une valeur par défaut et le positionne aux coordonnées spécifiés.
-	 *
-	 * @param defaultValue 	La valeur par défaut du champ de texte.
-	 * @param x 			La position horizontale du champ de texte.
-	 * @param y 			La position verticale du champ de texte.
-	 * @return Le TextField généré.
-	 */
-	public TextField generateTextField(String defaultValue, double x, double y) { //maxLength devrait être <=16 pour des raisons d'affichage (sinon affichage moins beau)
-		TextField tf = new TextField(defaultValue);
-		tf.setMaxWidth(8*this.SPACING+30);
-		this.setLayout(tf, x,y);
-		return tf;
-	}
-	
-	/**
-     * Ajoute une vérification pour des valeurs numériques à un champ de texte.
-     * 
-	 * @param tf 	Le champ de texte à vérifier.
-	 * @param min 	La valeur minimale autorisée.
-	 * @param max 	La valeur maximale autorisée.
-	 */
-	public void addCheckNumericalValueToTextField(TextField tf, int min, int max) {
-		tf.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {
-				if(!tf.getText().isEmpty()) {
-					try {
-						if(Integer.parseInt(tf.getText())<min) {
-							tf.setText(""+min);
-						}else if(Integer.parseInt(tf.getText())>max) {
-							tf.setText(""+max);
-						}
-					}catch(Exception e) {}
-				}
-				
-			}
-		});
-	}
-
-	/**
-	 * Génére un Label utilisé comme titre de menu/fenêtre.
-	 *
-	 * @param title le titre du menu/fenêtre.
-	 * @return Le label généré.
-	 */
-	public Label generateTitle(String title) {
-		Label label = new Label(" "+title+" ");
-		this.setLayout(label, 0, 0);
-		this.applyStyleToTitle(label,Color.BLACK, Color.WHITE);
-		label.setTextAlignment(TextAlignment.CENTER);
-		return label;
-	}
-
-	/**
-	 * Applique un style particulier à un Label de titre.
-	 *
-	 * @param label un Label titre.
-	 */
-	public void applyStyleToTitle(Label label, Color bgColor, Color textColor) {
-		label.setBackground(Utils.setBackGroungFill(bgColor));
-		label.setTextFill(textColor);
-		label.setStyle("-fx-font-size: 25px;");
-	}
 
 	/**
 	 * Permet de définir la couleur de fond d'un élément identifié par son ID.

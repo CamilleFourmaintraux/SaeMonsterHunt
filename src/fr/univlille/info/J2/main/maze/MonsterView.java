@@ -5,10 +5,15 @@
  */
 package fr.univlille.info.J2.main.maze;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import fr.univlille.info.J2.main.maze.cells.Cell;
 import fr.univlille.info.J2.main.maze.cells.CellWithText;
 import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.utils.Generators;
 import fr.univlille.info.J2.main.utils.Observer;
+import fr.univlille.info.J2.main.utils.SaveLoadSystem;
 import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -16,9 +21,14 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -172,6 +182,50 @@ public class MonsterView implements Observer{
 		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
 		
+		Label l_saveMap = Generators.generateLabel("Save the current map : ", 0, 0, 50);
+		l_saveMap.setTextFill(Color.VIOLET);
+		TextField tf_saveMap = Generators.generateTextField("MapName", 0, 0, 9, 'A', 'z');
+		Button b_saveMap = Generators.generateButton("Save map", 0, 0,"#ffffff","#220023");
+		b_saveMap.setOnAction(e->{
+			try {
+				String fileName = tf_saveMap.getText();
+				if(fileName.isEmpty()) {
+					SaveLoadSystem.saveMap(this.maze.walls, "map");
+				}else {
+					SaveLoadSystem.saveMap(this.maze.walls, fileName);
+				}
+			}catch(IOException ioe) {
+				System.out.println("ERROR - An error occurred while saving the map.");
+			}
+		});
+		HBox hbox_saveMap = new HBox(10);
+		hbox_saveMap.getChildren().addAll(l_saveMap,tf_saveMap,b_saveMap);
+		
+		Label l_saveGame = Generators.generateLabel("Save and exit : ", 0, 0, 50);
+		l_saveGame.setTextFill(Color.VIOLET);
+		TextField tf_saveGame = Generators.generateTextField("GameName", 0, 0, 9, 'A', 'z');
+		Button b_saveGame = Generators.generateButton("Save game", 0, 0,"#ffffff","#220023");
+		b_saveGame.setOnAction(e->{
+			ButtonType b_cancel= new ButtonType("Cancel");
+			ButtonType b_continue = new ButtonType("Continue");
+			ArrayList<ButtonType> alb = new ArrayList<ButtonType>();
+			alb.add(b_cancel);
+			alb.add(b_continue);
+			Alert alert = Generators.generateAlert("Save and quit", "Are you sure you want to exit the game ?\nThe game will be saved.", alb);
+			alert.showAndWait().ifPresent(response -> {
+				if(response == b_continue){
+					this.maze.triggersGameOver();
+				}else {
+					alert.close();
+				}
+			});
+		});
+		HBox hbox_saveGame = new HBox(10);
+		hbox_saveGame.getChildren().addAll(l_saveGame,tf_saveGame,b_saveGame);
+		
+		VBox vbox_savePanel = new VBox(20);
+		vbox_savePanel.getChildren().addAll(hbox_saveMap,hbox_saveGame);
+		
 		VBox vbox = new VBox();
 		Label player_name = new Label(this.monsterName);
 		player_name.setTextFill(Color.WHITE);
@@ -181,7 +235,7 @@ public class MonsterView implements Observer{
 		this.bp=new BorderPane(group_stage);
 		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 		this.bp.setTop(vbox);
-		
+		this.bp.setBottom(vbox_savePanel);
 		
 		this.scene=new Scene(bp,this.window_width,this.window_height,Color.BLACK);
 		this.draw();

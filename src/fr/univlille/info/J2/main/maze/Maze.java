@@ -13,10 +13,6 @@ import fr.univlille.info.J2.main.strategy.monster.*;
 import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-/*import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;*/
-import javafx.scene.paint.Color;
 
 
 /**
@@ -412,6 +408,11 @@ public class Maze extends Subject{
 		}
 		this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
 		return false;
+	}
+	
+	public void triggersGameOver() {
+		this.isGameOver=true;
+		this.notifyObservers();
 	}
 	
 	/**
