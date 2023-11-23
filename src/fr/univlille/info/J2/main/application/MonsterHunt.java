@@ -3,7 +3,7 @@
  */
 package fr.univlille.info.J2.main.application;
 
-import fr.univlille.info.J2.main.maze.Management;
+import fr.univlille.info.J2.main.management.Management;
 
 //--module-path /home/iutinfo/eclipse-workspace/Jars/javafx-sdk-21/lib --add-modules=javafx.controls
 

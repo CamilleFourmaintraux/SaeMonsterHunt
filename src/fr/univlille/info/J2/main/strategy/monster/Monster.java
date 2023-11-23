@@ -5,7 +5,7 @@
  */
 package fr.univlille.info.J2.main.strategy.monster;
 
-import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;

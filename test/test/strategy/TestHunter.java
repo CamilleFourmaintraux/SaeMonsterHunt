@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.maze.cells.CellEvent;
-import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.management.cells.CellEvent;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 
 public class TestHunter {

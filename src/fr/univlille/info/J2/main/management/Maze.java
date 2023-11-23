@@ -3,11 +3,11 @@
  * du jeu Monster Hunt. Il gère la logique du jeu, y compris la gestion du labyrinthe,
  * les déplacements du monstre, le tir du chasseur, et les vues associées.
  */
-package fr.univlille.info.J2.main.maze;
+package fr.univlille.info.J2.main.management;
 
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
-import fr.univlille.info.J2.main.maze.cells.*;
+import fr.univlille.info.J2.main.management.cells.*;
 import fr.univlille.info.J2.main.strategy.hunter.*;
 import fr.univlille.info.J2.main.strategy.monster.*;
 import fr.univlille.info.J2.main.utils.Subject;
