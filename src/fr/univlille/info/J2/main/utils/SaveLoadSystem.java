@@ -6,14 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-
 public class SaveLoadSystem {
-	public static final String SAVE_DIRECTORY = "./res/mazes/";
+	public static final String SAVE_DIRECTORY = "./res/saves/mazes/";
 	public final static String DEFAULT_NAME_FOR_MAP_SAVE = "MapName";
 	public static int mazeSave_counter = 0;
 	public static int gameSave_counter = 0;
@@ -42,6 +36,7 @@ public class SaveLoadSystem {
     }
     
     //Exemple de fonctionnement de saveMap et loadMap
+   /*
     public static void main(String[] args) {
         // Exemple d'utilisation
         boolean[][] tableauASauvegarder = { { true, false, true }, { false, true, false } };
@@ -72,7 +67,7 @@ public class SaveLoadSystem {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
+    }*/
     
     
     
