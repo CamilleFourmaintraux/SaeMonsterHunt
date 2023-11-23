@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 
 public class SaveLoadSystem {
 	public static final String SAVE_DIRECTORY = "./res/mazes/";
+	public final static String DEFAULT_NAME_FOR_MAP_SAVE = "MapName";
 	public static int mazeSave_counter = 0;
 	public static int gameSave_counter = 0;
 	

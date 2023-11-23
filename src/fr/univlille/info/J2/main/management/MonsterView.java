@@ -5,7 +5,6 @@
  */
 package fr.univlille.info.J2.main.management;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import fr.univlille.info.J2.main.management.cells.Cell;
@@ -13,7 +12,6 @@ import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Generators;
 import fr.univlille.info.J2.main.utils.Observer;
-import fr.univlille.info.J2.main.utils.SaveLoadSystem;
 import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -182,44 +180,30 @@ public class MonsterView implements Observer{
 		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
 		
-		Label l_saveMap = Generators.generateLabel("Save the current map : ", 0, 0, 50);
-		l_saveMap.setTextFill(Color.VIOLET);
-		TextField tf_saveMap = Generators.generateTextField("MapName", 0, 0, 9, 'A', 'z');
-		Button b_saveMap = Generators.generateButton("Save map", 0, 0,"#ffffff","#220023");
-		b_saveMap.setOnAction(e->{
-			try {
-				String fileName = tf_saveMap.getText();
-				if(fileName.isEmpty()) {
-					SaveLoadSystem.saveMap(this.maze.walls, "map");
-				}else {
-					SaveLoadSystem.saveMap(this.maze.walls, fileName);
-				}
-			}catch(IOException ioe) {
-				System.out.println("ERROR - An error occurred while saving the map.");
-			}
-		});
-		HBox hbox_saveMap = new HBox(10);
-		hbox_saveMap.getChildren().addAll(l_saveMap,tf_saveMap,b_saveMap);
+		HBox hbox_saveMap = Generators.generateHBoxSaveMap(this.maze.walls, Color.PURPLE, "Save the current map : ", "Save map","Map successfully saved");
 		
-		Label l_saveGame = Generators.generateLabel("Save and exit : ", 0, 0, 50);
-		l_saveGame.setTextFill(Color.VIOLET);
+		Label l_saveGame = Generators.generateLabel("Save and exit : ", 0, 0);
+		l_saveGame.setTextFill(Color.PURPLE);
 		TextField tf_saveGame = Generators.generateTextField("GameName", 0, 0, 9, 'A', 'z');
-		Button b_saveGame = Generators.generateButton("Save game", 0, 0,"#ffffff","#220023");
+		Button b_saveGame = Generators.generateButton("Leave game", 0, 0,Color.WHITE, Color.PURPLE);
 		b_saveGame.setOnAction(e->{
 			ButtonType b_cancel= new ButtonType("Cancel");
 			ButtonType b_continue = new ButtonType("Continue");
+			ButtonType b_cws = new ButtonType("Continue without saving");
 			ArrayList<ButtonType> alb = new ArrayList<ButtonType>();
 			alb.add(b_cancel);
 			alb.add(b_continue);
-			Alert alert = Generators.generateAlert("Save and quit", "Are you sure you want to exit the game ?\nThe game will be saved.", alb);
+			alb.add(b_cws);
+			Alert alert = Generators.generateAlert("Leaving the game", "Are you sure you want to leave the game ?\nThe game will be saved.", alb);
 			alert.showAndWait().ifPresent(response -> {
 				if(response == b_continue){
 					this.maze.triggersGameOver();
-				}else {
-					alert.close();
+				}else if(response == b_cws){
+					this.maze.triggersGameOver();
 				}
 			});
 		});
+		
 		HBox hbox_saveGame = new HBox(10);
 		hbox_saveGame.getChildren().addAll(l_saveGame,tf_saveGame,b_saveGame);
 		
@@ -280,7 +264,7 @@ public class MonsterView implements Observer{
 		this.sprite_shot.getImgv().setVisible(true);
 		this.turnIndication.setText("Turn n°"+this.maze.turn);
 		if(this.maze.spotted) {
-			this.notification.setText("ATTENTION - Vous avez traversé une case précédemment découverte \npar le chasseur et celui-ci à été averti.");
+			this.notification.setText("WARNING - You have crossed a square previously discovered\nby the hunter and he has been warned.");
 		}else {
 			this.notification.setText("");
 		}
@@ -406,7 +390,7 @@ public class MonsterView implements Observer{
 			ICoordinate c = new Coordinate(y,x);
 			this.maze.move(c);
 		}else {
-			this.notification.setText("Pas de sélection possible : "+this.monsterName+" est une IA.");
+			this.notification.setText("No selection possible: "+this.monsterName+" is an AI.");
 		}
 	}
 	

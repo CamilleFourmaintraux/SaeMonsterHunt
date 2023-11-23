@@ -1,5 +1,6 @@
 package fr.univlille.info.J2.main.utils;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import javafx.beans.value.ChangeListener;
@@ -14,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -31,7 +33,7 @@ public class Generators {
 	 * @param active La couleur en hexadécimal quand le bouton est en interaction 
 	 * @return Le bouton généré.
 	 */
-	public static Button generateButton(String msg, double x, double y, String active, String inactive) {
+	public static Button generateButton(String msg, double x, double y, Color active, Color inactive) {
 		Button button = new Button(msg);
 		Generators.setLayout(button, x-(button.getWidth()/2) ,y);
 		Generators.applyStyleToButton(button, active, inactive);
@@ -85,9 +87,9 @@ public class Generators {
 	 * @param minWidth 	La largeur minimale du label.
 	 * @return Le label généré.
 	 */
-	public static Label generateLabel(String msg, double x, double y, double minWidth) {
+	public static Label generateLabel(String msg, double x, double y) {
 		Label label = new Label(msg);
-		label.setMinWidth(minWidth);
+		label.setMinWidth(label.getPrefWidth());
 		Generators.setLayout(label, x,y);
 		return label;
 	}
@@ -227,29 +229,55 @@ public class Generators {
 	 * @param inactive La couleur en hexadécimal quand le bouton n'est pas en interaction
 	 * @param active La couleur en hexadécimal quand le bouton est en interaction 
 	 */
-	public static void applyStyleToButton(Button b, String active, String inactive) { //inactive = #ffffff & active = #000000
+	public static void applyStyleToButton(Button b, Color inactive, Color active) { //inactive = #ffffff & active = #000000
 		//Style de base
-		b.setStyle("	-fx-background-color: "+inactive+";\n"
-				+ "    	-fx-text-fill: "+active+";\n"
+		b.setStyle("	-fx-background-color: "+Utils.convertToHex(active)+";\n"
+				+ "    	-fx-text-fill: "+Utils.convertToHex(inactive)+";\n"
 				+ "    	-fx-font-size: 14px;\n"
 				+ "		-fx-background-radius: 20px;\n");
 		//Style lorsque l'utilisateur passe la souris sur le button
 		b.setOnMouseEntered(e -> {
-			b.setStyle("-fx-background-color: "+active+";\n"
-					+ "    -fx-text-fill: "+inactive+";\n"
-					+ "    -fx-font-size: 14px;\n"
+			b.setStyle("	-fx-background-color: "+Utils.convertToHex(inactive)+";\n"
+					+ "    	-fx-text-fill: "+Utils.convertToHex(active)+";\n"
+					+ "    	-fx-font-size: 14px;\n"
 					+ "		-fx-background-radius: 20px;\n");
 		});
 		// Rétablir le style de base lorsque la souris quitte le bouton
 		b.setOnMouseExited(e -> {
-			b.setStyle("	-fx-background-color: "+inactive+";\n"
-					+ "    	-fx-text-fill: "+active+";\n"
+			b.setStyle("	-fx-background-color: "+Utils.convertToHex(active)+";\n"
+					+ "    	-fx-text-fill: "+Utils.convertToHex(inactive)+";\n"
 					+ "    	-fx-font-size: 14px;\n"
 					+ "		-fx-background-radius: 20px;\n");
 		});
 	}
 	
-	
+	public static HBox generateHBoxSaveMap(boolean[][] walls, Color textColor, String textLabel, String textButton, String textNotification) {
+    	Label l_saveMap = Generators.generateLabel(textLabel, 0, 0);
+		l_saveMap.setTextFill(textColor);
+		TextField tf_saveMap = Generators.generateTextField(SaveLoadSystem.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 9, 'A', 'z');
+		Label notification = Generators.generateLabel(textNotification, 0, 0);
+		notification.setTextFill(textColor);
+		notification.setVisible(false);
+		Button b_saveMap = Generators.generateButton(textButton, 0, 0,Color.WHITE,textColor);
+		b_saveMap.setMinWidth(b_saveMap.getPrefWidth());
+		b_saveMap.setOnAction(e->{
+			try {
+				String fileName = tf_saveMap.getText();
+				if(fileName.isEmpty()) {
+					SaveLoadSystem.saveMap(walls, SaveLoadSystem.DEFAULT_NAME_FOR_MAP_SAVE);
+				}else {
+					SaveLoadSystem.saveMap(walls, fileName);
+				}
+				notification.setVisible(true);
+			}catch(IOException ioe) {
+				System.out.println("ERROR - An error occurred while saving the map.");
+				notification.setVisible(false);
+			}
+		});
+		HBox hbox_saveMap = new HBox(10);
+		hbox_saveMap.getChildren().addAll(l_saveMap,tf_saveMap,b_saveMap,notification);
+		return hbox_saveMap;
+    }
 	
 	
 }
