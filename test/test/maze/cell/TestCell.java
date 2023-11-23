@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 public class TestCell {
 	
 	
-	Cell cell= new Cell(1,2,50,Color.RED,10,10,Utils.caveWall);
+	Cell cell= new Cell(1,2,50,Color.RED,10,10,Utils.wall_dungeon);
 	
 	@Test
 	public void test_constructor_cell() {
@@ -41,8 +41,8 @@ public class TestCell {
 	public void test_equals_cell() {
 		assertTrue(cell.equals(cell));
 		assertFalse(cell.equals(null));
-		assertFalse(cell.equals(new Cell(5,2,50,Color.RED,10,10,Utils.caveWall)));
-		assertTrue(cell.equals(new Cell(1,2,50,Color.RED,10,10,Utils.caveWall)));
+		assertFalse(cell.equals(new Cell(5,2,50,Color.RED,10,10,Utils.wall_dungeon)));
+		assertTrue(cell.equals(new Cell(1,2,50,Color.RED,10,10,Utils.wall_dungeon)));
 	}
 	
 

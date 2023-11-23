@@ -12,7 +12,7 @@ import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 
 public class TestHunter {
 
-	Hunter hunter = new Hunter(6, 6, new Coordinate(0,0),"Player");
+	Hunter hunter = new Hunter(6, 6, new Coordinate(0,0),"Player",0);
 	
 	@Test
 	public void test_constructor_hunter() {

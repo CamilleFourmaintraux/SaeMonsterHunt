@@ -14,11 +14,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class TestCellWithText {
-	CellWithText cwt1 = new CellWithText(1,2,50,Color.RED,10,10, new Text("test"));
-	CellWithText cwt2 = new CellWithText(3,4,50,Color.RED,10,10, "test");
-	CellWithText cwt3 = new CellWithText(new Coordinate(2,1),50,Color.RED,10,10, "test");
-	CellWithText cwt4 = new CellWithText(5,6,50,Color.RED,Color.BLUE,5,10,10, "test");
-	CellWithText cwt5 = new CellWithText(new Coordinate(8,7),50,Color.RED,Color.BLUE,5,10,10, "test");
+	CellWithText cwt1 = new CellWithText(1,2,50,Color.RED,10,10, new Text("test"),Utils.wall_dungeon);
+	CellWithText cwt2 = new CellWithText(3,4,50,Color.RED,10,10, "test",Utils.wall_dungeon);
+	CellWithText cwt3 = new CellWithText(new Coordinate(2,1),50,Color.RED,10,10, "test",Utils.wall_dungeon);
+	CellWithText cwt4 = new CellWithText(5,6,50,Color.RED,Color.BLUE,5,10,10, "test",Utils.wall_dungeon);
+	CellWithText cwt5 = new CellWithText(new Coordinate(8,7),50,Color.RED,Color.BLUE,5,10,10, "test",Utils.wall_dungeon);
 	
 	@Test
 	public void test_constructor_cellWithText() {
@@ -58,13 +58,13 @@ public class TestCellWithText {
 		
 	@Test
 	public void test_equals_cellWithText() {
-		assertTrue(cwt1.equals( new CellWithText(1,2,50,Color.RED,10,10, new Text("test"))));
-		assertTrue(cwt2.equals( new CellWithText(3,4,50,Color.RED,10,10, "test")));
+		assertTrue(cwt1.equals( new CellWithText(1,2,50,Color.RED,10,10, new Text("test"),Utils.wall_dungeon)));
+		assertTrue(cwt2.equals( new CellWithText(3,4,50,Color.RED,10,10, "test",Utils.wall_dungeon)));
 		assertTrue(cwt1.equals(cwt1));
 		assertTrue(cwt1.equals(cwt3));
 		assertFalse(cwt1.equals(null));
 		assertFalse(cwt1.equals(new Object()));
-		assertFalse(cwt2.equals(new Cell(3,4,50,Color.RED,10,10,Utils.caveFloor)));
+		assertFalse(cwt2.equals(new Cell(3,4,50,Color.RED,10,10,Utils.wall_dungeon)));
 		assertFalse(cwt3.equals(cwt4));
 		assertFalse(cwt4.equals(cwt5));
 	}

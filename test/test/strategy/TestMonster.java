@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 
 public class TestMonster {
 	boolean[][] walls = {{true, false, true}, {false, true, true}, {false, false, true}};
-	Monster monster = new Monster(walls,new Coordinate(4,5),"Player");
+	Monster monster = new Monster(walls,new Coordinate(4,5),"Player",0,1);
 	
 	
 	@Test
@@ -28,7 +28,7 @@ public class TestMonster {
 	
 	@Test
 	public void test_initialize_walls_monster() {
-		Monster monster = new Monster(null, null,null);
+		Monster monster = new Monster(null, null,null,0,0);
 		assertArrayEquals(null, monster.getWalls());
 		// Appel � la m�thode initialize avec le tableau de murs de test
 		monster.initialize(walls);
