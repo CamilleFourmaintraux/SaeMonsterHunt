@@ -59,6 +59,13 @@ public class MazeEditor {
 		for(int h=0; h<this.walls.length; h++) {
 			for(int l=0; l<this.walls[h].length; l++) {
 				Cell cell = new Cell(l, h, this.zoom, Color.TRANSPARENT, gap_X, gap_Y, Utils.floor_dungeon);
+				cell.setStroke(Color.VIOLET);
+				cell.setOnMouseEntered(ev->{
+					cell.setStrokeWidth(1);
+				});
+				cell.setOnMouseExited(e->{
+					cell.setStrokeWidth(0);
+				});
 				cell.setOnMouseClicked(e->{
 					if(this.walls[cell.getRow()][cell.getCol()]) {
 						this.walls[cell.getRow()][cell.getCol()]=false;
