@@ -20,7 +20,7 @@ public class SaveLoadSystemMaps {
 
     // Méthode pour charger un tableau boolean[][] depuis un fichier avec le chemin
     public static boolean[][] loadMap(String fileName) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(MAZES_DIRECTORY+fileName))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(MAZES_DIRECTORY+fileName+".dat"))) {
             return (boolean[][]) ois.readObject();
         }
     }
@@ -49,7 +49,7 @@ public class SaveLoadSystemMaps {
 
         // Charger le tableau
         try {
-            boolean[][] tableauCharge = loadMap(cheminFichier+".dat");
+            boolean[][] tableauCharge = loadMap(cheminFichier);
             System.out.println("Tableau chargé avec succès.");
             for(int h=0; h<tableauCharge.length; h++) {
         		System.out.print('[');

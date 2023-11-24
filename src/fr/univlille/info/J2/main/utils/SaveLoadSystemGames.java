@@ -15,14 +15,14 @@ public class SaveLoadSystemGames {
 
 	// Méthode pour sauvegarder un objet dans un fichier
     public static void saveGame(Maze maze, String fileName) throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(GAMES_DIRECTORY+fileName))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(GAMES_DIRECTORY+fileName+".obj"))) {
             oos.writeObject(maze);
         }
     }
 
     // Méthode pour charger un objet depuis un fichier
     public static Maze loadGame(String fileName) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GAMES_DIRECTORY+fileName))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GAMES_DIRECTORY+fileName+".obj"))) {
             return (Maze) ois.readObject();
         }
     }
@@ -30,12 +30,12 @@ public class SaveLoadSystemGames {
     //Exemple d'utilisation
     public static void main(String[] args) {
         // Exemple d'utilisation
-        Maze objetASauvegarder = new Maze();
-        String cheminFichier = "saveTest.obj";
+        Maze saved = new Maze();
+        String cheminFichier = "saveTest";
 
         // Sauvegarder l'objet
         try {
-            saveGame(objetASauvegarder, cheminFichier);
+            saveGame(saved, cheminFichier);
             System.out.println("Objet sauvegardé avec succès.");
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,9 +43,18 @@ public class SaveLoadSystemGames {
 
         // Charger l'objet
         try {
-            Maze game = loadGame(cheminFichier);
+            Maze loaded = loadGame(cheminFichier);
             System.out.println("Objet chargé avec succès.");
-            System.out.println(game.toString());
+            System.out.println(loaded.toString());
+            for(int h=0; h<loaded.walls.length; h++) {
+        		System.out.print('[');
+        		System.out.print(loaded.walls[h][0]);
+            	for(int l=1; l<loaded.walls[h].length; l++) {
+            		System.out.print(',');
+            		System.out.print(loaded.walls[h][l]);
+            	}
+        		System.out.println(']');
+            }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

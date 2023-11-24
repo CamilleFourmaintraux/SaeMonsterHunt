@@ -46,7 +46,7 @@ public class Maze extends Subject{
 	/**
 	 * Tableau de boolean représentant les murs plein ou non du labyrinthe (false=mur true=pas de mur).
 	 */
-	protected boolean[][] walls;
+	public boolean[][] walls;
 
 	/**
 	 * Tableau d'entier stockant les numéros de tours ou le monstre est déjà passé.
