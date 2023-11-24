@@ -3,7 +3,6 @@ package fr.univlille.info.J2.main.management;
 import java.io.File;
 
 import fr.univlille.info.J2.main.management.cells.Cell;
-import fr.univlille.info.J2.main.utils.SaveLoadSystem;
 import fr.univlille.info.J2.main.utils.Utils;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;

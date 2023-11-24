@@ -1,7 +1,5 @@
 package fr.univlille.info.J2.main.management.cells;
 
-import java.util.Objects;
-
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /**
  * Une classe représentant les coordonnées (ligne et colonne) d'une cellule dans un labyrinthe.

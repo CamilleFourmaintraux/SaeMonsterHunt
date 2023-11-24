@@ -9,7 +9,6 @@ import fr.univlille.info.J2.main.management.Management;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import javafx.scene.paint.Color;
 /**
  * 
  * MonsterHunt est la classe de lancement de l'application Monster Hunt.
