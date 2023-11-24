@@ -18,15 +18,15 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -34,7 +34,7 @@ import javafx.scene.text.Text;
 /**
  * La classe MonsterView représente la vue du Monstre.
  * Elle affiche la vue du Monstre et gère son interaction avec le jeu.
- * 
+ *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
@@ -42,7 +42,7 @@ import javafx.scene.text.Text;
  *
  */
 public class MonsterView implements Observer{
-	
+
 	/**
 	 * Constante couleur du Monstre.
 	 */
@@ -83,61 +83,61 @@ public class MonsterView implements Observer{
 	 * Couleur du brouillard
 	 */
 	public Color colorOfFog;
-	
+
 	/**
 	 * Nom du joueur incarnant le monstre
 	 */
 	String monsterName;
-	
+
 	/**
 	 * Sujet (pour le modèle observé)
 	 */
 	Maze maze;
-	
+
 	//Sprites (Rectangles pour le moment)
 	CellWithText sprite_monster;
 	CellWithText  sprite_shot;
 	CellWithText  sprite_exit;
 	CellWithText  selection;
-	
+
 	/**
 	 * Groupe pour la gestion des images.
 	 */
 	Group group_img_map;
-	
+
 	/**
 	 * Groupe pour la gestion des images des sprites.
 	 */
 	Group group_img_sprite;
-	
+
 	/**
 	 * Groupe pour la gestion de la map.
 	 */
 	Group group_map;
-	
+
 	/**
 	 * Groupe pour la gestion des sprites (rectangle).
 	 */
 	Group group_sprite;
-	
+
 	/**
 	 * Groupe pour la gestion de la scène.
 	 */
 	Group group_stage;
-	
+
 	BorderPane bp;
 
 	Text turnIndication;
 	Text notification;
-	
+
 	/**
 	 * Scène pour l'affichage.
 	 */
 	Scene scene;
-	
+
 	/**
      * Constructeur de la classe MonsterView, crée la vue du Monstre.
-	 * 
+	 *
 	 * @param window_height 	Hauteur de la fenêtre.
 	 * @param window_width 		Largeur de la fenêtre.
 	 * @param gap_X 			Position horizontal.
@@ -157,31 +157,31 @@ public class MonsterView implements Observer{
 		this.colorOfFloors = colorOfFloors;
 		this.colorOfFog = colorOfFog;
 		this.monsterName=monsterName;
-		
+
 		this.maze = maze;
 		this.maze.attach(this);
-		
+
 		this.group_sprite=new Group();
 		this.group_img_sprite=new Group();
-		
+
 		this.initiateSprites();
-		
+
 		this.group_map=new Group();
 		this.group_img_map=new Group();
 		this.group_stage=new Group();
-		
-		
-		
+
+
+
 		this.group_stage.getChildren().add(this.group_img_map);
 		this.group_stage.getChildren().add(this.group_map);
 		this.group_stage.getChildren().add(this.group_img_sprite);
 		this.group_stage.getChildren().add(this.group_sprite);
-		
+
 		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
-		
+
 		HBox hbox_saveMap = Generators.generateHBoxSaveMap(this.maze.walls, Color.PURPLE, "Save the current map : ", "Save map","Map successfully saved");
-		
+
 		Label l_saveGame = Generators.generateLabel("Save and exit : ", 0, 0);
 		l_saveGame.setTextFill(Color.PURPLE);
 		TextField tf_saveGame = Generators.generateTextField("GameName", 0, 0, 9, 'A', 'z');
@@ -190,7 +190,7 @@ public class MonsterView implements Observer{
 			ButtonType b_cancel= new ButtonType("Cancel");
 			ButtonType b_continue = new ButtonType("Continue");
 			ButtonType b_cws = new ButtonType("Continue without saving");
-			ArrayList<ButtonType> alb = new ArrayList<ButtonType>();
+			ArrayList<ButtonType> alb = new ArrayList<>();
 			alb.add(b_cancel);
 			alb.add(b_continue);
 			alb.add(b_cws);
@@ -203,13 +203,13 @@ public class MonsterView implements Observer{
 				}
 			});
 		});
-		
+
 		HBox hbox_saveGame = new HBox(10);
 		hbox_saveGame.getChildren().addAll(l_saveGame,tf_saveGame,b_saveGame);
-		
+
 		VBox vbox_savePanel = new VBox(20);
 		vbox_savePanel.getChildren().addAll(hbox_saveMap,hbox_saveGame);
-		
+
 		VBox vbox = new VBox();
 		Label player_name = new Label(this.monsterName);
 		player_name.setTextFill(Color.WHITE);
@@ -220,7 +220,7 @@ public class MonsterView implements Observer{
 		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 		this.bp.setTop(vbox);
 		this.bp.setBottom(vbox_savePanel);
-		
+
 		this.scene=new Scene(bp,this.window_width,this.window_height,Color.BLACK);
 		this.draw();
 	}
@@ -240,13 +240,13 @@ public class MonsterView implements Observer{
      * avec un objet spécifique.
      *
      * @param s Le sujet notifiant le changement.
-     * @param o L'objet spécifique notifiant le changement.	 
+     * @param o L'objet spécifique notifiant le changement.
      */
 	@Override
 	public void update(Subject s, Object o) {
 		this.actualize();
 	}
-	
+
 	public void actualize() {
 		this.sprite_monster.setX(this.calculDrawX(this.maze.monster.getCol()));
 		this.sprite_monster.setY(this.calculDrawY(this.maze.monster.getRow()));
@@ -280,7 +280,7 @@ public class MonsterView implements Observer{
 			}
 		}
 	}
-	
+
 	/**
 	 * Initialisation des sprites.
 	 */
@@ -288,37 +288,37 @@ public class MonsterView implements Observer{
 		//Initialisation du sprite du monstre
 		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster", Utils.monster_ocean);
 		this.addMouseEvents(sprite_monster);
-		
+
 		//initialisation du sprite du dernier tir du chasseur
 		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter", Utils.scope);
 		this.addMouseEvents(sprite_shot);
 		this.sprite_shot.setVisible(false);
-		
+
 		//Initialisation du sprite de la sortie
 		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit",Utils.exit_dungeon);
 		this.addMouseEvents(sprite_exit);
-		
+
 		//initialisation du rectangle de sélection
 		this.selection=new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Selection",Utils.empty);
 		this.selection.setVisible(false);
 		this.addMouseEvents(selection);
-		
+
 		this.group_sprite.getChildren().add(this.selection);
 		this.group_img_sprite.getChildren().add(this.selection.getImgv());
-		
+
 		this.group_sprite.getChildren().add(this.sprite_monster);
 		this.group_img_sprite.getChildren().add(this.sprite_monster.getImgv());
-		
+
 		this.group_sprite.getChildren().add(this.sprite_exit);
 		this.group_img_sprite.getChildren().add(this.sprite_exit.getImgv());
-		
+
 		this.group_sprite.getChildren().add(this.sprite_shot);
 		this.group_img_sprite.getChildren().add(this.sprite_shot.getImgv());
 		this.sprite_shot.getImgv().setVisible(false);
-		
-		
+
+
 	}
-	
+
 	public void addMouseEvents(Cell r) {
 		r.setOnMouseEntered(e->{
 			this.select(e, r.getCoord());
@@ -327,10 +327,10 @@ public class MonsterView implements Observer{
 			});
 		});
 	}
-	
+
 	/**
      * Dessine le labyrinthe et ses éléments.
-	 * 
+	 *
 	 * @return Un groupe contenant les éléments graphiques du labyrinthe.
 	 */
 	public void draw() {
@@ -352,16 +352,16 @@ public class MonsterView implements Observer{
 					r.setStrokeWidth(1);
 				}
 				this.addMouseEvents(r);
-				
+
 				this.group_map.getChildren().add(r);
 				this.group_img_map.getChildren().add(r.getImgv());
 			}
 		}
 	}
-	
+
 	/**
      * Méthode pour sélectionner une cellule du labyrinthe.
-	 * 
+	 *
 	 * @param c La coordonnée sélectionné.
 	 * @param e L'événement de la souris associé à la sélection.
 	 */
@@ -378,11 +378,11 @@ public class MonsterView implements Observer{
 				this.validSelection();
 			}else{
 				this.invalidSelection();
-				
+
 			}
 		}
 	}
-	
+
 	public void selectionLocked(Cell cell) {
 		if(this.maze.getMonsterIa().equals("Player")) {
 			int y = this.calculCoordY(cell);
@@ -393,8 +393,8 @@ public class MonsterView implements Observer{
 			this.notification.setText("No selection possible: "+this.monsterName+" is an AI.");
 		}
 	}
-	
-	
+
+
 	/**
      * Invalide la sélection en cours en changeant la couleur de la sélection.
 	 */
@@ -402,7 +402,7 @@ public class MonsterView implements Observer{
 		this.selection.setStroke(Color.DARKRED);
 		this.selection.setStrokeWidth(1);
 	}
-	
+
 	/**
      * Met en évidence la sélection en cours en changeant la couleur de la sélection.
 	 */
@@ -414,7 +414,7 @@ public class MonsterView implements Observer{
 
 	/**
 	 * Obtient la hauteur de la fenêtre de jeu.
-	 * 
+	 *
 	 * @return La hauteur de la fenêtre.
 	 */
 	public double getWindow_height() {
@@ -423,17 +423,17 @@ public class MonsterView implements Observer{
 
 	/**
 	 * Définit la hauteur de la fenêtre de jeu.
-	 * 
+	 *
 	 * @param window_height La nouvelle hauteur de la fenêtre.
 	 */
 	public void setWindow_height(double window_height) {
 		this.window_height = window_height;
-		
+
 	}
 
 	/**
 	 * Obtient la largeur de la fenêtre de jeu.
-	 * 
+	 *
 	 * @return La largeur de la fenêtre.
 	 */
 	public double getWindow_width() {
@@ -442,7 +442,7 @@ public class MonsterView implements Observer{
 
 	/**
 	 * Définit la largeur de la fenêtre de jeu.
-	 * 
+	 *
 	 * @param window_width La nouvelle largeur de la fenêtre.
 	 */
 	public void setWindow_width(double window_width) {
@@ -488,7 +488,7 @@ public class MonsterView implements Observer{
 	public int getZoom() {
 		return zoom;
 	}
-	
+
 	/**
 	 * Définit la valeur du zoom.
 	 * @param zoom La nouvelle valeur du zoom.
@@ -496,7 +496,7 @@ public class MonsterView implements Observer{
 	public void setZoom(int zoom) {
 		this.zoom = zoom;
 	}
-	
+
 	/**
 	 * Obtient la couleur du mur.
 	 * @return La couleur du mur
@@ -528,7 +528,7 @@ public class MonsterView implements Observer{
 	public void setColorOfFloors(Color colorOfFloors) {
 		this.colorOfFloors = colorOfFloors;
 	}
-	
+
 	/**
      * Calcule la position de dessin X en fonction d'une coordonnée.
 
@@ -538,30 +538,30 @@ public class MonsterView implements Observer{
 	public int calculDrawX(int x) {
 		return x*zoom+gap_X;
 	}
-	
+
 	/**
      * Calcule la position de dessin Y en fonction d'une coordonnée.
-     * 
+     *
 	 * @param y La coordonnée Y.
 	 * @return  La position de dessin Y calculée.
 	 */
 	public int calculDrawY(int y) {
 		return y*zoom+gap_Y;
 	}
-	
+
 	/**
      * Calcule la coordonnée X en fonction d'un rectangle.
-     * 
+     *
 	 * @param r Le rectangle.
 	 * @return La coordonnée X calculée.
-	 */ 
+	 */
 	public int calculCoordX(Rectangle r) {
 		return (int)((r.getX()-gap_X)/zoom);
 	}
-	
+
 	/**
      * Calcule la coordonnée Y en fonction d'un rectangle.
-     * 
+     *
 	 * @param r Le rectangle.
 	 * @return La coordonnée Y calculée.
 	 */

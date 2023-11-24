@@ -16,19 +16,19 @@ public class CellWithText extends Cell{
      * Le texte associé à la cellule.
      */
 	protected Text text;
-	
+
 	public CellWithText(int x, int y, int zoom, Color fill,int gap_X, int gap_Y, Text text, Image img) {
 		this(x, y, zoom, fill, fill, 0,  gap_X, gap_Y, text, img);
 	}
-	
+
 	public CellWithText(int x, int y, int zoom, Color fill,int gap_X, int gap_Y, String text, Image img) {
 		this(x, y, zoom, fill, fill, 0,  gap_X, gap_Y, new Text(text), img);
 	}
-	
+
 	public CellWithText(ICoordinate c, int zoom, Color fill,int gap_X, int gap_Y, String text, Image img) {
 		this(c.getCol(), c.getRow(), zoom, fill, fill, 0,  gap_X, gap_Y, new Text(text), img);
 	}
-	
+
 	public CellWithText(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, Text text, Image img) {
 		super(x, y, zoom, fill, stroke, strokeWidth, gap_X, gap_Y, img);
 		this.text=text;
@@ -37,15 +37,15 @@ public class CellWithText extends Cell{
 		this.text.setVisible(true);
 		this.text.toFront();
 	}
-	
+
 	public CellWithText(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, String text, Image img) {
 		this(x, y, zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text), img);
 	}
-	
+
 	public CellWithText(ICoordinate c, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, String text, Image img) {
 		this(c.getCol(), c.getRow(), zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text), img);
 	}
-	
+
 	/**
      * Retourne le texte associé à la cellule.
      *
@@ -54,7 +54,7 @@ public class CellWithText extends Cell{
 	public Text getText() {
 		return this.text;
 	}
-	
+
 	/**
      * Définit le texte associé à la cellule.
      *
@@ -63,7 +63,7 @@ public class CellWithText extends Cell{
 	public void setText(Text text) {
 		this.text = text;
 	}
-	
+
 	 /**
      * Définit le texte associé à la cellule en utilisant une chaîne de caractères.
      *
@@ -72,7 +72,7 @@ public class CellWithText extends Cell{
 	public void setText(String text) {
 		this.text.setText(text);
 	}
-	
+
 	/**
      * Définit la position horizontale du texte dans la cellule.
      *
@@ -81,7 +81,7 @@ public class CellWithText extends Cell{
 	public void setPosTextX(double x) {
 		this.text.setX(x);
 	}
-	
+
 	/**
      * Définit la position verticale du texte dans la cellule.
      *
@@ -95,14 +95,12 @@ public class CellWithText extends Cell{
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
+		if (!super.equals(obj) || (getClass() != obj.getClass()))
 			return false;
 		CellWithText other = (CellWithText) obj;
 		return Objects.equals(text.getText(), other.text.getText());
 	}
-	
-	
-	
+
+
+
 }

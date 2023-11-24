@@ -7,6 +7,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -14,14 +15,13 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
 public class Generators {
-	
+
 
 	/**
 	 * Génére un bouton avec un texte donné et le positionne aux coordonnées spécifiés.
@@ -30,7 +30,7 @@ public class Generators {
 	 * @param x 	La position horizontale du bouton.
 	 * @param y 	La position verticale du bouton.
 	 * @param inactive La couleur en hexadécimal quand le bouton n'est pas en interaction
-	 * @param active La couleur en hexadécimal quand le bouton est en interaction 
+	 * @param active La couleur en hexadécimal quand le bouton est en interaction
 	 * @return Le bouton généré.
 	 */
 	public static Button generateButton(String msg, double x, double y, Color active, Color inactive) {
@@ -39,7 +39,7 @@ public class Generators {
 		Generators.applyStyleToButton(button, active, inactive);
 		return button;
 	}
-	
+
 	/**
 	 * Génére un slider avec une valeur minimale, maximale et par défault et le positionne aux coordonnées spécifiés.
 	 *
@@ -71,7 +71,7 @@ public class Generators {
 	 * @return La liste déroulante générée.
 	 */
 	public static ComboBox<String> generateComboBox(String[] values, double x, double y) {
-		ComboBox<String> theme = new ComboBox<String>();
+		ComboBox<String> theme = new ComboBox<>();
 		theme.getItems().addAll(values);
 		theme.setValue(values[0]);
 		Generators.setLayout(theme, x ,y);
@@ -125,7 +125,7 @@ public class Generators {
 		});
 		return tf;
 	}
-	
+
 	/**
 	 * Génére un TextField avec une valeur par défaut et le positionne aux coordonnées spécifiés.
 	 *
@@ -140,10 +140,10 @@ public class Generators {
 		Generators.setLayout(tf, x,y);
 		return tf;
 	}
-	
+
 	/**
      * Ajoute une vérification pour des valeurs numériques à un champ de texte.
-     * 
+     *
 	 * @param tf 	Le champ de texte à vérifier.
 	 * @param min 	La valeur minimale autorisée.
 	 * @param max 	La valeur maximale autorisée.
@@ -161,7 +161,7 @@ public class Generators {
 						}
 					}catch(Exception e) {}
 				}
-				
+
 			}
 		});
 	}
@@ -179,7 +179,7 @@ public class Generators {
 		label.setTextAlignment(TextAlignment.CENTER);
 		return label;
 	}
-	
+
 
 	public static Alert generateAlert(String title, String text, Collection<ButtonType> boutonJouer) {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -192,10 +192,10 @@ public class Generators {
 
 		// Boutons de confirmation et d'annulation
 		alert.getButtonTypes().setAll(boutonJouer);
-		
+
 		return alert;
 	}
-	
+
 
 	/**
 	 * Positionne un élément aux coordonnées spécifiés.
@@ -219,15 +219,15 @@ public class Generators {
 		label.setTextFill(textColor);
 		label.setStyle("-fx-font-size: 25px;");
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Applique un style de base à un bouton, y compris le style lors du survol de la souris.
 	 *
 	 * @param b Le bouton auquel on applique le style.
 	 * @param inactive La couleur en hexadécimal quand le bouton n'est pas en interaction
-	 * @param active La couleur en hexadécimal quand le bouton est en interaction 
+	 * @param active La couleur en hexadécimal quand le bouton est en interaction
 	 */
 	public static void applyStyleToButton(Button b, Color inactive, Color active) { //inactive = #ffffff & active = #000000
 		//Style de base
@@ -250,11 +250,11 @@ public class Generators {
 					+ "		-fx-background-radius: 20px;\n");
 		});
 	}
-	
+
 	public static HBox generateHBoxSaveMap(boolean[][] walls, Color textColor, String textLabel, String textButton, String textNotification) {
     	Label l_saveMap = Generators.generateLabel(textLabel, 0, 0);
 		l_saveMap.setTextFill(textColor);
-		TextField tf_saveMap = Generators.generateTextField(SaveLoadSystem.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 9, 'A', 'z');
+		TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 9, 'A', 'z');
 		Label notification = Generators.generateLabel(textNotification, 0, 0);
 		notification.setTextFill(textColor);
 		notification.setVisible(false);
@@ -264,9 +264,9 @@ public class Generators {
 			try {
 				String fileName = tf_saveMap.getText();
 				if(fileName.isEmpty()) {
-					SaveLoadSystem.saveMap(walls, SaveLoadSystem.DEFAULT_NAME_FOR_MAP_SAVE);
+					SaveLoadSystemMaps.saveMap(walls, SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE);
 				}else {
-					SaveLoadSystem.saveMap(walls, fileName);
+					SaveLoadSystemMaps.saveMap(walls, fileName);
 				}
 				notification.setVisible(true);
 			}catch(IOException ioe) {
@@ -278,6 +278,6 @@ public class Generators {
 		hbox_saveMap.getChildren().addAll(l_saveMap,tf_saveMap,b_saveMap,notification);
 		return hbox_saveMap;
     }
-	
-	
+
+
 }

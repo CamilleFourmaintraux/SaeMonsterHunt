@@ -11,7 +11,7 @@ public class ConcreteObserver implements Observer{
 	@Override
 	public void update(Subject s) {
 		this.updated=true;
-		
+
 	}
 
 	@Override

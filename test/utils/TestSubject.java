@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 public class TestSubject {
 	ConcreteSubject cs = new ConcreteSubject();
 	ConcreteObserver co = new ConcreteObserver();
-	
+
 	@Test
 	public void test_attach() {
 		assertFalse(co.updated);
@@ -18,7 +18,7 @@ public class TestSubject {
 		cs.doSomething();
 		assertTrue(co.updated);
 	}
-	
+
 	@Test
 	public void test_detach() {
 		cs.attach(co);
@@ -28,7 +28,7 @@ public class TestSubject {
 		cs.doSomething();
 		assertFalse(co.updated);
 	}
-	
+
 	@Test
 	public void test_notifyWithData() {
 		cs.attach(co);
@@ -38,5 +38,5 @@ public class TestSubject {
 		assertTrue(co.updated);
 		assertEquals("go",co.data);
 	}
-	
+
 }

@@ -13,8 +13,8 @@ import fr.univlille.info.J2.main.strategy.monster.Monster;
 public class TestMonster {
 	boolean[][] walls = {{true, false, true}, {false, true, true}, {false, false, true}};
 	Monster monster = new Monster(walls,new Coordinate(4,5),"Player",0,1);
-	
-	
+
+
 	@Test
 	public void test_constructor_monster() {
 		//assertEquals(monster, new Monster(walls,new Coordinate(4,5))); //Pas bvesoin de faire ce test, car pas besoin d'une fonction equals (pas plus de 1 monstre par map)
@@ -22,7 +22,7 @@ public class TestMonster {
 		assertEquals(monster.getRow(),4);
 		assertEquals(monster.getCol(),5);
 	}
-	
+
 	@Test
 	public void test_initialize_walls_monster() {
 		Monster monster = new Monster(null, null,null,0,0);
@@ -32,7 +32,7 @@ public class TestMonster {
 		// Test que la propri�t� walls de l'objet Monster a �t� correctement initialis�e
 		assertArrayEquals(walls, monster.getWalls());
 	}
-	
+
 	@Test
 	public void test_setters_monster() {
 		assertEquals(monster.getCoord(),new Coordinate(4,5));
@@ -40,15 +40,15 @@ public class TestMonster {
 		assertEquals(monster.getCoord(),new Coordinate(4,2));
 		monster.setCoord(new Coordinate(9,6));
 		assertEquals(monster.getCoord(),new Coordinate(9,6));
-		
+
 	}
-	
+
 	//pas de test pour les methodes play & update car pas encore implemente.
 	@Test
 	public void test_play() {
 		assertNotEquals(monster.play(),null);
 	}
-	
+
 	@Test
 	public void test_update() {
 		monster.update(new CellEvent(null, 0, null));
@@ -80,10 +80,10 @@ public class TestMonster {
         assertEquals(newCoord, monster.getCoord_hunted());
         assertTrue(monster.isMonsterTurn());
     }*/
-	
-	
+
+
 	// Test des Getters
-	
+
 	/*@Test
     public void testGetRow() {
         ICoordinate coord = new Coordinate(2, 3);

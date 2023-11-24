@@ -8,7 +8,7 @@ import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.monster.Exit;
 
 public class TestExit {
-	
+
 	@Test
 	public void test_Exit() {
 		Exit exit = new Exit(new Coordinate(4,5));

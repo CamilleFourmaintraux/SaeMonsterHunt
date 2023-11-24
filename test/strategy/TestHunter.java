@@ -12,26 +12,26 @@ import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 public class TestHunter {
 
 	Hunter hunter = new Hunter(6, 6, new Coordinate(0,0),"Player",0);
-	
+
 	@Test
 	public void test_constructor_hunter() {
 		assertEquals(new Coordinate(0,0), hunter.getCoord());
 		assertEquals(0, hunter.getRow());
 		assertEquals(0, hunter.getCol());
 	}
-	
+
 		//pas de test pour les methodes play & update car pas encore implemente.
 		@Test
 		public void test_play_hunter() {
 			assertNotEquals(hunter.play(),null);
 		}
-		
+
 		@Test
 		public void test_update_hunter() {
 			hunter.update(new CellEvent(null, 0, null));
 		}
 
-	
+
 	@Test
 	public void test_initialize_traces_hunter() {
 		hunter.initialize(3 ,4);
@@ -45,14 +45,14 @@ public class TestHunter {
 			}
 		}
 	}
-	
+
 	@Test
 	public void test_methods_trace_hunter() {
 		assertEquals(-2, hunter.getTrace(new Coordinate(1,2)));
 		hunter.setTrace(new Coordinate(1,2), 9);
 		assertEquals(9, hunter.getTrace(new Coordinate(1,2)));
 	}
-	
+
 	@Test
 	public void test_setters_hunter() {
 		assertEquals(new Coordinate(0,0),hunter.getCoord());
@@ -61,7 +61,7 @@ public class TestHunter {
 		hunter.setCoord(null);
 		assertEquals(null, hunter.getCoord());
 	}
-	
+
 	/*@Test
     public void test_shoot_action() {
         // Instanciation d'un Hunter.
@@ -74,7 +74,7 @@ public class TestHunter {
         assertEquals(newCoord, hunter.getCoord());
         assertTrue(hunter.isMonsterTurn());
     }*/ //TODO
-	
+
 	/*
 	@Test
     public void test_actualizeTraces_method() {

@@ -8,7 +8,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  *
  * Elle implémente l'interface ICellEvent et permet de stocker des informations
  * sur un événement survenu dans une cellule d'un labyrinthe.
- * 
+ *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
@@ -28,7 +28,7 @@ public class CellEvent implements ICellEvent{
 	 * L'état de la cellule actuellement.
 	 */
 	CellInfo state;
-	
+
 	/**
 	 * Constructeur, crée un événement de cellule.
      *
@@ -40,7 +40,7 @@ public class CellEvent implements ICellEvent{
 		this.state = state;
 		this.turn = turn;
 	}
-	
+
 	/**
      * Obtient l'état (CellInfo) de la cellule au moment de l'événement.
      *
@@ -50,7 +50,7 @@ public class CellEvent implements ICellEvent{
 	public CellInfo getState() {
 		return this.state;
 	}
-	
+
 	 /**
      * Obtient le numéro du tour auquel l'événement a eu lieu.
      *
@@ -60,7 +60,7 @@ public class CellEvent implements ICellEvent{
 	public int getTurn() {
 		return this.turn;
 	}
-	
+
 	/**
     * Obtient les coordonnées de la cellule ou l'événement a eu lieu.
     *

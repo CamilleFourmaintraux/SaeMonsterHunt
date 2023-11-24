@@ -19,7 +19,7 @@ public class TestCellWithText {
 	CellWithText cwt3 = new CellWithText(new Coordinate(2,1),50,Color.RED,10,10, "test",Utils.wall_dungeon);
 	CellWithText cwt4 = new CellWithText(5,6,50,Color.RED,Color.BLUE,5,10,10, "test",Utils.wall_dungeon);
 	CellWithText cwt5 = new CellWithText(new Coordinate(8,7),50,Color.RED,Color.BLUE,5,10,10, "test",Utils.wall_dungeon);
-	
+
 	@Test
 	public void test_constructor_cellWithText() {
 		assertEquals(new Coordinate(2,1), cwt1.getCoord());
@@ -34,7 +34,7 @@ public class TestCellWithText {
 		assertEquals("test", cwt2.getText().getText());
 		assertEquals(cwt1.getText().getText(), cwt2.getText().getText());
 	}
-	
+
 	@Test
 	public void test_setters_cellWithText_textValue() {
 		assertEquals("test", cwt1.getText().getText());
@@ -43,7 +43,7 @@ public class TestCellWithText {
 		cwt1.setText(new Text("pomme"));
 		assertEquals("pomme", cwt1.getText().getText());
 	}
-	
+
 	@Test
 	public void test_setters_cellWithText_textPosition() {
 		int verificationX=(1*50+10)+(50/3);
@@ -55,7 +55,7 @@ public class TestCellWithText {
 		assertEquals(Double.valueOf(cwt1.getText().getX()),Double.valueOf(10));
 		assertEquals(Double.valueOf(cwt1.getText().getY()),Double.valueOf(-10));
 	}
-		
+
 	@Test
 	public void test_equals_cellWithText() {
 		assertTrue(cwt1.equals( new CellWithText(1,2,50,Color.RED,10,10, new Text("test"),Utils.wall_dungeon)));

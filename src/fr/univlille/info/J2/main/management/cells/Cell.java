@@ -1,21 +1,21 @@
 /**
- * 
+ *
  */
 package fr.univlille.info.J2.main.management.cells;
 
 import java.util.Objects;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 
 /**
- * La classe `Cell` représente une cellule rectangulaire utilisée dans un labyrinthe. 
+ * La classe `Cell` représente une cellule rectangulaire utilisée dans un labyrinthe.
  * Elle extend la classe `Rectangle` de JavaFX pour représenter graphiquement une cellule.
- * 
+ *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
@@ -23,18 +23,18 @@ import javafx.scene.image.ImageView;
  *
  */
 public class Cell extends Rectangle{
-	
+
 	//public final Image floor = new Image("/home/iutinfo/eclipse-workspace/J2_SAE3A/res/img/floor-Cave.jpg");
-	
+
 	/**
 	 * Coordonnées construite à partir du x et y.
 	 */
 	ICoordinate coord;
 	ImageView iv;
 	public boolean isLocked;
-	
+
 	/**
-	 * Constructeur avec des paramètres limit�s. 
+	 * Constructeur avec des paramètres limit�s.
 	 * Crée une cellule avec des valeurs de remplissage et d'épaisseur de contour par défaut.
 	 * @param x La coordonnée en X de la cellule dans le labyrinthe.
 	 * @param y La coordonnée en Y de la cellule dans le labyrinthe.
@@ -45,10 +45,10 @@ public class Cell extends Rectangle{
 	 */
 	public Cell(int x, int y, int zoom, Color fill, int gap_X, int gap_Y, Image img) {
 		this(x,y,zoom,fill,fill, 0, gap_X, gap_Y, img);
-		
+
 		//System.out.println("TEST IMG:"+iv.getImage().getUrl());
 	}
-	
+
 	/**
 	 * Constructeur avec des paramètres complets.
 	 * Crée une cellule avec des valeurs de remplissage, couleur de contour, et épaisseur de contour personnalisées.
@@ -75,7 +75,7 @@ public class Cell extends Rectangle{
 		this.setStrokeWidth(strokeWidth);
 		this.isLocked=false;
 	}
-	
+
 	 /**
      * Retourne les coordonnées associées à la cellule.
      *
@@ -84,7 +84,7 @@ public class Cell extends Rectangle{
 	public ICoordinate getCoord() {
 		return this.coord;
 	}
-	
+
 	/**
      * Définit les coordonnées associées à la cellule.
      *
@@ -94,7 +94,7 @@ public class Cell extends Rectangle{
 	public ICoordinate setCoord(ICoordinate c) {
 		return this.coord=c;
 	}
-	
+
 	/**
      * Obtient le numéro de ligne de la cellule dans le labyrinthe.
      *
@@ -103,7 +103,7 @@ public class Cell extends Rectangle{
 	public int getRow() {
 		return this.coord.getRow();
 	}
-	
+
 	 /**
      * Obtient le numéro de colonne de la cellule dans le labyrinthe.
      *
@@ -115,27 +115,25 @@ public class Cell extends Rectangle{
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) 
+		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if ((obj == null) || (getClass() != obj.getClass()))
 			return false;
 		Cell other = (Cell) obj;
 		return Objects.equals(coord, other.coord);
 	}
-	
-	
+
+
 	public ImageView getImgv() {
 		return this.iv;
 	}
-	
+
 	public void setImage(Image img) {
 		this.iv.setImage(img);
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 }

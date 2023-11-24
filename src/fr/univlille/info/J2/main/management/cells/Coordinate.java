@@ -3,7 +3,7 @@ package fr.univlille.info.J2.main.management.cells;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /**
  * Une classe représentant les coordonnées (ligne et colonne) d'une cellule dans un labyrinthe.
- * 
+ *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
@@ -19,7 +19,7 @@ public class Coordinate implements ICoordinate{
 	 * Le numéro de colonne.
 	 */
 	int col;
-	
+
 	/**
      * Constructeur par défaut.
      */
@@ -64,7 +64,7 @@ public class Coordinate implements ICoordinate{
 		// TODO Auto-generated method stub
 		return this.col;
 	}
-	
+
 	 /**
      * Définit les coordonnées à partir d'une ligne et d'une colonne spécifiées.
      *
@@ -104,19 +104,18 @@ public class Coordinate implements ICoordinate{
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if ((obj == null) || (getClass() != obj.getClass()))
 			return false;
 		Coordinate other = (Coordinate) obj;
 		return col == other.col && row == other.row;
 	}
-	
 
+
+	@Override
 	public String toString() {
 		return "("+this.getRow()+";"+this.getCol()+")";
 	}
-	
-	
+
+
 
 }
