@@ -9,9 +9,12 @@ package fr.univlille.info.J2.main.management;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import fr.univlille.info.J2.main.utils.Generators;
 import fr.univlille.info.J2.main.utils.Observer;
+import fr.univlille.info.J2.main.utils.SaveLoadSystem;
 import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -24,10 +27,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
@@ -305,9 +310,15 @@ public class Management extends Stage implements Observer{
 	 */
 	public Map<Integer, Scene> menus;
 	
+	//Les différentes fenêtres
 	public Stage viewM;
 	public Stage viewH;
 	public Stage viewCommon;
+	
+	public boolean isGenerationRandom;
+	
+	//Le fichier importé par
+	public File importedmap;
 	
 	/**
 	 * Constructeur de la classe Management.
@@ -338,6 +349,7 @@ public class Management extends Stage implements Observer{
 		this.moving_range=this.DEFAULT_MOVING_RANGE;
 		this.bonus_range=this.DEFAULT_BONUS_RANGE;
 		this.theme="Cave";
+		this.isGenerationRandom=true;
 
 		this.generateWaitingNextPlayer();
 		this.generateSettingsMiscellaneous();
@@ -604,7 +616,15 @@ public class Management extends Stage implements Observer{
 			}
 			
 			//Creation of the maze
-			this.maze=new Maze(this.probability, this.maze_height, this.maze_width, monster_IA, hunter_IA, this.limitedVision, this.vision_range, this.moving_range, this.bonus_range);
+			if(this.isGenerationRandom) {
+				this.maze = new Maze(this.probability, this.maze_height, this.maze_width, monster_IA, hunter_IA, this.limitedVision, this.vision_range, this.moving_range, this.bonus_range);
+			}else {
+				try {
+					this.maze = new Maze(SaveLoadSystem.loadMap(this.importedmap), monster_IA, hunter_IA, this.limitedVision, this.vision_range, this.moving_range, this.bonus_range);
+				} catch (Exception exception) {
+					this.maze = new Maze(this.probability, this.maze_height, this.maze_width, monster_IA, hunter_IA, this.limitedVision, this.vision_range, this.moving_range, this.bonus_range);
+				}
+			}
 			this.maze.attach(this);
 
 			this.mv=new MonsterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.monster_name);
@@ -784,7 +804,14 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu des paramètres gérant le labyrinthe
 	 */
 	public void generateSettingsMaze() {
+		
 		Label title = Generators.generateTitle("Settings - Maze");
+		
+		Label lGen = Generators.generateLabel("Set the generation mode :", 0,0);
+		
+		Button bGen = Generators.generateButton("Random", this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height,20),Color.WHITE, Color.BLACK);
+		bGen.setMinWidth(100);
+		
 		TextField tf_height = Generators.generateTextField("10",this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,30));//, 2, '0', '9');
 		TextField tf_width = Generators.generateTextField("10", this.calculPercentage(this.window_width,30), this.calculPercentage(this.window_height,50));//, 2, '0', '9');
 		Generators.addCheckNumericalValueToTextField(tf_height, this.MIN_MAZE_SIZE, this.MAX_MAZE_SIZE);
@@ -829,6 +856,7 @@ public class Management extends Stage implements Observer{
 			tf_width.setText(""+(int)slider_width.getValue());
 			this.maze_width=(int)slider_width.getValue();
 		});
+		
 		tf_width.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
@@ -849,10 +877,35 @@ public class Management extends Stage implements Observer{
 				}
 			}
 		});
+		
 		Button bEditor = Generators.generateButton("Maze Editor", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),Color.WHITE, Color.BLACK);
 		bEditor.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_MAZE_EDITOR));
 		});
+		
+		Text message = new Text("No file selected");
+		
+		//Création du gestionnaire de fcihier
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Choose a map to import");
+		// Créer un filtre pour les fichiers .dat
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Fichiers DAT (*.dat)", "*.dat");
+        fileChooser.getExtensionFilters().add(extFilter);
+        // Définir le répertoire initial du FileChooser
+        File initialDirectory = new File(SaveLoadSystem.MAZES_DIRECTORY);
+        fileChooser.setInitialDirectory(initialDirectory);
+        
+		Button bImport = Generators.generateButton("Import", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),Color.WHITE,Color.BLACK);
+		bImport.setOnAction(e->{
+			this.importedmap = fileChooser.showOpenDialog(this);
+			if(this.importedmap==null) {
+				message.setText("Operation canceled : no file selected");
+			}else {
+				message.setText("File selected : "+this.importedmap.getName());
+			}
+			
+		});
+		
 		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),Color.WHITE, Color.BLACK);
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_SETTINGS));
@@ -863,18 +916,68 @@ public class Management extends Stage implements Observer{
 				this.probability=Integer.parseInt(tf_probability.getText());
 			}
 		});
-		Group group = new Group();
-		group.getChildren().addAll(slider_height, slider_width, l_height, tf_height, l_width, tf_width, l_probability, tf_probability);
 		
-		VBox vbox = new VBox(10);
-		vbox.getChildren().addAll(bEditor,bBack);
 		
-		BorderPane bp = new BorderPane(group);
+		
+		Group g_height = new Group();
+		g_height.getChildren().addAll(l_height, tf_height,slider_height);
+		Group g_width = new Group();
+		g_width.getChildren().addAll(l_width, tf_width, slider_width);
+		
+		VBox settingsForRandom = new VBox(10);
+		settingsForRandom.getChildren().addAll(g_height,g_width,l_probability, tf_probability);
+		settingsForRandom.setAlignment(Pos.CENTER);
+		settingsForRandom.setPadding(new Insets(30));
+		
+		VBox settingsForImport = new VBox(10);
+		settingsForImport.getChildren().addAll(message,bImport,bEditor);
+		settingsForImport.setAlignment(Pos.CENTER);
+		settingsForImport.setPadding(new Insets(30));
+		
+		//Valeurs par défaults
+		settingsForRandom.setVisible(true);
+		settingsForImport.setVisible(false);
+
+		bGen.setOnAction(e->{
+			if(this.isGenerationRandom) {
+				this.isGenerationRandom=false;
+				bGen.setText("Imported");
+				settingsForRandom.setVisible(false);
+				settingsForImport.setVisible(true);
+			}else {
+				this.isGenerationRandom=true;
+				bGen.setText("Random");
+				settingsForRandom.setVisible(true);
+				settingsForImport.setVisible(false);
+			}
+		});
+		
+		
+		
+		
+		StackPane sp_ran = new StackPane();
+		sp_ran.getChildren().addAll(settingsForRandom,settingsForImport);
+		
+		StackPane sp_imp = new StackPane();
+		sp_imp.getChildren().addAll(bGen);
+		
+		VBox settings = new VBox(10);
+		settings.getChildren().addAll(sp_ran,sp_imp);
+		
+		VBox topPanel = new VBox(10);
+		topPanel.getChildren().addAll(title,lGen,bGen);
+		topPanel.setAlignment(Pos.CENTER);
+		
+		VBox bottomPanel = new VBox(10);
+		bottomPanel.getChildren().addAll(bBack);
+		bottomPanel.setAlignment(Pos.CENTER);
+		
+		BorderPane bp = new BorderPane(settings);
 		bp.setPadding(new Insets(30, 30, 30, 30));
-		bp.setTop(title);
-		BorderPane.setAlignment(title, Pos.TOP_CENTER);
-		bp.setBottom(vbox);
-		BorderPane.setAlignment(vbox, Pos.BOTTOM_CENTER);
+		bp.setTop(topPanel) ;
+		BorderPane.setAlignment(topPanel, Pos.TOP_CENTER);
+		bp.setBottom(bottomPanel);
+		BorderPane.setAlignment(bottomPanel, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 		this.menus.put(Integer.valueOf(this.ID_MAZE_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
 	}
@@ -980,27 +1083,87 @@ public class Management extends Stage implements Observer{
 		Slider slider_editor_height = Generators.generateSlider(this.MIN_MAZE_SIZE,this.MAX_MAZE_SIZE,this.DEFAULT_MAZE_SIZE,10,10);
 		slider_editor_height.valueProperty().addListener(e->{
 			mEdit.editor_height=(int)slider_editor_height.getValue();
+			l_height.setText("Maze Width ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+") : "+mEdit.editor_height);
 		});
 		Slider slider_editor_width = Generators.generateSlider(this.MIN_MAZE_SIZE,this.MAX_MAZE_SIZE,this.DEFAULT_MAZE_SIZE,20,20);
 		slider_editor_width.valueProperty().addListener(e->{
 			mEdit.editor_width=(int)slider_editor_width.getValue();
+			l_width.setText("Maze Width ("+this.MIN_MAZE_SIZE+"-"+this.MAX_MAZE_SIZE+") : "+mEdit.editor_width);
 		});
 		
 		Button bReset = Generators.generateButton("Reset map", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,70),Color.WHITE, Color.BLACK);
 		bReset.setOnAction(e->{
-			mEdit.draw(mEdit.editor_height,mEdit.editor_width,this.window_height, this.window_width,this.gap_X,this.gap_Y);
+			mEdit.resetDrawing(mEdit.editor_height,mEdit.editor_width,this.window_height, this.window_width,this.gap_X,this.gap_Y);
+		});
+		
+		Text message = new Text();
+		message.setVisible(false);
+		
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Choose a map to import");
+		// Créer un filtre pour les fichiers .dat
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Fichiers DAT (*.dat)", "*.dat");
+        fileChooser.getExtensionFilters().add(extFilter);
+        // Définir le répertoire initial du FileChooser
+        File initialDirectory = new File(SaveLoadSystem.MAZES_DIRECTORY);
+        fileChooser.setInitialDirectory(initialDirectory);
+        
+		Button bImport = Generators.generateButton("Import", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),Color.WHITE,Color.BLACK);
+		bImport.setOnAction(event->{
+			mEdit.map_import = fileChooser.showOpenDialog(this);
+			if(mEdit.map_import!=null) {
+				try {
+					mEdit.walls = SaveLoadSystem.loadMap(mEdit.map_import);
+					message.setText("Success - Import done");
+					message.setVisible(true);
+				} catch (ClassNotFoundException | IOException exception) {
+					message.setText("Error - Import impossible");
+					message.setVisible(true);
+				}
+				mEdit.draw(mEdit.walls.length, mEdit.walls[0].length, window_height, window_width, gap_X, gap_Y);
+			}else {
+				message.setText("Cancelled");
+				message.setVisible(true);
+			}
 		});
 		
 		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),Color.WHITE,Color.BLACK);
 		bBack.setOnAction(e->{
 			this.setScene(getScene(this.ID_MAZE_SETTINGS));
+			message.setVisible(false);
 		});
 		
-		HBox saveMapPanel = Generators.generateHBoxSaveMap(mEdit.walls, Color.BLACK, "Save your map : ", "Save map","Map successfully saved");
+		//HBox saveMapPanel = Generators.generateHBoxSaveMap(mEdit.walls, Color.BLACK, "Save your map : ", "Save map","Map successfully saved","ERROR - Impossible to save Map");
+		
+		
+		Label l_saveMap = Generators.generateLabel("Save your map : ", 0, 0);
+		l_saveMap.setTextFill(Color.BLACK);
+		TextField tf_saveMap = Generators.generateTextField(SaveLoadSystem.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 9, 'A', 'z');
+		Button bSave = Generators.generateButton("Save map", 0, 0,Color.WHITE,Color.BLACK);
+		bSave.setMinWidth(bSave.getPrefWidth());
+		bSave.setOnAction(e->{
+			try {
+				String fileName = tf_saveMap.getText();
+				if(fileName.isEmpty()) {
+					SaveLoadSystem.saveMap(mEdit.walls, SaveLoadSystem.DEFAULT_NAME_FOR_MAP_SAVE);
+				}else {
+					SaveLoadSystem.saveMap(mEdit.walls, fileName);
+				}
+				message.setText("Map successfully saved!");
+				message.setVisible(true);
+			}catch(IOException ioe) {
+				message.setText("Error when saving the map.");
+				message.setVisible(true);
+			}
+		});
+		HBox saveMapPanel = new HBox(10);
+		saveMapPanel.getChildren().addAll(l_saveMap,tf_saveMap,message);
 		
 		HBox bottomPanel = new HBox(10);
 		bottomPanel.getChildren().add(bBack);
 		bottomPanel.getChildren().add(bReset);
+		bottomPanel.getChildren().add(bImport);
+		bottomPanel.getChildren().add(bSave);
 		
 
 		VBox controlPanel = new VBox(10);
