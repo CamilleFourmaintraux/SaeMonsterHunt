@@ -8,13 +8,13 @@ import org.junit.Test;
 
 import fr.univlille.info.J2.main.management.cells.Cell;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
-import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.utils.ImageLoader;
 import javafx.scene.paint.Color;
 
 public class TestCell {
 
 
-	Cell cell= new Cell(1,2,50,Color.RED,10,10,Utils.wall_dungeon);
+	Cell cell= new Cell(1,2,50,Color.RED,10,10,ImageLoader.wall_dungeon);
 
 	@Test
 	public void test_constructor_cell() {
@@ -41,8 +41,8 @@ public class TestCell {
 	public void test_equals_cell() {
 		assertTrue(cell.equals(cell));
 		assertFalse(cell.equals(null));
-		assertFalse(cell.equals(new Cell(5,2,50,Color.RED,10,10,Utils.wall_dungeon)));
-		assertTrue(cell.equals(new Cell(1,2,50,Color.RED,10,10,Utils.wall_dungeon)));
+		assertFalse(cell.equals(new Cell(5,2,50,Color.RED,10,10,ImageLoader.wall_dungeon)));
+		assertTrue(cell.equals(new Cell(1,2,50,Color.RED,10,10,ImageLoader.wall_dungeon)));
 	}
 
 

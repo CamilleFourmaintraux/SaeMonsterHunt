@@ -11,6 +11,7 @@ import fr.univlille.info.J2.main.management.cells.Cell;
 import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Generators;
+import fr.univlille.info.J2.main.utils.ImageLoader;
 import fr.univlille.info.J2.main.utils.Observer;
 import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
@@ -286,20 +287,20 @@ public class MonsterView implements Observer{
 	 */
 	private void initiateSprites() {
 		//Initialisation du sprite du monstre
-		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster", Utils.monster_ocean);
+		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster", ImageLoader.monster_ocean);
 		this.addMouseEvents(sprite_monster);
 
 		//initialisation du sprite du dernier tir du chasseur
-		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter", Utils.scope);
+		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter", ImageLoader.scope);
 		this.addMouseEvents(sprite_shot);
 		this.sprite_shot.setVisible(false);
 
 		//Initialisation du sprite de la sortie
-		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit",Utils.exit_dungeon);
+		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit",ImageLoader.exit_dungeon);
 		this.addMouseEvents(sprite_exit);
 
 		//initialisation du rectangle de sélection
-		this.selection=new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Selection",Utils.empty);
+		this.selection=new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Selection",ImageLoader.empty);
 		this.selection.setVisible(false);
 		this.addMouseEvents(selection);
 
@@ -336,7 +337,7 @@ public class MonsterView implements Observer{
 	public void draw() {
 		for(int h=0; h<this.maze.walls.length; h++) {
 			for(int l=0; l<this.maze.walls[h].length; l++) {
-				Cell r = new Cell(l, h, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, Utils.floor_dungeon);
+				Cell r = new Cell(l, h, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, ImageLoader.floor_dungeon);
 				//Codage des rectangles
 				if(this.maze.walls[h][l]) {
 					//Code à calculer si c'est un sol : obsolète car la manière de faire les rectangles à changer
@@ -344,7 +345,7 @@ public class MonsterView implements Observer{
 					//r.setFill(this.colorOfWalls);
 					//r.setStroke(this.colorOfWalls);
 					//r.setStrokeWidth(1);
-					r.setImage(Utils.wall_dungeon);
+					r.setImage(ImageLoader.wall_dungeon);
 				}
 				if(this.maze.getVisionRange()!=-1) {
 					r.setFill(this.colorOfFog);

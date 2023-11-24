@@ -3,7 +3,7 @@ package fr.univlille.info.J2.main.management;
 import java.io.File;
 
 import fr.univlille.info.J2.main.management.cells.Cell;
-import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.utils.ImageLoader;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 
@@ -57,9 +57,9 @@ public class MazeEditor {
 
 		for(int h=0; h<this.walls.length; h++) {
 			for(int l=0; l<this.walls[h].length; l++) {
-				Cell cell = new Cell(l, h, this.zoom, Color.TRANSPARENT, gap_X, gap_Y, Utils.floor_dungeon);
+				Cell cell = new Cell(l, h, this.zoom, Color.TRANSPARENT, gap_X, gap_Y, ImageLoader.floor_dungeon);
 				if(!this.walls[h][l]) {
-					cell.setImage(Utils.wall_dungeon);
+					cell.setImage(ImageLoader.wall_dungeon);
 				}
 				cell.setStroke(Color.VIOLET);
 				cell.setOnMouseEntered(e->{
@@ -97,10 +97,10 @@ public class MazeEditor {
 	public void modify(Cell cell) {
 		if(this.walls[cell.getRow()][cell.getCol()]) {
 			this.walls[cell.getRow()][cell.getCol()]=false;
-			cell.setImage(Utils.wall_dungeon);
+			cell.setImage(ImageLoader.wall_dungeon);
 		}else {
 			this.walls[cell.getRow()][cell.getCol()]=true;
-			cell.setImage(Utils.floor_dungeon);
+			cell.setImage(ImageLoader.floor_dungeon);
 		}
 	}
 }
