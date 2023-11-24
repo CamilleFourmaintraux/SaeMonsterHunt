@@ -1,4 +1,4 @@
-package test.utils;
+package utils;
 
 import fr.univlille.info.J2.main.utils.Observer;
 import fr.univlille.info.J2.main.utils.Subject;

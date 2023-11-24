@@ -1,4 +1,4 @@
-package test.maze.cell;
+package maze.cell;
 
 import static org.junit.Assert.assertEquals;
 

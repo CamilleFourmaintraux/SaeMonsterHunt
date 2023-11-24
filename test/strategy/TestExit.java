@@ -1,4 +1,4 @@
-package test.strategy;
+package strategy;
 
 import static org.junit.Assert.assertEquals;
 
