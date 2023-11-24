@@ -1,5 +1,6 @@
 package fr.univlille.info.J2.main.utils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,30 +8,27 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class SaveLoadSystem {
-	public static final String SAVE_DIRECTORY = "./res/saves/mazes/";
+	public static final String MAZES_DIRECTORY = "res/saves/mazes/";
+	public static final String GAMES_DIRECTORY = "res/saves/games/";
 	public final static String DEFAULT_NAME_FOR_MAP_SAVE = "MapName";
-	public static int mazeSave_counter = 0;
-	public static int gameSave_counter = 0;
-	
-	public static void reset_mazeSave_counter() {
-		mazeSave_counter=0;
-	}
-	
-	public static void reset_gameSave_counter() {
-		gameSave_counter=0;
-	}
 
     // Méthode pour sauvegarder un tableau boolean[][] dans un fichier
     public static void saveMap(boolean[][] map, String saveName) throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_DIRECTORY+saveName+mazeSave_counter+".dat"))) {
-            mazeSave_counter++;
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(MAZES_DIRECTORY+saveName+".dat"))) {
             oos.writeObject(map);
         }
     }
 
-    // Méthode pour charger un tableau boolean[][] depuis un fichier
-    public static boolean[][] loadMap(String saveName) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(SAVE_DIRECTORY+saveName))) {
+    // Méthode pour charger un tableau boolean[][] depuis un fichier avec le chemin
+    public static boolean[][] loadMap(String fileName) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(MAZES_DIRECTORY+fileName))) {
+            return (boolean[][]) ois.readObject();
+        }
+    }
+    
+ // Méthode pour charger un tableau boolean[][] depuis un fichier
+    public static boolean[][] loadMap(File file) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             return (boolean[][]) ois.readObject();
         }
     }
@@ -68,7 +66,4 @@ public class SaveLoadSystem {
             e.printStackTrace();
         }
     }*/
-    
-    
-    
 }
