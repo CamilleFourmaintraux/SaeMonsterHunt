@@ -28,7 +28,7 @@ public class SaveLoadSystemGames {
     }
 
     //Exemple d'utilisation
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         // Exemple d'utilisation
         Maze saved = new Maze();
         String cheminFichier = "saveTest";
@@ -58,5 +58,5 @@ public class SaveLoadSystemGames {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

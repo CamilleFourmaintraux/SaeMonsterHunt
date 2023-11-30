@@ -6,6 +6,8 @@
 package fr.univlille.info.J2.main.management;
 
 
+import java.io.Serializable;
+
 import fr.univlille.info.J2.main.management.cells.CellEvent;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
@@ -28,7 +30,10 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  *
  */
 
-public class Maze extends Subject{
+public class Maze extends Subject implements Serializable{
+
+
+	private static final long serialVersionUID = 1L;
 
 	private static final boolean[][] DEFAULT_MAP = new boolean[][] {
 		{false,true,false,true,true,false,true,false,true,false}, 	// X . X . . X . X . X
