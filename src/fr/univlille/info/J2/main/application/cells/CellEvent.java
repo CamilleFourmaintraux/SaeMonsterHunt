@@ -1,4 +1,4 @@
-package fr.univlille.info.J2.main.management.cells;
+package fr.univlille.info.J2.main.application.cells;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;

@@ -8,13 +8,13 @@ package fr.univlille.info.J2.main.management;
 
 import java.io.Serializable;
 
-import fr.univlille.info.J2.main.management.cells.CellEvent;
-import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.application.cells.CellEvent;
+import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 import fr.univlille.info.J2.main.strategy.monster.Exit;
 import fr.univlille.info.J2.main.strategy.monster.Monster;
-import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 

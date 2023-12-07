@@ -6,11 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.management.cells.Cell;
-import fr.univlille.info.J2.main.management.cells.CellWithText;
-import fr.univlille.info.J2.main.management.cells.Coordinate;
-import fr.univlille.info.J2.main.utils.ImageLoader;
+import fr.univlille.info.J2.main.application.cells.Cell;
+import fr.univlille.info.J2.main.application.cells.CellWithText;
+import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 

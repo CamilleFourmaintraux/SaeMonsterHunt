@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.application.cells.Coordinate;
 
 public class TestCoordinate {
 Coordinate c = new Coordinate(1,3);

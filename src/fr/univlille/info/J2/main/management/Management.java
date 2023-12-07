@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.univlille.info.J2.main.utils.Generators;
-import fr.univlille.info.J2.main.utils.Observer;
-import fr.univlille.info.J2.main.utils.SaveLoadSystemMaps;
-import fr.univlille.info.J2.main.utils.Subject;
+import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
 import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.utils.menuConception.Generators;
+import fr.univlille.info.J2.main.utils.patrons.Observer;
+import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -780,7 +780,7 @@ public class Management extends Stage implements Observer{
 			this.applyTheme(this.theme);
 		});
 		Label l_theme = Generators.generateLabel("Choose a theme", theme.getLayoutX()-this.LABEL_MIN_WIDTH,theme.getLayoutY());
-
+		
 		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),Color.WHITE, Color.BLACK);
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_SETTINGS));
@@ -1190,7 +1190,7 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu de GameOver.
 	 */
 	public void generateGameOverScreen() {
-		Label title = Generators.generateTitle("Game Over Menu");
+		Label title = Generators.generateTitle("Game Over !");
 
 		Button restartButton = Generators.generateButton("Rejouer", 0, 0,Color.WHITE, Color.BLACK);
 		restartButton.setOnAction(e -> {
