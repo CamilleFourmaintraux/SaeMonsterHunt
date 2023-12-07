@@ -5,7 +5,6 @@
  */
 package fr.univlille.info.J2.main.strategy.monster;
 
-import java.io.Serializable;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
@@ -19,8 +18,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  * @author theo.franos.etu
  *
  */
-public class Exit implements Serializable{
-	private static final long serialVersionUID = 2888180442334325163L;
+public class Exit{
 	/**
 	 * Les coordonées de la sortie du labyrinthe.
 	 */

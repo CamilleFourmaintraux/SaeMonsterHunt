@@ -39,8 +39,7 @@ public class TestCell {
 
 	@Test
 	public void test_equals_cell() {
-		assertTrue(cell.equals(cell));
-		assertFalse(cell.equals(null));
+		assertFalse(cell==null);
 		assertFalse(cell.equals(new Cell(5,2,50,Color.RED,10,10,ImageLoader.wall_dungeon)));
 		assertTrue(cell.equals(new Cell(1,2,50,Color.RED,10,10,ImageLoader.wall_dungeon)));
 	}

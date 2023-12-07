@@ -466,7 +466,7 @@ public class Management extends Stage implements Observer{
 	 * @return true si le jeu est terminé, sinon faux.
 	 */
 	public boolean gameOver() {
-		if(this.maze.isGameOver) {
+		if(this.maze.isGameOver()) {
 			this.setScene(this.getScene(ID_GAMEOVER));
 			this.setHeight(this.window_height);
 			this.setWidth(this.window_width);
@@ -477,7 +477,7 @@ public class Management extends Stage implements Observer{
 				this.viewM.hide();
 				this.viewH.hide();
 			}
-			maze.isGameOver=false;
+			maze.setGameOver(false);
 			return true;
 		}
 		return false;
@@ -506,15 +506,15 @@ public class Management extends Stage implements Observer{
 	 */
 	public void switchInGameView() {
 		ICoordinate c;
-		if(this.maze.isMonsterTurn) {
+		if(this.maze.isMonsterTurn()) {
 			this.toMonsterView();
-			c = this.maze.monster.play();
+			c = this.maze.getMonster().play();
 			if(c!=null) {
 				this.monsterPlayAt(c);
 			}
 		}else {
 			this.toHunterView();
-			c = this.maze.hunter.play();
+			c = this.maze.getHunter().play();
 			if(c!=null) {
 				this.hunterPlayAt(c);
 			}

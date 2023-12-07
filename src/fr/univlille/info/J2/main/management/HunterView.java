@@ -172,7 +172,7 @@ public class HunterView implements Observer{
 		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
 
-		HBox hbox_saveMap = Generators.generateHBoxSaveMap(this.maze.walls, Color.PURPLE, "Save the current map : ", "Save map", "Map successfully saved");
+		HBox hbox_saveMap = Generators.generateHBoxSaveMap(this.maze.getWalls(), Color.PURPLE, "Save the current map : ", "Save map", "Map successfully saved");
 
 		Label l_saveGame = Generators.generateLabel("Save and exit : ", 0, 0);
 		l_saveGame.setTextFill(Color.PURPLE);
@@ -248,16 +248,16 @@ public class HunterView implements Observer{
 
 
 	public void actualize() {
-		int x = calculDrawX(this.maze.hunter.getCol());
-		int y = calculDrawY(this.maze.hunter.getRow());
+		int x = calculDrawX(this.maze.getHunter().getCol());
+		int y = calculDrawY(this.maze.getHunter().getRow());
 		this.sprite_shot.setX(x);
 		this.sprite_shot.setY(y);
 		this.sprite_shot.setVisible(true);
 		this.sprite_shot.getImgv().setVisible(true);
 		this.sprite_shot.getImgv().setX(x);
 		this.sprite_shot.getImgv().setY(y);
-		this.turnIndication.setText("Turn n°"+this.maze.turn);
-		if(this.maze.spotted) {
+		this.turnIndication.setText("Turn n°"+this.maze.getTurn());
+		if(this.maze.isSpotted()) {
 			this.notification.setText("WARNING - The monster has been detected in one of your squares\nalready discovered during a previous turn!");
 		}else {
 			this.notification.setText("");
@@ -270,11 +270,11 @@ public class HunterView implements Observer{
      * Méthode pour dessiner le labyrinthe et les éléments associés.
 	 */
 	public void draw() {
-		for(int h=0; h<this.maze.hunter.getTraces().length; h++) {
-			for(int l=0; l<this.maze.hunter.getTraces()[h].length; l++) {
+		for(int h=0; h<this.maze.getHunter().getTraces().length; h++) {
+			for(int l=0; l<this.maze.getHunter().getTraces()[h].length; l++) {
 				//Codage des rectangles permettant le contrôle
 				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""),ImageLoader.floor_dungeon);
-				if(!this.maze.walls[h][l]) {
+				if(!this.maze.getWalls()[h][l]) {
 					cell.setImage(ImageLoader.wall_dungeon);
 				}
 				cell.setFocusTraversable(false);
@@ -338,7 +338,7 @@ public class HunterView implements Observer{
 		this.selection.setVisible(false);
 
 		//initialisation du sprite du tir
-		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot",ImageLoader.scope);
+		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot",ImageLoader.scope);
 		this.sprite_shot.setVisible(false);
 		this.sprite_shot.getImgv().setVisible(false);
 		this.sprite_shot.setOnMouseEntered(event -> {
@@ -392,7 +392,7 @@ public class HunterView implements Observer{
 		cwt.setFill(Color.TRANSPARENT);
 		cwt.setStroke(Color.TRANSPARENT);
 		if(this.maze.isFloor(cwt.getCoord())) {
-			int trace = this.maze.hunter.getTraces()[cwt.getRow()][cwt.getCol()];
+			int trace = this.maze.getHunter().getTraces()[cwt.getRow()][cwt.getCol()];
 			if(trace>0) {
 				cwt.setText(""+trace);
 			}

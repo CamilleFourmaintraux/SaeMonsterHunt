@@ -35,13 +35,13 @@ public class TestHunter {
 	@Test
 	public void test_initialize_traces_hunter() {
 		hunter.initialize(3 ,4);
-		assertEquals(3, hunter.traces.length);
-		assertEquals(4, hunter.traces[0].length);
+		assertEquals(3, hunter.getTraces().length);
+		assertEquals(4, hunter.getTraces()[0].length);
 
 		// Test si toutes les valeurs du tableau de traces sont bien a zero.
 		for (int h = 0; h < 3; h++) {
 			for (int l = 0; l < 4; l++) {
-				assertEquals(-2, hunter.traces[h][l]);
+				assertEquals(-2, hunter.getTraces()[h][l]);
 			}
 		}
 	}

@@ -183,7 +183,7 @@ public class MonsterView implements Observer{
 		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
 
-		HBox hbox_saveMap = Generators.generateHBoxSaveMap(this.maze.walls, Color.PURPLE, "Save the current map : ", "Save map","Map successfully saved");
+		HBox hbox_saveMap = Generators.generateHBoxSaveMap(this.maze.getWalls(), Color.PURPLE, "Save the current map : ", "Save map","Map successfully saved");
 
 		Label l_saveGame = Generators.generateLabel("Save and exit : ", 0, 0);
 		l_saveGame.setTextFill(Color.PURPLE);
@@ -252,22 +252,22 @@ public class MonsterView implements Observer{
 	}
 
 	public void actualize() {
-		this.sprite_monster.setX(this.calculDrawX(this.maze.monster.getCol()));
-		this.sprite_monster.setY(this.calculDrawY(this.maze.monster.getRow()));
-		this.sprite_monster.setCoord(this.maze.monster.coord);
+		this.sprite_monster.setX(this.calculDrawX(this.maze.getMonster().getCol()));
+		this.sprite_monster.setY(this.calculDrawY(this.maze.getMonster().getRow()));
+		this.sprite_monster.setCoord(this.maze.getMonster().getCoord());
 		this.sprite_monster.setVisible(true);
-		this.sprite_shot.setX(this.calculDrawX(this.maze.hunter.getCol()));
-		this.sprite_shot.setY(this.calculDrawY(this.maze.hunter.getRow()));
-		this.sprite_shot.getImgv().setX(this.calculDrawX(this.maze.hunter.getCol()));
-		this.sprite_shot.getImgv().setY(this.calculDrawY(this.maze.hunter.getRow()));
-		this.sprite_shot.setCoord(this.maze.hunter.getCoord());
+		this.sprite_shot.setX(this.calculDrawX(this.maze.getHunter().getCol()));
+		this.sprite_shot.setY(this.calculDrawY(this.maze.getHunter().getRow()));
+		this.sprite_shot.getImgv().setX(this.calculDrawX(this.maze.getMonster().getCol()));
+		this.sprite_shot.getImgv().setY(this.calculDrawY(this.maze.getMonster().getRow()));
+		this.sprite_shot.setCoord(this.maze.getMonster().getCoord());
 		this.sprite_shot.setVisible(true);
-		this.sprite_monster.getImgv().setX(this.calculDrawX(this.maze.monster.getCol()));
-		this.sprite_monster.getImgv().setY(this.calculDrawY(this.maze.monster.getRow()));
+		this.sprite_monster.getImgv().setX(this.calculDrawX(this.maze.getMonster().getCol()));
+		this.sprite_monster.getImgv().setY(this.calculDrawY(this.maze.getMonster().getRow()));
 		this.selection.setVisible(false);
 		this.sprite_shot.getImgv().setVisible(true);
-		this.turnIndication.setText("Turn n°"+this.maze.turn);
-		if(this.maze.spotted) {
+		this.turnIndication.setText("Turn n°"+this.maze.getTurn());
+		if(this.maze.isSpotted()) {
 			this.notification.setText("WARNING - You have crossed a square previously discovered\nby the hunter and he has been warned.");
 		}else {
 			this.notification.setText("");
@@ -290,16 +290,16 @@ public class MonsterView implements Observer{
 	 */
 	private void initiateSprites() {
 		//Initialisation du sprite du monstre
-		this.sprite_monster=new CellWithText(this.maze.monster.coord, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster", ImageLoader.monster_ocean);
+		this.sprite_monster=new CellWithText(this.maze.getMonster().getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster", ImageLoader.monster_ocean);
 		this.addMouseEvents(sprite_monster);
 
 		//initialisation du sprite du dernier tir du chasseur
-		this.sprite_shot=new CellWithText(this.maze.hunter.getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter", ImageLoader.scope);
+		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter", ImageLoader.scope);
 		this.addMouseEvents(sprite_shot);
 		this.sprite_shot.setVisible(false);
 
 		//Initialisation du sprite de la sortie
-		this.sprite_exit=new CellWithText(this.maze.exit.getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit",ImageLoader.exit_dungeon);
+		this.sprite_exit=new CellWithText(this.maze.getExit().getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit",ImageLoader.exit_dungeon);
 		this.addMouseEvents(sprite_exit);
 
 		//initialisation du rectangle de sélection
@@ -336,11 +336,11 @@ public class MonsterView implements Observer{
 	 * @return Un groupe contenant les éléments graphiques du labyrinthe.
 	 */
 	public void draw() {
-		for(int h=0; h<this.maze.walls.length; h++) {
-			for(int l=0; l<this.maze.walls[h].length; l++) {
+		for(int h=0; h<this.maze.getWalls().length; h++) {
+			for(int l=0; l<this.maze.getWalls()[h].length; l++) {
 				Cell r = new Cell(l, h, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, ImageLoader.floor_dungeon);
 				//Codage des rectangles
-				if(!this.maze.walls[h][l]) {
+				if(!this.maze.getWalls()[h][l]) {
 					r.setImage(ImageLoader.wall_dungeon);
 				}
 				if(this.maze.getVisionRange()!=-1) {

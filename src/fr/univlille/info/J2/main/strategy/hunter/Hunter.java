@@ -4,8 +4,6 @@
  */
 package fr.univlille.info.J2.main.strategy.hunter;
 
-import java.io.Serializable;
-
 import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
@@ -22,8 +20,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  * @author theo.franos.etu
  *
  */
-public class Hunter implements IHunterStrategy, Serializable{
-	private static final long serialVersionUID = 1663241524505198614L;
+public class Hunter implements IHunterStrategy{
 	/**
      * Tableau pour stocker les traces laissées par le chasseur dans le labyrinthe.
 	 */
@@ -193,10 +190,6 @@ public class Hunter implements IHunterStrategy, Serializable{
 			this.setTrace(ce.getCoord(), ce.getTurn());
 		}
 
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	public int[][] getTraces() {

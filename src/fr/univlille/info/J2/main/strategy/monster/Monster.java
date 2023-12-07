@@ -5,8 +5,6 @@
  */
 package fr.univlille.info.J2.main.strategy.monster;
 
-import java.io.Serializable;
-
 import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
@@ -23,32 +21,31 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  * @author theo.franos.etu
  *
  */
-public class Monster implements IMonsterStrategy, Serializable{
-	private static final long serialVersionUID = 3197069907938344169L;
+public class Monster implements IMonsterStrategy{
 	/**
 	 * La grille de murs du labyrinthe.
 	 */
-	public boolean[][] walls;
+	private boolean[][] walls;
 	/**
 	 * La grille des parties déjà explorés du labyrinthe
 	 */
-	public boolean[][] explored;
+	private boolean[][] explored;
 	/**
 	 * Les coordonnées initiales du monstre.
 	 */
-	public ICoordinate coord;
+	private ICoordinate coord;
 	/**
 	 * Le niveau de l'IA du monstre.
 	 */
-	public String IA_level;
+	private String IA_level;
 	/**
 	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
 	 */
-	public int visionRange;
+	private int visionRange;
 	/**
 	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
 	 */
-	public int movingRange;
+	private int movingRange;
 
 	/**
      * Constructeur de la classe Monster, crée un Monstre.
@@ -186,5 +183,21 @@ public class Monster implements IMonsterStrategy, Serializable{
 	@Override
 	public void update(ICellEvent ce) {
 		this.setCoord(ce.getCoord());
+	}
+
+	public boolean[][] getExplored() {
+		return explored;
+	}
+
+	public String getIA_level() {
+		return IA_level;
+	}
+
+	public int getVisionRange() {
+		return visionRange;
+	}
+
+	public int getMovingRange() {
+		return movingRange;
 	}
 }

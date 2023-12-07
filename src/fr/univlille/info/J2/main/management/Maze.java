@@ -5,8 +5,6 @@
  */
 package fr.univlille.info.J2.main.management;
 
-
-import java.io.Serializable;
 import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.application.cells.CellEvent;
@@ -31,9 +29,8 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  *
  */
 
-public class Maze extends Subject implements Serializable{
+public class Maze extends Subject{
 
-	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(Maze.class.getName());
 
 	private static final boolean[][] DEFAULT_MAP = new boolean[][] {
@@ -52,48 +49,48 @@ public class Maze extends Subject implements Serializable{
 	/**
 	 * Tableau de boolean représentant les murs plein ou non du labyrinthe (false=mur true=pas de mur).
 	 */
-	public boolean[][] walls;
+	private boolean[][] walls;
 
 	/**
 	 * Tableau d'entier stockant les numéros de tours ou le monstre est déjà passé.
 	 */
-	protected int[][] traces;
+	private int[][] traces;
 
 	/**
 	 * La sortie (les coordonnées) du labyrinthe.
 	 */
-	public Exit exit;
+	private Exit exit;
 
 	/**
 	 * Le Monstre associé au labyrinthe.
 	 */
-	public Monster monster;
+	private Monster monster;
 
 	/**
 	 * Le Chasseur associé au labyrinthe.
 	 */
-	public Hunter hunter;
+	private Hunter hunter;
 
 	/**
 	 * Le numéro du tour actuel.
 	 */
-	public int turn;
+	private int turn;
 
 	/**
 	 * Boolean qui permet de savoir si c'est le tour du monstre ou non.
 	 */
-	public boolean isMonsterTurn;
+	private boolean isMonsterTurn;
 
 	/**
 	 * Boolean utilisé dans les actions move du monstre et shoot du chasseur pour indique si la partie est fini.
 	 * (i.e si le monstre/chasseur s'est échappé/fait tirer dessus).
 	 */
-	public boolean isGameOver;
+	private boolean isGameOver;
 
 	/**
 	 * Boolean utilisé dans les actions move du monstre pour savoir si le monstre a traversé une case déjà découverte par le chasseur
 	 */
-	public boolean spotted;
+	private boolean spotted;
 
 	/**
 	 * Constructeur vide, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
@@ -315,7 +312,7 @@ public class Maze extends Subject implements Serializable{
 	 * @return false si la coordonnée indiqué est un mur, sinon true.
 	 */
 	public boolean isExplored(ICoordinate c) {
-		return this.monster.explored[c.getRow()][c.getCol()];
+		return this.monster.getExplored()[c.getRow()][c.getCol()];
 	}
 
 	/**
@@ -325,7 +322,7 @@ public class Maze extends Subject implements Serializable{
 	 * @param empty un boolean -> si True : la case du labyrinthe à c sera vide, -> si False : la case du labyrinthe à c sera un mur
 	 */
 	public void setExplored(ICoordinate c, boolean explored) {
-		this.monster.explored[c.getRow()][c.getCol()]=explored;
+		this.monster.getExplored()[c.getRow()][c.getCol()]=explored;
 	}
 
 	public void exploring(ICoordinate c, int visionRange) {
@@ -365,8 +362,8 @@ public class Maze extends Subject implements Serializable{
 
 			this.turn++;  //On passe au tour suivant
 			this.isMonsterTurn=false;
-			if(this.monster.visionRange!=-1) {
-				this.exploring(c, this.monster.visionRange);
+			if(this.monster.getVisionRange()!=-1) {
+				this.exploring(c, this.monster.getVisionRange());
 			}
 			this.notifyObservers();
 			return true;
@@ -426,12 +423,9 @@ public class Maze extends Subject implements Serializable{
 	 */
 	public boolean canMonsterMoveAt(ICoordinate c) {
 		if(this.isCorrectCoordinate(c)) {
-			if(this.isMonsterTurn) { //Vérifie que c'est le tour du monstre
-				if(this.inReach(this.monster.getCoord(), c, this.monster.movingRange) && this.isExplored(c)) { //Vérifie que c'est à une bonne distance et que c'est une case explorée
-					if(this.walls[c.getRow()][c.getCol()]) {//Vérifie que ce n'est pas un mur
-						return true;
-					}
-				}
+			//Vérifie que c'est à une bonne distance et que c'est une case explorée et vérifie que ce n'est pas un mur
+			if(this.isMonsterTurn && this.inReach(this.monster.getCoord(), c, this.monster.getMovingRange()) && this.isExplored(c) && this.walls[c.getRow()][c.getCol()]) { //Vérifie que c'est le tour du monstre
+				return true;
 			}
 		}
 		return false;
@@ -490,7 +484,7 @@ public class Maze extends Subject implements Serializable{
 	}
 
 	public int getVisionRange() {
-		return this.monster.visionRange;
+		return this.monster.getVisionRange();
 	}
 
 	public int getBonusRange() {
@@ -498,12 +492,65 @@ public class Maze extends Subject implements Serializable{
 	}
 
 	public String getMonsterIa() {
-		return this.monster.IA_level;
+		return this.monster.getIA_level();
 	}
 
 	public String getHunterIa() {
 		return this.hunter.getIA_level();
 	}
 
+	public static Logger getLogger() {
+		return logger;
+	}
+
+	public static boolean[][] getDefaultMap() {
+		return DEFAULT_MAP;
+	}
+
+	public boolean[][] getWalls() {
+		return walls;
+	}
+
+	public int[][] getTraces() {
+		return traces;
+	}
+
+	public Exit getExit() {
+		return exit;
+	}
+
+	public Monster getMonster() {
+		return monster;
+	}
+
+	public Hunter getHunter() {
+		return hunter;
+	}
+
+	public int getTurn() {
+		return turn;
+	}
+
+	public boolean isMonsterTurn() {
+		return isMonsterTurn;
+	}
+
+	public boolean isGameOver() {
+		return isGameOver;
+	}
+
+	public boolean isSpotted() {
+		return spotted;
+	}
+
+	public void setGameOver(boolean isGameOver) {
+		this.isGameOver = isGameOver;
+	}
+
+	public void setMonsterTurn(boolean isMonsterTurn) {
+		this.isMonsterTurn = isMonsterTurn;
+	}
+	
+	
 
  }
