@@ -146,6 +146,8 @@ public class MonsterView implements Observer{
 	 * @param zoom 				Niveau de zoom.
 	 * @param colorOfWalls  	Couleur des murs.
 	 * @param colorOfFloors		Couleur des sols.
+	 * @param colorOfFog		Couleur de la vision caché du monstre ou chasseur.
+	 * @param monsterName		Nom du joueur incarnant le monstre.
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
 	public MonsterView(double window_height, double window_width, int gap_X, int gap_Y, int zoom, Color colorOfWalls, Color colorOfFloors, Color colorOfFog, Maze maze,  String monsterName) {

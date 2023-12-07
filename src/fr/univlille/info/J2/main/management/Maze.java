@@ -144,9 +144,7 @@ public class Maze extends Subject implements Serializable{
 
 	/**
 	 * Initialisation du tableau des traces du monstre vu par le chasseur.
-	 *
-	 * @return un tableau d'entier initialise a zero si la case correspond à une case vide et -1 si la case correspond à un mur.
-	 */
+	 *	 */
 	public void initTraces(){
 		this.traces = new int[this.walls.length][this.walls[0].length];
 		for(int h=0; h<this.walls.length;h++) {

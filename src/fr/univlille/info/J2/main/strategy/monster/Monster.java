@@ -50,10 +50,11 @@ public class Monster implements IMonsterStrategy{
 	/**
      * Constructeur de la classe Monster, crée un Monstre.
 	 *
-	 * @param walls 	La grille de murs du labyrinthe.
-	 * @param coord		Les coordonnées initiales du monstre.
-	 * @param IA_level	 Le niveau de l'IA du monstre.
-	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
+	 * @param walls 		La grille de murs du labyrinthe.
+	 * @param coord 		Les coordonnées initiales du monstre.
+	 * @param IA_level	  	Le niveau de l'IA du monstre.
+	 * @param visionRange 	Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
+	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
 	 */
 	public Monster(boolean[][] walls,ICoordinate coord, String IA_level, int visionRange, int movingRange) {
 		super();
