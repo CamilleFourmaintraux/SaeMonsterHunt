@@ -38,12 +38,8 @@ public class Utils {
 	/**
 	 * Générateur de nombres aléatoires utilisé pour diverses opérations.
 	 */
-<<<<<<< HEAD
-	public static Random random = new Random();
-	
-=======
 	public static final Random random = new Random();
->>>>>>> master
+	
 	/**
 	 * Crée un arrière-plan (Background) avec une couleur de remplissage spécifiée.
 	 *

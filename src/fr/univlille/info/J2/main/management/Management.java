@@ -311,7 +311,6 @@ public class Management extends Stage implements Observer{
 	 */
 	public Map<Integer, Scene> menus;
 
-<<<<<<< HEAD
 	/**
 	 * Vue du Monstre.
 	 */
@@ -334,17 +333,6 @@ public class Management extends Stage implements Observer{
 	 * Objet File représentant un labyrinthe personnnalisé et importé par le joueur.
 	 */
 	public File importedmap;
-=======
-	//Les différentes fenêtres
-	private Stage viewM;
-	private Stage viewH;
-	private Stage viewCommon;
-
-	private boolean isGenerationRandom;
-
-	//Le fichier importé par
-	private File importedmap;
->>>>>>> master
 
 	/**
 	 * Constructeur de la classe Management.
