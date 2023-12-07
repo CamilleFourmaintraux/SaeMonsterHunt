@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.management.cells.CellEvent;
-import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.application.cells.CellEvent;
+import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.monster.Monster;
 
 public class TestMonster {

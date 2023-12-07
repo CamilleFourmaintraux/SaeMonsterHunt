@@ -1,4 +1,4 @@
-package fr.univlille.info.J2.main.management.cells;
+package fr.univlille.info.J2.main.application.cells;
 
 import java.util.Objects;
 

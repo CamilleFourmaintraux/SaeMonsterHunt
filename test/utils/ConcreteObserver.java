@@ -1,7 +1,7 @@
 package utils;
 
-import fr.univlille.info.J2.main.utils.Observer;
-import fr.univlille.info.J2.main.utils.Subject;
+import fr.univlille.info.J2.main.utils.patrons.Observer;
+import fr.univlille.info.J2.main.utils.patrons.Subject;
 
 public class ConcreteObserver implements Observer{
 

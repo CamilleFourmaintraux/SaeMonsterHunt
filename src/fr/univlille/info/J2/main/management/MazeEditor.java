@@ -2,8 +2,8 @@ package fr.univlille.info.J2.main.management;
 
 import java.io.File;
 
-import fr.univlille.info.J2.main.management.cells.Cell;
-import fr.univlille.info.J2.main.utils.ImageLoader;
+import fr.univlille.info.J2.main.application.cells.Cell;
+import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 

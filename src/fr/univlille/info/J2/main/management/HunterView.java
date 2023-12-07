@@ -7,13 +7,13 @@ package fr.univlille.info.J2.main.management;
 
 import java.util.ArrayList;
 
-import fr.univlille.info.J2.main.management.cells.CellWithText;
-import fr.univlille.info.J2.main.management.cells.Coordinate;
-import fr.univlille.info.J2.main.utils.Generators;
-import fr.univlille.info.J2.main.utils.ImageLoader;
-import fr.univlille.info.J2.main.utils.Observer;
-import fr.univlille.info.J2.main.utils.Subject;
+import fr.univlille.info.J2.main.application.cells.CellWithText;
+import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.utils.menuConception.Generators;
+import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
+import fr.univlille.info.J2.main.utils.patrons.Observer;
+import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
 import javafx.scene.Node;

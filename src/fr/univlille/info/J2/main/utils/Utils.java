@@ -7,9 +7,9 @@
 package fr.univlille.info.J2.main.utils;
 
 import java.util.Random;
+import java.util.logging.Logger;
 
 import javafx.geometry.Insets;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -26,12 +26,19 @@ import javafx.scene.paint.Color;
  * @author theo.franos.etu
  */
 public class Utils {
-
+	
+	
+	private Utils() {}
+	
+	/**
+	 * Looger qui permet d'éviter les system.out pour à la place faire de vra ifichiers de log.
+	 */
+	private static final Logger logger = Logger.getLogger(Utils.class.getName());
 	
 	/**
 	 * Générateur de nombres aléatoires utilisé pour diverses opérations.
 	 */
-	public static Random random = new Random();
+	public static final Random random = new Random();
 	/**
 	 * Crée un arrière-plan (Background) avec une couleur de remplissage spécifiée.
 	 *
@@ -56,9 +63,9 @@ public class Utils {
 	 */
 	public static void wait(int secondes) {
 		try {
-			Thread.sleep(secondes*1000);
+			Thread.sleep(secondes*(long)1000);
 		} catch (InterruptedException e) {
-			System.out.println("InterruptedException in Utils -> method wait(int)");
+			logger.info("InterruptedException in Utils -> method wait(int)");
 		}
 	}
 }
