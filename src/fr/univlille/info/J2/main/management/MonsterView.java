@@ -331,8 +331,6 @@ public class MonsterView implements Observer{
 
 	/**
      * Dessine le labyrinthe et ses éléments.
-	 *
-	 * @return Un groupe contenant les éléments graphiques du labyrinthe.
 	 */
 	public void draw() {
 		for(int h=0; h<this.maze.walls.length; h++) {

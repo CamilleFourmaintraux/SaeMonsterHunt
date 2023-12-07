@@ -96,7 +96,7 @@ public class Maze extends Subject implements Serializable{
 
 	/**
 	 * Constructeur vide, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
-	 * @see Maze#Maze(boolean[][], String, String)
+	 * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
 	 */
 	public Maze() {
 		this(Maze.generateBasicMap(),"Player","Player", false, -1, 1, 0);
@@ -106,9 +106,12 @@ public class Maze extends Subject implements Serializable{
 	 * Constructeur originel, crée un labyrinthe Maze à partir d'un labyrinthe existant donné en parametre.
 	 * @see Maze#Maze()
 	 * @param maze 			un labyrinthe.
-	 * @param monster_IA 	Niveau de l'ia du monstre
-	 * @param hunter_IA		Niveau de l'ia du chasseur@param limitedVision boolean indiquant si oui ou non la vision du monstre est limité
-	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
+	 * @param monster_IA 	Niveau de l'ia du monstre.
+	 * @param hunter_IA		Niveau de l'ia du chasseur.
+	 * @param limitedVision boolean indiquant si oui ou non la vision du monstre est limité.
+	 * @param visionRange 	Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
+	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
+	 * @param bonusRange 	Entier correspondant à la vision bonus que le chasseur obtient autour de la case à laquelle il a tiré.
 	 */
 	public Maze(boolean[][] maze, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
 		this.walls=maze;
@@ -123,11 +126,16 @@ public class Maze extends Subject implements Serializable{
 	/**
 	 * Constructeur spécial, crée un labyrinthe Maze personnalisé et génére aléatoirement à partir de la largeur, la hauteur et la probabilité d'apparition de murs.
 	 *
-	 * @param probability le taux de chances qu'une case du labyrinthe soit un mur.
-	 * @param height la hauteur du labyrinthe.
-	 * @param width la largeur du labyrinthe.
+	 * @param probability 	Le taux de chances qu'une case du labyrinthe soit un mur.
+	 * @param height 		La hauteur du labyrinthe.
+	 * @param width 		La largeur du labyrinthe.
 	 * @param monster_IA 	Niveau de l'ia du monstre
 	 * @param hunter_IA		Niveau de l'ia du chasseur
+	 * @param limitedVision boolean indiquant si oui ou non la vision du monstre est limité.
+	 * @param visionRange 	Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
+	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
+	 * @param bonusRange 	Entier correspondant à la vision bonus que le chasseur obtient autour de la case à laquelle il a tiré.
+	 * 
 	 */
 	public Maze(int probability, int height, int width, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
 		this(Maze.generateRandomMap(probability, height, width), monster_IA, hunter_IA, limitedVision, visionRange, movingRange, bonusRange);
@@ -165,9 +173,9 @@ public class Maze extends Subject implements Serializable{
 	/**
 	 * Méthode de génération personnalisé du labyrinthe avec sa taille voulu ainsi que le taux d'apparition des murs.
 	 *
-	 * @param probability le taux de chances que la case du labyrinthe soit un mur plein.
-	 * @param height la hauteur du labyrinthe.
-	 * @param width la largeur du labyrinthe.
+	 * @param probability 	le taux de chances que la case du labyrinthe soit un mur plein.
+	 * @param height 		la hauteur du labyrinthe.
+	 * @param width 		la largeur du labyrinthe.
 	 * @return un tableau de boolean représentant un labyrinthe.
 	 */
 	public static boolean[][] generateRandomMap(int probability, int height, int width) {
@@ -190,7 +198,13 @@ public class Maze extends Subject implements Serializable{
 		return maze;
 	}
 
-
+	/**
+	 * Méthode permettant d'initialiser un labyrinthe vide (sans mur).
+	 * 
+	 * @param height	Hauteur du labyrinthe.
+	 * @param width		Largeur du labyrinthe.
+	 * @return Tableau de boolean à double dimension initialise à true.
+	 */
 	public static boolean[][] initEmptyMaze(int height, int width) {
 		boolean[][] maze = new boolean[height][width];
 		for(int h=0; h<maze.length; h++) {
@@ -228,10 +242,14 @@ public class Maze extends Subject implements Serializable{
 
 	/**
 	 * Initialise les coordonnées de la sortie du labyrinthe.
-	 * @param hunter_IA niveau de l'IA du chasseur.
-	 * @param monster_IA niveau de l'IA du monstre.
+	 * 
+	 * @param hunter_IA 	niveau de l'IA du chasseur.
+	 * @param monster_IA 	niveau de l'IA du monstre.
 	 * @param limitedVision boolean indiquant si oui ou non la vision du monstre est limité
-	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
+	 * @param visionRange 	Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
+	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
+	 * @param bonusRange 	Entier correspondant à la vision bonus que le chasseur obtient autour de la case à laquelle il a tiré.
+	 * 
 	 */
 	public void initMonsterExitHunter(String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
 		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
@@ -279,6 +297,12 @@ public class Maze extends Subject implements Serializable{
 		}
 	}
 
+	/**
+	 * Retourne, s'il y a, le rôle de la coordonnée du labyrinthe donnée (Monstre, Hunter, Exit, Wall ou sinon Empty).
+	 * 
+	 * @param c Coordonné du labyrithe.
+	 * @return Un objet CellInfo.
+	 */
 	public CellInfo getCellInfo(ICoordinate c) {
 		if(this.monster.getCoord().equals(c)) {
 			return CellInfo.MONSTER;
@@ -304,7 +328,7 @@ public class Maze extends Subject implements Serializable{
 	}
 
 	/**
-	 * Définis la présence d'un ou non d'un mur à une coordonée précise du labyrinthe
+	 * Définit la présence d'un ou non d'un mur à une coordonée précise du labyrinthe
 	 *
 	 * @param c une coordonnée du labyrinthe.
 	 * @param empty un boolean -> si True : la case du labyrinthe à c sera vide, -> si False : la case du labyrinthe à c sera un mur
@@ -324,15 +348,21 @@ public class Maze extends Subject implements Serializable{
 	}
 
 	/**
-	 * Définis la présence d'un ou non d'un mur à une coordonée précise du labyrinthe
+	 * Définit la présence d'un ou non d'un mur à une coordonée précise du labyrinthe
 	 *
 	 * @param c une coordonnée du labyrinthe.
-	 * @param empty un boolean -> si True : la case du labyrinthe à c sera vide, -> si False : la case du labyrinthe à c sera un mur
+	 * @param explored boolean indiquant que la case a été explorée.
 	 */
 	public void setExplored(ICoordinate c, boolean explored) {
 		this.monster.explored[c.getRow()][c.getCol()]=explored;
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param c Coordonnée
+	 * @param visionRange Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
+	 */
 	public void exploring(ICoordinate c, int visionRange) {
 		for(int y=c.getRow()-visionRange; y<c.getRow()+(visionRange+1); y++) {
 			for(int x=c.getCol()-visionRange; x<c.getCol()+(visionRange+1); x++) {
@@ -418,6 +448,9 @@ public class Maze extends Subject implements Serializable{
 		return false;
 	}
 
+	/**
+	 * Méthode permettant de déclencher la fin du jeu.
+	 */
 	public void triggersGameOver() {
 		this.isGameOver=true;
 		this.notifyObservers();
@@ -442,7 +475,12 @@ public class Maze extends Subject implements Serializable{
 		return false;
 	}
 
-
+	/**
+	 * Méthode qui vérifie si la coordonnée est dans les limites du labyrinthe.
+	 * 
+	 * @param c Coordonnée sélectionnée.
+	 * @return boolean qui indique true si la coordonnée est valide (dans le labyrinthe) sinon false.
+	 */
 	public boolean isCorrectCoordinate(ICoordinate c) {
 		if(c.getRow()>=this.walls.length) {
 			return false;
@@ -499,18 +537,38 @@ public class Maze extends Subject implements Serializable{
 		return this.traces[c.getRow()][c.getCol()];
 	}
 
+	/**
+	 * Retourne la vision bonus que le chasseur obtient autour de la case à laquelle il a tiré.
+	 * 
+	 * @return int.
+	 */
 	public int getVisionRange() {
 		return this.monster.visionRange;
 	}
 
+	/**
+	 * Retourne la portée bonus à laquelle peut se déplacer le monstre.
+	 * 
+	 * @return int.
+	 */
 	public int getBonusRange() {
 		return this.hunter.bonusRange;
 	}
 
+	/**
+	 * Retourne le niveau de difficulté de l'IA du Monstre.
+	 * 
+	 * @return String représentant le niveau.
+	 */
 	public String getMonsterIa() {
 		return this.monster.IA_level;
 	}
 
+	/**
+	 * Retourne le niveau de difficulté de l'IA du Chasseur.
+	 * 
+	 * @return String représentant le niveau.
+	 */
 	public String getHunterIa() {
 		return this.hunter.IA_level;
 	}

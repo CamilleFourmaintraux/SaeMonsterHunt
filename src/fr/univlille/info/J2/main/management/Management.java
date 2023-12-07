@@ -311,14 +311,27 @@ public class Management extends Stage implements Observer{
 	 */
 	public Map<Integer, Scene> menus;
 
-	//Les différentes fenêtres
+	/**
+	 * Vue du Monstre.
+	 */
 	public Stage viewM;
+	/**
+	 * Vue du Chasseur.
+	 */
 	public Stage viewH;
+	/**
+	 * Vue commune (ex: Menu principal)
+	 */
 	public Stage viewCommon;
 
+	/**
+	 * 
+	 */
 	public boolean isGenerationRandom;
 
-	//Le fichier importé par
+	/**
+	 * Objet File représentant un labyrinthe personnnalisé et importé par le joueur.
+	 */
 	public File importedmap;
 
 	/**
@@ -487,6 +500,8 @@ public class Management extends Stage implements Observer{
 
 	/**
      * Gère le déplacement du monstre par l'IA.
+     * 
+     * @param c Coordonnée à laquelle le monstre veut se déplacer.
 	 */
 	public void monsterPlayAt(ICoordinate c) {
 		this.maze.move(c);//this.maze.monster.play());
@@ -497,6 +512,8 @@ public class Management extends Stage implements Observer{
 
 	/**
      * Gère le tir du chasseur par l'IA.
+     * 
+     * @param c Coordonnée à laquelle le chasseur veut tirer.
 	 */
 	public void hunterPlayAt(ICoordinate c) {
 		this.maze.shoot(c);//this.maze.hunter.play());
@@ -524,8 +541,7 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Affiche une boite de dialogue indiquant à qui est le tour.
-	 * @param joueur Le nom du joueur.
+	 * Affiche une boite d'avertissement indiquant que c'est le tour du chasseur.
 	 */
 	public void toHunterView() {
 		if(this.sameScreen) {
@@ -552,7 +568,10 @@ public class Management extends Stage implements Observer{
 		}
 
 	}
-
+	
+	/**
+	 * Affiche une boite d'avertissement indiquant que c'est le tour du monstre.
+	 */
 	public void toMonsterView() {
 		if(this.sameScreen) {
 			if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")){
@@ -582,9 +601,6 @@ public class Management extends Stage implements Observer{
 	/**
 	 * Génére le menu principal du jeu, permettant  l'utilisateur de définir des paramètres pour le jeu
 	 * (noms des personnages, niveaux d'IA, etc.) et de lancer une partie.
-	 *
-	 * @param gap_X 		L'espacement horizontal entre les cellules du labyrinthe.
-	 * @param gap_Y 		L'espacement vertical entre les cellules du labyrinthe.
 	 */
 	public void generatePlayMenu() {
 
@@ -1072,7 +1088,10 @@ public class Management extends Stage implements Observer{
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 		this.menus.put(Integer.valueOf(this.ID_HUNTER_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
 	}
-
+	
+	/**
+	 * Génére le menu de l'éditeur de labyrinthe.
+	 */
 	public void generateMazeEditor() {
 		Label title = Generators.generateTitle("Maze Editor");
 

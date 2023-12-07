@@ -48,6 +48,7 @@ public class Hunter implements IHunterStrategy{
      * @param width      	La largeur du labyrinthe.
      * @param coord_hunter 	Les coordonnées du chasseur.
      * @param IA_level   	Le niveau de l'IA du chasseur.
+     * @param bonusRange	La portée bonus de la vision du chasseur.
 	 */
 	public Hunter(int height, int width, ICoordinate coord_hunter, String IA_level, int bonusRange) {
 		this.coord=coord_hunter;

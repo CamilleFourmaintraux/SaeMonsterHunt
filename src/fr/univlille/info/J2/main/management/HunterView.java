@@ -137,6 +137,7 @@ public class HunterView implements Observer{
 	 * @param colorOfFloors		Couleur des sols.
 	 * @param colorOfFog		Couleur du brouillard.
 	 * @param maze				Instance du labyrinthe associée à cette vue.
+	 * @param hunterName		Nom du joueur incarnant le chasseur.
 	 */
 	public HunterView(double window_height, double window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
 		Color colorOfFloors, Color colorOfFog, Maze maze, String hunterName) {
@@ -244,7 +245,9 @@ public class HunterView implements Observer{
 		this.actualize();
 	}
 
-
+	/**
+	 * Méthode pour actualise le plateau à chaque fin de tour.
+	 */
 	public void actualize() {
 		int x = calculDrawX(this.maze.hunter.getCol());
 		int y = calculDrawY(this.maze.hunter.getRow());
@@ -256,7 +259,8 @@ public class HunterView implements Observer{
 		this.sprite_shot.getImgv().setY(y);
 		this.turnIndication.setText("Turn n°"+this.maze.turn);
 		if(this.maze.spotted) {
-			this.notification.setText("WARNING - The monster has been detected in one of your squares\nalready discovered during a previous turn!");
+			this.notification.setText("WARNING - The monster has been detected in one of your squares\nal	 * @param e L'événement de la souris associé à la sélection.\n"
+					+ "ready discovered during a previous turn!");
 		}else {
 			this.notification.setText("");
 		}
@@ -357,7 +361,6 @@ public class HunterView implements Observer{
      * Méthode pour sélectionner une cellule du labyrinthe.
 	 *
 	 * @param r La cellule à sélectionner.
-	 * @param e L'événement de la souris associé à la sélection.
 	 */
 	public void select(CellWithText r) {
 		if(this.maze.getHunterIa().equals("Player")) {
@@ -370,6 +373,11 @@ public class HunterView implements Observer{
 		}
 	}
 
+	/**
+	 * Méthode pour vérifier que l'on ne puisse pas jouer le tour d'un IA.
+	 *  
+	 * @param cell Cellule sélectionnée.
+	 */
 	public void selectionLocked(CellWithText cell) {
 		if(this.maze.getHunterIa().equals("Player")) {
 			int y = this.calculCoordY(cell);
@@ -402,7 +410,13 @@ public class HunterView implements Observer{
 		}
 	}
 
-
+	/**
+	 * Méthode permettant de rechercher et appliquer le sprite correspondant à la cellule.
+	 * 
+	 * @param group 	Groupe contenant les différents sprites.
+	 * @param c 		Coordonnée de la cellule.
+	 * @return Cellule avec le sprite appliqué.
+	 */
 	public CellWithText searchSprite(Group group, ICoordinate c) {
 		for(Node e:group.getChildren()) {
 			if(e.getClass()==CellWithText.class) {
@@ -414,6 +428,12 @@ public class HunterView implements Observer{
 		}
 		return null;
 	}
+	
+	/**
+	 * Méthode pour actualiser les cellules du plateau de jeu.
+	 * 
+	 * @param c Coordonnée de la cellule.
+	 */
 	public void actualizeCell(ICoordinate c) {
 		CellWithText cwt;
 		try{

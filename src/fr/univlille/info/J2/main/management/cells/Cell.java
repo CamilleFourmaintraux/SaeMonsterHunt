@@ -14,7 +14,8 @@ import javafx.scene.shape.Rectangle;
 
 /**
  * La classe `Cell` représente une cellule rectangulaire utilisée dans un labyrinthe.
- * Elle extend la classe `Rectangle` de JavaFX pour représenter graphiquement une cellule.
+ * Elle extend la classe `Rectangle` de JavaFX pour représenter graphiquement une cellule, elle utilise aussi
+ * des objets Image et ImageView pour illustrer les cellules.
  *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -30,18 +31,26 @@ public class Cell extends Rectangle{
 	 * Coordonnées construite à partir du x et y.
 	 */
 	ICoordinate coord;
+	/**
+	 * Objet ImageView permettant d'afficher les images.
+	 */
 	ImageView iv;
+	/**
+	 * 
+	 */
 	public boolean isLocked;
 
 	/**
 	 * Constructeur avec des paramètres limit�s.
 	 * Crée une cellule avec des valeurs de remplissage et d'épaisseur de contour par défaut.
-	 * @param x La coordonnée en X de la cellule dans le labyrinthe.
-	 * @param y La coordonnée en Y de la cellule dans le labyrinthe.
-	 * @param zoom Le facteur de zoom pour la taille de la cellule.
-	 * @param fill La couleur de remplissage de la cellule.
-	 * @param gap_X La valeur de décalage en X pour la position de la cellule.
-	 * @param gap_Y La valeur de décalage en Y pour la position de la cellule.
+	 * 
+	 * @param x 		La coordonnée en X de la cellule dans le labyrinthe.
+	 * @param y 		La coordonnée en Y de la cellule dans le labyrinthe.
+	 * @param zoom 		Le facteur de zoom pour la taille de la cellule.
+	 * @param fill 		La couleur de remplissage de la cellule.
+	 * @param gap_X 	La valeur de décalage en X pour la position de la cellule.
+	 * @param gap_Y 	La valeur de décalage en Y pour la position de la cellule.
+	 * @param img 		L'illustration associé au type de cellule.
 	 */
 	public Cell(int x, int y, int zoom, Color fill, int gap_X, int gap_Y, Image img) {
 		this(x,y,zoom,fill,fill, 0, gap_X, gap_Y, img);
@@ -52,15 +61,17 @@ public class Cell extends Rectangle{
 	/**
 	 * Constructeur avec des paramètres complets.
 	 * Crée une cellule avec des valeurs de remplissage, couleur de contour, et épaisseur de contour personnalisées.
-	 * @see Cell#Cell(int, int, int, Color, int, int)
-	 * @param x La coordonnée en X de la cellule dans le labyrinthe.
-	 * @param y La coordonnée en Y de la cellule dans le labyrinthe.
-	 * @param zoom Le facteur de zoom pour la taille de la cellule.
-	 * @param fill La couleur de remplissage de la cellule.
-	 * @param stroke La couleur de contour de la cellule.
-	 * @param strokeWidth L'�paisseur du contour de la cellule.
-	 * @param gap_X La valeur de décalage en X pour la position de la cellule.
-	 * @param gap_Y La valeur de décalage en Y pour la position de la cellule.
+	 * 
+	 * @see Cell#Cell(int, int, int, Color, int, int, Image)
+	 * @param x 			La coordonnée en X de la cellule dans le labyrinthe.
+	 * @param y 			La coordonnée en Y de la cellule dans le labyrinthe.
+	 * @param zoom 			Le facteur de zoom pour la taille de la cellule.
+	 * @param fill 			La couleur de remplissage de la cellule.
+	 * @param gap_X 		La valeur de décalage en X pour la position de la cellule.
+	 * @param gap_Y 		La valeur de décalage en Y pour la position de la cellule.
+	 * @param img 			L'illustration associé au type de cellule.
+	 * @param stroke 		La couleur de contour de la cellule.
+	 * @param strokeWidth 	L'�paisseur du contour de la cellule.
 	 */
 	public Cell(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, Image img) {
 		super(x*zoom+gap_X,y*zoom+gap_X,zoom, zoom);
@@ -123,11 +134,20 @@ public class Cell extends Rectangle{
 		return Objects.equals(coord, other.coord);
 	}
 
-
+	/**
+	 * Retourne l'Image affiché.
+	 * 
+	 * @return Un objet ImageView représentant l'image affiché.
+	 */
 	public ImageView getImgv() {
 		return this.iv;
 	}
 
+	/**
+	 * Définit une image à afficher.
+	 * 
+	 * @param img Un objet Image représentant une image.
+	 */
 	public void setImage(Image img) {
 		this.iv.setImage(img);
 	}

@@ -32,8 +32,9 @@ public class CellEvent implements ICellEvent{
 	/**
 	 * Constructeur, crée un événement de cellule.
      *
-     * @param coord Les coordonnées de la cellule ou l'événement a eu lieu.
-     * @param turn Le numéro du tour auquel l'événement a eu lieu.
+     * @param coord 	Les coordonnées de la cellule ou l'événement a eu lieu.
+     * @param turn 		Le numéro du tour auquel l'événement a eu lieu.
+     * @param state 	L'état de la cellule actuel.
 	 */
 	public CellEvent(ICoordinate coord, int turn, CellInfo state) {
 		this.coord = coord;

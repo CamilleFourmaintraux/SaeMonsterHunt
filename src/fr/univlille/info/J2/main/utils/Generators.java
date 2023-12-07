@@ -20,17 +20,25 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
+/**
+ * Classe de génération des différentes fenêtres, boites de dialogues ou composants.
+ * 
+ * @author arthur.debacq.etu
+ * @author camille.fourmaintraux.etu
+ * @author jessy.top.etu
+ * @author theo.franos.etu
+ */
 public class Generators {
 
 
 	/**
 	 * Génére un bouton avec un texte donné et le positionne aux coordonnées spécifiés.
 	 *
-	 * @param msg 	Le texte affiché sur le bouton.
-	 * @param x 	La position horizontale du bouton.
-	 * @param y 	La position verticale du bouton.
-	 * @param inactive La couleur en hexadécimal quand le bouton n'est pas en interaction
-	 * @param active La couleur en hexadécimal quand le bouton est en interaction
+	 * @param msg 		Le texte affiché sur le bouton.
+	 * @param x 		La position horizontale du bouton.
+	 * @param y 		La position verticale du bouton.
+	 * @param inactive 	La couleur en hexadécimal quand le bouton n'est pas en interaction
+	 * @param active 	La couleur en hexadécimal quand le bouton est en interaction
 	 * @return Le bouton généré.
 	 */
 	public static Button generateButton(String msg, double x, double y, Color active, Color inactive) {
@@ -84,7 +92,6 @@ public class Generators {
 	 * @param msg 		Le texte affiché sur le label.
 	 * @param x 		La position horizontale du label.
 	 * @param y 		La position verticale du label.
-	 * @param minWidth 	La largeur minimale du label.
 	 * @return Le label généré.
 	 */
 	public static Label generateLabel(String msg, double x, double y) {
@@ -180,7 +187,14 @@ public class Generators {
 		return label;
 	}
 
-
+	/**
+	 * Génère une fenêtre d'avertissement pour notifier le changement de tour.
+	 * 
+	 * @param title 		Titre de la fenêtre.
+	 * @param text 			Texte d'avertissement de changement de tour.
+	 * @param boutonJouer 	Bouton permettant de confirmer le changement de tour.
+	 * @return Une fenêtre d'alerte.
+	 */
 	public static Alert generateAlert(String title, String text, Collection<ButtonType> boutonJouer) {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle(title);
@@ -212,7 +226,9 @@ public class Generators {
 	/**
 	 * Applique un style particulier à un Label de titre.
 	 *
-	 * @param label un Label titre.
+	 * @param label 	un Label titre.
+	 * @param bgColor 	Une couleur de fond.
+	 * @param textColor Une couleur de police.
 	 */
 	public static void applyStyleToTitle(Label label, Color bgColor, Color textColor) {
 		label.setBackground(Utils.setBackGroungFill(bgColor));
@@ -225,9 +241,9 @@ public class Generators {
 	/**
 	 * Applique un style de base à un bouton, y compris le style lors du survol de la souris.
 	 *
-	 * @param b Le bouton auquel on applique le style.
-	 * @param inactive La couleur en hexadécimal quand le bouton n'est pas en interaction
-	 * @param active La couleur en hexadécimal quand le bouton est en interaction
+	 * @param b 		Le bouton auquel on applique le style.
+	 * @param inactive 	La couleur en hexadécimal quand le bouton n'est pas en interaction
+	 * @param active 	La couleur en hexadécimal quand le bouton est en interaction
 	 */
 	public static void applyStyleToButton(Button b, Color inactive, Color active) { //inactive = #ffffff & active = #000000
 		//Style de base
@@ -251,6 +267,16 @@ public class Generators {
 		});
 	}
 
+	/**
+	 * Méthode pour générer le fenêtre de sauvegarde de labyrinthe.
+	 * 
+	 * @param walls 			Le labyrinthe et ses murs.
+	 * @param textColor 		Couleur du texte.
+	 * @param textLabel 		Couleur des labels.
+	 * @param textButton 		Couleur des boutons.
+	 * @param textNotification 	Texte de notification de sauvegarde.
+	 * @return Hbox de sauvegarde de labyrinthe.
+	 */
 	public static HBox generateHBoxSaveMap(boolean[][] walls, Color textColor, String textLabel, String textButton, String textNotification) {
     	Label l_saveMap = Generators.generateLabel(textLabel, 0, 0);
 		l_saveMap.setTextFill(textColor);

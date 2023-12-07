@@ -7,6 +7,7 @@ import fr.univlille.info.J2.main.utils.ImageLoader;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 
+
 public class MazeEditor {
 
 	/**
