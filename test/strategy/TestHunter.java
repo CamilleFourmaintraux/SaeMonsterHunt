@@ -62,32 +62,4 @@ public class TestHunter {
 		assertEquals(null, hunter.getCoord());
 	}
 
-	/*@Test
-    public void test_shoot_action() {
-        // Instanciation d'un Hunter.
-        Hunter hunter = new Hunter(0,0,new Coordinate(2,3));
-        // Nouvelles coordonn�es de tir.
-        ICoordinate newCoord = new Coordinate(2,4);
-		// Appel � la m�thode shoot avec les nouvelles coordonn�es.
-        hunter.shoot(newCoord);
-        // V�rifiez si les propri�t�s de l'objet Hunter ont �t� mises � jour correctement.
-        assertEquals(newCoord, hunter.getCoord());
-        assertTrue(hunter.isMonsterTurn());
-    }*/ //TODO
-
-	/*
-	@Test
-    public void test_actualizeTraces_method() {
-        // Instanciation d'un Hunter.
-        Hunter hunter = new Hunter(5,5,null);
-        // Cr�ation des coordonn�es
-        ICoordinate coordinate = new Coordinate(1,2);
-        int newTraceValue = 42;
-        // Appel � la m�thode actualizeTraces avec les coordonn�es et la valeur de trace.
-        hunter.actualizeTraces(coordinate, newTraceValue);
-        // Test si la valeur de trace a �t� correctement mise � jour dans le tableau de traces.
-        int[][] traces = hunter.getTraces();
-        assertEquals(newTraceValue, traces[coordinate.getRow()][coordinate.getCol()]);
-    }
-    */ //TODO
 }

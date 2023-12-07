@@ -494,7 +494,7 @@ public class Maze extends Subject implements Serializable{
 	}
 
 	public int getBonusRange() {
-		return this.hunter.bonusRange;
+		return this.hunter.getBonusRange();
 	}
 
 	public String getMonsterIa() {
@@ -502,7 +502,7 @@ public class Maze extends Subject implements Serializable{
 	}
 
 	public String getHunterIa() {
-		return this.hunter.IA_level;
+		return this.hunter.getIA_level();
 	}
 
 

@@ -27,8 +27,6 @@ public class TestMaze {
 		assertEquals(maze_randomMap.turn,2);
 	}
 
-	//TODO faire tous les tests sur Maze
-
 	 @Test
 	 public void testToString() {
 

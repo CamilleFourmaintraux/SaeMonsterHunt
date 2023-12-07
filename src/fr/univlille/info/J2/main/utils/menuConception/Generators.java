@@ -2,6 +2,7 @@ package fr.univlille.info.J2.main.utils.menuConception;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
 import fr.univlille.info.J2.main.utils.Utils;
@@ -23,8 +24,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
 public class Generators {
+	
+	/**
+	 * Looger qui permet d'éviter les system.out pour à la place faire de vra ifichiers de log.
+	 */
+	private static final Logger logger = Logger.getLogger(Generators.class.getName());
 
-
+	private Generators() {}
 	/**
 	 * Génére un bouton avec un texte donné et le positionne aux coordonnées spécifiés.
 	 *
@@ -109,7 +115,7 @@ public class Generators {
 	 */
 	public static TextField generateTextField(String defaultValue, double x, double y, int maxLength, char limit1, char limit2) {
 		TextField tf = new TextField(defaultValue);
-		tf.setMaxWidth(8*maxLength+30);
+		tf.setMaxWidth((double)8*maxLength+30);
 		Generators.setLayout(tf, x,y);
 		tf.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -138,7 +144,7 @@ public class Generators {
 	 */
 	public static TextField generateTextField(String defaultValue, double x, double y) { //maxLength devrait être <=16 pour des raisons d'affichage (sinon affichage moins beau)
 		TextField tf = new TextField(defaultValue);
-		tf.setMaxWidth(8*5+30);
+		tf.setMaxWidth((double)8*5+30);
 		Generators.setLayout(tf, x,y);
 		return tf;
 	}
@@ -161,7 +167,9 @@ public class Generators {
 						}else if(Integer.parseInt(tf.getText())>max) {
 							tf.setText(""+max);
 						}
-					}catch(Exception e) {}
+					}catch(Exception e) {
+						logger.info("Error in the listener of addCheckNumericalValueToTextField");
+					}
 				}
 
 			}
@@ -233,24 +241,24 @@ public class Generators {
 	 */
 	public static void applyStyleToButton(Button b, Color inactive, Color active) { //inactive = #ffffff & active = #000000
 		//Style de base
-		b.setStyle("	-fx-background-color: "+Utils.convertToHex(active)+";\n"
-				+ "    	-fx-text-fill: "+Utils.convertToHex(inactive)+";\n"
-				+ "    	-fx-font-size: 14px;\n"
-				+ "		-fx-background-radius: 20px;\n");
+		b.setStyle("-fx-background-color: "+Utils.convertToHex(active)+";\n"
+				+ "-fx-text-fill: "+Utils.convertToHex(inactive)+";\n"
+				+ "-fx-font-size: 14px;\n"
+				+ "-fx-background-radius: 20px;\n");
 		//Style lorsque l'utilisateur passe la souris sur le button
-		b.setOnMouseEntered(e -> {
-			b.setStyle("	-fx-background-color: "+Utils.convertToHex(inactive)+";\n"
-					+ "    	-fx-text-fill: "+Utils.convertToHex(active)+";\n"
-					+ "    	-fx-font-size: 14px;\n"
-					+ "		-fx-background-radius: 20px;\n");
-		});
+		b.setOnMouseEntered(e ->
+			b.setStyle("-fx-background-color: "+Utils.convertToHex(inactive)+";\n"
+					+ "-fx-text-fill: "+Utils.convertToHex(active)+";\n"
+					+ "-fx-font-size: 14px;\n"
+					+ "-fx-background-radius: 20px;\n")
+		);
 		// Rétablir le style de base lorsque la souris quitte le bouton
-		b.setOnMouseExited(e -> {
-			b.setStyle("	-fx-background-color: "+Utils.convertToHex(active)+";\n"
-					+ "    	-fx-text-fill: "+Utils.convertToHex(inactive)+";\n"
-					+ "    	-fx-font-size: 14px;\n"
-					+ "		-fx-background-radius: 20px;\n");
-		});
+		b.setOnMouseExited(e ->
+			b.setStyle("-fx-background-color: "+Utils.convertToHex(active)+";\n"
+					+ "-fx-text-fill: "+Utils.convertToHex(inactive)+";\n"
+					+ "-fx-font-size: 14px;\n"
+					+ "-fx-background-radius: 20px;\n")
+		);
 	}
 
 	public static HBox generateHBoxSaveMap(boolean[][] walls, Color textColor, String textLabel, String textButton, String textNotification) {
@@ -272,7 +280,7 @@ public class Generators {
 				}
 				notification.setVisible(true);
 			}catch(IOException ioe) {
-				System.out.println("ERROR - An error occurred while saving the map.");
+				logger.info("ERROR - An error occurred while saving the map.");
 				notification.setVisible(false);
 			}
 		});

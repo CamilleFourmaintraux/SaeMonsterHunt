@@ -9,6 +9,8 @@ import java.io.ObjectOutputStream;
 import fr.univlille.info.J2.main.management.Maze;
 
 public class SaveLoadSystemGames {
+	
+	private SaveLoadSystemGames() {};
 
 	public static final String GAMES_DIRECTORY = "res/saves/games/";
 	public final static String DEFAULT_NAME_FOR_GAME_SAVE = "GameSaveName";

@@ -6,6 +6,7 @@
 package fr.univlille.info.J2.main.management;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.application.cells.Cell;
 import fr.univlille.info.J2.main.application.cells.CellWithText;
@@ -43,98 +44,99 @@ import javafx.scene.text.Text;
  *
  */
 public class MonsterView implements Observer{
-
+	private static final Logger logger = Logger.getLogger(MonsterView.class.getName());
 	/**
-	 * Constante couleur du Monstre.
+	 * Constante couleur du Monstre. Ce n'est plus utilisé pour le moment
 	 */
-	final Color MONSTER_COLOR = Color.CRIMSON;
+	//private static final Color MONSTER_COLOR = Color.CRIMSON;
 	/**
-	 * Constante couleur de la sortie du labyrinthe.
+	 * Constante couleur de la sortie du labyrinthe. Ce n'est plus utilisé pour le moment
 	 */
-	final Color EXIT_COLOR = Color.VIOLET;
+	//private static final Color EXIT_COLOR = Color.VIOLET;
+	
 	/**
 	 * Hauteur de la fenêtre, par défaut 500
 	 */
-	public double window_height;
+	private double window_height;
 	/**
 	 * Largeur de la fenêtre, par défaut 500
 	 */
-	public double window_width;
+	private double window_width;
 	/**
 	 * Position horizontal, par défaut 0
 	 */
-	public int gap_X;
+	private int gap_X;
 	/**
 	 * Position vertical, par défaut 0
 	 */
-	public int gap_Y;
+	private int gap_Y;
 	/**
 	 * Zoom, par défaut 30
 	 */
-	public int zoom;
+	private int zoom;
 	/**
 	 * Couleur des murs
 	 */
-	public Color colorOfWalls;
+	private Color colorOfWalls;
 	/**
 	 * Couleur des sols
 	 */
-	public Color colorOfFloors;
+	private Color colorOfFloors;
 	/**
 	 * Couleur du brouillard
 	 */
-	public Color colorOfFog;
+	private Color colorOfFog;
 
 	/**
 	 * Nom du joueur incarnant le monstre
 	 */
-	String monsterName;
+	private String monsterName;
 
 	/**
 	 * Sujet (pour le modèle observé)
 	 */
-	Maze maze;
+	private Maze maze;
 
 	//Sprites (Rectangles pour le moment)
-	CellWithText sprite_monster;
-	CellWithText  sprite_shot;
-	CellWithText  sprite_exit;
-	CellWithText  selection;
+	private CellWithText sprite_monster;
+	private CellWithText  sprite_shot;
+	private CellWithText  sprite_exit;
+	private CellWithText  selection;
 
 	/**
 	 * Groupe pour la gestion des images.
 	 */
-	Group group_img_map;
+	private Group group_img_map;
 
 	/**
 	 * Groupe pour la gestion des images des sprites.
 	 */
-	Group group_img_sprite;
+	private Group group_img_sprite;
 
 	/**
 	 * Groupe pour la gestion de la map.
 	 */
-	Group group_map;
+	private Group group_map;
 
 	/**
 	 * Groupe pour la gestion des sprites (rectangle).
 	 */
-	Group group_sprite;
+	private Group group_sprite;
 
 	/**
 	 * Groupe pour la gestion de la scène.
 	 */
-	Group group_stage;
+	private Group group_stage;
 
-	BorderPane bp;
+	private BorderPane bp;
 
-	Text turnIndication;
-	Text notification;
+	private Text turnIndication;
+	private Text notification;
 
 	/**
 	 * Scène pour l'affichage.
 	 */
-	Scene scene;
+	protected Scene scene;
 
 	/**
      * Constructeur de la classe MonsterView, crée la vue du Monstre.
@@ -199,6 +201,7 @@ public class MonsterView implements Observer{
 			alert.showAndWait().ifPresent(response -> {
 				if(response == b_continue){
 					this.maze.triggersGameOver();
+					logger.info("Sauvegarde imposible car pas encore implémanté :/");
 				}else if(response == b_cws){
 					this.maze.triggersGameOver();
 				}
@@ -215,7 +218,7 @@ public class MonsterView implements Observer{
 		Label player_name = new Label(this.monsterName);
 		player_name.setTextFill(Color.WHITE);
 		this.turnIndication.setFill(Color.WHITE);
-		this.notification.setFill(Color.WHITE);//.setTextFill(Color.WHITE);
+		this.notification.setFill(Color.WHITE);
 		vbox.getChildren().addAll(player_name, this.turnIndication, this.notification);
 		this.bp=new BorderPane(group_stage);
 		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
@@ -277,7 +280,7 @@ public class MonsterView implements Observer{
 					cell.setStroke(Color.TRANSPARENT);
 				}
 			}catch(Exception e) {
-				System.out.println("Error - in class MonsterView -> method actualize");
+				logger.info("Error - in class MonsterView -> method actualize");
 			}
 		}
 	}
@@ -323,9 +326,7 @@ public class MonsterView implements Observer{
 	public void addMouseEvents(Cell r) {
 		r.setOnMouseEntered(e->{
 			this.select(e, r.getCoord());
-			this.scene.setOnMouseClicked(event->{
-				this.selectionLocked(r);
-			});
+			this.scene.setOnMouseClicked( event-> this.selectionLocked(r) );
 		});
 	}
 
@@ -339,12 +340,7 @@ public class MonsterView implements Observer{
 			for(int l=0; l<this.maze.walls[h].length; l++) {
 				Cell r = new Cell(l, h, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, ImageLoader.floor_dungeon);
 				//Codage des rectangles
-				if(this.maze.walls[h][l]) {
-					//Code à calculer si c'est un sol : obsolète car la manière de faire les rectangles à changer
-				}else {
-					//r.setFill(this.colorOfWalls);
-					//r.setStroke(this.colorOfWalls);
-					//r.setStrokeWidth(1);
+				if(!this.maze.walls[h][l]) {
 					r.setImage(ImageLoader.wall_dungeon);
 				}
 				if(this.maze.getVisionRange()!=-1) {

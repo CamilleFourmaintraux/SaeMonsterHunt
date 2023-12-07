@@ -6,6 +6,7 @@
 package fr.univlille.info.J2.main.management;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.application.cells.CellWithText;
 import fr.univlille.info.J2.main.application.cells.Coordinate;
@@ -40,90 +41,91 @@ import javafx.scene.text.Text;
  *
  */
 public class HunterView implements Observer{
+	private static final Logger logger = Logger.getLogger(HunterView.class.getName());
 	/**
 	 * Hauteur de la fenêtre, par défaut 500
 	 */
-	public double window_height;
+	private double window_height;
 	/**
 	 * Largeur de la fenêtre, par défaut 500
 	 */
-	public double window_width;
+	private double window_width;
 	/**
 	 * Position horizontal, par défaut 0
 	 */
-	public int gap_X;
+	private int gap_X;
 	/**
 	 * Position vertical, par défaut 0
 	 */
-	public int gap_Y;
+	private int gap_Y;
 	/**
 	 * Zoom, par défaut 30
 	 */
-	public int zoom;
+	private int zoom;
 	/**
 	 * Couleur des murs
 	 */
-	public Color colorOfWalls;
+	private Color colorOfWalls;
 	/**
 	 * Couleur des sols
 	 */
-	public Color colorOfFloors;
+	private Color colorOfFloors;
 	/**
 	 * Couleur du brouillard
 	 */
-	public Color colorOfFog;
+	private Color colorOfFog;
 
 	/**
 	 * Nom du joueur incarnant le chasseur
 	 */
-	String hunterName;
+	private String hunterName;
 
 	/**
 	 * Sujet (pour le modèle observé)
 	 */
-	Maze maze;
+	private Maze maze;
 
 	/**
 	 * Sprite représentant le tir.
 	 */
-	CellWithText sprite_shot;
+	private CellWithText sprite_shot;
 	/**
 	 * Sprite de sélection.
 	 */
-	CellWithText selection;
+	private CellWithText selection;
 
 	/**
 	 * Groupe pour la gestion de la scène.
 	 */
-	Group group_stage;
+	private Group group_stage;
 	/**
 	 * Groupe pour la gestion des sprites (rectangle).
 	 */
-	Group group_sprite;
+	private Group group_sprite;
 	/**
 	 * Groupe pour la gestion de la map.
 	 */
-	Group group_map;
+	private Group group_map;
 
 	/**
 	 * Groupe pour la gestion des images la map.
 	 */
-	Group group_img_map;
+	private Group group_img_map;
 
 	/**
 	 * Groupe pour la gestion des textes.
 	 */
-	Group group_texts;
+	private Group group_texts;
 
-	BorderPane bp;
+	private BorderPane bp;
 
-	Text turnIndication;
-	Text notification;
+	private Text turnIndication;
+	private Text notification;
 
 	/**
 	 * Scène pour l'affichage.
 	 */
-	Scene scene;
+	protected Scene scene;
 
 	/**
 	 * Constructeur de la classe HunterView, crée la vue du chasseur.
@@ -204,8 +206,8 @@ public class HunterView implements Observer{
 		VBox vbox = new VBox();
 		Label player_name = new Label(this.hunterName);
 		player_name.setTextFill(Color.WHITE);
-		this.turnIndication.setFill(Color.WHITE);//.setTextFill(Color.WHITE);
-		this.notification.setFill(Color.WHITE);//.setTextFill(Color.WHITE);
+		this.turnIndication.setFill(Color.WHITE);
+		this.notification.setFill(Color.WHITE);
 		vbox.getChildren().addAll(player_name, this.turnIndication, this.notification);
 		this.bp=new BorderPane(group_stage);
 		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
@@ -268,8 +270,8 @@ public class HunterView implements Observer{
      * Méthode pour dessiner le labyrinthe et les éléments associés.
 	 */
 	public void draw() {
-		for(int h=0; h<this.maze.hunter.traces.length; h++) {
-			for(int l=0; l<this.maze.hunter.traces[h].length; l++) {
+		for(int h=0; h<this.maze.hunter.getTraces().length; h++) {
+			for(int l=0; l<this.maze.hunter.getTraces()[h].length; l++) {
 				//Codage des rectangles permettant le contrôle
 				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""),ImageLoader.floor_dungeon);
 				if(!this.maze.walls[h][l]) {
@@ -278,9 +280,7 @@ public class HunterView implements Observer{
 				cell.setFocusTraversable(false);
 				cell.setOnMouseEntered(event -> {
 					this.select(cell);
-					this.scene.setOnMouseClicked(e -> { //Vérifie le clic sur la scene et sur sur la cell sinon bug (pour une raison inconnue)
-						this.selectionLocked(cell);
-					});
+					this.scene.setOnMouseClicked(e -> this.selectionLocked(cell) );
 				});
 				this.group_map.getChildren().add(cell);
 				this.group_img_map.getChildren().add(cell.getImgv());
@@ -343,9 +343,7 @@ public class HunterView implements Observer{
 		this.sprite_shot.getImgv().setVisible(false);
 		this.sprite_shot.setOnMouseEntered(event -> {
 			this.select(this.sprite_shot);
-			this.scene.setOnMouseClicked(e -> { //Vérifie le clic sur la scene et sur sur la cell sinon bug (pour une raison inconnue)
-				this.selectionLocked(this.sprite_shot);
-			});
+			this.scene.setOnMouseClicked(e -> this.selectionLocked(this.sprite_shot) );
 		});
 
 		//On ajoute les sprites au groupe associé.
@@ -376,7 +374,6 @@ public class HunterView implements Observer{
 			int x = this.calculCoordX(cell);
 			ICoordinate c = new Coordinate(y,x);
 			if(this.maze.shoot(c)) {
-				//this.revealCell(cell,this.colorOfWalls,this.colorOfFloors);
 				this.actualizeCell(c);
 			}
 		}else {
@@ -395,7 +392,7 @@ public class HunterView implements Observer{
 		cwt.setFill(Color.TRANSPARENT);
 		cwt.setStroke(Color.TRANSPARENT);
 		if(this.maze.isFloor(cwt.getCoord())) {
-			int trace = this.maze.hunter.traces[cwt.getRow()][cwt.getCol()];
+			int trace = this.maze.hunter.getTraces()[cwt.getRow()][cwt.getCol()];
 			if(trace>0) {
 				cwt.setText(""+trace);
 			}
@@ -416,36 +413,23 @@ public class HunterView implements Observer{
 	}
 	public void actualizeCell(ICoordinate c) {
 		CellWithText cwt;
-		try{
-			for(int y=c.getRow()-this.maze.getBonusRange(); y<c.getRow()+(this.maze.getBonusRange()+1); y++) {
-				for(int x=c.getCol()-this.maze.getBonusRange(); x<c.getCol()+(this.maze.getBonusRange()+1); x++) {
-					try {
-						cwt = searchSprite(this.group_map, new Coordinate(y,x));
-						this.revealCell(cwt,this.colorOfWalls,this.colorOfFloors);
-					}catch(Exception e) {
-						//Signifie que c'est en dehors de la map
-					}
-				}
-			}
-
-		}catch(Exception exception) {
-			System.out.println("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
-		}
-	}
-
-	/*
-	 * for(int y=cwt.getRow()-1; y<cwt.getRow()+2; y++) {
-			for(int x=cwt.getCol()-1; x<cwt.getCol()+2; x++) {
+		for(int y=c.getRow()-this.maze.getBonusRange(); y<c.getRow()+(this.maze.getBonusRange()+1); y++) {
+			for(int x=c.getCol()-this.maze.getBonusRange(); x<c.getCol()+(this.maze.getBonusRange()+1); x++) {
 				try {
-
+					cwt = searchSprite(this.group_map, new Coordinate(y,x));
+					if(cwt!=null) {
+						this.revealCell(cwt,this.colorOfWalls,this.colorOfFloors);
+					}else {
+						logger.info("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
+					}	
 				}catch(Exception e) {
-					//Signifie que c'est en dehors de la map
+					logger.info("("+y+","+x+") Out of bounds in actualizeCell -> Its normal dont worry");
 				}
+					
 			}
 		}
-	 */
 
-
+	}
 
 	/**
 	 * Obtient la hauteur de la fenêtre de jeu.

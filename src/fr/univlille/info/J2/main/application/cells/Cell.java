@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.univlille.info.J2.main.application.cells;
 
 import java.util.Objects;
@@ -24,14 +21,11 @@ import javafx.scene.shape.Rectangle;
  */
 public class Cell extends Rectangle{
 
-	//public final Image floor = new Image("/home/iutinfo/eclipse-workspace/J2_SAE3A/res/img/floor-Cave.jpg");
-
 	/**
 	 * Coordonnées construite à partir du x et y.
 	 */
 	ICoordinate coord;
 	ImageView iv;
-	public boolean isLocked;
 
 	/**
 	 * Constructeur avec des paramètres limit�s.
@@ -45,8 +39,6 @@ public class Cell extends Rectangle{
 	 */
 	public Cell(int x, int y, int zoom, Color fill, int gap_X, int gap_Y, Image img) {
 		this(x,y,zoom,fill,fill, 0, gap_X, gap_Y, img);
-
-		//System.out.println("TEST IMG:"+iv.getImage().getUrl());
 	}
 
 	/**
@@ -73,7 +65,6 @@ public class Cell extends Rectangle{
 		this.setFill(fill);
 		this.setStroke(stroke);
 		this.setStrokeWidth(strokeWidth);
-		this.isLocked=false;
 	}
 
 	 /**
@@ -91,8 +82,8 @@ public class Cell extends Rectangle{
      * @param c Les nouvelles coordonnées de la cellule.
      * @return Les coordonnées mises à jour.
      */
-	public ICoordinate setCoord(ICoordinate c) {
-		return this.coord=c;
+	public void setCoord(ICoordinate c) {
+		this.coord=c;
 	}
 
 	/**

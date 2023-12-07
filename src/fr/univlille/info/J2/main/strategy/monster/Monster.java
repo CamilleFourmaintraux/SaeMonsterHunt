@@ -5,6 +5,8 @@
  */
 package fr.univlille.info.J2.main.strategy.monster;
 
+import java.io.Serializable;
+
 import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
@@ -21,7 +23,8 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  * @author theo.franos.etu
  *
  */
-public class Monster implements IMonsterStrategy{
+public class Monster implements IMonsterStrategy, Serializable{
+	private static final long serialVersionUID = 3197069907938344169L;
 	/**
 	 * La grille de murs du labyrinthe.
 	 */

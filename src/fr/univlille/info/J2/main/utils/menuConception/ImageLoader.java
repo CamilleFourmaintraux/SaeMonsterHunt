@@ -5,7 +5,9 @@ import java.io.File;
 import javafx.scene.image.Image;
 
 public class ImageLoader {
-	//public static final String IMG_DIRECTORY_PATH = "../res/img/";
+	//public static final String IMG_DIRECTORY_PATH = "../res/img/";*
+	
+	private ImageLoader() {}
 	
 	public static Image floor_dungeon = initImage("floor_dungeon.png");
 	public static Image wall_dungeon = initImage("wall_dungeon.png");
