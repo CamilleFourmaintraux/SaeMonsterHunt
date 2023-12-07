@@ -13,7 +13,7 @@ public class SaveLoadSystemGames {
 	private SaveLoadSystemGames() {};
 
 	public static final String GAMES_DIRECTORY = "res/saves/games/";
-	public final static String DEFAULT_NAME_FOR_GAME_SAVE = "GameSaveName";
+	public final static String DEFAULT_NAME_FOR_GAME_SAVE = "default_save_name";
 
 	// Méthode pour sauvegarder un objet dans un fichier
     public static void saveGame(Maze maze, String fileName) throws IOException {

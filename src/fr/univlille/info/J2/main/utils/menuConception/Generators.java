@@ -1,10 +1,9 @@
 package fr.univlille.info.J2.main.utils.menuConception;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
 import fr.univlille.info.J2.main.utils.Utils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,11 +13,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -191,7 +191,7 @@ public class Generators {
 	}
 
 
-	public static Alert generateAlert(String title, String text, Collection<ButtonType> boutonJouer) {
+	public static Alert generateAlert(String title, String text, Collection<ButtonType> buttons) {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle(title);
 		alert.setHeaderText(text);
@@ -201,9 +201,33 @@ public class Generators {
 		dialogPane.setMinHeight(Region.USE_PREF_SIZE);
 
 		// Boutons de confirmation et d'annulation
-		alert.getButtonTypes().setAll(boutonJouer);
+		alert.getButtonTypes().setAll(buttons);
 
 		return alert;
+	}
+	
+	public static Dialog<ButtonType> generateDialog(String title, String text, Collection<ButtonType> buttons, ArrayList<ArrayList<Node>> nodes) {
+		Dialog<ButtonType> dialog = new Dialog<ButtonType>();
+		dialog.setTitle(title);
+		dialog.setHeaderText(text);
+
+		GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        for(int index = 0; index<nodes.size(); index++) {
+        	for(int i = 0; i<nodes.get(index).size(); i++) {
+            	grid.add(nodes.get(index).get(i), i, index);
+            }
+        }
+		dialog.getDialogPane().setContent(grid);
+		// Personnaliser l'apparence de la boîte de dialogue
+		DialogPane dialogPane = dialog.getDialogPane();
+		dialogPane.setMinHeight(Region.USE_PREF_SIZE);
+
+		// Boutons de confirmation et d'annulation
+		dialogPane.getButtonTypes().setAll(buttons);
+
+		return dialog;
 	}
 
 
@@ -260,34 +284,4 @@ public class Generators {
 					+ "-fx-background-radius: 20px;\n")
 		);
 	}
-
-	public static HBox generateHBoxSaveMap(boolean[][] walls, Color textColor, String textLabel, String textButton, String textNotification) {
-    	Label l_saveMap = Generators.generateLabel(textLabel, 0, 0);
-		l_saveMap.setTextFill(textColor);
-		TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 9, 'A', 'z');
-		Label notification = Generators.generateLabel(textNotification, 0, 0);
-		notification.setTextFill(textColor);
-		notification.setVisible(false);
-		Button b_saveMap = Generators.generateButton(textButton, 0, 0,Color.WHITE,textColor);
-		b_saveMap.setMinWidth(b_saveMap.getPrefWidth());
-		b_saveMap.setOnAction(e->{
-			try {
-				String fileName = tf_saveMap.getText();
-				if(fileName.isEmpty()) {
-					SaveLoadSystemMaps.saveMap(walls, SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE);
-				}else {
-					SaveLoadSystemMaps.saveMap(walls, fileName);
-				}
-				notification.setVisible(true);
-			}catch(IOException ioe) {
-				logger.info("ERROR - An error occurred while saving the map.");
-				notification.setVisible(false);
-			}
-		});
-		HBox hbox_saveMap = new HBox(10);
-		hbox_saveMap.getChildren().addAll(l_saveMap,tf_saveMap,b_saveMap,notification);
-		return hbox_saveMap;
-    }
-
-
 }

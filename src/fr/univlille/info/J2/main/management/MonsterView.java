@@ -5,7 +5,6 @@
  */
 package fr.univlille.info.J2.main.management;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.application.cells.Cell;
@@ -20,14 +19,10 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -182,48 +177,19 @@ public class MonsterView implements Observer{
 
 		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
-
-		HBox hbox_saveMap = Generators.generateHBoxSaveMap(this.maze.getWalls(), Color.PURPLE, "Save the current map : ", "Save map","Map successfully saved");
-
-		Label l_saveGame = Generators.generateLabel("Save and exit : ", 0, 0);
-		l_saveGame.setTextFill(Color.PURPLE);
-		TextField tf_saveGame = Generators.generateTextField("GameName", 0, 0, 9, 'A', 'z');
-		Button b_saveGame = Generators.generateButton("Leave game", 0, 0,Color.WHITE, Color.PURPLE);
-		b_saveGame.setOnAction(e->{
-			ButtonType b_cancel= new ButtonType("Cancel");
-			ButtonType b_continue = new ButtonType("Continue");
-			ButtonType b_cws = new ButtonType("Continue without saving");
-			ArrayList<ButtonType> alb = new ArrayList<>();
-			alb.add(b_cancel);
-			alb.add(b_continue);
-			alb.add(b_cws);
-			Alert alert = Generators.generateAlert("Leaving the game", "Are you sure you want to leave the game ?\nThe game will be saved.", alb);
-			alert.showAndWait().ifPresent(response -> {
-				if(response == b_continue){
-					this.maze.triggersGameOver();
-					logger.info("Sauvegarde imposible car pas encore implémanté :/");
-				}else if(response == b_cws){
-					this.maze.triggersGameOver();
-				}
-			});
-		});
-
-		HBox hbox_saveGame = new HBox(10);
-		hbox_saveGame.getChildren().addAll(l_saveGame,tf_saveGame,b_saveGame);
-
-		VBox vbox_savePanel = new VBox(20);
-		vbox_savePanel.getChildren().addAll(hbox_saveMap,hbox_saveGame);
-
+	
+		Button b_option = Generators.generateButton("-> Option", 0, 0,Color.WHITE, Color.BLACK);
+		b_option.setOnAction(e-> Management.showOption(this.maze, notification) );
+		
 		VBox vbox = new VBox();
 		Label player_name = new Label(this.monsterName);
 		player_name.setTextFill(Color.WHITE);
 		this.turnIndication.setFill(Color.WHITE);
 		this.notification.setFill(Color.WHITE);
-		vbox.getChildren().addAll(player_name, this.turnIndication, this.notification);
+		vbox.getChildren().addAll(player_name, this.turnIndication, this.notification, b_option);
 		this.bp=new BorderPane(group_stage);
 		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 		this.bp.setTop(vbox);
-		this.bp.setBottom(vbox_savePanel);
 
 		this.scene=new Scene(bp,this.window_width,this.window_height,Color.BLACK);
 		this.draw();

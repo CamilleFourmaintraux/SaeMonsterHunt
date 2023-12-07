@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import fr.univlille.info.J2.main.application.system.SaveLoadSystemGames;
 import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
@@ -30,6 +32,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -54,6 +57,11 @@ import javafx.stage.Stage;
  *
  */
 public class Management extends Stage implements Observer{
+	
+	/**
+	 * Looger qui permet d'éviter les system.out pour à la place faire de vra ifichiers de log.
+	 */
+	private static final Logger logger = Logger.getLogger(Management.class.getName());
 
 	/**
 	 * Constante ID de la scene d'attente entre deux joueurs.
@@ -1276,6 +1284,65 @@ public class Management extends Stage implements Observer{
 	 */
 	public double calculPercentage(double total, double percentage) {//percentage must be between 0 and 100
 		return (percentage/100)*total;
+	}
+	
+	public static void showOption(Maze maze, Text notification) {
+		ButtonType bt_cancel= new ButtonType("Cancel");
+		ButtonType bt_save = new ButtonType("Save the game & Leave");
+		ButtonType bt_noSave = new ButtonType("Leave");
+		
+        TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 24, 'A', 'z');
+        tf_saveMap.setMinWidth(200);
+        Button b_saveMap = Generators.generateButton("save the map", 0, 0, Color.BLACK, Color.LIGHTGRAY);
+        b_saveMap.setOnAction(e->{
+        	try {
+				String fileName = tf_saveMap.getText();
+				if(fileName.isEmpty()||fileName.isBlank()) {
+					SaveLoadSystemMaps.saveMap(maze.getWalls(), SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE);
+				}else {
+					SaveLoadSystemMaps.saveMap(maze.getWalls(), fileName);
+				}
+				notification.setText("Map successfully saved.");
+			}catch(IOException ioe) {
+				logger.info("ERROR - An error occurred while saving the map.");
+				notification.setText("Error when saving the map.");
+			}
+        });
+        TextField tf_saveGame = Generators.generateTextField(SaveLoadSystemGames.DEFAULT_NAME_FOR_GAME_SAVE, 0, 0, 24, 'A', 'z');
+        tf_saveGame.setMinWidth(200);
+        Button b_saveGame = Generators.generateButton("save the game", 0, 0, Color.BLACK, Color.LIGHTGRAY);
+        b_saveGame.setOnAction(e->{
+        	notification.setText("Sauvegarde impossible car pas encore implémanté :/");
+			logger.info("Sauvegarde impossible car pas encore implémanté :/"); //TODO implémanter la sauvegarde
+        });
+        
+        ArrayList<ButtonType> alb = new ArrayList<>();
+		alb.add(bt_cancel);
+		alb.add(bt_save);
+		alb.add(bt_noSave);
+		
+        ArrayList<Node> ligne1 = new ArrayList<>();
+        ligne1.add(Generators.generateLabel("File name for the map : ", 0, 0));
+        ligne1.add(tf_saveMap);
+        ligne1.add(b_saveMap);
+        ArrayList<Node> ligne2 = new ArrayList<>();
+        ligne2.add(Generators.generateLabel("File name for the save : ", 0, 0));
+        ligne2.add(tf_saveGame);
+        ligne2.add(b_saveGame);
+        ArrayList<ArrayList<Node>> nodes = new ArrayList<>();
+        nodes.add(ligne1);
+        nodes.add(ligne2);
+        
+		Dialog<ButtonType> dialog = Generators.generateDialog("Leaving the game", "Are you sure you want to leave the game ?\n", alb, nodes);
+		dialog.showAndWait().ifPresent(response -> {
+			if (response.equals(bt_save)) {
+				notification.setText("Sauvegarde impossible car pas encore implémanté :/");
+				logger.info("Sauvegarde impossible car pas encore implémanté :/"); //TODO implémanter la sauvegarde
+				maze.triggersGameOver();
+			}else if(response.equals(bt_noSave)) {
+				maze.triggersGameOver();
+			}
+		});
 	}
 
 }
