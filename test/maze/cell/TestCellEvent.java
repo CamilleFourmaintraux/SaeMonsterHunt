@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.management.cells.CellEvent;
-import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.application.cells.CellEvent;
+import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 public class TestCellEvent {

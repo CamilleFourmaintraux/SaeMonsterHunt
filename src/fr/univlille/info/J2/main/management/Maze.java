@@ -7,14 +7,15 @@ package fr.univlille.info.J2.main.management;
 
 
 import java.io.Serializable;
+import java.util.logging.Logger;
 
-import fr.univlille.info.J2.main.management.cells.CellEvent;
-import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.application.cells.CellEvent;
+import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 import fr.univlille.info.J2.main.strategy.monster.Exit;
 import fr.univlille.info.J2.main.strategy.monster.Monster;
-import fr.univlille.info.J2.main.utils.Subject;
 import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
@@ -32,8 +33,8 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class Maze extends Subject implements Serializable{
 
-
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(Maze.class.getName());
 
 	private static final boolean[][] DEFAULT_MAP = new boolean[][] {
 		{false,true,false,true,true,false,true,false,true,false}, 	// X . X . . X . X . X
@@ -56,7 +57,7 @@ public class Maze extends Subject implements Serializable{
 	/**
 	 * Tableau d'entier stockant les numéros de tours ou le monstre est déjà passé.
 	 */
-	protected int[][] traces;//TODO message ou alerte si le monstre passe sur une case déjà découverte
+	protected int[][] traces;
 
 	/**
 	 * La sortie (les coordonnées) du labyrinthe.
@@ -99,7 +100,7 @@ public class Maze extends Subject implements Serializable{
 	 * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
 	 */
 	public Maze() {
-		this(Maze.generateBasicMap(),"Player","Player", false, -1, 1, 0);
+		this(Maze.generateBasicMap(),Management.IA_LEVELS[0],Management.IA_LEVELS[0], false, -1, 1, 0);
 	}
 
 	/**
@@ -117,7 +118,7 @@ public class Maze extends Subject implements Serializable{
 		this.walls=maze;
 		this.turn=1;
 		this.initMonsterExitHunter(monster_IA, hunter_IA,limitedVision, visionRange, movingRange, bonusRange);
-		this.traces = this.initTraces();
+		this.initTraces();
 		this.isMonsterTurn=true;
 		this.exploring(this.monster.getCoord(), visionRange);
 		this.move(this.monster.getCoord());
@@ -146,19 +147,13 @@ public class Maze extends Subject implements Serializable{
 	 *
 	 * @return un tableau d'entier initialise a zero si la case correspond à une case vide et -1 si la case correspond à un mur.
 	 */
-	public int[][] initTraces(){
-		int[][] traces = new int[this.walls.length][this.walls[0].length];
+	public void initTraces(){
+		this.traces = new int[this.walls.length][this.walls[0].length];
 		for(int h=0; h<this.walls.length;h++) {
 			for(int l=0; l<this.walls[h].length;l++) {
-				traces[h][l]=0;
-				/*if(this.walls[h][l]) {
-					traces[h][l]=0;
-				}else {
-					traces[h][l]=-1;//Mur
-				}*/
+				this.traces[h][l]=0;
 			}
 		}
-		return traces;
 	}
 
 	/**
@@ -396,7 +391,6 @@ public class Maze extends Subject implements Serializable{
 
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
-				System.out.println("MONSTER GAGNE"); //TODO A ENLEVER ET A PLACER DANS LE MENU GAME OVER
 			}
 
 			this.turn++;  //On passe au tour suivant
@@ -407,7 +401,7 @@ public class Maze extends Subject implements Serializable{
 			this.notifyObservers();
 			return true;
 		}
-		if(!this.getMonsterIa().equals("Player")) {
+		if(!this.getMonsterIa().equals(Management.IA_LEVELS[0])) {
 			this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
 			this.isMonsterTurn=false;
 		}
@@ -430,7 +424,9 @@ public class Maze extends Subject implements Serializable{
 						temp = new Coordinate(y,x);
 						ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
 						this.hunter.update(ce);
-					}catch(Exception e) {}//Signifie que l'est est en dehors de la map
+					}catch(Exception e) {//Signifie que l'est est en dehors de la map
+						logger.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
+					}
 
 				}
 			}
@@ -438,7 +434,6 @@ public class Maze extends Subject implements Serializable{
 			this.hunter.update(ce);
 			if(ce.getState().equals(CellInfo.MONSTER)) {
 				this.isGameOver=true;
-				System.out.println("HUNTER GAGNE");//TODO A ENLEVER
 			}
 			this.isMonsterTurn=true;
 			this.notifyObservers();
@@ -482,12 +477,7 @@ public class Maze extends Subject implements Serializable{
 	 * @return boolean qui indique true si la coordonnée est valide (dans le labyrinthe) sinon false.
 	 */
 	public boolean isCorrectCoordinate(ICoordinate c) {
-		if(c.getRow()>=this.walls.length) {
-			return false;
-		}else if(c.getCol()>=this.walls[c.getRow()].length) {
-			return false;
-		}
-		return true;
+		return !((c.getRow()>=this.walls.length)||(c.getCol()>=this.walls[c.getRow()].length));
 	}
 
 	/**

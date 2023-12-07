@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.univlille.info.J2.main.utils.Generators;
-import fr.univlille.info.J2.main.utils.Observer;
-import fr.univlille.info.J2.main.utils.SaveLoadSystemMaps;
-import fr.univlille.info.J2.main.utils.Subject;
+import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
 import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.utils.menuConception.Generators;
+import fr.univlille.info.J2.main.utils.patrons.Observer;
+import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -103,7 +103,7 @@ public class Management extends Stage implements Observer{
 	/**
 	 * Constante utilisée dans les comboBox pour le choix des joueurs.
 	 */
-	final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
+	public static final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
 
 
 	/**
@@ -311,6 +311,7 @@ public class Management extends Stage implements Observer{
 	 */
 	public Map<Integer, Scene> menus;
 
+<<<<<<< HEAD
 	/**
 	 * Vue du Monstre.
 	 */
@@ -333,6 +334,17 @@ public class Management extends Stage implements Observer{
 	 * Objet File représentant un labyrinthe personnnalisé et importé par le joueur.
 	 */
 	public File importedmap;
+=======
+	//Les différentes fenêtres
+	private Stage viewM;
+	private Stage viewH;
+	private Stage viewCommon;
+
+	private boolean isGenerationRandom;
+
+	//Le fichier importé par
+	private File importedmap;
+>>>>>>> master
 
 	/**
 	 * Constructeur de la classe Management.
@@ -545,7 +557,7 @@ public class Management extends Stage implements Observer{
 	 */
 	public void toHunterView() {
 		if(this.sameScreen) {
-			if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")) {
+			if(this.monster_IA.equals(Management.IA_LEVELS[0])&&this.hunter_IA.equals(Management.IA_LEVELS[0])) {
 				//this.viewCommon.hide();
 				this.viewCommon.setScene(this.getScene(ID_WAIT));
 				ArrayList<ButtonType> alb = new ArrayList<>();
@@ -574,7 +586,7 @@ public class Management extends Stage implements Observer{
 	 */
 	public void toMonsterView() {
 		if(this.sameScreen) {
-			if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")){
+			if(this.monster_IA.equals(Management.IA_LEVELS[0])&&this.hunter_IA.equals(Management.IA_LEVELS[0])){
 				//this.viewCommon.hide();
 				this.viewCommon.setScene(this.getScene(this.ID_WAIT));
 				ArrayList<ButtonType> alb = new ArrayList<>();
@@ -614,8 +626,8 @@ public class Management extends Stage implements Observer{
 
 		//Label l_invalidSettings = Generators.generateLabel("Invalid Settings", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
 
-		ComboBox<String> choixIA_Monster = Generators.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 50));
-		ComboBox<String> choixIA_Hunter = Generators.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 50));
+		ComboBox<String> choixIA_Monster = Generators.generateComboBox(Management.IA_LEVELS, this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 50));
+		ComboBox<String> choixIA_Hunter = Generators.generateComboBox(Management.IA_LEVELS, this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 50));
 
 		Button bPlay = Generators.generateButton("PLAY", this.calculPercentage(this.window_width, 45), this.calculPercentage(this.window_height,90),Color.WHITE, Color.BLACK);
 		bPlay.setOnAction(e->{
@@ -796,7 +808,7 @@ public class Management extends Stage implements Observer{
 			this.applyTheme(this.theme);
 		});
 		Label l_theme = Generators.generateLabel("Choose a theme", theme.getLayoutX()-this.LABEL_MIN_WIDTH,theme.getLayoutY());
-
+		
 		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),Color.WHITE, Color.BLACK);
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(this.ID_SETTINGS));
@@ -1209,7 +1221,7 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu de GameOver.
 	 */
 	public void generateGameOverScreen() {
-		Label title = Generators.generateTitle("Game Over Menu");
+		Label title = Generators.generateTitle("Game Over !");
 
 		Button restartButton = Generators.generateButton("Rejouer", 0, 0,Color.WHITE, Color.BLACK);
 		restartButton.setOnAction(e -> {

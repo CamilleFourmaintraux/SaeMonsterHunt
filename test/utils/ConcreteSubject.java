@@ -1,6 +1,6 @@
 package utils;
 
-import fr.univlille.info.J2.main.utils.Subject;
+import fr.univlille.info.J2.main.utils.patrons.Subject;
 
 public class ConcreteSubject extends Subject{
 	public void doSomething() {

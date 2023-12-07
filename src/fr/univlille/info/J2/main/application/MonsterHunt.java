@@ -3,7 +3,6 @@
  */
 package fr.univlille.info.J2.main.application;
 
-import java.io.File;
 
 import fr.univlille.info.J2.main.management.Management;
 
@@ -11,7 +10,6 @@ import fr.univlille.info.J2.main.management.Management;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import javafx.scene.image.Image;
 /**
  *
  * MonsterHunt est la classe de lancement de l'application Monster Hunt.

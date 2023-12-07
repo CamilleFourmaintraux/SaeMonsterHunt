@@ -4,7 +4,8 @@
  * et du sujet (Subject) pour le modèle de conception Observer, ainsi que des méthodes utilitaires
  * pour la génération de nombres aléatoires et la création d'arrière-plans graphiques.
  */
-package fr.univlille.info.J2.main.utils;
+package fr.univlille.info.J2.main.utils.patrons;
+
 /**
  * L'interface Observer définit les méthodes que les objets observateurs doivent implémenter
  * pour être notifiés des changements dans un objet observable (implémentant l'interface Subject).

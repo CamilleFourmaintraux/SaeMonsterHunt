@@ -64,4 +64,4 @@ Exemple de partie en **écran scindé** (separateScreen) :
 Fourmaintraux Camille - camille.fourmaintraux.etu@univ-lille.fr  
 Arthur Debacq - arthur.debacq.etu@univ-lille.fr  
 Jessy Top - jessy.top.etu@univ-lille.fr  
-Théo Franos - theo.franos.etu@unniv-lille.fr  
+Théo Franos - theo.franos.etu@univ-lille.fr  

@@ -1,4 +1,4 @@
-package fr.univlille.info.J2.main.utils;
+package fr.univlille.info.J2.main.utils.menuConception;
 
 import java.io.File;
 
