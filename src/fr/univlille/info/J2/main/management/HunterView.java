@@ -250,12 +250,9 @@ public class HunterView implements Observer{
 	public void actualize() {
 		int x = calculDrawX(this.maze.getHunter().getCol());
 		int y = calculDrawY(this.maze.getHunter().getRow());
-		this.sprite_shot.setX(x);
-		this.sprite_shot.setY(y);
+		this.sprite_shot.setXY(x,y);
 		this.sprite_shot.setVisible(true);
 		this.sprite_shot.getImgv().setVisible(true);
-		this.sprite_shot.getImgv().setX(x);
-		this.sprite_shot.getImgv().setY(y);
 		this.turnIndication.setText("Turn n°"+this.maze.getTurn());
 		if(this.maze.isSpotted()) {
 			this.notification.setText("WARNING - The monster has been detected in one of your squares\nalready discovered during a previous turn!");

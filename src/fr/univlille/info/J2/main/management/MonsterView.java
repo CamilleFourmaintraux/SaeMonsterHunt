@@ -176,9 +176,9 @@ public class MonsterView implements Observer{
 
 
 		this.group_stage.getChildren().add(this.group_img_map);
-		this.group_stage.getChildren().add(this.group_map);
 		this.group_stage.getChildren().add(this.group_img_sprite);
 		this.group_stage.getChildren().add(this.group_sprite);
+		this.group_stage.getChildren().add(this.group_map);
 
 		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
@@ -252,18 +252,14 @@ public class MonsterView implements Observer{
 	}
 
 	public void actualize() {
-		this.sprite_monster.setX(this.calculDrawX(this.maze.getMonster().getCol()));
-		this.sprite_monster.setY(this.calculDrawY(this.maze.getMonster().getRow()));
+		this.sprite_monster.setXY(this.calculDrawX(this.maze.getMonster().getCol()),this.calculDrawY(this.maze.getMonster().getRow()));
 		this.sprite_monster.setCoord(this.maze.getMonster().getCoord());
 		this.sprite_monster.setVisible(true);
-		this.sprite_shot.setX(this.calculDrawX(this.maze.getHunter().getCol()));
-		this.sprite_shot.setY(this.calculDrawY(this.maze.getHunter().getRow()));
-		this.sprite_shot.getImgv().setX(this.calculDrawX(this.maze.getMonster().getCol()));
-		this.sprite_shot.getImgv().setY(this.calculDrawY(this.maze.getMonster().getRow()));
+		
+		this.sprite_shot.setXY(this.calculDrawX(this.maze.getHunter().getCol()),this.calculDrawY(this.maze.getHunter().getRow()));
 		this.sprite_shot.setCoord(this.maze.getMonster().getCoord());
 		this.sprite_shot.setVisible(true);
-		this.sprite_monster.getImgv().setX(this.calculDrawX(this.maze.getMonster().getCol()));
-		this.sprite_monster.getImgv().setY(this.calculDrawY(this.maze.getMonster().getRow()));
+		
 		this.selection.setVisible(false);
 		this.sprite_shot.getImgv().setVisible(true);
 		this.turnIndication.setText("Turn n°"+this.maze.getTurn());

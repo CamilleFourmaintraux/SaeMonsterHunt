@@ -65,6 +65,7 @@ public class Cell extends Rectangle{
 		this.setFill(fill);
 		this.setStroke(stroke);
 		this.setStrokeWidth(strokeWidth);
+		this.iv.setVisible(true);
 	}
 
 	 /**
@@ -121,6 +122,13 @@ public class Cell extends Rectangle{
 
 	public void setImage(Image img) {
 		this.iv.setImage(img);
+	}
+	
+	public void setXY(double x, double y) {
+		this.setX(x);
+		this.setY(y);
+		this.iv.setX(x);
+		this.iv.setY(y);
 	}
 
 
