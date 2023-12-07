@@ -5,16 +5,16 @@
  */
 package fr.univlille.info.J2.main.strategy.monster;
 
-import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /**
- * 
+ *
  * La classe Monster représente un Monster dans le jeu. Elle implémente l'interface IMonsterStrategy
  * pour définir différentes stratégies pour le monstre.
- * 
+ *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
@@ -27,6 +27,10 @@ public class Monster implements IMonsterStrategy{
 	 */
 	public boolean[][] walls;
 	/**
+	 * La grille des parties déjà explorés du labyrinthe
+	 */
+	public boolean[][] explored;
+	/**
 	 * Les coordonnées initiales du monstre.
 	 */
 	public ICoordinate coord;
@@ -34,31 +38,51 @@ public class Monster implements IMonsterStrategy{
 	 * Le niveau de l'IA du monstre.
 	 */
 	public String IA_level;
-	
+	/**
+	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
+	 */
+	public int visionRange;
+	/**
+	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
+	 */
+	public int movingRange;
+
 	/**
      * Constructeur de la classe Monster, crée un Monstre.
-	 * 
+	 *
 	 * @param walls 	La grille de murs du labyrinthe.
 	 * @param coord		Les coordonnées initiales du monstre.
 	 * @param IA_level	 Le niveau de l'IA du monstre.
+	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
 	 */
-	public Monster(boolean[][] walls,ICoordinate coord, String IA_level) {
+	public Monster(boolean[][] walls,ICoordinate coord, String IA_level, int visionRange, int movingRange) {
 		super();
 		this.initialize(walls);
+		this.explored=new boolean[walls.length][walls[0].length];
 		this.coord = coord;
 		this.IA_level=IA_level;
+		this.visionRange=visionRange;
+		this.movingRange=movingRange;
 	}
-	
+
 	/**
      * Initialise les murs du labyrinthe pour le monstre.
-     * 
+     *
      * @param walls La grille de murs du labyrinthe.
 	 */
 	@Override
 	public void initialize(boolean[][] walls) {
 		this.walls=walls;
 	}
-	
+
+	public void allExplored() {
+		for(int h=0;h<this.explored.length;h++) {
+			for(int l=0;l<this.explored[h].length;l++) {
+				this.explored[h][l]=true;
+			}
+		}
+	}
+
 	/**
      * Obtient la ligne de la coordonnée du monstre.
      *
@@ -67,7 +91,7 @@ public class Monster implements IMonsterStrategy{
 	public int getRow() {
 		return this.coord.getRow();
 	}
-	
+
 	/**
      * Obtient la colonne de la coordonnée du monstre.
      *
@@ -76,7 +100,7 @@ public class Monster implements IMonsterStrategy{
 	public int getCol() {
 		return this.coord.getCol();
 	}
-	
+
 	/**
      * Obtient les coordonnées du monstre.
      *
@@ -103,7 +127,7 @@ public class Monster implements IMonsterStrategy{
 	public boolean[][] getWalls() {
 		return walls;
 	}
-	
+
 	/**
      * Implémente l'action de l'IA facile du monstre.
      *
@@ -115,7 +139,7 @@ public class Monster implements IMonsterStrategy{
 		int y = this.getRow()+(Utils.random.nextInt(3)-1);
 		return new Coordinate(y,x);
 	}
-	
+
 	/**
      * Implémente l'action de l'IA modérée du monstre.
      *
@@ -124,7 +148,7 @@ public class Monster implements IMonsterStrategy{
 	public ICoordinate moderate_IA_action() {
 		return this.easy_IA_action(); //TODO
 	}
-	
+
 	/**
      * Implémente l'action de l'IA hardcore du monstre.
      *
@@ -133,7 +157,7 @@ public class Monster implements IMonsterStrategy{
 	public ICoordinate hardcore_IA_action() {
 		return this.easy_IA_action(); //TODO
 	}
-	
+
 	/**
      * Méthode principale pour le jeu du monstre. Implémente le comportement du monstre.
      *
@@ -150,7 +174,7 @@ public class Monster implements IMonsterStrategy{
 		}
 		return null;
 	}
-	
+
 	/**
      * Met à jour l'état du monstre en fonction d'un événement de cellule.
      *

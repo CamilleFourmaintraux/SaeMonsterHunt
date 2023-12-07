@@ -10,7 +10,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /**
  * La classe Exit représente la sortie du labyrinthe, définie par des coordonnées spécifiques (ICoordinate).
  * Cette classe permet de stocker les coordonnées de la sortie et de fournir des méthodes pour accéder à ces coordonnées.
- * 
+ *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu

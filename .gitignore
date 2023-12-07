@@ -29,5 +29,8 @@
 .DS_Store
 Thumbs.db
 
+# Fichier de data
+.dat
+
 #Temporairement
 *.css

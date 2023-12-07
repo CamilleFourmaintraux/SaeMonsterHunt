@@ -4,16 +4,16 @@
  */
 package fr.univlille.info.J2.main.strategy.hunter;
 
-import fr.univlille.info.J2.main.maze.cells.Coordinate;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
-import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /**
  * La classe Hunter représente un chasseur dans le jeu. Elle implémente l'interface IHunterStrategy
  * pour définir différentes stratégies pour le chasseur.
- * 
+ *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
@@ -33,7 +33,14 @@ public class Hunter implements IHunterStrategy{
 	 * Niveau de l'IA du chasseur.
 	 */
 	public String IA_level;
-	
+
+	/**
+	 * La portée bonus pour la vision du hunter à chachun de ses tirs (sachant que seul le tir précis qui touche le monstre déclenche la fin de jeu)
+	 */
+	public int bonusRange;
+
+
+
 	/**
      * Constructeur de la classe Hunter, crée un Chasseur.
      *
@@ -42,12 +49,13 @@ public class Hunter implements IHunterStrategy{
      * @param coord_hunter 	Les coordonnées du chasseur.
      * @param IA_level   	Le niveau de l'IA du chasseur.
 	 */
-	public Hunter(int height, int width, ICoordinate coord_hunter, String IA_level) {
+	public Hunter(int height, int width, ICoordinate coord_hunter, String IA_level, int bonusRange) {
 		this.coord=coord_hunter;
 		this.initialize(height, width);
 		this.IA_level=IA_level;
+		this.bonusRange=bonusRange;
 	}
-	
+
 	/**
 	 * Initialise le tableau des traces avec des valeurs par défaut.
      *
@@ -62,9 +70,9 @@ public class Hunter implements IHunterStrategy{
 				traces[h][l]=-2;// -2 -> Inexploré, -1 -> Mur, 0 -> pas de trace >0 -> trace (tour)
 			}
 		}
-		
+
 	}
-	
+
 	/**
      * Définit la trace laissée par le chasseur à des coordonnées spécifiques.
      *
@@ -74,7 +82,7 @@ public class Hunter implements IHunterStrategy{
 	public void setTrace(ICoordinate c, int trace) {
 		this.traces[c.getRow()][c.getCol()]=trace;
 	}
-	
+
 	/**
      * Obtient la valeur de la trace laissée par le chasseur à des coordonnées spécifiques.
      *
@@ -84,14 +92,14 @@ public class Hunter implements IHunterStrategy{
 	public int getTrace(ICoordinate c) {
 		return this.traces[c.getRow()][c.getCol()];
 	}
-	
+
 	//Métodes à placer dans Maze
 	/*public void shoot(ICoordinate newCoord) {
 		this.coord=newCoord;
 		this.monsterTurn=true;
 		this.notifyObservers(newCoord);
 	}
-	
+
 	public int[][] getTraces() {
 		return traces;
 	}
@@ -100,7 +108,7 @@ public class Hunter implements IHunterStrategy{
 		this.traces[c.getRow()][c.getCol()]=trace;
 		this.notifyObservers();
 	}*/
-	
+
 	/**
      * Obtient le numéro de ligne actuelle du chasseur.
      *
@@ -109,7 +117,7 @@ public class Hunter implements IHunterStrategy{
 	public int getRow() {
 		return this.coord.getRow();
 	}
-	
+
 	/**
      * Obtient le numéro de colonne actuelle du chasseur.
      *
@@ -118,7 +126,7 @@ public class Hunter implements IHunterStrategy{
 	public int getCol() {
 		return this.coord.getCol();
 	}
-	
+
 	/**
      * Obtient les coordonnées actuelles du chasseur.
      *
@@ -127,7 +135,7 @@ public class Hunter implements IHunterStrategy{
 	public ICoordinate getCoord() {
 		return this.coord;
 	}
-	
+
 	/**
      * Définit les coordonnées actuelles du chasseur.
      *
@@ -136,7 +144,7 @@ public class Hunter implements IHunterStrategy{
 	public void setCoord(ICoordinate c) {
 		this.coord=c;
 	}
-	
+
 	/**
      * Implémentation de l'action de l'IA facile du chasseur.
      *
@@ -148,7 +156,7 @@ public class Hunter implements IHunterStrategy{
 		int x = Utils.random.nextInt(this.traces[y].length);
 		return new Coordinate(y,x);
 	}
-	
+
 	/**
      * Implémentation de l'action de l'IA intermédiaire du chasseur.
      *
@@ -157,7 +165,7 @@ public class Hunter implements IHunterStrategy{
 	public ICoordinate moderate_IA_action() {
 		return this.easy_IA_action(); //TODO
 	}
-	
+
 	/**
      * Implémentation de l'action de l'IA hardcore du chasseur.
      *
@@ -166,10 +174,10 @@ public class Hunter implements IHunterStrategy{
 	public ICoordinate hardcore_IA_action() {
 		return this.easy_IA_action(); //TODO
 	}
-	
+
 	/**
      * Méthode principale pour le jeu du chasseur. Implémente le comportement du chasseur.
-     * 
+     *
      * @return Les nouvelles coordonnées pour l'action du chasseur.
 	 */
 	@Override
@@ -183,11 +191,11 @@ public class Hunter implements IHunterStrategy{
 		}
 		return null;
 	}
-	
+
 	/**
      * Méthode de mise à jour appelée lorsqu'un événement de cellule se produit.
      *
-     * @param ce L'événement de cellule.	 
+     * @param ce L'événement de cellule.
      */
 	@Override
 	public void update(ICellEvent ce) {
@@ -197,6 +205,6 @@ public class Hunter implements IHunterStrategy{
 		}else {
 			this.setTrace(ce.getCoord(), ce.getTurn());
 		}
-		
+
 	}
 }

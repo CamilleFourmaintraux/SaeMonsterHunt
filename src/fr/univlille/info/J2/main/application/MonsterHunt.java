@@ -3,18 +3,20 @@
  */
 package fr.univlille.info.J2.main.application;
 
-import fr.univlille.info.J2.main.maze.Management;
+import java.io.File;
+
+import fr.univlille.info.J2.main.management.Management;
 
 //--module-path /home/iutinfo/eclipse-workspace/Jars/javafx-sdk-21/lib --add-modules=javafx.controls
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 /**
- * 
+ *
  * MonsterHunt est la classe de lancement de l'application Monster Hunt.
  * Elle étend la classe Application de JavaFX.
- * 
+ *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
  * @author jessy.top.etu
@@ -37,7 +39,7 @@ public class MonsterHunt extends Application{
 		Management game = new Management(500,500,0,0);
 		game.show();
 	}
-	
-	
+
+
 
 }
