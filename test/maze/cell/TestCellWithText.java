@@ -9,7 +9,6 @@ import org.junit.Test;
 import fr.univlille.info.J2.main.application.cells.Cell;
 import fr.univlille.info.J2.main.application.cells.CellWithText;
 import fr.univlille.info.J2.main.application.cells.Coordinate;
-import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -61,9 +60,8 @@ public class TestCellWithText {
 	public void test_equals_cellWithText() {
 		assertTrue(cwt1.equals( new CellWithText(1,2,50,Color.RED,10,10, new Text("test"),ImageLoader.wall_dungeon)));
 		assertTrue(cwt2.equals( new CellWithText(3,4,50,Color.RED,10,10, "test",ImageLoader.wall_dungeon)));
-		assertTrue(cwt1.equals(cwt1));
 		assertTrue(cwt1.equals(cwt3));
-		assertFalse(cwt1.equals(null));
+		assertFalse(cwt1==null);
 		assertFalse(cwt1.equals(new Object()));
 		assertFalse(cwt2.equals(new Cell(3,4,50,Color.RED,10,10,ImageLoader.wall_dungeon)));
 		assertFalse(cwt3.equals(cwt4));

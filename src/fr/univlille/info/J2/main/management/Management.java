@@ -103,7 +103,7 @@ public class Management extends Stage implements Observer{
 	/**
 	 * Constante utilisée dans les comboBox pour le choix des joueurs.
 	 */
-	final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
+	public static final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
 
 
 	/**
@@ -312,14 +312,14 @@ public class Management extends Stage implements Observer{
 	public Map<Integer, Scene> menus;
 
 	//Les différentes fenêtres
-	public Stage viewM;
-	public Stage viewH;
-	public Stage viewCommon;
+	private Stage viewM;
+	private Stage viewH;
+	private Stage viewCommon;
 
-	public boolean isGenerationRandom;
+	private boolean isGenerationRandom;
 
 	//Le fichier importé par
-	public File importedmap;
+	private File importedmap;
 
 	/**
 	 * Constructeur de la classe Management.
@@ -529,7 +529,7 @@ public class Management extends Stage implements Observer{
 	 */
 	public void toHunterView() {
 		if(this.sameScreen) {
-			if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")) {
+			if(this.monster_IA.equals(Management.IA_LEVELS[0])&&this.hunter_IA.equals(Management.IA_LEVELS[0])) {
 				//this.viewCommon.hide();
 				this.viewCommon.setScene(this.getScene(ID_WAIT));
 				ArrayList<ButtonType> alb = new ArrayList<>();
@@ -555,7 +555,7 @@ public class Management extends Stage implements Observer{
 
 	public void toMonsterView() {
 		if(this.sameScreen) {
-			if(this.monster_IA.equals("Player")&&this.hunter_IA.equals("Player")){
+			if(this.monster_IA.equals(Management.IA_LEVELS[0])&&this.hunter_IA.equals(Management.IA_LEVELS[0])){
 				//this.viewCommon.hide();
 				this.viewCommon.setScene(this.getScene(this.ID_WAIT));
 				ArrayList<ButtonType> alb = new ArrayList<>();
@@ -598,8 +598,8 @@ public class Management extends Stage implements Observer{
 
 		//Label l_invalidSettings = Generators.generateLabel("Invalid Settings", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15, this.LABEL_MIN_WIDTH);
 
-		ComboBox<String> choixIA_Monster = Generators.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 50));
-		ComboBox<String> choixIA_Hunter = Generators.generateComboBox(this.IA_LEVELS, this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 50));
+		ComboBox<String> choixIA_Monster = Generators.generateComboBox(Management.IA_LEVELS, this.calculPercentage(this.window_width, 10), this.calculPercentage(this.window_height, 50));
+		ComboBox<String> choixIA_Hunter = Generators.generateComboBox(Management.IA_LEVELS, this.calculPercentage(this.window_width, 60), this.calculPercentage(this.window_height, 50));
 
 		Button bPlay = Generators.generateButton("PLAY", this.calculPercentage(this.window_width, 45), this.calculPercentage(this.window_height,90),Color.WHITE, Color.BLACK);
 		bPlay.setOnAction(e->{
