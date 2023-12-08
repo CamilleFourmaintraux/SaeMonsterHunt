@@ -69,6 +69,10 @@ public class HunterView implements Observer{
 	 * Couleur du brouillard
 	 */
 	private Color colorOfFog;
+	/**
+	 * boolean indiquant si le jeu doit afficher des carrés de couleurs ou des images
+	 */
+	private boolean isWithImages;
 
 	/**
 	 * Nom du joueur incarnant le chasseur
@@ -136,7 +140,7 @@ public class HunterView implements Observer{
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
 	public HunterView(double window_height, double window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
-		Color colorOfFloors, Color colorOfFog, Maze maze, String hunterName) {
+		Color colorOfFloors, Color colorOfFog, Maze maze, String hunterName, boolean isWithImages) {
 
 		//Initiation de la fenetre
 		this.window_height = window_height;
@@ -147,6 +151,7 @@ public class HunterView implements Observer{
 		this.colorOfWalls = colorOfWalls;
 		this.colorOfFloors = colorOfFloors;
 		this.colorOfFog = colorOfFog;
+		this.isWithImages=isWithImages;
 		this.hunterName=hunterName;
 
 		this.maze = maze;
@@ -237,9 +242,11 @@ public class HunterView implements Observer{
 		for(int h=0; h<this.maze.getHunter().getTraces().length; h++) {
 			for(int l=0; l<this.maze.getHunter().getTraces()[h].length; l++) {
 				//Codage des rectangles permettant le contrôle
-				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""),ImageLoader.floor_dungeon);
+				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""));
 				if(!this.maze.getWalls()[h][l]) {
 					cell.setImage(ImageLoader.wall_dungeon);
+				}else {
+					cell.setImage(ImageLoader.floor_dungeon);
 				}
 				cell.setFocusTraversable(false);
 				cell.setOnMouseEntered(event -> {
@@ -298,13 +305,12 @@ public class HunterView implements Observer{
 	 */
 	private void initiateSprites() {
 		//initialisation du sprite de selection
-		this.selection =  new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Shot",ImageLoader.empty);
+		this.selection =  new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Shot");
 		this.selection.setVisible(false);
 
 		//initialisation du sprite du tir
-		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot",ImageLoader.scope);
+		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot");
 		this.sprite_shot.setVisible(false);
-		this.sprite_shot.getImgv().setVisible(false);
 		this.sprite_shot.setOnMouseEntered(event -> {
 			this.select(this.sprite_shot);
 			this.scene.setOnMouseClicked(e -> this.selectionLocked(this.sprite_shot) );
@@ -353,7 +359,16 @@ public class HunterView implements Observer{
 	 * @param colorOfFloors La couleur associé au sol, future couleur de la cellule si la cellule se révèle être un sol.
 	 */
 	public void revealCell(CellWithText cwt, Color colorOfWalls, Color colorOfFloors) {
-		cwt.setFill(Color.TRANSPARENT);
+		if(this.isWithImages) {
+			cwt.setFill(Color.TRANSPARENT);
+		}else {
+			if(this.maze.getWalls()[cwt.getRow()][cwt.getCol()]) {
+				cwt.setFill(colorOfFloors);
+			}else {
+				cwt.setFill(colorOfWalls);
+			}
+		}
+		
 		cwt.setStroke(Color.TRANSPARENT);
 		if(this.maze.isFloor(cwt.getCoord())) {
 			int trace = this.maze.getHunter().getTraces()[cwt.getRow()][cwt.getCol()];

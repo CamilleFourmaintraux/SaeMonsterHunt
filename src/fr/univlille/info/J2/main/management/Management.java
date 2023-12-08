@@ -117,7 +117,7 @@ public class Management extends Stage implements Observer{
 	/**
 	 * Constante utilisée dans les comboBox pour le choix des themes.
 	 */
-	private static final String[] THEMES = new String[] {"Cave","Forest","Ocean"};
+	private static final String[] THEMES = new String[] {"Dungeon","Cave","Forest","Ocean"};
 
 	/**
 	 * Constante pour le décalage lors de la génération des labels
@@ -311,7 +311,11 @@ public class Management extends Stage implements Observer{
 	/**
 	 * indique si le jeu se deroule sur la meme fenetre (true) ou sur des fenetres separees (false).
 	 */
-	private boolean sameScreen;
+	private boolean isSameScreen;
+	/**
+	 * indique si le jeu affichera de images ou des simples couleurs
+	 */
+	private boolean isWithImages;
 
 	/**
 	 * Map contenant les différents menus du jeu.
@@ -348,7 +352,8 @@ public class Management extends Stage implements Observer{
 		this.gap_X=gap_X;
 		this.gap_Y=gap_Y;
 
-		this.sameScreen=true;
+		this.isSameScreen=true;
+		this.isWithImages=true;
 		this.limitedVision=false;
 		this.maze_height=DEFAULT_MAZE_SIZE;
 		this.maze_width=DEFAULT_MAZE_SIZE;
@@ -479,7 +484,7 @@ public class Management extends Stage implements Observer{
 			this.setHeight(this.window_height);
 			this.setWidth(this.window_width);
 			this.show();
-			if(this.sameScreen) {
+			if(this.isSameScreen) {
 				this.viewCommon.hide();
 			}else {
 				this.viewM.hide();
@@ -534,7 +539,7 @@ public class Management extends Stage implements Observer{
 	 * @param joueur Le nom du joueur.
 	 */
 	public void toHunterView() {
-		if(this.sameScreen) {
+		if(this.isSameScreen) {
 			if(this.monster_IA.equals(Management.IA_LEVELS[0])&&this.hunter_IA.equals(Management.IA_LEVELS[0])) {
 				this.viewCommon.setScene(this.getScene(ID_WAIT));
 				ArrayList<ButtonType> alb = new ArrayList<>();
@@ -556,7 +561,7 @@ public class Management extends Stage implements Observer{
 	}
 
 	public void toMonsterView() {
-		if(this.sameScreen) {
+		if(this.isSameScreen) {
 			if(this.monster_IA.equals(Management.IA_LEVELS[0])&&this.hunter_IA.equals(Management.IA_LEVELS[0])){
 				this.viewCommon.setScene(this.getScene(ID_WAIT));
 				ArrayList<ButtonType> alb = new ArrayList<>();
@@ -624,9 +629,9 @@ public class Management extends Stage implements Observer{
 			}
 			this.maze.attach(this);
 
-			this.mv=new MonsterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.monster_name);
-			this.hv=new HunterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.hunter_name);
-			if(this.sameScreen) {
+			this.mv=new MonsterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.monster_name,this.isWithImages);
+			this.hv=new HunterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.hunter_name,this.isWithImages);
+			if(this.isSameScreen) {
 				this.viewCommon.setScene(hv.scene);
 				this.viewCommon.show();
 				this.setScene(hv.scene);
@@ -756,33 +761,45 @@ public class Management extends Stage implements Observer{
 	 */
 	public void generateSettingsMiscellaneous() {
 		Label title = Generators.generateTitle("Settings - Miscellaneous");
-		Button bScreenType = Generators.generateButton("Same Screen", 0,-50,Color.WHITE, Color.BLACK);
+		
+		Button bScreenType = Generators.generateButton("Same Screen", 0,30,Color.WHITE, Color.BLACK);
 		bScreenType.setOnAction(e->{
-			if(sameScreen) {
-				this.sameScreen=false;
+			if(isSameScreen) {
+				this.isSameScreen=false;
 				bScreenType.setText("Separate Screen");
 			}else {
-				this.sameScreen=true;
+				this.isSameScreen=true;
 				bScreenType.setText("Same Screen");
 			}
 		});
 		bScreenType.setMinWidth(150);
-		Label l_screenType = Generators.generateLabel("Choose a display mode", 0, -70);
-
-
-		ComboBox<String> theme = Generators.generateComboBox(THEMES, this.calculPercentage(this.window_width, 70), this.calculPercentage(this.window_height,70));
-		theme.setOnAction(e-> this.applyTheme(theme.getValue()) );
-		Label l_theme = Generators.generateLabel("Choose a theme", theme.getLayoutX()-LABEL_MIN_WIDTH,theme.getLayoutY());
+		Label l_screenType = Generators.generateLabel("Choose display settings", 0, 0);
 		
-		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.window_width, 5), this.calculPercentage(this.window_height,90),Color.WHITE, Color.BLACK);
+		
+		Button bBasicMode = Generators.generateButton("Image Mode", 0,60,Color.WHITE, Color.BLACK);
+		bBasicMode.setOnAction(e->{
+			if(isWithImages) {
+				this.isWithImages=false;
+				bBasicMode.setText("Color Mode");
+			}else {
+				this.isWithImages=true;
+				bBasicMode.setText("Image Mode");
+			}
+		});
+		bBasicMode.setMinWidth(150);
+
+
+		ComboBox<String> theme = Generators.generateComboBox(THEMES, 0, 130);
+		theme.setOnAction(e-> this.applyTheme(theme.getValue()) );
+		Label l_theme = Generators.generateLabel("Choose a theme", 0, 110);
+		
+		Button bBack = Generators.generateButton("Back", 0, 0,Color.WHITE, Color.BLACK);
 		bBack.setOnAction(e->
 			this.setScene(this.getScene(ID_SETTINGS))
 		);
 
-		VBox vbox = new VBox(10);
-		vbox.getChildren().addAll(l_theme, theme);
 		Group group = new Group();
-		group.getChildren().addAll(l_screenType,bScreenType,vbox);
+		group.getChildren().addAll(l_screenType,bScreenType,bBasicMode,l_theme,theme);
 
 		BorderPane bp = new BorderPane(group);
 		bp.setPadding(new Insets(30, 30, 30, 30));
