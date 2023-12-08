@@ -1160,7 +1160,8 @@ public class Management extends Stage implements Observer{
 
 		Label l_saveMap = Generators.generateLabel("Save your map : ", 0, 0);
 		l_saveMap.setTextFill(Color.BLACK);
-		TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 9, 'A', 'z');
+		TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 24, 'A', 'z');
+		tf_saveMap.setMinWidth(210);
 		Button bSave = Generators.generateButton("Save map", 0, 0,Color.WHITE,Color.BLACK);
 		bSave.setMinWidth(bSave.getPrefWidth());
 		bSave.setOnAction(e->{

@@ -228,11 +228,11 @@ public class MonsterView implements Observer{
 		this.sprite_monster.setVisible(true);
 		
 		this.sprite_shot.setXY(this.calculDrawX(this.maze.getHunter().getCol()),this.calculDrawY(this.maze.getHunter().getRow()));
-		this.sprite_shot.setCoord(this.maze.getMonster().getCoord());
+		this.sprite_shot.setCoord(this.maze.getHunter().getCoord());
 		this.sprite_shot.setVisible(true);
+		this.sprite_shot.getImgv().setVisible(true);
 		
 		this.selection.setVisible(false);
-		this.sprite_shot.getImgv().setVisible(true);
 		this.turnIndication.setText("Turn n°"+this.maze.getTurn());
 		if(this.maze.isSpotted()) {
 			this.notification.setText("WARNING - You have crossed a square previously discovered\nby the hunter and he has been warned.");
@@ -280,9 +280,9 @@ public class MonsterView implements Observer{
 		}else {
 			this.sprite_shot.setStroke(Color.YELLOW);
 		}
-		
 		this.addMouseEvents(sprite_shot);
-		this.sprite_shot.setVisible(false);
+		this.sprite_shot.setVisible(true);
+		this.sprite_shot.getImgv().setVisible(true);
 
 		//Initialisation du sprite de la sortie
 		this.sprite_exit=new CellWithText(this.maze.getExit().getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit");
@@ -309,9 +309,6 @@ public class MonsterView implements Observer{
 
 		this.group_sprite.getChildren().add(this.sprite_shot);
 		this.group_img_sprite.getChildren().add(this.sprite_shot.getImgv());
-		this.sprite_shot.getImgv().setVisible(false);
-
-
 	}
 
 	public void addMouseEvents(Cell r) {

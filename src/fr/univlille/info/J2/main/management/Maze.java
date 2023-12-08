@@ -364,7 +364,6 @@ public class Maze extends Subject{
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
 				this.winner = 1;
-				System.out.println("MONSTER GAGNE"); //TODO A ENLEVER ET A PLACER DANS LE MENU GAME OVER
 			}
 
 			this.turn++;  //On passe au tour suivant
@@ -409,7 +408,6 @@ public class Maze extends Subject{
 			if(ce.getState().equals(CellInfo.MONSTER)) {
 				this.isGameOver=true;
 				this.winner = 2;
-				System.out.println("HUNTER GAGNE");//TODO A ENLEVER
 			}
 			this.isMonsterTurn=true;
 			this.notifyObservers();
