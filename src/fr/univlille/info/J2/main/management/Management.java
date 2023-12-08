@@ -41,6 +41,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -123,7 +124,12 @@ public class Management extends Stage implements Observer{
 	 * Constante pour le décalage lors de la génération des labels
 	 */
 	private static final int SPACING = 5;
-
+	
+	/**
+	 * label qui indique le gagnant
+	 */
+	private Label winner ;
+	
 	/**
 	 * Constante pour la taille minimale des fenêtres
 	 */
@@ -475,6 +481,14 @@ public class Management extends Stage implements Observer{
 	 */
 	public boolean gameOver() {
 		if(this.maze.isGameOver()) {
+			if (this.maze.winner == 1) {
+				this.winner.setText("Monster a gagné !");}
+			else if (this.maze.winner == 2) {
+				this.winner.setText("Hunter a gagné !");
+			}else {
+				this.winner.setText("Jeu arrêté");
+			}
+			
 			this.setScene(this.getScene(ID_GAMEOVER));
 			this.setHeight(this.window_height);
 			this.setWidth(this.window_width);
@@ -1180,21 +1194,27 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu de GameOver.
 	 */
 	public void generateGameOverScreen() {
-		Label title = Generators.generateTitle("Game Over !");
-
+		Label title = Generators.generateTitle("Game Over Menu");
+		Label Credit = Generators.generateLabel("Jeu réalisé par Fourmaintraux Camille | Top Jessy | Debacq Arthur | Franos Théo ", 0, 0);
+		
+		
+		this.winner = new Label();
+		winner.setFont(new Font("Arial", 24));
+		winner.setTextFill(Color.BLACK);
+		
 		Button restartButton = Generators.generateButton("Rejouer", 0, 0,Color.WHITE, Color.BLACK);
 		restartButton.setOnAction(e -> {
 			this.hide();
-			this.setScene(this.getScene(ID_PLAY));
+			this.setScene(this.getScene(this.ID_PLAY));
 			this.show();
 		});
 
 		Button quitButton = Generators.generateButton("Quitter", 0, 0,Color.WHITE, Color.BLACK);
-		quitButton.setOnAction(e ->
-			System.exit(0)
-		);
+		quitButton.setOnAction(e -> {
+			System.exit(0);
+		});
 
-		StackPane layout = new StackPane();
+		BorderPane layout = new BorderPane();
 		layout.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 
 		// Placez le titre en haut et au centre de la page
@@ -1203,18 +1223,35 @@ public class Management extends Stage implements Observer{
 		// Laissez un espace en haut de la page
 
 		VBox vBoxTitle = new VBox(10);
-		vBoxTitle.getChildren().addAll(title);
+		vBoxTitle.getChildren().addAll(title ,this.winner);
 		vBoxTitle.setAlignment(Pos.TOP_CENTER);
-
-		VBox buttonLayout = new VBox(20);
+		vBoxTitle.setSpacing(60);
+		
+		HBox buttonLayout = new HBox(20);
+		buttonLayout.setPrefWidth(200); 
+		buttonLayout.setPrefHeight(50);
+		restartButton.setPrefWidth(150);
+		restartButton.setPrefHeight(30); 
+		quitButton.setPrefWidth(150); 		
+		quitButton.setPrefHeight(30);
+		buttonLayout.setSpacing(20); 
 		buttonLayout.getChildren().addAll(restartButton, quitButton);
+		
 		buttonLayout.setAlignment(Pos.CENTER);
+		
+		
+		VBox vBoxCredit = new VBox(10);
+		vBoxCredit.getChildren().add(Credit);
+		vBoxCredit.setAlignment(Pos.BOTTOM_LEFT);
 
-		layout.setPadding(new Insets(30));
+		layout.setPadding(new Insets(20));
 
 		// Superposez le titre et les boutons
-		layout.getChildren().addAll(vBoxTitle, buttonLayout);
-		this.menus.put(Integer.valueOf(ID_GAMEOVER), new Scene(layout, this.window_height, this.window_width, this.colorOfFloors));
+		layout.setTop(vBoxTitle);
+		layout.setCenter(buttonLayout);
+		layout.setBottom(vBoxCredit);
+
+		this.menus.put(Integer.valueOf(this.ID_GAMEOVER), new Scene(layout, this.window_height, this.window_width, this.colorOfFloors));
 	}
 
 	/**

@@ -91,6 +91,11 @@ public class Maze extends Subject{
 	 * Boolean utilisé dans les actions move du monstre pour savoir si le monstre a traversé une case déjà découverte par le chasseur
 	 */
 	private boolean spotted;
+	
+	/**
+	 * int utilisé pour determiner qui a gagné a la fin de la partie (0 si le joueur quitte la partie, 1 si le monster gagne et 2 si le chasseur gagne) 
+	 */
+	public  int winner= 0;
 
 	/**
 	 * Constructeur vide, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
@@ -358,6 +363,8 @@ public class Maze extends Subject{
 
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
+				this.winner = 1;
+				System.out.println("MONSTER GAGNE"); //TODO A ENLEVER ET A PLACER DANS LE MENU GAME OVER
 			}
 
 			this.turn++;  //On passe au tour suivant
@@ -401,6 +408,8 @@ public class Maze extends Subject{
 			this.hunter.update(ce);
 			if(ce.getState().equals(CellInfo.MONSTER)) {
 				this.isGameOver=true;
+				this.winner = 2;
+				System.out.println("HUNTER GAGNE");//TODO A ENLEVER
 			}
 			this.isMonsterTurn=true;
 			this.notifyObservers();
