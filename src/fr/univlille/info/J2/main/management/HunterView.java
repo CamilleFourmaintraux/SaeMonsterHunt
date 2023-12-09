@@ -7,8 +7,8 @@ package fr.univlille.info.J2.main.management;
 
 import java.util.logging.Logger;
 
-import fr.univlille.info.J2.main.application.cells.CellWithText;
-import fr.univlille.info.J2.main.application.cells.Coordinate;
+import fr.univlille.info.J2.main.management.cells.CellWithText;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
 import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;

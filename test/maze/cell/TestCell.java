@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.application.cells.Cell;
-import fr.univlille.info.J2.main.application.cells.Coordinate;
+import fr.univlille.info.J2.main.management.cells.Cell;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import javafx.scene.paint.Color;
 
 public class TestCell {

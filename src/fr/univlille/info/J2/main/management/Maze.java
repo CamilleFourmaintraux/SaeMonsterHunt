@@ -7,8 +7,8 @@ package fr.univlille.info.J2.main.management;
 
 import java.util.logging.Logger;
 
-import fr.univlille.info.J2.main.application.cells.CellEvent;
-import fr.univlille.info.J2.main.application.cells.Coordinate;
+import fr.univlille.info.J2.main.management.cells.CellEvent;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 import fr.univlille.info.J2.main.strategy.monster.Exit;
 import fr.univlille.info.J2.main.strategy.monster.Monster;
