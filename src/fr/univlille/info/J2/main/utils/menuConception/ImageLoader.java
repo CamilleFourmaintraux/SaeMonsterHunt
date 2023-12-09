@@ -13,6 +13,7 @@ public class ImageLoader {
 	
 	public static final String THEME_DUNGEON = "dungeon";
 	public static final String THEME_CAVE = "cave";
+	public static final String THEME_MEADOW = "meadow";
 	public static final String THEME_FOREST = "forest";
 	public static final String THEME_OCEAN = "ocean";
 	
@@ -25,6 +26,7 @@ public class ImageLoader {
 	public static final Map<String,Map<String,Image>> THEMES = new HashMap<>();
 	private static final Map<String,Image> DUNGEON= new HashMap<>();
 	private static final Map<String,Image> CAVE = new HashMap<>();
+	private static final Map<String,Image> MEADOW = new HashMap<>();
 	private static final Map<String,Image> FOREST = new HashMap<>();
 	private static final Map<String,Image> OCEAN = new HashMap<>();
 	
@@ -48,10 +50,10 @@ public class ImageLoader {
 		CAVE.put(MONSTER, ImageLoader.initImage(THEME_CAVE,"slime.png"));
 		CAVE.put(EXIT, ImageLoader.initImage(THEME_CAVE,"wayout.png"));
 		
-		FOREST.put(FLOOR, ImageLoader.initImage(THEME_FOREST,"grass.png"));
-		FOREST.put(WALL, ImageLoader.initImage(THEME_FOREST,"tree.png"));
-		FOREST.put(MONSTER, ImageLoader.initImage(THEME_FOREST,"rabbit.png"));
-		FOREST.put(EXIT, ImageLoader.initImage(THEME_FOREST,"burrow.png"));
+		MEADOW.put(FLOOR, ImageLoader.initImage(THEME_MEADOW,"grass.png"));
+		MEADOW.put(WALL, ImageLoader.initImage(THEME_MEADOW,"tree.png"));
+		MEADOW.put(MONSTER, ImageLoader.initImage(THEME_MEADOW,"rabbit.png"));
+		MEADOW.put(EXIT, ImageLoader.initImage(THEME_MEADOW,"burrow.png"));
 		
 		OCEAN.put(FLOOR, ImageLoader.initImage(THEME_OCEAN,"sea.png"));
 		OCEAN.put(WALL, ImageLoader.initImage(THEME_OCEAN,"boat.png"));
@@ -60,6 +62,7 @@ public class ImageLoader {
 		
 		THEMES.put("DUNGEON",DUNGEON);
 		THEMES.put("CAVE",CAVE);
+		THEMES.put("MEADOW",MEADOW);
 		THEMES.put("FOREST",FOREST);
 		THEMES.put("OCEAN",OCEAN);
 	}

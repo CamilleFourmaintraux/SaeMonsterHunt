@@ -118,12 +118,13 @@ public class Management extends Stage implements Observer{
 	
 	public static final String THEME_DUNGEON = "DUNGEON";
 	public static final String THEME_CAVE = "CAVE";
+	public  static final String THEME_MEADOW = "MEADOW";
 	public  static final String THEME_FOREST = "FOREST";
 	public static final String THEME_OCEAN = "OCEAN";
 	/**
 	 * Constante utilisée dans les comboBox pour le choix des themes.
 	 */
-	private static final String[] THEMES = new String[] {THEME_DUNGEON,THEME_CAVE,THEME_FOREST,THEME_OCEAN};
+	private static final String[] THEMES = new String[] {THEME_DUNGEON,THEME_CAVE,THEME_MEADOW,THEME_FOREST,THEME_OCEAN};
 
 	private String current_theme;
 	
