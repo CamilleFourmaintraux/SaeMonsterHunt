@@ -86,6 +86,7 @@ public class MonsterView implements Observer{
 	 */
 	private boolean isWithImages;
 	
+	private String theme;
 
 	/**
 	 * Nom du joueur incarnant le monstre
@@ -151,7 +152,7 @@ public class MonsterView implements Observer{
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
 	public MonsterView(double window_height, double window_width, int gap_X, int gap_Y, int zoom,
-			Color colorOfWalls, Color colorOfFloors, Color colorOfFog, Maze maze,  String monsterName, boolean isWithImages) {
+			Color colorOfWalls, Color colorOfFloors, Color colorOfFog, Maze maze,  String monsterName, String theme, boolean isWithImages) {
 		this.window_height = window_height;
 		this.window_width = window_width;
 		this.gap_X = gap_X;
@@ -160,6 +161,7 @@ public class MonsterView implements Observer{
 		this.colorOfWalls = colorOfWalls;
 		this.colorOfFloors = colorOfFloors;
 		this.colorOfFog = colorOfFog;
+		this.theme=theme;
 		this.isWithImages=isWithImages;
 		this.monsterName=monsterName;
 
@@ -267,7 +269,7 @@ public class MonsterView implements Observer{
 		//Initialisation du sprite du monstre
 		this.sprite_monster=new CellWithText(this.maze.getMonster().getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster");
 		if(this.isWithImages) {
-			this.sprite_monster.setImage(ImageLoader.monster_ocean);
+			this.sprite_monster.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.MONSTER));
 		}else {
 			this.sprite_monster.setFill(MONSTER_COLOR);
 		}
@@ -276,7 +278,7 @@ public class MonsterView implements Observer{
 		//initialisation du sprite du dernier tir du chasseur
 		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter");
 		if(this.isWithImages) {
-			this.sprite_shot.setImage(ImageLoader.scope);
+			this.sprite_shot.setImage(ImageLoader.SCOPE);
 		}else {
 			this.sprite_shot.setStroke(Color.YELLOW);
 		}
@@ -287,7 +289,7 @@ public class MonsterView implements Observer{
 		//Initialisation du sprite de la sortie
 		this.sprite_exit=new CellWithText(this.maze.getExit().getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit");
 		if(this.isWithImages) {
-			this.sprite_exit.setImage(ImageLoader.exit_dungeon);
+			this.sprite_exit.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.EXIT));
 		}else {
 			this.sprite_exit.setFill(EXIT_COLOR);
 		}
@@ -329,10 +331,10 @@ public class MonsterView implements Observer{
 				Cell r = new Cell(l, h, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y);
 				//Codage des rectangles
 				if(!this.maze.getWalls()[h][l]) {
-					r.setImage(ImageLoader.wall_dungeon);
+					r.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.WALL));
 					r.setFill(colorOfWalls);
 				}else {
-					r.setImage(ImageLoader.floor_dungeon);
+					r.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.FLOOR));
 					r.setFill(colorOfFloors);
 				}
 				if(this.maze.getVisionRange()!=-1) {

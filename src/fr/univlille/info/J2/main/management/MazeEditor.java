@@ -5,6 +5,8 @@ import java.io.File;
 import fr.univlille.info.J2.main.management.cells.Cell;
 import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
 import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class MazeEditor {
@@ -35,13 +37,22 @@ public class MazeEditor {
 	int editor_width;
 
 	File map_import;
+	
+	String theme;
+	Color colorOfFloors;
+	Color colorOfWalls;
+	Image imgFloors;
+	Image imgWalls;
+	boolean isWithImages;
 
-	public MazeEditor(int map_height, int map_width, double window_height, double window_width, int gap_X, int gap_Y){
+	public MazeEditor(int map_height, int map_width, double window_height, double window_width, int gap_X, int gap_Y, String theme, boolean isWithImages){
 		this.editor_height=map_height;
 		this.editor_width=map_width;
 		this.group_map = new Group();
 		this.group_img = new Group();
 		this.group = new Group();
+		this.theme=theme;
+		this.isWithImages=isWithImages;
 		this.resetDrawing(map_height, map_width, window_height, window_width, gap_X, gap_Y);
 		this.group.getChildren().addAll(group_img,group_map);
 	}
@@ -59,9 +70,19 @@ public class MazeEditor {
 			for(int l=0; l<this.walls[h].length; l++) {
 				Cell cell = new Cell(l, h, this.zoom, Color.TRANSPARENT, gap_X, gap_Y);
 				if(!this.walls[h][l]) {
-					cell.setImage(ImageLoader.wall_dungeon);
+					if(isWithImages) {
+						cell.setImage(this.imgWalls);
+						cell.setFill(Color.TRANSPARENT);
+					}else {
+						cell.setFill(this.colorOfWalls);
+					}
 				}else {
-					cell.setImage(ImageLoader.floor_dungeon);
+					if(isWithImages) {
+						cell.setImage(this.imgFloors);
+						cell.setFill(Color.TRANSPARENT);
+					}else {
+						cell.setFill(this.colorOfFloors);
+					}
 				}
 				cell.setStroke(Color.VIOLET);
 				cell.setOnMouseEntered(e->{
@@ -99,10 +120,43 @@ public class MazeEditor {
 	public void modify(Cell cell) {
 		if(this.walls[cell.getRow()][cell.getCol()]) {
 			this.walls[cell.getRow()][cell.getCol()]=false;
-			cell.setImage(ImageLoader.wall_dungeon);
+			if(isWithImages) {
+				cell.setImage(this.imgWalls);
+				cell.setFill(Color.TRANSPARENT);
+			}else {
+				cell.setFill(this.colorOfWalls);
+			}
 		}else {
 			this.walls[cell.getRow()][cell.getCol()]=true;
-			cell.setImage(ImageLoader.floor_dungeon);
+			if(isWithImages) {
+				cell.setImage(this.imgFloors);
+				cell.setFill(Color.TRANSPARENT);
+			}else {
+				cell.setFill(this.colorOfFloors);
+			}
+		}
+	}
+	
+	/**
+     * Applique un thème spécifique au jeu en modifiant les couleurs d'affichage.
+     *
+	 * @param theme Le nom du thème à appliquer (parmi "Cave", "Forest", "Ocean").
+	 */
+	public void applyTheme(String theme) {
+		if(theme.equals("Dungeon")) {
+			this.colorOfFloors=Color.LIGHTGREY;
+			this.colorOfWalls=Color.DARKGREY;
+			imgFloors=null;
+			imgWalls=null;
+		}else if(theme.equals("Cave")) {
+			this.colorOfFloors=Color.LIGHTGRAY;
+			this.colorOfWalls=Color.DARKGRAY;
+		}else if(theme.equals("Forest")) {
+			this.colorOfFloors=Color.LIGHTGREEN;
+			this.colorOfWalls=Color.FORESTGREEN;
+		}else if(theme.equals("Ocean")) {
+			this.colorOfFloors=Color.AQUAMARINE;
+			this.colorOfWalls=Color.SEAGREEN;
 		}
 	}
 }

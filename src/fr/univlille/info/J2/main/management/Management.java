@@ -18,6 +18,7 @@ import fr.univlille.info.J2.main.application.system.SaveLoadSystemGames;
 import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
+import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -114,12 +115,18 @@ public class Management extends Stage implements Observer{
 	 */
 	protected static final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
 
-
+	
+	public static final String THEME_DUNGEON = "DUNGEON";
+	public static final String THEME_CAVE = "CAVE";
+	public  static final String THEME_FOREST = "FOREST";
+	public static final String THEME_OCEAN = "OCEAN";
 	/**
 	 * Constante utilisée dans les comboBox pour le choix des themes.
 	 */
-	private static final String[] THEMES = new String[] {"Dungeon","Cave","Forest","Ocean"};
+	private static final String[] THEMES = new String[] {THEME_DUNGEON,THEME_CAVE,THEME_FOREST,THEME_OCEAN};
 
+	private String current_theme;
+	
 	/**
 	 * Constante pour le décalage lors de la génération des labels
 	 */
@@ -347,6 +354,7 @@ public class Management extends Stage implements Observer{
 	 * @param gap_Y 			L'écart vertical dans la vue du labyrinthe.Permet de décaler l'entièreté du labyrinthe sur un axe vertical.
 	 */
 	public Management(double window_height, double window_width, int gap_X, int gap_Y) {
+		ImageLoader.initThemes();
 		this.menus=new HashMap<>();
 		this.window_height = window_height;
 		this.window_width = window_width;
@@ -643,8 +651,8 @@ public class Management extends Stage implements Observer{
 			}
 			this.maze.attach(this);
 
-			this.mv=new MonsterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.monster_name,this.isWithImages);
-			this.hv=new HunterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.hunter_name,this.isWithImages);
+			this.mv=new MonsterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.monster_name,this.current_theme,this.isWithImages);
+			this.hv=new HunterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.hunter_name,this.current_theme,this.isWithImages);
 			if(this.isSameScreen) {
 				this.viewCommon.setScene(hv.scene);
 				this.viewCommon.show();
@@ -804,7 +812,10 @@ public class Management extends Stage implements Observer{
 
 
 		ComboBox<String> theme = Generators.generateComboBox(THEMES, 0, 130);
-		theme.setOnAction(e-> this.applyTheme(theme.getValue()) );
+		theme.setOnAction(e-> {
+			this.current_theme = theme.getValue();
+			this.applyTheme(current_theme);
+		});
 		Label l_theme = Generators.generateLabel("Choose a theme", 0, 110);
 		
 		Button bBack = Generators.generateButton("Back", 0, 0,Color.WHITE, Color.BLACK);
@@ -1100,7 +1111,7 @@ public class Management extends Stage implements Observer{
 	public void generateMazeEditor() {
 		Label title = Generators.generateTitle("Maze Editor");
 
-		this.mEdit = new MazeEditor(DEFAULT_MAZE_SIZE,DEFAULT_MAZE_SIZE,this.window_height,this.window_width,this.gap_X,this.gap_Y);
+		this.mEdit = new MazeEditor(DEFAULT_MAZE_SIZE,DEFAULT_MAZE_SIZE,this.window_height,this.window_width,this.gap_X,this.gap_Y,this.current_theme,this.isWithImages);
 
 		Label l_height = Generators.generateLabel("Maze Height ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", 0, 0);
 		Label l_width= Generators.generateLabel("Maze Width ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", 0, 0);
@@ -1223,14 +1234,12 @@ public class Management extends Stage implements Observer{
 		Button restartButton = Generators.generateButton("Rejouer", 0, 0,Color.WHITE, Color.BLACK);
 		restartButton.setOnAction(e -> {
 			this.hide();
-			this.setScene(this.getScene(this.ID_PLAY));
+			this.setScene(this.getScene(ID_PLAY));
 			this.show();
 		});
 
 		Button quitButton = Generators.generateButton("Quitter", 0, 0,Color.WHITE, Color.BLACK);
-		quitButton.setOnAction(e -> {
-			System.exit(0);
-		});
+		quitButton.setOnAction(e -> System.exit(0) );
 
 		BorderPane layout = new BorderPane();
 		layout.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
@@ -1269,7 +1278,7 @@ public class Management extends Stage implements Observer{
 		layout.setCenter(buttonLayout);
 		layout.setBottom(vBoxCredit);
 
-		this.menus.put(Integer.valueOf(this.ID_GAMEOVER), new Scene(layout, this.window_height, this.window_width, this.colorOfFloors));
+		this.menus.put(Integer.valueOf(ID_GAMEOVER), new Scene(layout, this.window_height, this.window_width, this.colorOfFloors));
 	}
 
 	/**
@@ -1278,7 +1287,11 @@ public class Management extends Stage implements Observer{
 	 * @param theme Le nom du thème à appliquer (parmi "Cave", "Forest", "Ocean").
 	 */
 	public void applyTheme(String theme) {
-		if(theme.equals("Cave")) {
+		if(theme.equals("Dungeon")) {
+			this.colorOfFloors=Color.LIGHTGREY;
+			this.colorOfWalls=Color.DARKGREY;
+			this.colorOfFog=Color.BLACK;
+		}else if(theme.equals("Cave")) {
 			this.colorOfFloors=Color.LIGHTGRAY;
 			this.colorOfWalls=Color.DARKGRAY;
 			this.colorOfFog=Color.BLACK;

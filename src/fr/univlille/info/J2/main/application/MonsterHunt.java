@@ -5,6 +5,7 @@ package fr.univlille.info.J2.main.application;
 
 
 import fr.univlille.info.J2.main.management.Management;
+import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
 
 //--module-path /home/iutinfo/eclipse-workspace/Jars/javafx-sdk-21/lib --add-modules=javafx.controls
 

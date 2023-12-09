@@ -73,6 +73,7 @@ public class HunterView implements Observer{
 	 * boolean indiquant si le jeu doit afficher des carrés de couleurs ou des images
 	 */
 	private boolean isWithImages;
+	private String theme;
 
 	/**
 	 * Nom du joueur incarnant le chasseur
@@ -140,7 +141,7 @@ public class HunterView implements Observer{
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
 	public HunterView(double window_height, double window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
-		Color colorOfFloors, Color colorOfFog, Maze maze, String hunterName, boolean isWithImages) {
+		Color colorOfFloors, Color colorOfFog, Maze maze, String hunterName, String theme, boolean isWithImages) {
 
 		//Initiation de la fenetre
 		this.window_height = window_height;
@@ -152,6 +153,7 @@ public class HunterView implements Observer{
 		this.colorOfFloors = colorOfFloors;
 		this.colorOfFog = colorOfFog;
 		this.isWithImages=isWithImages;
+		this.theme=theme;
 		this.hunterName=hunterName;
 
 		this.maze = maze;
@@ -244,9 +246,9 @@ public class HunterView implements Observer{
 				//Codage des rectangles permettant le contrôle
 				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""));
 				if(!this.maze.getWalls()[h][l]) {
-					cell.setImage(ImageLoader.wall_dungeon);
+					cell.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.WALL));
 				}else {
-					cell.setImage(ImageLoader.floor_dungeon);
+					cell.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.FLOOR));
 				}
 				cell.setFocusTraversable(false);
 				cell.setOnMouseEntered(event -> {
