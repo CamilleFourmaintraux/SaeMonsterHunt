@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 
 public class SaveLoadSystemMaps {
 	public static final String MAZES_DIRECTORY = "res/saves/mazes/";
-	public final static String DEFAULT_NAME_FOR_MAP_SAVE = "MapName";
+	public final static String DEFAULT_NAME_FOR_MAP_SAVE = "default_map_name";
 
     // Méthode pour sauvegarder un tableau boolean[][] dans un fichier
     public static void saveMap(boolean[][] map, String saveName) throws IOException {

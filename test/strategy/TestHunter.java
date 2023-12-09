@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.application.cells.CellEvent;
-import fr.univlille.info.J2.main.application.cells.Coordinate;
+import fr.univlille.info.J2.main.management.cells.CellEvent;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 
 public class TestHunter {
@@ -35,13 +35,13 @@ public class TestHunter {
 	@Test
 	public void test_initialize_traces_hunter() {
 		hunter.initialize(3 ,4);
-		assertEquals(3, hunter.traces.length);
-		assertEquals(4, hunter.traces[0].length);
+		assertEquals(3, hunter.getTraces().length);
+		assertEquals(4, hunter.getTraces()[0].length);
 
 		// Test si toutes les valeurs du tableau de traces sont bien a zero.
 		for (int h = 0; h < 3; h++) {
 			for (int l = 0; l < 4; l++) {
-				assertEquals(-2, hunter.traces[h][l]);
+				assertEquals(-2, hunter.getTraces()[h][l]);
 			}
 		}
 	}
@@ -62,32 +62,4 @@ public class TestHunter {
 		assertEquals(null, hunter.getCoord());
 	}
 
-	/*@Test
-    public void test_shoot_action() {
-        // Instanciation d'un Hunter.
-        Hunter hunter = new Hunter(0,0,new Coordinate(2,3));
-        // Nouvelles coordonn�es de tir.
-        ICoordinate newCoord = new Coordinate(2,4);
-		// Appel � la m�thode shoot avec les nouvelles coordonn�es.
-        hunter.shoot(newCoord);
-        // V�rifiez si les propri�t�s de l'objet Hunter ont �t� mises � jour correctement.
-        assertEquals(newCoord, hunter.getCoord());
-        assertTrue(hunter.isMonsterTurn());
-    }*/ //TODO
-
-	/*
-	@Test
-    public void test_actualizeTraces_method() {
-        // Instanciation d'un Hunter.
-        Hunter hunter = new Hunter(5,5,null);
-        // Cr�ation des coordonn�es
-        ICoordinate coordinate = new Coordinate(1,2);
-        int newTraceValue = 42;
-        // Appel � la m�thode actualizeTraces avec les coordonn�es et la valeur de trace.
-        hunter.actualizeTraces(coordinate, newTraceValue);
-        // Test si la valeur de trace a �t� correctement mise � jour dans le tableau de traces.
-        int[][] traces = hunter.getTraces();
-        assertEquals(newTraceValue, traces[coordinate.getRow()][coordinate.getCol()]);
-    }
-    */ //TODO
 }

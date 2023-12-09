@@ -4,7 +4,7 @@
  */
 package fr.univlille.info.J2.main.strategy.hunter;
 
-import fr.univlille.info.J2.main.application.cells.Coordinate;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
@@ -24,20 +24,20 @@ public class Hunter implements IHunterStrategy{
 	/**
      * Tableau pour stocker les traces laissées par le chasseur dans le labyrinthe.
 	 */
-	public int[][] traces;
+	private int[][] traces;
 	/**
 	 * Les coordonnées du dernier tir du chasseur.
 	 */
-	public ICoordinate coord;
+	private ICoordinate coord;
 	/**
 	 * Niveau de l'IA du chasseur.
 	 */
-	public String IA_level;
+	private String IA_level;
 
 	/**
 	 * La portée bonus pour la vision du hunter à chachun de ses tirs (sachant que seul le tir précis qui touche le monstre déclenche la fin de jeu)
 	 */
-	public int bonusRange;
+	private int bonusRange;
 
 
 
@@ -92,22 +92,6 @@ public class Hunter implements IHunterStrategy{
 	public int getTrace(ICoordinate c) {
 		return this.traces[c.getRow()][c.getCol()];
 	}
-
-	//Métodes à placer dans Maze
-	/*public void shoot(ICoordinate newCoord) {
-		this.coord=newCoord;
-		this.monsterTurn=true;
-		this.notifyObservers(newCoord);
-	}
-
-	public int[][] getTraces() {
-		return traces;
-	}
-
-	public void actualizeTraces(ICoordinate c, int trace) {
-		this.traces[c.getRow()][c.getCol()]=trace;
-		this.notifyObservers();
-	}*/
 
 	/**
      * Obtient le numéro de ligne actuelle du chasseur.
@@ -207,4 +191,17 @@ public class Hunter implements IHunterStrategy{
 		}
 
 	}
+
+	public int[][] getTraces() {
+		return traces;
+	}
+
+	public String getIA_level() {
+		return IA_level;
+	}
+
+	public int getBonusRange() {
+		return bonusRange;
+	}
+	
 }
