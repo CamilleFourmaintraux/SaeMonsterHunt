@@ -128,11 +128,6 @@ public class Management extends Stage implements Observer{
 	private Theme current_theme;
 	
 	/**
-	 * Constante pour le décalage lors de la génération des labels
-	 */
-	private static final int SPACING = 5;
-	
-	/**
 	 * label qui indique le gagnant
 	 */
 	private Label winner ;
@@ -197,11 +192,6 @@ public class Management extends Stage implements Observer{
 	 * Le labyrinthe.
 	 */
 	private Maze maze;
-
-	/**
-	 * La vue sur
-	 */
-	private MazeEditor mEdit;
 
 	/**
 	 * La vue du Monstre.
@@ -507,7 +497,7 @@ public class Management extends Stage implements Observer{
 			}else {
 				this.viewCommon.setScene(hv.getScene());
 			}
-			viewCommon.setTitle("MONTERHUNT - HunterView");
+			this.viewCommon.setTitle("MONTERHUNT - HunterView");
 		}
 
 	}
@@ -545,16 +535,21 @@ public class Management extends Stage implements Observer{
 
 		Label title = Generators.generateTitle("Main Menu");
 
-		TextField tf_name_monster = Generators.generateTextField("Monster", this.calculPercentage(this.display.getWindowWidth(), 10), this.calculPercentage(this.display.getWindowHeight(), 40), 16, 'A', 'z');
-		TextField tf_name_hunter = Generators.generateTextField("Hunter", this.calculPercentage(this.display.getWindowWidth(), 60), this.calculPercentage(this.display.getWindowHeight(), 40), 16, 'A', 'z');
+		TextField tf_name_monster = Generators.generateTextField("Monster", 16, 'A', 'z');
+		//this.calculPercentage(this.display.getWindowWidth(), 10), this.calculPercentage(this.display.getWindowHeight(), 40)
+		TextField tf_name_hunter = Generators.generateTextField("Hunter", 16, 'A', 'z');
+		//this.calculPercentage(this.display.getWindowWidth(), 60), this.calculPercentage(this.display.getWindowHeight(), 40)
 
 		Label l_nameM = Generators.generateLabel("Monster Name", tf_name_monster.getLayoutX(),tf_name_monster.getLayoutY()-15);
 		Label l_nameH = Generators.generateLabel("Hunter Name", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15);
 
-		ComboBox<String> choixIA_Monster = Generators.generateComboBox(Management.IA_LEVELS, this.calculPercentage(this.display.getWindowWidth(), 10), this.calculPercentage(this.display.getWindowHeight(), 50));
-		ComboBox<String> choixIA_Hunter = Generators.generateComboBox(Management.IA_LEVELS, this.calculPercentage(this.display.getWindowWidth(), 60), this.calculPercentage(this.display.getWindowHeight(), 50));
-
-		Button bPlay = Generators.generateButton("PLAY", this.calculPercentage(this.display.getWindowWidth(), 45), this.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE, Color.BLACK);
+		ComboBox<String> choixIA_Monster = Generators.generateComboBox(Management.IA_LEVELS);
+		//this.calculPercentage(this.display.getWindowWidth(), 10), this.calculPercentage(this.display.getWindowHeight(), 50)
+		ComboBox<String> choixIA_Hunter = Generators.generateComboBox(Management.IA_LEVELS);
+		//this.calculPercentage(this.display.getWindowWidth(), 60), this.calculPercentage(this.display.getWindowHeight(), 50)
+		
+		Button bPlay = Generators.generateButton("PLAY",Color.WHITE, Color.BLACK);
+		//this.calculPercentage(this.display.getWindowWidth(), 45), this.calculPercentage(this.display.getWindowHeight(),90)
 		bPlay.setOnAction(e->{
 			//intantiation of the settings
 			this.monster_name=tf_name_monster.getText();
@@ -598,12 +593,13 @@ public class Management extends Stage implements Observer{
 			this.switchInGameView(); //Ici Vérifie qui joue (IA ou joueur) pour pouvoir démarrer le jeu.
 		});
 
-		Button bSettings = Generators.generateButton("Modify Settings", this.calculPercentage(this.display.getWindowWidth(), 38), this.calculPercentage(this.display.getWindowHeight(),80),Color.WHITE, Color.BLACK);
+		Button bSettings = Generators.generateButton("Modify Settings",Color.WHITE, Color.BLACK);
+		//this.calculPercentage(this.display.getWindowWidth(), 38), this.calculPercentage(this.display.getWindowHeight(),80)
 		bSettings.setOnAction(e->
 			this.setScene(this.getScene(ID_SETTINGS))
 		);
 
-		Button bQuit = Generators.generateButton("Quitter", 0, 0,Color.WHITE, Color.BLACK);
+		Button bQuit = Generators.generateButton("Quitter", Color.WHITE, Color.BLACK);
 		bQuit.setOnAction(e ->
 			System.exit(0)
 		);
@@ -649,12 +645,12 @@ public class Management extends Stage implements Observer{
 	public void generateWaitingNextPlayer() {
 
 		Label label = new Label("Waiting for the next player.");
-		label.setTextFill(Color.WHITE);
+		label.setTextFill(this.current_theme.getTextColor());
 
 		BorderPane root = new BorderPane(label);
 		root.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 
-		this.menus.put(Integer.valueOf(ID_WAIT), new Scene(root, this.display.getWindowHeight(), this.display.getWindowWidth(), Color.BLACK));
+		this.menus.put(Integer.valueOf(ID_WAIT), new Scene(root, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getBackgroundColor()));
 	}
 
 
@@ -665,31 +661,36 @@ public class Management extends Stage implements Observer{
 	public void generateSettingsMainMenu() {
 		Label title = Generators.generateTitle("Settings");
 
-		Button toMisc = Generators.generateButton("Screen", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),30),Color.WHITE, Color.BLACK);
+		Button toMisc = Generators.generateButton("Screen",Color.WHITE, Color.BLACK);
+		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),30)
 		toMisc.setOnAction(e->
 			this.setScene(this.getScene(ID_MISCELLANEOUS_SETTINGS))
 		);
 		toMisc.setMinWidth(150);
 
-		Button toMaze = Generators.generateButton("Maze", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),40),Color.WHITE, Color.BLACK);
+		Button toMaze = Generators.generateButton("Maze",Color.WHITE, Color.BLACK);
+		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),40)
 		toMaze.setOnAction(e->
 			this.setScene(this.getScene(ID_MAZE_SETTINGS))
 		);
 		toMaze.setMinWidth(150);
 
-		Button toMons = Generators.generateButton("Monster", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),50),Color.WHITE, Color.BLACK);
+		Button toMons = Generators.generateButton("Monster",Color.WHITE, Color.BLACK);
+		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),50)
 		toMons.setOnAction(e->
 			this.setScene(this.getScene(ID_MONSTER_SETTINGS))
 		);
 		toMons.setMinWidth(150);
 
-		Button toHunt = Generators.generateButton("Hunter", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),60),Color.WHITE, Color.BLACK);
+		Button toHunt = Generators.generateButton("Hunter",Color.WHITE, Color.BLACK);
+		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),60)
 		toHunt.setOnAction(e->
 			this.setScene(this.getScene(ID_HUNTER_SETTINGS))
 		);
 		toHunt.setMinWidth(150);
 
-		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE, Color.BLACK);
+		Button bBack = Generators.generateButton("Back",Color.WHITE, Color.BLACK);
+		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90)
 		bBack.setOnAction(e->
 			this.setScene(this.getScene(ID_PLAY))
 		);
@@ -715,7 +716,7 @@ public class Management extends Stage implements Observer{
 	public void generateSettingsMiscellaneous() {
 		Label title = Generators.generateTitle("Settings - Miscellaneous");
 		
-		Button bScreenType = Generators.generateButton("Same Screen", 0,30,Color.WHITE, Color.BLACK);
+		Button bScreenType = Generators.generateButton("Same Screen", Color.WHITE, Color.BLACK);
 		bScreenType.setOnAction(e->{
 			if(isSameScreen) {
 				this.isSameScreen=false;
@@ -726,41 +727,43 @@ public class Management extends Stage implements Observer{
 			}
 		});
 		bScreenType.setMinWidth(150);
-		Label l_screenType = Generators.generateLabel("Choose display settings", 0, 0);
+		Label l_screenType = Generators.generateLabel("Choose theme mode");
 		
 		
-		Button bBasicMode = Generators.generateButton("Image Mode", 0,60,Color.WHITE, Color.BLACK);
-		bBasicMode.setOnAction(e->{
+		Button bDisplayMode = Generators.generateButton("Image Mode", Color.WHITE, Color.BLACK);
+		bDisplayMode.setOnAction(e->{
 			if(this.current_theme.isWithImages()) {
 				this.current_theme.setWithImages(false);
-				bBasicMode.setText("Color Mode");
+				bDisplayMode.setText("Color Mode");
 			}else {
 				this.current_theme.setWithImages(true);
-				bBasicMode.setText("Image Mode");
+				bDisplayMode.setText("Image Mode");
 			}
 		});
-		bBasicMode.setMinWidth(150);
+		bDisplayMode.setMinWidth(150);
+		Label l_bDisplayMode = Generators.generateLabel("Choose display settings");
 
-
-		ComboBox<String> theme = Generators.generateComboBox(THEMES, 0, 130);
+		ComboBox<String> theme = Generators.generateComboBox(THEMES);
 		theme.setOnAction(e-> {
 			this.current_theme = Theme.themesMap.get(theme.getValue());
 			if(this.current_theme.isWithImages()) {
-				bBasicMode.setText("Color Mode");
+				bDisplayMode.setText("Image Mode");
 			}else {
-				bBasicMode.setText("Image Mode");
+				bDisplayMode.setText("Color Mode");
 			}
 			this.applyTheme();
 		});
-		Label l_theme = Generators.generateLabel("Choose a theme", 0, 110);
+		Label l_theme = Generators.generateLabel("Choose a theme");
 		
-		Button bBack = Generators.generateButton("Back", 0, 0,Color.WHITE, Color.BLACK);
+		Button bBack = Generators.generateButton("Back",Color.WHITE, Color.BLACK);
 		bBack.setOnAction(e->
 			this.setScene(this.getScene(ID_SETTINGS))
 		);
 
-		Group group = new Group();
-		group.getChildren().addAll(l_screenType,bScreenType,bBasicMode,l_theme,theme);
+		VBox vbox = new VBox(10);
+		vbox.getChildren().addAll(l_screenType,bScreenType,Generators.createEmptySpace(20),l_theme,theme,l_bDisplayMode,bDisplayMode);
+		
+		Group group = new Group(vbox);
 
 		BorderPane bp = new BorderPane(group);
 		bp.setPadding(new Insets(30, 30, 30, 30));
@@ -779,24 +782,25 @@ public class Management extends Stage implements Observer{
 
 		Label title = Generators.generateTitle("Settings - Maze");
 
-		Label lGen = Generators.generateLabel("Set the generation mode :", 0,0);
+		Label lGen = Generators.generateLabel("Set the generation mode :",45,0);
 
-		Button bGen = Generators.generateButton("Random", this.calculPercentage(this.display.getWindowWidth(), 10), this.calculPercentage(this.display.getWindowHeight(),20),Color.WHITE, Color.BLACK);
+		Button bGen = Generators.generateButton("Random",75,20,Color.WHITE, Color.BLACK);
 		bGen.setMinWidth(100);
 
-		TextField tf_height = Generators.generateTextField("10",this.calculPercentage(this.display.getWindowWidth(),30), this.calculPercentage(this.display.getWindowHeight(),30));
-		TextField tf_width = Generators.generateTextField("10", this.calculPercentage(this.display.getWindowWidth(),30), this.calculPercentage(this.display.getWindowHeight(),50));
+		TextField tf_height = Generators.generateTextField("10");
+		TextField tf_width = Generators.generateTextField("10");
 		Generators.addCheckNumericalValueToTextField(tf_height, MIN_MAZE_SIZE, MAX_MAZE_SIZE);
 		Generators.addCheckNumericalValueToTextField(tf_width, MIN_MAZE_SIZE, MAX_MAZE_SIZE);
 
-		TextField tf_probability = Generators.generateTextField("20", this.calculPercentage(this.display.getWindowWidth(),30), this.calculPercentage(this.display.getWindowHeight(),70), 3, '0', '9');
+		TextField tf_probability = Generators.generateTextField("20", 3, '0', '9');
 		Generators.addCheckNumericalValueToTextField(tf_probability, 0, 100);
-		Label l_probability= Generators.generateLabel("Spawn Rate of walls (%)", tf_probability.getLayoutX()-LABEL_MIN_WIDTH-(SPACING*8), tf_probability.getLayoutY());
+		Label l_probability= Generators.generateLabel("Spawn Rate of walls (%)");
 
-		Label l_height = Generators.generateLabel("Maze Height ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", tf_height.getLayoutX()-LABEL_MIN_WIDTH-SPACING, tf_height.getLayoutY());
-		Label l_width= Generators.generateLabel("Maze Width ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", tf_width.getLayoutX()-LABEL_MIN_WIDTH-SPACING, tf_width.getLayoutY());
+		Label l_height = Generators.generateLabel("Maze Height ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", tf_height.getLayoutX()-LABEL_MIN_WIDTH-5, tf_height.getLayoutY());
+		Label l_width= Generators.generateLabel("Maze Width ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", tf_width.getLayoutX()-LABEL_MIN_WIDTH-5, tf_width.getLayoutY());
 
-		Slider slider_height = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE,l_height.getLayoutX(),tf_height.getLayoutY()+SPACING*5);
+		Slider slider_height = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
+		Generators.setLayout(slider_height, l_height.getLayoutX(),tf_height.getLayoutY()+25);
 		slider_height.valueProperty().addListener(e->{
 			tf_height.setText(""+(int)slider_height.getValue());
 			this.maze_height=(int)slider_height.getValue();
@@ -823,7 +827,8 @@ public class Management extends Stage implements Observer{
 				}
 			});
 
-		Slider slider_width = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE,l_width.getLayoutX(),tf_width.getLayoutY()+SPACING*5);
+		Slider slider_width = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
+		Generators.setLayout(slider_width, l_width.getLayoutX(),tf_width.getLayoutY()+25);
 		slider_width.valueProperty().addListener(e->{
 			tf_width.setText(""+(int)slider_width.getValue());
 			this.maze_width=(int)slider_width.getValue();
@@ -923,28 +928,34 @@ public class Management extends Stage implements Observer{
 				settingsForImport.setVisible(false);
 			}
 		});
+		
+		Group gen = new Group();
+		gen.getChildren().addAll(Generators.createEmptySpace(10),lGen,bGen);
 
 
+		VBox vGen = new VBox();
+		vGen.getChildren().addAll(gen);
 
-
-		StackPane sp_ran = new StackPane();
-		sp_ran.getChildren().addAll(settingsForRandom,settingsForImport);
-
-		StackPane sp_imp = new StackPane();
-		sp_imp.getChildren().addAll(bGen);
-
-		VBox settings = new VBox(10);
-		settings.getChildren().addAll(sp_ran,sp_imp);
+		StackPane mainsp = new StackPane();
+		mainsp.getChildren().addAll(settingsForRandom,settingsForImport);
+		
+		StackPane topsp = new StackPane();
+		topsp.getChildren().addAll(vGen);
+		
+		VBox centerPanel = new VBox(10);
+		centerPanel.getChildren().addAll(topsp,mainsp);
 
 		VBox topPanel = new VBox(10);
-		topPanel.getChildren().addAll(title,lGen,bGen);
+		topPanel.getChildren().addAll(title);
 		topPanel.setAlignment(Pos.CENTER);
 
 		VBox bottomPanel = new VBox(10);
 		bottomPanel.getChildren().addAll(bBack);
 		bottomPanel.setAlignment(Pos.CENTER);
+		
+		Group group = new Group(centerPanel);
 
-		BorderPane bp = new BorderPane(settings);
+		BorderPane bp = new BorderPane(group);
 		bp.setPadding(new Insets(30, 30, 30, 30));
 		bp.setTop(topPanel) ;
 		BorderPane.setAlignment(topPanel, Pos.TOP_CENTER);
@@ -959,7 +970,8 @@ public class Management extends Stage implements Observer{
 	 */
 	public void generateSettingsMonster() {
 		Label title = Generators.generateTitle("Settings - Monster");
-		TextField tf_vision = Generators.generateTextField(""+DEFAULT_VISION_RANGE, calculPercentage(this.display.getWindowWidth(),70), this.calculPercentage(this.display.getWindowHeight(),39), 1, '0', '9');
+		TextField tf_vision = Generators.generateTextField(""+DEFAULT_VISION_RANGE, 1, '0', '9');
+		Generators.setLayout(tf_vision, this.calculPercentage(this.display.getWindowWidth(),70), this.calculPercentage(this.display.getWindowHeight(),39));
 		Generators.addCheckNumericalValueToTextField(tf_vision, MIN_VISION_RANGE, MAX_VISION_RANGE);
 		tf_vision.setDisable(true);
 		Button b_vision = Generators.generateButton("NO", calculPercentage(this.display.getWindowWidth(),70),calculPercentage(this.display.getWindowHeight(),30),Color.WHITE, Color.BLACK);
@@ -975,13 +987,15 @@ public class Management extends Stage implements Observer{
 				tf_vision.setDisable(false);
 			}
 		});
-		Label l_b_vision= Generators.generateLabel("Activate limited Vision", b_vision.getLayoutX()-LABEL_MIN_WIDTH-(SPACING*8), b_vision.getLayoutY());
-		Label l_tf_vision= Generators.generateLabel("Vision Range", tf_vision.getLayoutX()-LABEL_MIN_WIDTH-(SPACING*8), tf_vision.getLayoutY());
+		Label l_b_vision= Generators.generateLabel("Activate limited Vision", b_vision.getLayoutX()-LABEL_MIN_WIDTH-40, b_vision.getLayoutY());
+		Label l_tf_vision= Generators.generateLabel("Vision Range", tf_vision.getLayoutX()-LABEL_MIN_WIDTH-40, tf_vision.getLayoutY());
 
-		TextField tf_range = Generators.generateTextField("1", this.calculPercentage(this.display.getWindowWidth(),70), this.calculPercentage(this.display.getWindowHeight(),50), 1, '0', '9');
+		TextField tf_range = Generators.generateTextField("1", 1, '0', '9');
+		Generators.setLayout(tf_range, this.calculPercentage(this.display.getWindowWidth(),70), this.calculPercentage(this.display.getWindowHeight(),50));
 		Generators.addCheckNumericalValueToTextField(tf_range, 1, 9);
-		Label l_range = Generators.generateLabel("Moving Range", tf_range.getLayoutX()-LABEL_MIN_WIDTH-(SPACING*8), tf_range.getLayoutY());
-		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE, Color.BLACK);
+		Label l_range = Generators.generateLabel("Moving Range", tf_range.getLayoutX()-LABEL_MIN_WIDTH-40, tf_range.getLayoutY());
+		Button bBack = Generators.generateButton("Back",Color.WHITE, Color.BLACK);
+		Generators.setLayout(bBack, this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90));
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(ID_SETTINGS));
 			if(tf_vision.getText().isEmpty()) {
@@ -1017,8 +1031,8 @@ public class Management extends Stage implements Observer{
 	public void generateSettingsHunter() {
 		Label title = Generators.generateTitle("Settings - Hunter");
 
-		TextField tf_bonusRange = Generators.generateTextField(""+DEFAULT_BONUS_RANGE, this.calculPercentage(this.display.getWindowWidth(),70), this.calculPercentage(this.display.getWindowHeight(),50), 1, '0', '9');
-		Label l_bonusRange = Generators.generateLabel("Bonus Vision Range", tf_bonusRange.getLayoutX()-LABEL_MIN_WIDTH-(SPACING*8), tf_bonusRange.getLayoutY());
+		TextField tf_bonusRange = Generators.generateTextField(""+DEFAULT_BONUS_RANGE, 1, '0', '9');
+		Label l_bonusRange = Generators.generateLabel("Bonus Vision Range", tf_bonusRange.getLayoutX()-LABEL_MIN_WIDTH-40, tf_bonusRange.getLayoutY());
 
 		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE, Color.BLACK);
 		bBack.setOnAction(e->{
@@ -1045,25 +1059,26 @@ public class Management extends Stage implements Observer{
 	}
 
 	public void generateMazeEditor() {
+  MazeEditor mEdit;
 		Label title = Generators.generateTitle("Maze Editor");
 
-		this.mEdit = new MazeEditor(DEFAULT_MAZE_SIZE,DEFAULT_MAZE_SIZE,this.display,this.current_theme);
+		mEdit = new MazeEditor(DEFAULT_MAZE_SIZE,DEFAULT_MAZE_SIZE,this.display,this.current_theme);
 
 		Label l_height = Generators.generateLabel("Maze Height ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", 0, 0);
 		Label l_width= Generators.generateLabel("Maze Width ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", 0, 0);
 
-		Slider slider_editor_height = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE,10,10);
+		Slider slider_editor_height = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		slider_editor_height.valueProperty().addListener(e->{
 			mEdit.editor_height=(int)slider_editor_height.getValue();
 			l_height.setText("Height of the maze ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+") : "+mEdit.editor_height);
 		});
-		Slider slider_editor_width = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE,20,20);
+		Slider slider_editor_width = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		slider_editor_width.valueProperty().addListener(e->{
 			mEdit.editor_width=(int)slider_editor_width.getValue();
 			l_width.setText("Width of the maze ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+") : "+mEdit.editor_width);
 		});
 
-		Button bReset = Generators.generateButton("Reset map", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),70),Color.WHITE, Color.BLACK);
+		Button bReset = Generators.generateButton("Reset map",Color.WHITE, Color.BLACK);
 		bReset.setOnAction(e->
 			mEdit.resetDrawing(mEdit.editor_height,mEdit.editor_width,this.display)
 		);
@@ -1080,7 +1095,7 @@ public class Management extends Stage implements Observer{
         File initialDirectory = new File(SaveLoadSystemMaps.MAZES_DIRECTORY);
         fileChooser.setInitialDirectory(initialDirectory);
 
-		Button bImport = Generators.generateButton("Import", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE,Color.BLACK);
+		Button bImport = Generators.generateButton("Import",Color.WHITE,Color.BLACK);
 		bImport.setOnAction(event->{
 			mEdit.map_import = fileChooser.showOpenDialog(this);
 			if(mEdit.map_import!=null) {
@@ -1107,7 +1122,7 @@ public class Management extends Stage implements Observer{
 
 		Label l_saveMap = Generators.generateLabel("Save your map : ", 0, 0);
 		l_saveMap.setTextFill(Color.BLACK);
-		TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 24, 'A', 'z');
+		TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 24, 'A', 'z');
 		tf_saveMap.setMinWidth(210);
 		Button bSave = Generators.generateButton("Save map", 0, 0,Color.WHITE,Color.BLACK);
 		bSave.setMinWidth(bSave.getPrefWidth());
@@ -1223,11 +1238,13 @@ public class Management extends Stage implements Observer{
 	 */
 	public void applyTheme() {
 		for(Scene s:this.menus.values()) {
-			s.setFill(this.current_theme.getFloorColor());
+			if(s.equals(this.getScene(ID_WAIT))) {
+				s.setFill(this.current_theme.getBackgroundColor());
+			}else {
+				s.setFill(this.current_theme.getFloorColor());
+			}
 		}
 	}
-
-
 
 	/**
 	 * Permet de définir la couleur de fond d'un élément identifié par son ID.
@@ -1277,7 +1294,7 @@ public class Management extends Stage implements Observer{
 		ButtonType bt_save = new ButtonType("Save the game & Leave");
 		ButtonType bt_noSave = new ButtonType("Leave");
 		
-        TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 24, 'A', 'z');
+        TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 24, 'A', 'z');
         tf_saveMap.setMinWidth(200);
         Button b_saveMap = Generators.generateButton("save the map", 0, 0, Color.BLACK, Color.LIGHTGRAY);
         b_saveMap.setOnAction(e->{
@@ -1294,7 +1311,7 @@ public class Management extends Stage implements Observer{
 				notification.setText("Error when saving the map.");
 			}
         });
-        TextField tf_saveGame = Generators.generateTextField(SaveLoadSystemGames.DEFAULT_NAME_FOR_GAME_SAVE, 0, 0, 24, 'A', 'z');
+        TextField tf_saveGame = Generators.generateTextField(SaveLoadSystemGames.DEFAULT_NAME_FOR_GAME_SAVE, 24, 'A', 'z');
         tf_saveGame.setMinWidth(200);
         Button b_saveGame = Generators.generateButton("save the game", 0, 0, Color.BLACK, Color.LIGHTGRAY);
         b_saveGame.setOnAction(e->{

@@ -50,6 +50,14 @@ public class MonsterView  extends View {
 	 * Constante couleur de la sortie du labyrinthe. Ce n'est plus utilisé pour le moment
 	 */
 	private static final Color HUNTER_COLOR = Color.YELLOW;
+	/**
+	 * Constante couleur de la sortie du labyrinthe. Ce n'est plus utilisé pour le moment
+	 */
+	private static final Color VALID_SELECTION_COLOR = Color.RED;
+	/**
+	 * Constante couleur de la sortie du labyrinthe. Ce n'est plus utilisé pour le moment
+	 */
+	private static final Color INVALID_SELECTION_COLOR = Color.DARKRED;
 
 	//Sprites (Rectangles pour le moment)
 	private CellWithText sprite_monster;
@@ -133,20 +141,20 @@ public class MonsterView  extends View {
 		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
 	
-		Button b_option = Generators.generateButton("-> Option", 0, 0,Color.WHITE, Color.BLACK);
+		Button b_option = Generators.generateButton("-> Option", this.theme.getTextColor(), this.theme.getBackgroundColor());
 		b_option.setOnAction(e-> Management.showOption(this.maze, notification) );
 		
 		VBox vbox = new VBox();
 		Label player_name = new Label(this.playerName);
-		player_name.setTextFill(Color.WHITE);
-		this.turnIndication.setFill(Color.WHITE);
-		this.notification.setFill(Color.WHITE);
+		player_name.setTextFill(this.theme.getTextColor());
+		this.turnIndication.setFill(this.theme.getTextColor());
+		this.notification.setFill(this.theme.getTextColor());
 		vbox.getChildren().addAll(player_name, this.turnIndication, this.notification, b_option);
 		this.bp=new BorderPane(group_stage);
 		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 		this.bp.setTop(vbox);
 
-		this.scene=new Scene(bp,this.display.getWindowWidth(),this.display.getWindowHeight(),Color.BLACK);
+		this.scene=new Scene(bp,this.display.getWindowWidth(),this.display.getWindowHeight(), this.theme.getBackgroundColor());
 		this.draw();
 	}
 
@@ -245,7 +253,7 @@ public class MonsterView  extends View {
 		this.addMouseEvents(sprite_exit);
 
 		//initialisation du rectangle de sélection
-		this.selection=new CellWithText(0,0, this.display.getZoom(), Color.TRANSPARENT, Color.RED, 3, this.display.getGapX(), this.display.getGapY(), "Selection");
+		this.selection=new CellWithText(0,0, this.display.getZoom(), Color.TRANSPARENT, VALID_SELECTION_COLOR, 3, this.display.getGapX(), this.display.getGapY(), "Selection");
 		this.selection.setVisible(false);
 		this.addMouseEvents(selection);
 
@@ -307,7 +315,6 @@ public class MonsterView  extends View {
 	 */
 	public void select(MouseEvent e, ICoordinate c) {
 		if(this.maze.getMonsterIa().equals("Player")) {
-			System.out.println("Aller à ["+c.getRow()+","+c.getCol()+"]?");
 			int row=c.getRow();
 			int col=c.getCol();
 			this.selection.setY(this.calculDrawY(row));
@@ -338,7 +345,7 @@ public class MonsterView  extends View {
      * Invalide la sélection en cours en changeant la couleur de la sélection.
 	 */
 	public void invalidSelection() {
-		this.selection.setStroke(Color.DARKRED);
+		this.selection.setStroke(INVALID_SELECTION_COLOR);
 		this.selection.setStrokeWidth(1);
 	}
 
@@ -346,7 +353,7 @@ public class MonsterView  extends View {
      * Met en évidence la sélection en cours en changeant la couleur de la sélection.
 	 */
 	public void validSelection() {
-		this.selection.setStroke(Color.RED);
+		this.selection.setStroke(VALID_SELECTION_COLOR);
 		this.selection.setStrokeWidth(3);
 	}
 }

@@ -39,6 +39,28 @@ public class HunterView extends View{
 	 * Constante couleur de la sortie du labyrinthe. Ce n'est plus utilisé pour le moment
 	 */
 	private static final Color SHOT_COLOR = Color.YELLOW;
+	/**
+	 * Constante de la largeur du contour des cases brouillard
+	 */
+	private static final int SHOT_STROKE_THICKNESS=5;
+	/**
+	 * Constante couleur de la sélection
+	 */
+	private static final Color SELECTION_COLOR = Color.RED;
+	/**
+	 * Constante de la largeur du contour des cases brouillard
+	 */
+	private static final int SELECTION_STROKE_THICKNESS=3;
+	/**
+	 * Constante couleur du contour des cases brouillard
+	 */
+	private static final Color FOG_STROKE_COLOR = Color.DARKGREY;
+	/**
+	 * Constante de la largeur du contour des cases brouillard
+	 */
+	private static final int FOG_STROKE_THICKNESS=1;
+	
+	
 
 
 	/**
@@ -124,14 +146,14 @@ public class HunterView extends View{
 		this.turnIndication = new Text("Turn n°1");
 		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
 
-		Button b_option = Generators.generateButton("-> Option", 0, 0,Color.WHITE, Color.BLACK);
+		Button b_option = Generators.generateButton("-> Option", this.theme.getTextColor(), this.theme.getBackgroundColor());
 		b_option.setOnAction(e-> Management.showOption(this.maze,notification) );
 		
 		VBox vbox = new VBox();
 		Label player_name = new Label(this.playerName);
-		player_name.setTextFill(Color.WHITE);
-		this.turnIndication.setFill(Color.WHITE);
-		this.notification.setFill(Color.WHITE);
+		player_name.setTextFill(this.theme.getTextColor());
+		this.turnIndication.setFill(this.theme.getTextColor());
+		this.notification.setFill(this.theme.getTextColor());
 		vbox.getChildren().addAll(player_name, this.turnIndication, this.notification, b_option);
 		this.bp=new BorderPane(group_stage);
 		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
@@ -139,7 +161,7 @@ public class HunterView extends View{
 
 
 		//Scene
-		this.scene=new Scene(bp, this.display.getWindowWidth(),this.display.getWindowHeight(),Color.BLACK);
+		this.scene=new Scene(bp, this.display.getWindowWidth(),this.display.getWindowHeight(),this.theme.getBackgroundColor());
 
 		this.initiateSprites();
 		this.draw();
@@ -194,7 +216,7 @@ public class HunterView extends View{
 		for(int h=0; h<this.maze.getHunter().getTraces().length; h++) {
 			for(int l=0; l<this.maze.getHunter().getTraces()[h].length; l++) {
 				//Codage des rectangles permettant le contrôle
-				CellWithText cell = new CellWithText(l, h, this.display.getZoom(), this.theme.getFogColor(),Color.DARKGREY,1,this.display.getGapX(),this.display.getGapY(),new Text(""));
+				CellWithText cell = new CellWithText(l, h, this.display.getZoom(), this.theme.getFogColor(),FOG_STROKE_COLOR,FOG_STROKE_THICKNESS,this.display.getGapX(),this.display.getGapY(),new Text(""));
 				if(!this.maze.getWalls()[h][l]) {
 					cell.setImage(this.theme.getWallImg());
 				}else {
@@ -217,11 +239,11 @@ public class HunterView extends View{
 	 */
 	protected void initiateSprites() {
 		//initialisation du sprite de selection
-		this.selection =  new CellWithText(0,0, this.display.getZoom(), Color.TRANSPARENT, Color.RED, 3, this.display.getGapX(),this.display.getGapY(), "Shot");
+		this.selection =  new CellWithText(0,0, this.display.getZoom(), Color.TRANSPARENT, SELECTION_COLOR, SELECTION_STROKE_THICKNESS, this.display.getGapX(),this.display.getGapY(), "Shot");
 		this.selection.setVisible(false);
 
 		//initialisation du sprite du tir
-		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.display.getZoom(), Color.TRANSPARENT, SHOT_COLOR, 5, this.display.getGapX(),this.display.getGapY(), "Shot");
+		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.display.getZoom(), Color.TRANSPARENT, SHOT_COLOR, SHOT_STROKE_THICKNESS, this.display.getGapX(),this.display.getGapY(), "Shot");
 		this.sprite_shot.setVisible(false);
 		this.sprite_shot.setOnMouseEntered(event -> {
 			this.select(this.sprite_shot);

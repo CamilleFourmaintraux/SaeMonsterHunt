@@ -351,7 +351,6 @@ public class Maze extends Subject{
 	public boolean move(ICoordinate c) { //Fais le déplacement du monstre, retourne true si le déplacement à été possible.
 		this.spotted=false;
 		if(this.canMonsterMoveAt(c)) {
-			System.out.println("Monstre se déplace à ["+c.getRow()+","+c.getCol()+"].");
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
 				//[Tour n°"+this.turn+"]
 				this.spotted=true;
@@ -379,7 +378,6 @@ public class Maze extends Subject{
 			this.notifyObservers(); 		//Jamais atteint par un joueur humain, 
 			this.isMonsterTurn=false;		//permet de passer le tour d'un bot qui à essayer de jouer quelque chose d'impossible
 		}
-		System.out.println("Monstre ne peut pas se déplacer à ["+c.getRow()+","+c.getCol()+"].");
 		return false;
 	}
 

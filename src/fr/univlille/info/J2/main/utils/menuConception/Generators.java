@@ -41,51 +41,18 @@ public class Generators {
 	 * @param active La couleur en hexadécimal quand le bouton est en interaction
 	 * @return Le bouton généré.
 	 */
+	public static Button generateButton(String msg, Color active, Color inactive) {
+		Button button = new Button(msg);
+		Generators.applyStyleToButton(button, active, inactive);
+		return button;
+	}
 	public static Button generateButton(String msg, double x, double y, Color active, Color inactive) {
 		Button button = new Button(msg);
 		Generators.setLayout(button, x-(button.getWidth()/2) ,y);
 		Generators.applyStyleToButton(button, active, inactive);
 		return button;
 	}
-
-	/**
-	 * Génére un slider avec une valeur minimale, maximale et par défault et le positionne aux coordonnées spécifiés.
-	 *
-	 * @param min 			La valeur minimale que peut prendre le slider
-	 * @param default_value La valeur par défault que prend le slider
-	 * @param max 			La valeur maximale que peut prendre le slider
-	 * @param x 			La position horizontale du slider.
-	 * @param y 			La position verticale du slidern.
-	 * @return Le slider généré.
-	 */
-	public static Slider generateSlider(double min, double max, double default_value, double x, double y) {
-		Slider slider = new Slider(min, max, default_value);
-		slider.setLayoutX(x);
-		slider.setLayoutY(y);
-		slider.setMinWidth(180);
-		slider.setShowTickLabels(true);
-		slider.setShowTickMarks(true);
-		slider.setMajorTickUnit(25f);
-		slider.setBlockIncrement(1f);
-		return slider;
-	}
-
-	/**
-	 * Génére une liste déroulante (ComboBox) avec les valeurs spécifies et la positionne aux coordonnées spécifiés.
-	 *
-	 * @param values 	Les valeurs affiché dans la liste deroulante.
-	 * @param x 		La position horizontale de la liste deroulante.
-	 * @param y 		La position verticale de la liste deroulante.
-	 * @return La liste déroulante générée.
-	 */
-	public static <T> ComboBox<T> generateComboBox(T[] values, double x, double y) {
-		ComboBox<T> box = new ComboBox<>();
-		box.getItems().addAll(values);
-		box.setValue(values[0]);
-		Generators.setLayout(box, x ,y);
-		return box;
-	}
-
+	
 	/**
 	 * Génére un Label avec le texte donné et la positionne aux coordonnées spécifiés.
 	 *
@@ -98,25 +65,58 @@ public class Generators {
 	public static Label generateLabel(String msg, double x, double y) {
 		Label label = new Label(msg);
 		label.setMinWidth(label.getPrefWidth());
-		Generators.setLayout(label, x,y);
+		Generators.setLayout(label, x, y);
 		return label;
+	}
+	public static Label generateLabel(String msg) {
+		Label label = new Label(msg);
+		label.setMinWidth(label.getPrefWidth());
+		return label;
+	}
+
+	/**
+	 * Génére un slider avec une valeur minimale, maximale et par défault et le positionne aux coordonnées spécifiés.
+	 *
+	 * @param min 			La valeur minimale que peut prendre le slider
+	 * @param default_value La valeur par défault que prend le slider
+	 * @param max 			La valeur maximale que peut prendre le slider
+	 * @return Le slider généré.
+	 */
+	public static Slider generateSlider(double min, double max, double default_value) {
+		Slider slider = new Slider(min, max, default_value);
+		slider.setMinWidth(180);
+		slider.setShowTickLabels(true);
+		slider.setShowTickMarks(true);
+		slider.setMajorTickUnit(25f);
+		slider.setBlockIncrement(1f);
+		return slider;
+	}
+
+	/**
+	 * Génére une liste déroulante (ComboBox) avec les valeurs spécifies et la positionne aux coordonnées spécifiés.
+	 *
+	 * @param values 	Les valeurs affiché dans la liste deroulante.
+	 * @return La liste déroulante générée.
+	 */
+	public static <T> ComboBox<T> generateComboBox(T[] values) {
+		ComboBox<T> box = new ComboBox<>();
+		box.getItems().addAll(values);
+		box.setValue(values[0]);
+		return box;
 	}
 
 	/**
 	 * Génére un TextField avec une valeur par défaut et le positionne aux coordonnées spécifiés.
 	 *
 	 * @param defaultValue 	La valeur par défaut du champ de texte.
-	 * @param x 			La position horizontale du champ de texte.
-	 * @param y 			La position verticale du champ de texte.
 	 * @param maxLength 	La longueur maximale du texte autorisé dans le champ.
 	 * @param limit1 		Le premier caractère définissant le début de l'ensemble des caractères autorisés
 	 * @param limit2 		Le deuxime caractère définissant la fin de l'ensemble des caractères autorisés
 	 * @return Le TextField généré.
 	 */
-	public static TextField generateTextField(String defaultValue, double x, double y, int maxLength, char limit1, char limit2) {
+	public static TextField generateTextField(String defaultValue,  int maxLength, char limit1, char limit2) {
 		TextField tf = new TextField(defaultValue);
 		tf.setMaxWidth((double)8*maxLength+30);
-		Generators.setLayout(tf, x,y);
 		tf.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
@@ -138,14 +138,11 @@ public class Generators {
 	 * Génére un TextField avec une valeur par défaut et le positionne aux coordonnées spécifiés.
 	 *
 	 * @param defaultValue 	La valeur par défaut du champ de texte.
-	 * @param x 			La position horizontale du champ de texte.
-	 * @param y 			La position verticale du champ de texte.
 	 * @return Le TextField généré.
 	 */
-	public static TextField generateTextField(String defaultValue, double x, double y) { //maxLength devrait être <=16 pour des raisons d'affichage (sinon affichage moins beau)
+	public static TextField generateTextField(String defaultValue) { //maxLength devrait être <=16 pour des raisons d'affichage (sinon affichage moins beau)
 		TextField tf = new TextField(defaultValue);
 		tf.setMaxWidth((double)8*5+30);
-		Generators.setLayout(tf, x,y);
 		return tf;
 	}
 
@@ -190,7 +187,15 @@ public class Generators {
 		return label;
 	}
 
-
+	/**
+	 * Génére une alerte (notification)
+	 *
+	 * @param title le titre de l'alerte.
+	 * @param text le texte de l'alerte
+	 * @param buttons les boutons de l'alerte
+	 * 
+	 * @return l'alerte générée.
+	 */
 	public static Alert generateAlert(String title, String text, Collection<ButtonType> buttons) {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle(title);
@@ -206,6 +211,16 @@ public class Generators {
 		return alert;
 	}
 	
+	/**
+	 * Génére un Dialog (notification avancée)
+	 *
+	 * @param title le titre du Dialog
+	 * @param text le texte du Dialog
+	 * @param buttons les boutons du Dialog
+	 * @param nodes liste de liste (rows & cols) des nodes qui seront ajoutés à la Grid du Dialog
+	 * 
+	 * @return l'alerte générée.
+	 */
 	public static Dialog<ButtonType> generateDialog(String title, String text, Collection<ButtonType> buttons, ArrayList<ArrayList<Node>> nodes) {
 		Dialog<ButtonType> dialog = new Dialog<ButtonType>();
 		dialog.setTitle(title);
@@ -229,14 +244,20 @@ public class Generators {
 
 		return dialog;
 	}
+	
+	 // Méthode pour créer un espace vide avec une taille spécifique
+    public static Region createEmptySpace(double size) {
+        Region spacer = new Region();
+        spacer.setPrefHeight(size);
+        spacer.setPrefWidth(size);
+        return spacer;
+    }
 
 
 	/**
 	 * Positionne un élément aux coordonnées spécifiés.
 	 *
 	 * @param node 	L'élément à positionner.
-	 * @param x 	La position horizontale de l'élément.
-	 * @param y 	La position verticale de l'élément.
 	 */
 	public static void setLayout(Node node, double x, double y) {
 		node.setLayoutX(x);
@@ -253,8 +274,6 @@ public class Generators {
 		label.setTextFill(textColor);
 		label.setStyle("-fx-font-size: 25px;");
 	}
-
-
 
 	/**
 	 * Applique un style de base à un bouton, y compris le style lors du survol de la souris.

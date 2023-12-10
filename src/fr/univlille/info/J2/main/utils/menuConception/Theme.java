@@ -64,7 +64,10 @@ public class Theme {
 	/**
 	 * Couleur du fond de l'écran
 	 */
-	private Color backgroundColor;
+	private Color backgroundColor;/**
+	 * Couleur du texte
+	 */
+	private Color textColor;
 	
 	
 	public Theme(String key) {
@@ -89,26 +92,29 @@ public class Theme {
 		dungeon.wallColor=Color.DARKGREY;
 		dungeon.fogColor=Color.BLACK;
 		dungeon.backgroundColor=Color.BLACK;
+		dungeon.textColor=Color.WHITE;
 		
 		cave.floorImg=loadImage(THEME_CAVE,"stone.png");
 		cave.wallImg=loadImage(THEME_CAVE,"rock.png");
 		cave.monsterImg=loadImage(THEME_CAVE,"bat.png");
 		cave.exitImg=loadImage(THEME_CAVE,"wayout.png");
 		cave.hunterImg=loadImage(THEME_CAVE,"rifleScope.png");
-		cave.floorColor=Color.LIGHTGRAY;
-		cave.wallColor=Color.DARKGRAY;
+		cave.floorColor=Color.DARKGRAY;
+		cave.wallColor=Color.LIGHTGRAY;
 		cave.fogColor=Color.BLACK;
 		cave.backgroundColor=Color.BLACK;
+		cave.textColor=Color.WHITE;
 		
 		meadow.floorImg=loadImage(THEME_MEADOW,"grass.png");
 		meadow.wallImg=loadImage(THEME_MEADOW,"tree.png");
 		meadow.monsterImg=loadImage(THEME_MEADOW,"rabbit.png");
 		meadow.exitImg=loadImage(THEME_MEADOW,"burrow.png");
 		meadow.hunterImg=loadImage(THEME_MEADOW,"rifleScope.png");
-		meadow.floorColor=Color.LIGHTGREEN;
-		meadow.wallColor=Color.FORESTGREEN;
+		meadow.floorColor=Color.GREENYELLOW;
+		meadow.wallColor=Color.CORNFLOWERBLUE;
 		meadow.fogColor=Color.DARKGREEN;
-		meadow.backgroundColor=Color.BLACK;
+		meadow.backgroundColor=Color.DARKGREEN;
+		meadow.textColor=Color.WHITE;
 		
 		forest.floorImg=loadImage(THEME_FOREST,"humus.png");
 		forest.wallImg=loadImage(THEME_FOREST,"stump.png");
@@ -118,7 +124,8 @@ public class Theme {
 		forest.floorColor=Color.LIGHTGREEN;
 		forest.wallColor=Color.FORESTGREEN;
 		forest.fogColor=Color.DARKGREEN;
-		forest.backgroundColor=Color.BLACK;
+		forest.backgroundColor=Color.DARKGREEN;
+		forest.textColor=Color.WHITE;
 		
 		ocean.floorImg=loadImage(THEME_OCEAN,"sea.png");
 		ocean.wallImg=loadImage(THEME_OCEAN,"boat.png");
@@ -128,7 +135,8 @@ public class Theme {
 		ocean.floorColor=Color.AQUAMARINE;
 		ocean.wallColor=Color.SEAGREEN;
 		ocean.fogColor=Color.DARKBLUE;
-		ocean.backgroundColor=Color.BLACK;
+		ocean.backgroundColor=Color.DARKBLUE;
+		ocean.textColor=Color.WHITE;
 	}
 	
 	public static Image loadImage(String theme, String name) {
@@ -173,6 +181,10 @@ public class Theme {
 
 	public Color getBackgroundColor() {
 		return this.backgroundColor;
+	}
+	
+	public Color getTextColor() {
+		return this.textColor;
 	}
 
 	@Override
