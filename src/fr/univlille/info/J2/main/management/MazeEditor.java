@@ -6,7 +6,6 @@ import fr.univlille.info.J2.main.management.cells.Cell;
 import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import javafx.scene.Group;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class MazeEditor {

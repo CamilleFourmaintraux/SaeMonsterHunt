@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.application.system.SaveLoadSystemGames;
 import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
+import fr.univlille.info.J2.main.management.view.HunterView;
+import fr.univlille.info.J2.main.management.view.MonsterView;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
@@ -496,14 +498,14 @@ public class Management extends Stage implements Observer{
 				ButtonType boutonJouer = new ButtonType("Play");
 				alb.add(boutonJouer);
 				Alert alert = Generators.generateAlert("It’s the Hunter’s turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
-				alert.setOnCloseRequest(e-> this.viewCommon.setScene(hv.scene) );
+				alert.setOnCloseRequest(e-> this.viewCommon.setScene(hv.getScene()) );
 				alert.showAndWait().ifPresent(response -> {
 					if(response == boutonJouer){
-						this.viewCommon.setScene(hv.scene);
+						this.viewCommon.setScene(hv.getScene());
 					}
 				});
 			}else {
-				this.viewCommon.setScene(hv.scene);
+				this.viewCommon.setScene(hv.getScene());
 			}
 			viewCommon.setTitle("MONTERHUNT - HunterView");
 		}
@@ -518,14 +520,14 @@ public class Management extends Stage implements Observer{
 				ButtonType boutonJouer = new ButtonType("Play");
 				alb.add(boutonJouer);
 				Alert alert = Generators.generateAlert("It’s the Monster’s turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
-				alert.setOnCloseRequest(e-> this.viewCommon.setScene(mv.scene) );
+				alert.setOnCloseRequest(e-> this.viewCommon.setScene(mv.getScene()) );
 				alert.showAndWait().ifPresent(response -> {
 					if(response == boutonJouer){
-						this.viewCommon.setScene(mv.scene);
+						this.viewCommon.setScene(mv.getScene());
 					}
 				});
 			}else {
-				this.viewCommon.setScene(mv.scene);
+				this.viewCommon.setScene(mv.getScene());
 			}
 			viewCommon.setTitle("MONTERHUNT - MonsterView");
 		}
@@ -583,12 +585,12 @@ public class Management extends Stage implements Observer{
 			this.mv=new MonsterView(this.display,this.maze,this.monster_name,this.current_theme);
 			this.hv=new HunterView(this.display,this.maze,this.hunter_name,this.current_theme);
 			if(this.isSameScreen) {
-				this.viewCommon.setScene(hv.scene);
+				this.viewCommon.setScene(hv.getScene());
 				this.viewCommon.show();
-				this.setScene(hv.scene);
+				this.setScene(hv.getScene());
 			}else {
-				this.viewM.setScene(mv.scene);
-				this.viewH.setScene(hv.scene);
+				this.viewM.setScene(mv.getScene());
+				this.viewH.setScene(hv.getScene());
 				this.viewM.show();
 				this.viewH.show();
 			}

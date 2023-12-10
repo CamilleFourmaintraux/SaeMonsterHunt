@@ -3,17 +3,16 @@
  * du jeu Monster Hunt. Il gère la logique du jeu, y compris la gestion du labyrinthe,
  * les déplacements du monstre, le tir du chasseur, et les vues associées.
  */
-package fr.univlille.info.J2.main.management;
+package fr.univlille.info.J2.main.management.view;
 
-import java.util.logging.Logger;
-
+import fr.univlille.info.J2.main.management.Management;
+import fr.univlille.info.J2.main.management.Maze;
 import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
 import fr.univlille.info.J2.main.utils.menuConception.Theme;
-import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
@@ -24,7 +23,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 /**
  * La classe HunterView représente la vue du chasseur.
@@ -36,32 +34,12 @@ import javafx.scene.text.Text;
  * @author theo.franos.etu
  *
  */
-public class HunterView implements Observer{
+public class HunterView extends View{
 	/**
 	 * Constante couleur de la sortie du labyrinthe. Ce n'est plus utilisé pour le moment
 	 */
 	private static final Color SHOT_COLOR = Color.YELLOW;
-	private static final Logger logger = Logger.getLogger(HunterView.class.getName());
-	
-	/**
-	 * Contient toute les informations sur comment doit s'afficher la fenetre et le jeu
-	 */
-	DisplayValues display;
-	
-	/**
-	 * Contient toute les informations à propos de la manière dont doit s'afficher le jeu
-	 */
-	private Theme theme;
 
-	/**
-	 * Nom du joueur incarnant le chasseur
-	 */
-	private String hunterName;
-
-	/**
-	 * Sujet (pour le modèle observé)
-	 */
-	private Maze maze;
 
 	/**
 	 * Sprite représentant le tir.
@@ -109,11 +87,6 @@ public class HunterView implements Observer{
 	private Text notification;
 
 	/**
-	 * Scène pour l'affichage.
-	 */
-	protected Scene scene;
-
-	/**
 	 * Constructeur de la classe HunterView, crée la vue du chasseur.
 	 *
 	 * @param window_height 	Hauteur de la fenêtre.
@@ -131,7 +104,7 @@ public class HunterView implements Observer{
 		//Initiation de la fenetre
 		this.display=display;
 		this.theme=theme;
-		this.hunterName=hunterName;
+		this.playerName=hunterName;
 
 		this.maze = maze;
 		this.maze.attach(this);
@@ -155,7 +128,7 @@ public class HunterView implements Observer{
 		b_option.setOnAction(e-> Management.showOption(this.maze,notification) );
 		
 		VBox vbox = new VBox();
-		Label player_name = new Label(this.hunterName);
+		Label player_name = new Label(this.playerName);
 		player_name.setTextFill(Color.WHITE);
 		this.turnIndication.setFill(Color.WHITE);
 		this.notification.setFill(Color.WHITE);
@@ -240,49 +213,9 @@ public class HunterView implements Observer{
 	}
 
 	/**
-     * Calcule la coordonnée X en fonction d'un rectangle.
-     *
-	 * @param r Le rectangle.
-	 * @return La coordonnée X calculée.
-	 */
-	public int calculCoordX(Rectangle r) {
-		return (int)((r.getX()-this.display.getGapX())/this.display.getZoom());
-	}
-
-	/**
-     * Calcule la coordonnée Y en fonction d'un rectangle.
-     *
-	 * @param r Le rectangle.
-	 * @return La coordonnée Y calculée.
-	 */
-	public int calculCoordY(Rectangle r) {
-		return (int)((r.getY()-this.display.getGapY())/this.display.getZoom());
-	}
-
-	/**
-     * Calcule la position de dessin X en fonction d'une coordonnée.
-
-	 * @param x La coordonnée X.
-	 * @return  La position de dessin X calculée.
-	 */
-	public int calculDrawX(int x) {
-		return (int)(x*this.display.getZoom()+this.display.getGapX());
-	}
-
-	/**
-     * Calcule la position de dessin Y en fonction d'une coordonnée.
-     *
-	 * @param y La coordonnée Y.
-	 * @return  La position de dessin Y calculée.
-	 */
-	public int calculDrawY(int y) {
-		return (int)(y*this.display.getZoom()+this.display.getGapY());
-	}
-
-	/**
 	 * Initialisation des sprites.
 	 */
-	private void initiateSprites() {
+	protected void initiateSprites() {
 		//initialisation du sprite de selection
 		this.selection =  new CellWithText(0,0, this.display.getZoom(), Color.TRANSPARENT, Color.RED, 3, this.display.getGapX(),this.display.getGapY(), "Shot");
 		this.selection.setVisible(false);
@@ -308,10 +241,8 @@ public class HunterView implements Observer{
 	 */
 	public void select(CellWithText r) {
 		if(this.maze.getHunterIa().equals("Player")) {
-			int y = this.calculCoordY(r);
-			int x = this.calculCoordX(r);
-			this.selection.setY(this.calculDrawY(y));
-			this.selection.setX(this.calculDrawX(x));
+			this.selection.setY(r.getY());
+			this.selection.setX(r.getX());
 			this.selection.toFront();
 			this.selection.setVisible(true);
 		}
@@ -319,14 +250,12 @@ public class HunterView implements Observer{
 
 	public void selectionLocked(CellWithText cell) {
 		if(this.maze.getHunterIa().equals("Player")) {
-			int y = this.calculCoordY(cell);
-			int x = this.calculCoordX(cell);
-			ICoordinate c = new Coordinate(y,x);
+			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
 			if(this.maze.shoot(c)) {
 				this.actualizeCell(c);
 			}
 		}else {
-			this.notification.setText("No selection possible : "+this.hunterName+" is an AI.");
+			this.notification.setText("No selection possible : "+this.playerName+" is an AI.");
 		}
 	}
 
@@ -378,10 +307,10 @@ public class HunterView implements Observer{
 					if(cwt!=null) {
 						this.revealCell(cwt,this.theme.getWallColor(),this.theme.getFloorColor());
 					}else {
-						logger.info("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
+						LOGGER.info("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
 					}	
 				}catch(Exception e) {
-					logger.info("("+y+","+x+") Out of bounds in actualizeCell -> Its normal dont worry");
+					LOGGER.info("("+y+","+x+") Out of bounds in actualizeCell -> Its normal dont worry");
 				}
 					
 			}

@@ -31,7 +31,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class Maze extends Subject{
 
-	private static final Logger logger = Logger.getLogger(Maze.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(Maze.class.getName());
 
 	private static final boolean[][] DEFAULT_MAP = new boolean[][] {
 		{false,true,false,true,true,false,true,false,true,false}, 	// X . X . . X . X . X
@@ -348,9 +348,10 @@ public class Maze extends Subject{
 	 * @param c la coordonnée ou laquelle veut se déplacer le monstre.
 	 * @return true si l'action a reussi, sinon false.
 	 */
-	public boolean move(ICoordinate c) { //Fais le déplcament du monstre, retoure true si le déplacement à été possible.:
+	public boolean move(ICoordinate c) { //Fais le déplacement du monstre, retourne true si le déplacement à été possible.
 		this.spotted=false;
 		if(this.canMonsterMoveAt(c)) {
+			System.out.println("Monstre se déplace à ["+c.getRow()+","+c.getCol()+"].");
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
 				//[Tour n°"+this.turn+"]
 				this.spotted=true;
@@ -374,10 +375,11 @@ public class Maze extends Subject{
 			this.notifyObservers();
 			return true;
 		}
-		if(!this.getMonsterIa().equals(Management.IA_LEVELS[0])) {
-			this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
-			this.isMonsterTurn=false;
+		if(!this.getMonsterIa().equals(Management.IA_LEVELS[0])) { 
+			this.notifyObservers(); 		//Jamais atteint par un joueur humain, 
+			this.isMonsterTurn=false;		//permet de passer le tour d'un bot qui à essayer de jouer quelque chose d'impossible
 		}
+		System.out.println("Monstre ne peut pas se déplacer à ["+c.getRow()+","+c.getCol()+"].");
 		return false;
 	}
 
@@ -398,7 +400,7 @@ public class Maze extends Subject{
 						ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
 						this.hunter.update(ce);
 					}catch(Exception e) {//Signifie que l'est est en dehors de la map
-						logger.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
+						LOGGER.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
 					}
 
 				}
@@ -429,13 +431,7 @@ public class Maze extends Subject{
 	 * @return true si le Monstre peut se déplacer à la case demandé, sinon false.
 	 */
 	public boolean canMonsterMoveAt(ICoordinate c) {
-		if(this.isCorrectCoordinate(c)) {
-			//Vérifie que c'est à une bonne distance et que c'est une case explorée et vérifie que ce n'est pas un mur
-			if(this.isMonsterTurn && this.inReach(this.monster.getCoord(), c, this.monster.getMovingRange()) && this.isExplored(c) && this.walls[c.getRow()][c.getCol()]) { //Vérifie que c'est le tour du monstre
-				return true;
-			}
-		}
-		return false;
+		return (this.isCorrectCoordinate(c) && this.isMonsterTurn && this.inReach(this.monster.getCoord(), c, this.monster.getMovingRange()) && this.isExplored(c) && this.walls[c.getRow()][c.getCol()]);
 	}
 
 
@@ -507,7 +503,7 @@ public class Maze extends Subject{
 	}
 
 	public static Logger getLogger() {
-		return logger;
+		return LOGGER;
 	}
 
 	public static boolean[][] getDefaultMap() {

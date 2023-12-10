@@ -3,10 +3,10 @@
  * du jeu Monster Hunt. Il gère la logique du jeu, y compris la gestion du labyrinthe,
  * les déplacements du monstre, le tir du chasseur, et les vues associées.
  */
-package fr.univlille.info.J2.main.management;
+package fr.univlille.info.J2.main.management.view;
 
-import java.util.logging.Logger;
-
+import fr.univlille.info.J2.main.management.Management;
+import fr.univlille.info.J2.main.management.Maze;
 import fr.univlille.info.J2.main.management.cells.Cell;
 import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
@@ -14,7 +14,6 @@ import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
 import fr.univlille.info.J2.main.utils.menuConception.Theme;
-import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
@@ -26,7 +25,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 /**
@@ -39,8 +37,7 @@ import javafx.scene.text.Text;
  * @author theo.franos.etu
  *
  */
-public class MonsterView implements Observer{
-	private static final Logger logger = Logger.getLogger(MonsterView.class.getName());
+public class MonsterView  extends View {
 	/**
 	 * Constante couleur du Monstre. Ce n'est plus utilisé pour le moment
 	 */
@@ -53,31 +50,10 @@ public class MonsterView implements Observer{
 	 * Constante couleur de la sortie du labyrinthe. Ce n'est plus utilisé pour le moment
 	 */
 	private static final Color HUNTER_COLOR = Color.YELLOW;
-	
-	/**
-	 * Contient toute les informations sur comment doit s'afficher la fenetre et le jeu
-	 */
-	DisplayValues display;
-	
-	/**
-	 * Contient toute les informations à propos de la manière dont doit s'afficher le jeu
-	 */
-	private Theme theme;
-
-	/**
-	 * Nom du joueur incarnant le monstre
-	 */
-	private String monsterName;
-
-	/**
-	 * Sujet (pour le modèle observé)
-	 */
-	private Maze maze;
 
 	//Sprites (Rectangles pour le moment)
 	private CellWithText sprite_monster;
 	private CellWithText  sprite_shot;
-	private CellWithText  sprite_exit;
 	private CellWithText  selection;
 
 	/**
@@ -118,10 +94,7 @@ public class MonsterView implements Observer{
 	 */
 	private Text notification;
 
-	/**
-	 * Scène pour l'affichage.
-	 */
-	protected Scene scene;
+	
 
 	/**
      * Constructeur de la classe MonsterView, crée la vue du Monstre.
@@ -138,7 +111,7 @@ public class MonsterView implements Observer{
 	public MonsterView(DisplayValues display, Maze maze,  String monsterName, Theme theme) {
 		this.display=display;
 		this.theme=theme;
-		this.monsterName=monsterName;
+		this.playerName=monsterName;
 
 		this.maze = maze;
 		this.maze.attach(this);
@@ -164,7 +137,7 @@ public class MonsterView implements Observer{
 		b_option.setOnAction(e-> Management.showOption(this.maze, notification) );
 		
 		VBox vbox = new VBox();
-		Label player_name = new Label(this.monsterName);
+		Label player_name = new Label(this.playerName);
 		player_name.setTextFill(Color.WHITE);
 		this.turnIndication.setFill(Color.WHITE);
 		this.notification.setFill(Color.WHITE);
@@ -232,7 +205,7 @@ public class MonsterView implements Observer{
 					}
 				}
 			}catch(Exception e) {
-				logger.info("Error - in class MonsterView -> method actualize");
+				LOGGER.info("Error - in class MonsterView -> method actualize");
 			}
 		}
 	}
@@ -240,7 +213,8 @@ public class MonsterView implements Observer{
 	/**
 	 * Initialisation des sprites.
 	 */
-	private void initiateSprites() {
+	protected void initiateSprites() {
+		CellWithText  sprite_exit;
 		//Initialisation du sprite du monstre
 		this.sprite_monster=new CellWithText(this.maze.getMonster().getCoord(), this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY(), "Monster");
 		if(this.theme.isWithImages()) {
@@ -262,11 +236,11 @@ public class MonsterView implements Observer{
 		this.sprite_shot.getImgv().setVisible(true);
 
 		//Initialisation du sprite de la sortie
-		this.sprite_exit=new CellWithText(this.maze.getExit().getCoord(), this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY(), "Exit");
+		sprite_exit=new CellWithText(this.maze.getExit().getCoord(), this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY(), "Exit");
 		if(this.theme.isWithImages()) {
-			this.sprite_exit.setImage(this.theme.getExitImg());
+			sprite_exit.setImage(this.theme.getExitImg());
 		}else {
-			this.sprite_exit.setFill(EXIT_COLOR);
+			sprite_exit.setFill(EXIT_COLOR);
 		}
 		this.addMouseEvents(sprite_exit);
 
@@ -281,8 +255,8 @@ public class MonsterView implements Observer{
 		this.group_sprite.getChildren().add(this.sprite_monster);
 		this.group_img_sprite.getChildren().add(this.sprite_monster.getImgv());
 
-		this.group_sprite.getChildren().add(this.sprite_exit);
-		this.group_img_sprite.getChildren().add(this.sprite_exit.getImgv());
+		this.group_sprite.getChildren().add(sprite_exit);
+		this.group_img_sprite.getChildren().add(sprite_exit.getImgv());
 
 		this.group_sprite.getChildren().add(this.sprite_shot);
 		this.group_img_sprite.getChildren().add(this.sprite_shot.getImgv());
@@ -333,6 +307,7 @@ public class MonsterView implements Observer{
 	 */
 	public void select(MouseEvent e, ICoordinate c) {
 		if(this.maze.getMonsterIa().equals("Player")) {
+			System.out.println("Aller à ["+c.getRow()+","+c.getCol()+"]?");
 			int row=c.getRow();
 			int col=c.getCol();
 			this.selection.setY(this.calculDrawY(row));
@@ -351,12 +326,10 @@ public class MonsterView implements Observer{
 
 	public void selectionLocked(Cell cell) {
 		if(this.maze.getMonsterIa().equals("Player")) {
-			int y = this.calculCoordY(cell);
-			int x = this.calculCoordX(cell);
-			ICoordinate c = new Coordinate(y,x);
+			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
 			this.maze.move(c);
 		}else {
-			this.notification.setText("No selection possible: "+this.monsterName+" is an AI.");
+			this.notification.setText("No selection possible: "+this.playerName+" is an AI.");
 		}
 	}
 
@@ -375,45 +348,5 @@ public class MonsterView implements Observer{
 	public void validSelection() {
 		this.selection.setStroke(Color.RED);
 		this.selection.setStrokeWidth(3);
-	}
-
-	/**
-     * Calcule la position de dessin X en fonction d'une coordonnée.
-
-	 * @param x La coordonnée X.
-	 * @return  La position de dessin X calculée.
-	 */
-	public int calculDrawX(int x) {
-		return (int)(x*this.display.getZoom()+this.display.getGapX());
-	}
-
-	/**
-     * Calcule la position de dessin Y en fonction d'une coordonnée.
-     *
-	 * @param y La coordonnée Y.
-	 * @return  La position de dessin Y calculée.
-	 */
-	public int calculDrawY(int y) {
-		return (int)(y*this.display.getZoom()+this.display.getGapY());
-	}
-
-	/**
-     * Calcule la coordonnée X en fonction d'un rectangle.
-     *
-	 * @param r Le rectangle.
-	 * @return La coordonnée X calculée.
-	 */
-	public int calculCoordX(Rectangle r) {
-		return (int)((r.getX()-this.display.getGapX())/this.display.getZoom());
-	}
-
-	/**
-     * Calcule la coordonnée Y en fonction d'un rectangle.
-     *
-	 * @param r Le rectangle.
-	 * @return La coordonnée Y calculée.
-	 */
-	public int calculCoordY(Rectangle r) {
-		return (int)((r.getY()-this.display.getGapY())/this.display.getZoom());
 	}
 }
