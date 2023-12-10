@@ -78,12 +78,12 @@ public class Generators {
 	 * @param y 		La position verticale de la liste deroulante.
 	 * @return La liste déroulante générée.
 	 */
-	public static ComboBox<String> generateComboBox(String[] values, double x, double y) {
-		ComboBox<String> theme = new ComboBox<>();
-		theme.getItems().addAll(values);
-		theme.setValue(values[0]);
-		Generators.setLayout(theme, x ,y);
-		return theme;
+	public static <T> ComboBox<T> generateComboBox(T[] values, double x, double y) {
+		ComboBox<T> box = new ComboBox<>();
+		box.getItems().addAll(values);
+		box.setValue(values[0]);
+		Generators.setLayout(box, x ,y);
+		return box;
 	}
 
 	/**

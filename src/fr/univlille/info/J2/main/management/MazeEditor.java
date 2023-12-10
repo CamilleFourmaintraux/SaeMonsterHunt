@@ -3,9 +3,8 @@ package fr.univlille.info.J2.main.management;
 import java.io.File;
 
 import fr.univlille.info.J2.main.management.cells.Cell;
-import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
+import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
@@ -38,14 +37,12 @@ public class MazeEditor {
 
 	File map_import;
 	
-	String theme;
-	Color colorOfFloors;
-	Color colorOfWalls;
+	Theme theme;
 	Image imgFloors;
 	Image imgWalls;
 	boolean isWithImages;
 
-	public MazeEditor(int map_height, int map_width, double window_height, double window_width, int gap_X, int gap_Y, String theme, boolean isWithImages){
+	public MazeEditor(int map_height, int map_width, double window_height, double window_width, int gap_X, int gap_Y, Theme theme, boolean isWithImages){
 		this.editor_height=map_height;
 		this.editor_width=map_width;
 		this.group_map = new Group();
@@ -74,14 +71,14 @@ public class MazeEditor {
 						cell.setImage(this.imgWalls);
 						cell.setFill(Color.TRANSPARENT);
 					}else {
-						cell.setFill(this.colorOfWalls);
+						cell.setFill(this.theme.getWallColor());
 					}
 				}else {
 					if(isWithImages) {
 						cell.setImage(this.imgFloors);
 						cell.setFill(Color.TRANSPARENT);
 					}else {
-						cell.setFill(this.colorOfFloors);
+						cell.setFill(this.theme.getFloorColor());
 					}
 				}
 				cell.setStroke(Color.VIOLET);
@@ -91,12 +88,8 @@ public class MazeEditor {
 						modify(cell);
 					}
 				});
-				cell.setOnMouseExited(e->{
-					cell.setStrokeWidth(0);
-				});
-				cell.setOnMouseClicked(e->{
-					modify(cell);
-				});
+				cell.setOnMouseExited(e-> cell.setStrokeWidth(0) );
+				cell.setOnMouseClicked(e-> modify(cell) );
 				this.group_map.getChildren().add(cell);
 				this.group_img.getChildren().add(cell.getImgv());
 			}
@@ -124,7 +117,7 @@ public class MazeEditor {
 				cell.setImage(this.imgWalls);
 				cell.setFill(Color.TRANSPARENT);
 			}else {
-				cell.setFill(this.colorOfWalls);
+				cell.setFill(this.theme.getWallColor());
 			}
 		}else {
 			this.walls[cell.getRow()][cell.getCol()]=true;
@@ -132,31 +125,8 @@ public class MazeEditor {
 				cell.setImage(this.imgFloors);
 				cell.setFill(Color.TRANSPARENT);
 			}else {
-				cell.setFill(this.colorOfFloors);
+				cell.setFill(this.theme.getFloorColor());
 			}
-		}
-	}
-	
-	/**
-     * Applique un thème spécifique au jeu en modifiant les couleurs d'affichage.
-     *
-	 * @param theme Le nom du thème à appliquer (parmi "Cave", "Forest", "Ocean").
-	 */
-	public void applyTheme(String theme) {
-		if(theme.equals("Dungeon")) {
-			this.colorOfFloors=Color.LIGHTGREY;
-			this.colorOfWalls=Color.DARKGREY;
-			imgFloors=null;
-			imgWalls=null;
-		}else if(theme.equals("Cave")) {
-			this.colorOfFloors=Color.LIGHTGRAY;
-			this.colorOfWalls=Color.DARKGRAY;
-		}else if(theme.equals("Forest")) {
-			this.colorOfFloors=Color.LIGHTGREEN;
-			this.colorOfWalls=Color.FORESTGREEN;
-		}else if(theme.equals("Ocean")) {
-			this.colorOfFloors=Color.AQUAMARINE;
-			this.colorOfWalls=Color.SEAGREEN;
 		}
 	}
 }

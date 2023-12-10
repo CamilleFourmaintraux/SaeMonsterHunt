@@ -18,7 +18,7 @@ import fr.univlille.info.J2.main.application.system.SaveLoadSystemGames;
 import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
-import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
+import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -115,18 +115,12 @@ public class Management extends Stage implements Observer{
 	 */
 	protected static final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
 
-	
-	public static final String THEME_DUNGEON = "DUNGEON";
-	public static final String THEME_CAVE = "CAVE";
-	public  static final String THEME_MEADOW = "MEADOW";
-	public  static final String THEME_FOREST = "FOREST";
-	public static final String THEME_OCEAN = "OCEAN";
 	/**
 	 * Constante utilisée dans les comboBox pour le choix des themes.
 	 */
-	private static final String[] THEMES = new String[] {THEME_DUNGEON,THEME_CAVE,THEME_MEADOW,THEME_FOREST,THEME_OCEAN};
+	private static final String[] THEMES = new String[] {Theme.THEME_DUNGEON, Theme.THEME_CAVE, Theme.THEME_MEADOW, Theme.THEME_FOREST, Theme.THEME_OCEAN};
 
-	private String current_theme;
+	private Theme current_theme;
 	
 	/**
 	 * Constante pour le décalage lors de la génération des labels
@@ -234,19 +228,6 @@ public class Management extends Stage implements Observer{
 	 * La vue du Chasseur.
 	 */
 	private HunterView hv;
-
-	/**
-	 * Couleur des murs.
-	 */
-	private Color colorOfWalls;
-	/**
-	 * Couleur du sol.
-	 */
-	private Color colorOfFloors;
-	/**
-	 * Couleur du brouillard pour la vue du chasseur.
-	 */
-	private Color colorOfFog;
 	/**
 	 * stocke la hauteur du labyrinthe
 	 */
@@ -355,13 +336,12 @@ public class Management extends Stage implements Observer{
 	 * @param gap_Y 			L'écart vertical dans la vue du labyrinthe.Permet de décaler l'entièreté du labyrinthe sur un axe vertical.
 	 */
 	public Management(double window_height, double window_width, int gap_X, int gap_Y) {
-		ImageLoader.initThemes();
+		Theme.initThemes();
+		this.current_theme=Theme.themesMap.get(Theme.THEME_DUNGEON);
+		
 		this.menus=new HashMap<>();
 		this.window_height = window_height;
 		this.window_width = window_width;
-		this.colorOfFloors=Color.LIGHTGRAY;
-		this.colorOfWalls=Color.DARKGRAY;
-		this.colorOfFog=Color.BLACK;
 
 		this.zoom=30;
 		this.gap_X=gap_X;
@@ -652,8 +632,8 @@ public class Management extends Stage implements Observer{
 			}
 			this.maze.attach(this);
 
-			this.mv=new MonsterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.monster_name,this.current_theme,this.isWithImages);
-			this.hv=new HunterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.colorOfWalls,this.colorOfFloors,this.colorOfFog,this.maze,this.hunter_name,this.current_theme,this.isWithImages);
+			this.mv=new MonsterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.maze,this.monster_name,this.current_theme,this.isWithImages);
+			this.hv=new HunterView(this.window_height,this.window_width+100,this.gap_X,this.gap_Y,this.zoom,this.maze,this.hunter_name,this.current_theme,this.isWithImages);
 			if(this.isSameScreen) {
 				this.viewCommon.setScene(hv.scene);
 				this.viewCommon.show();
@@ -706,7 +686,7 @@ public class Management extends Stage implements Observer{
 		  root.setPadding(new Insets(30));
 
 		  // Créez une scène avec le layout
-		  Scene scene = new Scene(root, this.window_height, this.window_width, this.colorOfFloors);
+		  Scene scene = new Scene(root, this.window_height, this.window_width, this.current_theme.getFloorColor());
 
 		  // Ajoutez la scène aux menus
 		  this.menus.put(Integer.valueOf(ID_PLAY), scene);
@@ -775,7 +755,7 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(bBack);
 		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
+		this.menus.put(Integer.valueOf(ID_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.current_theme.getFloorColor()));
 	}
 
 
@@ -814,8 +794,8 @@ public class Management extends Stage implements Observer{
 
 		ComboBox<String> theme = Generators.generateComboBox(THEMES, 0, 130);
 		theme.setOnAction(e-> {
-			this.current_theme = theme.getValue();
-			this.applyTheme(current_theme);
+			this.current_theme = Theme.themesMap.get(theme.getValue());
+			this.applyTheme();
 		});
 		Label l_theme = Generators.generateLabel("Choose a theme", 0, 110);
 		
@@ -834,7 +814,7 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(bBack);
 		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_MISCELLANEOUS_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
+		this.menus.put(Integer.valueOf(ID_MISCELLANEOUS_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.current_theme.getFloorColor()));
 	}
 
 	/**
@@ -1016,7 +996,7 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(bottomPanel);
 		BorderPane.setAlignment(bottomPanel, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_MAZE_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
+		this.menus.put(Integer.valueOf(ID_MAZE_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.current_theme.getFloorColor()));
 	}
 
 	/**
@@ -1073,7 +1053,7 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(bBack);
 		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_MONSTER_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
+		this.menus.put(Integer.valueOf(ID_MONSTER_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.current_theme.getFloorColor()));
 	}
 
 	/**
@@ -1106,7 +1086,7 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(bBack);
 		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_HUNTER_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
+		this.menus.put(Integer.valueOf(ID_HUNTER_SETTINGS), new Scene(bp, this.window_height, this.window_width, this.current_theme.getFloorColor()));
 	}
 
 	public void generateMazeEditor() {
@@ -1216,7 +1196,7 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(controlPanel);
 		BorderPane.setAlignment(controlPanel, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_MAZE_EDITOR), new Scene(bp, this.window_height, this.window_width, this.colorOfFloors));
+		this.menus.put(Integer.valueOf(ID_MAZE_EDITOR), new Scene(bp, this.window_height, this.window_width, this.current_theme.getFloorColor()));
 	}
 
 
@@ -1279,34 +1259,17 @@ public class Management extends Stage implements Observer{
 		layout.setCenter(buttonLayout);
 		layout.setBottom(vBoxCredit);
 
-		this.menus.put(Integer.valueOf(ID_GAMEOVER), new Scene(layout, this.window_height, this.window_width, this.colorOfFloors));
+		this.menus.put(Integer.valueOf(ID_GAMEOVER), new Scene(layout, this.window_height, this.window_width, this.current_theme.getFloorColor()));
 	}
 
 	/**
      * Applique un thème spécifique au jeu en modifiant les couleurs d'affichage.
      *
-	 * @param theme Le nom du thème à appliquer (parmi "Cave", "Forest", "Ocean").
+	 * @param current_theme2 Le nom du thème à appliquer (parmi "Cave", "Forest", "Ocean").
 	 */
-	public void applyTheme(String theme) {
-		if(theme.equals("Dungeon")) {
-			this.colorOfFloors=Color.LIGHTGREY;
-			this.colorOfWalls=Color.DARKGREY;
-			this.colorOfFog=Color.BLACK;
-		}else if(theme.equals("Cave")) {
-			this.colorOfFloors=Color.LIGHTGRAY;
-			this.colorOfWalls=Color.DARKGRAY;
-			this.colorOfFog=Color.BLACK;
-		}else if(theme.equals("Forest")) {
-			this.colorOfFloors=Color.LIGHTGREEN;
-			this.colorOfWalls=Color.FORESTGREEN;
-			this.colorOfFog=Color.DARKGREEN;
-		}else if(theme.equals("Ocean")) {
-			this.colorOfFloors=Color.AQUAMARINE;
-			this.colorOfWalls=Color.SEAGREEN;
-			this.colorOfFog=Color.DARKBLUE;
-		}
+	public void applyTheme() {
 		for(Scene s:this.menus.values()) {
-			s.setFill(colorOfFloors);
+			s.setFill(this.current_theme.getFloorColor());
 		}
 	}
 

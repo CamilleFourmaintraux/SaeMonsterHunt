@@ -12,7 +12,7 @@ import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
-import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
+import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -48,6 +48,10 @@ public class MonsterView implements Observer{
 	 * Constante couleur de la sortie du labyrinthe. Ce n'est plus utilisé pour le moment
 	 */
 	private static final Color EXIT_COLOR = Color.VIOLET;
+	/**
+	 * Constante couleur de la sortie du labyrinthe. Ce n'est plus utilisé pour le moment
+	 */
+	private static final Color HUNTER_COLOR = Color.YELLOW;
 	
 	/**
 	 * Hauteur de la fenêtre, par défaut 500
@@ -86,7 +90,7 @@ public class MonsterView implements Observer{
 	 */
 	private boolean isWithImages;
 	
-	private String theme;
+	private Theme theme;
 
 	/**
 	 * Nom du joueur incarnant le monstre
@@ -151,16 +155,12 @@ public class MonsterView implements Observer{
 	 * @param colorOfFloors		Couleur des sols.
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
-	public MonsterView(double window_height, double window_width, int gap_X, int gap_Y, int zoom,
-			Color colorOfWalls, Color colorOfFloors, Color colorOfFog, Maze maze,  String monsterName, String theme, boolean isWithImages) {
+	public MonsterView(double window_height, double window_width, int gap_X, int gap_Y, int zoom, Maze maze,  String monsterName, Theme theme, boolean isWithImages) {
 		this.window_height = window_height;
 		this.window_width = window_width;
 		this.gap_X = gap_X;
 		this.gap_Y = gap_Y;
 		this.zoom = zoom;
-		this.colorOfWalls = colorOfWalls;
-		this.colorOfFloors = colorOfFloors;
-		this.colorOfFog = colorOfFog;
 		this.theme=theme;
 		this.isWithImages=isWithImages;
 		this.monsterName=monsterName;
@@ -269,7 +269,7 @@ public class MonsterView implements Observer{
 		//Initialisation du sprite du monstre
 		this.sprite_monster=new CellWithText(this.maze.getMonster().getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster");
 		if(this.isWithImages) {
-			this.sprite_monster.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.MONSTER));
+			this.sprite_monster.setImage(this.theme.getMonsterImg());
 		}else {
 			this.sprite_monster.setFill(MONSTER_COLOR);
 		}
@@ -278,9 +278,9 @@ public class MonsterView implements Observer{
 		//initialisation du sprite du dernier tir du chasseur
 		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter");
 		if(this.isWithImages) {
-			this.sprite_shot.setImage(ImageLoader.SCOPE);
+			this.sprite_shot.setImage(this.theme.getHunterImg());
 		}else {
-			this.sprite_shot.setStroke(Color.YELLOW);
+			this.sprite_shot.setStroke(HUNTER_COLOR);
 		}
 		this.addMouseEvents(sprite_shot);
 		this.sprite_shot.setVisible(true);
@@ -289,7 +289,7 @@ public class MonsterView implements Observer{
 		//Initialisation du sprite de la sortie
 		this.sprite_exit=new CellWithText(this.maze.getExit().getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit");
 		if(this.isWithImages) {
-			this.sprite_exit.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.EXIT));
+			this.sprite_exit.setImage(this.theme.getExitImg());
 		}else {
 			this.sprite_exit.setFill(EXIT_COLOR);
 		}
@@ -331,10 +331,10 @@ public class MonsterView implements Observer{
 				Cell r = new Cell(l, h, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y);
 				//Codage des rectangles
 				if(!this.maze.getWalls()[h][l]) {
-					r.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.WALL));
+					r.setImage(this.theme.getWallImg());
 					r.setFill(colorOfWalls);
 				}else {
-					r.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.FLOOR));
+					r.setImage(this.theme.getFloorImg());
 					r.setFill(colorOfFloors);
 				}
 				if(this.maze.getVisionRange()!=-1) {

@@ -11,7 +11,7 @@ import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
-import fr.univlille.info.J2.main.utils.menuConception.ImageLoader;
+import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -36,6 +36,10 @@ import javafx.scene.text.Text;
  *
  */
 public class HunterView implements Observer{
+	/**
+	 * Constante couleur de la sortie du labyrinthe. Ce n'est plus utilisé pour le moment
+	 */
+	private static final Color SHOT_COLOR = Color.YELLOW;
 	private static final Logger logger = Logger.getLogger(HunterView.class.getName());
 	/**
 	 * Hauteur de la fenêtre, par défaut 500
@@ -73,7 +77,7 @@ public class HunterView implements Observer{
 	 * boolean indiquant si le jeu doit afficher des carrés de couleurs ou des images
 	 */
 	private boolean isWithImages;
-	private String theme;
+	private Theme theme;
 
 	/**
 	 * Nom du joueur incarnant le chasseur
@@ -140,8 +144,7 @@ public class HunterView implements Observer{
 	 * @param colorOfFog		Couleur du brouillard.
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
-	public HunterView(double window_height, double window_width, int gap_X, int gap_y, int zoom, Color colorOfWalls,
-		Color colorOfFloors, Color colorOfFog, Maze maze, String hunterName, String theme, boolean isWithImages) {
+	public HunterView(double window_height, double window_width, int gap_X, int gap_y, int zoom, Maze maze, String hunterName, Theme theme, boolean isWithImages) {
 
 		//Initiation de la fenetre
 		this.window_height = window_height;
@@ -246,9 +249,9 @@ public class HunterView implements Observer{
 				//Codage des rectangles permettant le contrôle
 				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""));
 				if(!this.maze.getWalls()[h][l]) {
-					cell.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.WALL));
+					cell.setImage(this.theme.getWallImg());
 				}else {
-					cell.setImage(ImageLoader.THEMES.get(this.theme).get(ImageLoader.FLOOR));
+					cell.setImage(this.theme.getFloorImg());
 				}
 				cell.setFocusTraversable(false);
 				cell.setOnMouseEntered(event -> {
@@ -311,7 +314,7 @@ public class HunterView implements Observer{
 		this.selection.setVisible(false);
 
 		//initialisation du sprite du tir
-		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.zoom, Color.TRANSPARENT, Color.YELLOW, 5, this.gap_X, this.gap_Y, "Shot");
+		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.zoom, Color.TRANSPARENT, SHOT_COLOR, 5, this.gap_X, this.gap_Y, "Shot");
 		this.sprite_shot.setVisible(false);
 		this.sprite_shot.setOnMouseEntered(event -> {
 			this.select(this.sprite_shot);
