@@ -3,18 +3,13 @@ package fr.univlille.info.J2.main.management;
 import java.io.File;
 
 import fr.univlille.info.J2.main.management.cells.Cell;
+import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class MazeEditor {
-
-	/**
-	 * niveau de zoom
-	 */
-	int zoom;
-
 	/**
 	 * Groupe contenant permettant le controle
 	 */
@@ -38,58 +33,40 @@ public class MazeEditor {
 	File map_import;
 	
 	Theme theme;
-	Image imgFloors;
-	Image imgWalls;
-	boolean isWithImages;
 
-	public MazeEditor(int map_height, int map_width, double window_height, double window_width, int gap_X, int gap_Y, Theme theme, boolean isWithImages){
+	public MazeEditor(int map_height, int map_width, DisplayValues display, Theme theme){
 		this.editor_height=map_height;
 		this.editor_width=map_width;
 		this.group_map = new Group();
 		this.group_img = new Group();
 		this.group = new Group();
 		this.theme=theme;
-		this.isWithImages=isWithImages;
-		this.resetDrawing(map_height, map_width, window_height, window_width, gap_X, gap_Y);
+		this.resetDrawing(map_height, map_width, display);
 		this.group.getChildren().addAll(group_img,group_map);
 	}
 
-	public void draw(int map_height, int map_width, double window_height, double window_width, int gap_X, int gap_Y) {
+	public void draw(int map_height, int map_width, DisplayValues display) {
 		//Adaptation du zoom
-		double height = (window_height / (map_height*2.7));
-		double width = (window_width / (map_width*1.2));
-		this.zoom=(int) Math.min(height, width);
+		double height = (display.getWindowHeight() / (map_height*2.7));
+		double width = (display.getWindowWidth()  / (map_width*1.2));
+		int zoom=(int) Math.min(height, width);
 
 		this.group_map.getChildren().clear();
 		this.group_img.getChildren().clear();
 
 		for(int h=0; h<this.walls.length; h++) {
 			for(int l=0; l<this.walls[h].length; l++) {
-				Cell cell = new Cell(l, h, this.zoom, Color.TRANSPARENT, gap_X, gap_Y);
-				if(!this.walls[h][l]) {
-					if(isWithImages) {
-						cell.setImage(this.imgWalls);
-						cell.setFill(Color.TRANSPARENT);
-					}else {
-						cell.setFill(this.theme.getWallColor());
-					}
-				}else {
-					if(isWithImages) {
-						cell.setImage(this.imgFloors);
-						cell.setFill(Color.TRANSPARENT);
-					}else {
-						cell.setFill(this.theme.getFloorColor());
-					}
-				}
+				Cell cell = new Cell(l, h, zoom, Color.TRANSPARENT, display.getGapX(), display.getGapY());
+				this.setCellDisplay(theme.isWithImages(), !this.walls[h][l], cell);
 				cell.setStroke(Color.VIOLET);
 				cell.setOnMouseEntered(e->{
 					cell.setStrokeWidth(1);
 					if(e.isShiftDown()) {
-						modify(cell);
+						modify(cell,theme.isWithImages());
 					}
 				});
 				cell.setOnMouseExited(e-> cell.setStrokeWidth(0) );
-				cell.setOnMouseClicked(e-> modify(cell) );
+				cell.setOnMouseClicked(e-> modify(cell,theme.isWithImages()) );
 				this.group_map.getChildren().add(cell);
 				this.group_img.getChildren().add(cell.getImgv());
 			}
@@ -104,25 +81,33 @@ public class MazeEditor {
 		}
 	}
 
-	public void resetDrawing(int map_height, int map_width, double window_height, double window_width, int gap_X, int gap_Y) {
+	public void resetDrawing(int map_height, int map_width, DisplayValues display) {
 		this.walls = new boolean[map_height][map_width];
 		this.resetWalls();
-		this.draw(map_height, map_width, window_height, window_width, gap_X, gap_Y);
+		this.draw(map_height,map_width, display);
 	}
 
-	public void modify(Cell cell) {
+	public void modify(Cell cell, boolean withImages) {
 		if(this.walls[cell.getRow()][cell.getCol()]) {
 			this.walls[cell.getRow()][cell.getCol()]=false;
-			if(isWithImages) {
-				cell.setImage(this.imgWalls);
+			
+		}else {
+			this.walls[cell.getRow()][cell.getCol()]=true;
+		}
+		this.setCellDisplay(withImages, !this.walls[cell.getRow()][cell.getCol()], cell);
+	}
+	
+	public void setCellDisplay(boolean withImages, boolean isAWall, Cell cell) {
+		if(isAWall) {
+			if(withImages) {
+				cell.setImage(this.theme.getWallImg());
 				cell.setFill(Color.TRANSPARENT);
 			}else {
 				cell.setFill(this.theme.getWallColor());
 			}
 		}else {
-			this.walls[cell.getRow()][cell.getCol()]=true;
-			if(isWithImages) {
-				cell.setImage(this.imgFloors);
+			if(withImages) {
+				cell.setImage(this.theme.getFloorImg());
 				cell.setFill(Color.TRANSPARENT);
 			}else {
 				cell.setFill(this.theme.getFloorColor());

@@ -5,6 +5,7 @@ package fr.univlille.info.J2.main.application;
 
 
 import fr.univlille.info.J2.main.management.Management;
+import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 
 //--module-path /home/iutinfo/eclipse-workspace/Jars/javafx-sdk-21/lib --add-modules=javafx.controls
 
@@ -34,7 +35,7 @@ public class MonsterHunt extends Application{
      */
 	@Override
 	public void start(Stage stage) throws Exception {
-		Management game = new Management(500,500,0,0);
+		Management game = new Management(new DisplayValues(DisplayValues.WINDOWS_MIN_SIZE,DisplayValues.WINDOWS_MIN_SIZE,0,0,10,0,0));
 		game.show();
 	}
 

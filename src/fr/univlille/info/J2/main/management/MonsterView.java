@@ -11,6 +11,7 @@ import fr.univlille.info.J2.main.management.cells.Cell;
 import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
 import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
@@ -54,42 +55,13 @@ public class MonsterView implements Observer{
 	private static final Color HUNTER_COLOR = Color.YELLOW;
 	
 	/**
-	 * Hauteur de la fenêtre, par défaut 500
+	 * Contient toute les informations sur comment doit s'afficher la fenetre et le jeu
 	 */
-	private double window_height;
-	/**
-	 * Largeur de la fenêtre, par défaut 500
-	 */
-	private double window_width;
-	/**
-	 * Position horizontal, par défaut 0
-	 */
-	private int gap_X;
-	/**
-	 * Position vertical, par défaut 0
-	 */
-	private int gap_Y;
-	/**
-	 * Zoom, par défaut 30
-	 */
-	private int zoom;
-	/**
-	 * Couleur des murs
-	 */
-	private Color colorOfWalls;
-	/**
-	 * Couleur des sols
-	 */
-	private Color colorOfFloors;
-	/**
-	 * Couleur du brouillard
-	 */
-	private Color colorOfFog;
-	/**
-	 * boolean indiquant si le jeu doit afficher des carrés de couleurs ou des images
-	 */
-	private boolean isWithImages;
+	DisplayValues display;
 	
+	/**
+	 * Contient toute les informations à propos de la manière dont doit s'afficher le jeu
+	 */
 	private Theme theme;
 
 	/**
@@ -129,13 +101,21 @@ public class MonsterView implements Observer{
 	private Group group_sprite;
 
 	/**
-	 * Groupe pour la gestion de la scène.
+	 * Groupe englobant toutes les Cell représentant le jeu
 	 */
 	private Group group_stage;
-
+	/**
+	 * BorderPane pour la gestion de la scène.
+	 */
 	private BorderPane bp;
 
+	/**
+	 * Text indiquant le tour actuel
+	 */
 	private Text turnIndication;
+	/**
+	 * Text permettant de transmettre des informations aux joueurs (ici le monstre).
+	 */
 	private Text notification;
 
 	/**
@@ -151,18 +131,13 @@ public class MonsterView implements Observer{
 	 * @param gap_X 			Position horizontal.
 	 * @param gap_Y				Position vertical.
 	 * @param zoom 				Niveau de zoom.
-	 * @param colorOfWalls  	Couleur des murs.
-	 * @param colorOfFloors		Couleur des sols.
+	 * @param theme.getWallColor()  	Couleur des murs.
+	 * @param theme.getFloorColor()		Couleur des sols.
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
-	public MonsterView(double window_height, double window_width, int gap_X, int gap_Y, int zoom, Maze maze,  String monsterName, Theme theme, boolean isWithImages) {
-		this.window_height = window_height;
-		this.window_width = window_width;
-		this.gap_X = gap_X;
-		this.gap_Y = gap_Y;
-		this.zoom = zoom;
+	public MonsterView(DisplayValues display, Maze maze,  String monsterName, Theme theme) {
+		this.display=display;
 		this.theme=theme;
-		this.isWithImages=isWithImages;
 		this.monsterName=monsterName;
 
 		this.maze = maze;
@@ -198,7 +173,7 @@ public class MonsterView implements Observer{
 		this.bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 		this.bp.setTop(vbox);
 
-		this.scene=new Scene(bp,this.window_width,this.window_height,Color.BLACK);
+		this.scene=new Scene(bp,this.display.getWindowWidth(),this.display.getWindowHeight(),Color.BLACK);
 		this.draw();
 	}
 
@@ -246,13 +221,13 @@ public class MonsterView implements Observer{
 				Cell cell = (Cell)n;
 				if(this.maze.isExplored(cell.getCoord())) {
 					cell.setStroke(Color.TRANSPARENT);
-					if(this.isWithImages) {
+					if(this.theme.isWithImages()) {
 						cell.setFill(Color.TRANSPARENT);
 					}else {
 						if(this.maze.isFloor(cell.getCoord())) {
-							cell.setFill(colorOfFloors);
+							cell.setFill(this.theme.getFloorColor());
 						}else {
-							cell.setFill(colorOfWalls);
+							cell.setFill(this.theme.getWallColor());
 						}
 					}
 				}
@@ -267,8 +242,8 @@ public class MonsterView implements Observer{
 	 */
 	private void initiateSprites() {
 		//Initialisation du sprite du monstre
-		this.sprite_monster=new CellWithText(this.maze.getMonster().getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Monster");
-		if(this.isWithImages) {
+		this.sprite_monster=new CellWithText(this.maze.getMonster().getCoord(), this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY(), "Monster");
+		if(this.theme.isWithImages()) {
 			this.sprite_monster.setImage(this.theme.getMonsterImg());
 		}else {
 			this.sprite_monster.setFill(MONSTER_COLOR);
@@ -276,8 +251,8 @@ public class MonsterView implements Observer{
 		this.addMouseEvents(sprite_monster);
 
 		//initialisation du sprite du dernier tir du chasseur
-		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.zoom, Color.TRANSPARENT, Color.TRANSPARENT, 3, this.gap_X, this.gap_Y, "Hunter");
-		if(this.isWithImages) {
+		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.display.getZoom(), Color.TRANSPARENT, Color.TRANSPARENT, 3, this.display.getGapX(), this.display.getGapY(), "Hunter");
+		if(this.theme.isWithImages()) {
 			this.sprite_shot.setImage(this.theme.getHunterImg());
 		}else {
 			this.sprite_shot.setStroke(HUNTER_COLOR);
@@ -287,8 +262,8 @@ public class MonsterView implements Observer{
 		this.sprite_shot.getImgv().setVisible(true);
 
 		//Initialisation du sprite de la sortie
-		this.sprite_exit=new CellWithText(this.maze.getExit().getCoord(), this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y, "Exit");
-		if(this.isWithImages) {
+		this.sprite_exit=new CellWithText(this.maze.getExit().getCoord(), this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY(), "Exit");
+		if(this.theme.isWithImages()) {
 			this.sprite_exit.setImage(this.theme.getExitImg());
 		}else {
 			this.sprite_exit.setFill(EXIT_COLOR);
@@ -296,7 +271,7 @@ public class MonsterView implements Observer{
 		this.addMouseEvents(sprite_exit);
 
 		//initialisation du rectangle de sélection
-		this.selection=new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Selection");
+		this.selection=new CellWithText(0,0, this.display.getZoom(), Color.TRANSPARENT, Color.RED, 3, this.display.getGapX(), this.display.getGapY(), "Selection");
 		this.selection.setVisible(false);
 		this.addMouseEvents(selection);
 
@@ -328,18 +303,18 @@ public class MonsterView implements Observer{
 	public void draw() {
 		for(int h=0; h<this.maze.getWalls().length; h++) {
 			for(int l=0; l<this.maze.getWalls()[h].length; l++) {
-				Cell r = new Cell(l, h, this.zoom, Color.TRANSPARENT, this.gap_X, this.gap_Y);
+				Cell r = new Cell(l, h, this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY());
 				//Codage des rectangles
 				if(!this.maze.getWalls()[h][l]) {
 					r.setImage(this.theme.getWallImg());
-					r.setFill(colorOfWalls);
+					r.setFill(theme.getWallColor());
 				}else {
 					r.setImage(this.theme.getFloorImg());
-					r.setFill(colorOfFloors);
+					r.setFill(theme.getFloorColor());
 				}
 				if(this.maze.getVisionRange()!=-1) {
-					r.setFill(this.colorOfFog);
-					r.setStroke(this.colorOfWalls);
+					r.setFill(this.theme.getFogColor());
+					r.setStroke(this.theme.getWallColor());
 					r.setStrokeWidth(1);
 				}
 				this.addMouseEvents(r);
@@ -402,124 +377,6 @@ public class MonsterView implements Observer{
 		this.selection.setStrokeWidth(3);
 	}
 
-
-	/**
-	 * Obtient la hauteur de la fenêtre de jeu.
-	 *
-	 * @return La hauteur de la fenêtre.
-	 */
-	public double getWindow_height() {
-		return window_height;
-	}
-
-	/**
-	 * Définit la hauteur de la fenêtre de jeu.
-	 *
-	 * @param window_height La nouvelle hauteur de la fenêtre.
-	 */
-	public void setWindow_height(double window_height) {
-		this.window_height = window_height;
-
-	}
-
-	/**
-	 * Obtient la largeur de la fenêtre de jeu.
-	 *
-	 * @return La largeur de la fenêtre.
-	 */
-	public double getWindow_width() {
-		return window_width;
-	}
-
-	/**
-	 * Définit la largeur de la fenêtre de jeu.
-	 *
-	 * @param window_width La nouvelle largeur de la fenêtre.
-	 */
-	public void setWindow_width(double window_width) {
-		this.window_width = window_width;
-	}
-
-	/**
-	 * Obtient la position X.
-	 * @return La postion X.
-	 */
-	public int getGap_X() {
-		return gap_X;
-	}
-
-	/**
-	 * Définit la position X.
-	 * @param gap_X La nouvelle positon X.
-	 */
-	public void setGap_X(int gap_X) {
-		this.gap_X = gap_X;
-	}
-
-	/**
-	 * Obtient la position Y.
-	 * @return La postion Y.
-	 */
-	public int getGap_y() {
-		return gap_Y;
-	}
-
-	/**
-	 * Définit la position Y.
-	 * @param gap_Y La nouvelle positon Y.
-	 */
-	public void setGap_y(int gap_Y) {
-		this.gap_Y = gap_Y;
-	}
-
-	/**
-	 * Obtient le zoom.
-	 * @return La valeur du zoom.
-	 */
-	public int getZoom() {
-		return zoom;
-	}
-
-	/**
-	 * Définit la valeur du zoom.
-	 * @param zoom La nouvelle valeur du zoom.
-	 */
-	public void setZoom(int zoom) {
-		this.zoom = zoom;
-	}
-
-	/**
-	 * Obtient la couleur du mur.
-	 * @return La couleur du mur
-	 */
-	public Color getColorOfWalls() {
-		return colorOfWalls;
-	}
-
-	/**
-	 * Définit la couleur du mur.
-	 * @param colorOfWalls La nouvelle couleur du mur.
-	 */
-	public void setColorOfWalls(Color colorOfWalls) {
-		this.colorOfWalls = colorOfWalls;
-	}
-
-	/**
-	 * Obtient la couleur du sol.
-	 * @return la couleur du sol.
-	 */
-	public Color getColorOfFloors() {
-		return colorOfFloors;
-	}
-
-	/**
-	 * Définit la couleur du sol.
-	 * @param colorOfFloors La nouvelle couleur du sol.
-	 */
-	public void setColorOfFloors(Color colorOfFloors) {
-		this.colorOfFloors = colorOfFloors;
-	}
-
 	/**
      * Calcule la position de dessin X en fonction d'une coordonnée.
 
@@ -527,7 +384,7 @@ public class MonsterView implements Observer{
 	 * @return  La position de dessin X calculée.
 	 */
 	public int calculDrawX(int x) {
-		return x*zoom+gap_X;
+		return (int)(x*this.display.getZoom()+this.display.getGapX());
 	}
 
 	/**
@@ -537,7 +394,7 @@ public class MonsterView implements Observer{
 	 * @return  La position de dessin Y calculée.
 	 */
 	public int calculDrawY(int y) {
-		return y*zoom+gap_Y;
+		return (int)(y*this.display.getZoom()+this.display.getGapY());
 	}
 
 	/**
@@ -547,7 +404,7 @@ public class MonsterView implements Observer{
 	 * @return La coordonnée X calculée.
 	 */
 	public int calculCoordX(Rectangle r) {
-		return (int)((r.getX()-gap_X)/zoom);
+		return (int)((r.getX()-this.display.getGapX())/this.display.getZoom());
 	}
 
 	/**
@@ -557,6 +414,6 @@ public class MonsterView implements Observer{
 	 * @return La coordonnée Y calculée.
 	 */
 	public int calculCoordY(Rectangle r) {
-		return (int)((r.getY()-gap_Y)/zoom);
+		return (int)((r.getY()-this.display.getGapY())/this.display.getZoom());
 	}
 }

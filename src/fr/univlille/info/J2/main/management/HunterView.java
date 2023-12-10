@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
 import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
@@ -41,42 +42,15 @@ public class HunterView implements Observer{
 	 */
 	private static final Color SHOT_COLOR = Color.YELLOW;
 	private static final Logger logger = Logger.getLogger(HunterView.class.getName());
+	
 	/**
-	 * Hauteur de la fenêtre, par défaut 500
+	 * Contient toute les informations sur comment doit s'afficher la fenetre et le jeu
 	 */
-	private double window_height;
+	DisplayValues display;
+	
 	/**
-	 * Largeur de la fenêtre, par défaut 500
+	 * Contient toute les informations à propos de la manière dont doit s'afficher le jeu
 	 */
-	private double window_width;
-	/**
-	 * Position horizontal, par défaut 0
-	 */
-	private int gap_X;
-	/**
-	 * Position vertical, par défaut 0
-	 */
-	private int gap_Y;
-	/**
-	 * Zoom, par défaut 30
-	 */
-	private int zoom;
-	/**
-	 * Couleur des murs
-	 */
-	private Color colorOfWalls;
-	/**
-	 * Couleur des sols
-	 */
-	private Color colorOfFloors;
-	/**
-	 * Couleur du brouillard
-	 */
-	private Color colorOfFog;
-	/**
-	 * boolean indiquant si le jeu doit afficher des carrés de couleurs ou des images
-	 */
-	private boolean isWithImages;
 	private Theme theme;
 
 	/**
@@ -120,10 +94,18 @@ public class HunterView implements Observer{
 	 * Groupe pour la gestion des textes.
 	 */
 	private Group group_texts;
-
+	/**
+	 * BorderPane englobant le tout pour la gestion de la scène
+	 */
 	private BorderPane bp;
 
+	/**
+	 * Text indiquant le tour actuel
+	 */
 	private Text turnIndication;
+	/**
+	 * Text permettant de transmettre des informations aux joueurs (ici le monstre).
+	 */
 	private Text notification;
 
 	/**
@@ -144,18 +126,10 @@ public class HunterView implements Observer{
 	 * @param colorOfFog		Couleur du brouillard.
 	 * @param maze				Instance du labyrinthe associée à cette vue.
 	 */
-	public HunterView(double window_height, double window_width, int gap_X, int gap_y, int zoom, Maze maze, String hunterName, Theme theme, boolean isWithImages) {
+	public HunterView(DisplayValues display, Maze maze, String hunterName, Theme theme) {
 
 		//Initiation de la fenetre
-		this.window_height = window_height;
-		this.window_width = window_width;
-		this.gap_X = gap_X;
-		this.gap_Y = gap_y;
-		this.zoom = zoom;
-		this.colorOfWalls = colorOfWalls;
-		this.colorOfFloors = colorOfFloors;
-		this.colorOfFog = colorOfFog;
-		this.isWithImages=isWithImages;
+		this.display=display;
 		this.theme=theme;
 		this.hunterName=hunterName;
 
@@ -192,7 +166,7 @@ public class HunterView implements Observer{
 
 
 		//Scene
-		this.scene=new Scene(bp, this.window_width,this.window_height,Color.BLACK);
+		this.scene=new Scene(bp, this.display.getWindowWidth(),this.display.getWindowHeight(),Color.BLACK);
 
 		this.initiateSprites();
 		this.draw();
@@ -247,7 +221,7 @@ public class HunterView implements Observer{
 		for(int h=0; h<this.maze.getHunter().getTraces().length; h++) {
 			for(int l=0; l<this.maze.getHunter().getTraces()[h].length; l++) {
 				//Codage des rectangles permettant le contrôle
-				CellWithText cell = new CellWithText(l, h, zoom, this.colorOfFog,Color.DARKGREY,1,this.gap_X,this.gap_Y,new Text(""));
+				CellWithText cell = new CellWithText(l, h, this.display.getZoom(), this.theme.getFogColor(),Color.DARKGREY,1,this.display.getGapX(),this.display.getGapY(),new Text(""));
 				if(!this.maze.getWalls()[h][l]) {
 					cell.setImage(this.theme.getWallImg());
 				}else {
@@ -272,7 +246,7 @@ public class HunterView implements Observer{
 	 * @return La coordonnée X calculée.
 	 */
 	public int calculCoordX(Rectangle r) {
-		return (int)((r.getX()-gap_X)/zoom);
+		return (int)((r.getX()-this.display.getGapX())/this.display.getZoom());
 	}
 
 	/**
@@ -282,7 +256,7 @@ public class HunterView implements Observer{
 	 * @return La coordonnée Y calculée.
 	 */
 	public int calculCoordY(Rectangle r) {
-		return (int)((r.getY()-gap_Y)/zoom);
+		return (int)((r.getY()-this.display.getGapY())/this.display.getZoom());
 	}
 
 	/**
@@ -292,7 +266,7 @@ public class HunterView implements Observer{
 	 * @return  La position de dessin X calculée.
 	 */
 	public int calculDrawX(int x) {
-		return x*zoom+gap_X;
+		return (int)(x*this.display.getZoom()+this.display.getGapX());
 	}
 
 	/**
@@ -302,7 +276,7 @@ public class HunterView implements Observer{
 	 * @return  La position de dessin Y calculée.
 	 */
 	public int calculDrawY(int y) {
-		return y*zoom+gap_Y;
+		return (int)(y*this.display.getZoom()+this.display.getGapY());
 	}
 
 	/**
@@ -310,11 +284,11 @@ public class HunterView implements Observer{
 	 */
 	private void initiateSprites() {
 		//initialisation du sprite de selection
-		this.selection =  new CellWithText(0,0, this.zoom, Color.TRANSPARENT, Color.RED, 3, this.gap_X, this.gap_Y, "Shot");
+		this.selection =  new CellWithText(0,0, this.display.getZoom(), Color.TRANSPARENT, Color.RED, 3, this.display.getGapX(),this.display.getGapY(), "Shot");
 		this.selection.setVisible(false);
 
 		//initialisation du sprite du tir
-		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.zoom, Color.TRANSPARENT, SHOT_COLOR, 5, this.gap_X, this.gap_Y, "Shot");
+		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.display.getZoom(), Color.TRANSPARENT, SHOT_COLOR, 5, this.display.getGapX(),this.display.getGapY(), "Shot");
 		this.sprite_shot.setVisible(false);
 		this.sprite_shot.setOnMouseEntered(event -> {
 			this.select(this.sprite_shot);
@@ -364,7 +338,7 @@ public class HunterView implements Observer{
 	 * @param colorOfFloors La couleur associé au sol, future couleur de la cellule si la cellule se révèle être un sol.
 	 */
 	public void revealCell(CellWithText cwt, Color colorOfWalls, Color colorOfFloors) {
-		if(this.isWithImages) {
+		if(this.theme.isWithImages()) {
 			cwt.setFill(Color.TRANSPARENT);
 		}else {
 			if(this.maze.getWalls()[cwt.getRow()][cwt.getCol()]) {
@@ -402,7 +376,7 @@ public class HunterView implements Observer{
 				try {
 					cwt = searchSprite(this.group_map, new Coordinate(y,x));
 					if(cwt!=null) {
-						this.revealCell(cwt,this.colorOfWalls,this.colorOfFloors);
+						this.revealCell(cwt,this.theme.getWallColor(),this.theme.getFloorColor());
 					}else {
 						logger.info("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
 					}	
@@ -414,122 +388,4 @@ public class HunterView implements Observer{
 		}
 
 	}
-
-	/**
-	 * Obtient la hauteur de la fenêtre de jeu.
-	 *
-	 * @return La hauteur de la fenêtre.
-	 */
-	public double getWindow_height() {
-		return window_height;
-	}
-
-	/**
-	 * Définit la hauteur de la fenêtre de jeu.
-	 *
-	 * @param window_height La nouvelle hauteur de la fenêtre.
-	 */
-	public void setWindow_height(double window_height) {
-		this.window_height = window_height;
-	}
-
-	/**
-	 * Obtient la largeur de la fenêtre de jeu.
-	 *
-	 * @return La largeur de la fenêtre.
-	 */
-	public double getWindow_width() {
-		return window_width;
-	}
-
-	/**
-	 * Définit la largeur de la fenêtre de jeu.
-	 *
-	 * @param window_width La nouvelle largeur de la fenêtre.
-	 */
-	public void setWindow_width(double window_width) {
-		this.window_width = window_width;
-	}
-
-	/**
-	 * Obtient la position X.
-	 * @return La postion X.
-	 */
-	public int getGap_X() {
-		return gap_X;
-	}
-
-	/**
-	 * Définit la position X.
-	 * @param gap_X La nouvelle positon X.
-	 */
-	public void setGap_X(int gap_X) {
-		this.gap_X = gap_X;
-	}
-
-	/**
-	 * Obtient la position Y.
-	 * @return La postion Y.
-	 */
-	public int getGap_Y() {
-		return gap_Y;
-	}
-
-	/**
-	 * Définit la position Y.
-	 * @param gap_Y La nouvelle positon Y.
-	 */
-	public void setGap_Y(int gap_Y) {
-		this.gap_Y = gap_Y;
-	}
-
-	/**
-	 * Obtient le zoom.
-	 * @return La valeur du zoom.
-	 */
-	public int getZoom() {
-		return zoom;
-	}
-
-	/**
-	 * Définit la valeur du zoom.
-	 * @param zoom La nouvelle valeur du zoom.
-	 */
-	public void setZoom(int zoom) {
-		this.zoom = zoom;
-	}
-
-	/**
-	 * Obtient la couleur du mur.
-	 * @return La couleur du mur
-	 */
-	public Color getColorOfWalls() {
-		return colorOfWalls;
-	}
-
-	/**
-	 * Définit la couleur du mur.
-	 * @param colorOfWalls La nouvelle couleur du mur.
-	 */
-	public void setColorOfWalls(Color colorOfWalls) {
-		this.colorOfWalls = colorOfWalls;
-	}
-
-	/**
-	 * Obtient la couleur du sol.
-	 * @return la couleur du sol.
-	 */
-	public Color getColorOfFloors() {
-		return colorOfFloors;
-	}
-
-	/**
-	 * Définit la couleur du sol.
-	 * @param colorOfFloors La nouvelle couleur du sol.
-	 */
-	public void setColorOfFloors(Color colorOfFloors) {
-		this.colorOfFloors = colorOfFloors;
-	}
-
-
 }

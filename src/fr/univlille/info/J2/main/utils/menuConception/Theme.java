@@ -17,22 +17,59 @@ public class Theme {
 	public static final String THEME_MEADOW = "meadow";
 	public static final String THEME_FOREST = "forest";
 	public static final String THEME_OCEAN = "ocean";
-	
+
 	public static Map<String,Theme> themesMap = new HashMap<>();
 	
+
+	/**
+	 * indique si le jeu affichera de images ou des simples couleurs
+	 */
+	private boolean isWithImages;
+	/**
+	 * Nom du thème
+	 */
 	private String name;
+	/**
+	 * Nom du thème
+	 */
 	private Image floorImg;
+	/**
+	 * Nom du thème
+	 */
 	private Image wallImg;
+	/**
+	 * Nom du thème
+	 */
 	private Image exitImg;
+	/**
+	 * Nom du thème
+	 */
 	private Image monsterImg;
+	/**
+	 * Image associé au chasseur
+	 */
 	private Image hunterImg;
+	/**
+	 * Couleur des sols
+	 */
 	private Color floorColor;
+	/**
+	 * Couleur des murs
+	 */
 	private Color wallColor;
+	/**
+	 * Couleur du brouillard
+	 */
 	private Color fogColor;
+	/**
+	 * Couleur du fond de l'écran
+	 */
 	private Color backgroundColor;
+	
 	
 	public Theme(String key) {
 		this.name=key;
+		this.isWithImages=true;
 		Theme.themesMap.put(key, this);
 	}
 	
@@ -141,6 +178,14 @@ public class Theme {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+
+	public boolean isWithImages() {
+		return isWithImages;
+	}
+
+	public void setWithImages(boolean isWithImages) {
+		this.isWithImages = isWithImages;
 	}
 	
 	

@@ -16,19 +16,19 @@ public class CellWithText extends Cell{
      */
 	protected Text text;
 
-	public CellWithText(int x, int y, int zoom, Color fill,int gap_X, int gap_Y, Text text) {
+	public CellWithText(int x, int y, double zoom, Color fill,double gap_X, double gap_Y, Text text) {
 		this(x, y, zoom, fill, fill, 0,  gap_X, gap_Y, text);
 	}
 
-	public CellWithText(int x, int y, int zoom, Color fill,int gap_X, int gap_Y, String text) {
+	public CellWithText(int x, int y, double zoom, Color fill, double gap_X, double gap_Y, String text) {
 		this(x, y, zoom, fill, fill, 0,  gap_X, gap_Y, new Text(text));
 	}
 
-	public CellWithText(ICoordinate c, int zoom, Color fill,int gap_X, int gap_Y, String text) {
+	public CellWithText(ICoordinate c, double zoom, Color fill,double gap_X, double gap_Y, String text) {
 		this(c.getCol(), c.getRow(), zoom, fill, fill, 0,  gap_X, gap_Y, new Text(text));
 	}
 
-	public CellWithText(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, Text text) {
+	public CellWithText(int x, int y, double zoom, Color fill, Color stroke, int strokeWidth, double gap_X, double gap_Y, Text text) {
 		super(x, y, zoom, fill, stroke, strokeWidth, gap_X, gap_Y);
 		this.text=text;
 		this.text.setX((x*zoom+gap_X)+(zoom/3));
@@ -37,11 +37,11 @@ public class CellWithText extends Cell{
 		this.text.toFront();
 	}
 
-	public CellWithText(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, String text) {
+	public CellWithText(int x, int y, double zoom, Color fill, Color stroke, int strokeWidth, double gap_X, double gap_Y, String text) {
 		this(x, y, zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text));
 	}
 
-	public CellWithText(ICoordinate c, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, String text) {
+	public CellWithText(ICoordinate c, double zoom, Color fill, Color stroke, int strokeWidth, double gap_X, double gap_Y, String text) {
 		this(c.getCol(), c.getRow(), zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text));
 	}
 
