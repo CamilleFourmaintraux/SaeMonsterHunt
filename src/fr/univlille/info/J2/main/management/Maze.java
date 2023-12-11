@@ -116,8 +116,8 @@ public class Maze extends Subject{
 	public Maze(boolean[][] maze, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
 		this.walls=maze;
 		this.turn=1;
-		this.initMonsterExitHunter(monster_IA, hunter_IA,limitedVision, visionRange, movingRange, bonusRange);
 		this.initTraces();
+		this.initMonsterExitHunter(monster_IA, hunter_IA,limitedVision, visionRange, movingRange, bonusRange);
 		this.isMonsterTurn=true;
 		this.exploring(this.monster.getCoord(), visionRange);
 		this.move(this.monster.getCoord());
@@ -233,14 +233,17 @@ public class Maze extends Subject{
 	public void initMonsterExitHunter(String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
 		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
 		this.setFloor(this.exit.getCoord(),true);
+		ICoordinate coordSpawnMonster = new Coordinate(0,Utils.random.nextInt(this.walls[0].length));
+		CellEvent eventSpawnMonster = new CellEvent(coordSpawnMonster, 0, CellInfo.EMPTY);
 		if(limitedVision) {
-			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),monster_IA, visionRange, movingRange);
+			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),eventSpawnMonster, visionRange, movingRange, monster_IA);
 		}else {
-			this.monster = new Monster(this.walls,new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),monster_IA, -1, movingRange);
-			this.monster.allExplored();
+			this.monster = new Monster(this.walls,eventSpawnMonster, -1, movingRange, monster_IA);
+			this.monster.setToAllExplored();
 		}
 		this.setFloor(this.monster.getCoord(),true);
-		this.hunter = new Hunter(this.walls.length,this.walls[0].length,new Coordinate(0,0),hunter_IA, bonusRange);
+
+		this.hunter = new Hunter(this.walls.length,this.walls[0].length,new Coordinate(0,0), bonusRange,hunter_IA);
 	}
 
 	/**
@@ -352,33 +355,33 @@ public class Maze extends Subject{
 		this.spotted=false;
 		if(this.canMonsterMoveAt(c)) {
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
-				//[Tour n°"+this.turn+"]
 				this.spotted=true;
 			}
 			this.setTrace(c, turn);
 
 			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
-
 			this.monster.update(ce);
 
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
 				this.winner = 1;
 			}
-
-			this.turn++;  //On passe au tour suivant
-			this.isMonsterTurn=false;
 			if(this.monster.getVisionRange()!=-1) {
 				this.exploring(c, this.monster.getVisionRange());
 			}
-			this.notifyObservers();
+			this.endMonsterTurn();
 			return true;
 		}
-		if(!this.getMonsterIa().equals(Management.IA_LEVELS[0])) { 
-			this.notifyObservers(); 		//Jamais atteint par un joueur humain, 
-			this.isMonsterTurn=false;		//permet de passer le tour d'un bot qui à essayer de jouer quelque chose d'impossible
+		if(!this.getMonsterIA().equals(Management.IA_LEVELS[0])) { //Inateignable par un joueur, sert à passer le tour d'une IA qui essaye d'aller à un endroit impossible.
+			
 		}
 		return false;
+	}
+	
+	public void endMonsterTurn() {
+		this.turn++;
+		this.isMonsterTurn=false;
+		this.notifyObservers();
 	}
 
 	/**
@@ -387,34 +390,31 @@ public class Maze extends Subject{
 	 * @param c la coordonnée à laquelle le chasseur tire.
 	 * @return true si l'action a reussi,sinon false.
 	 */
-	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, devrait toujours renvoyer true logiquement, peut etre changer le type de retour.
-		if(!this.isMonsterTurn) {
-			CellEvent ce;
-			Coordinate temp;
-			for(int y=c.getRow()-this.getBonusRange(); y<c.getRow()+(this.getBonusRange()+1); y++) {
-				for(int x=c.getCol()-this.getBonusRange(); x<c.getCol()+(this.getBonusRange()+1); x++) {
-					try {
-						temp = new Coordinate(y,x);
-						ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
-						this.hunter.update(ce);
-					}catch(Exception e) {//Signifie que l'est est en dehors de la map
-						LOGGER.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
-					}
-
+	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, renvoie toujours true
+		CellEvent ce;
+		Coordinate temp;
+		for(int y=c.getRow()-this.getBonusRange(); y<c.getRow()+(this.getBonusRange()+1); y++) {
+			for(int x=c.getCol()-this.getBonusRange(); x<c.getCol()+(this.getBonusRange()+1); x++) {
+				try {
+					temp = new Coordinate(y,x);
+					ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
+					this.hunter.actualize(ce);
+				}catch(Exception e) {//Signifie que l'est est en dehors de la map
+					LOGGER.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
 				}
 			}
-			ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
-			this.hunter.update(ce);
-			if(ce.getState().equals(CellInfo.MONSTER)) {
-				this.isGameOver=true;
-				this.winner = 2;
-			}
-			this.isMonsterTurn=true;
-			this.notifyObservers();
-			return true;
 		}
-		this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
-		return false;
+		//???
+		ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c)); //TODO Quel est l'interet de ces lignes déja ?
+		this.hunter.actualize(ce);//A Vérifier...
+		//???
+		if(ce.getState().equals(CellInfo.MONSTER)) {
+			this.isGameOver=true;
+			this.winner = 2;
+		}
+		this.isMonsterTurn=true;
+		this.notifyObservers();
+		return true;
 	}
 
 	public void triggersGameOver() {
@@ -429,7 +429,19 @@ public class Maze extends Subject{
 	 * @return true si le Monstre peut se déplacer à la case demandé, sinon false.
 	 */
 	public boolean canMonsterMoveAt(ICoordinate c) {
-		return (this.isCorrectCoordinate(c) && this.isMonsterTurn && this.inReach(this.monster.getCoord(), c, this.monster.getMovingRange()) && this.isExplored(c) && this.walls[c.getRow()][c.getCol()]);
+		if(this.isMonsterTurn) { //Est-ce le tour du monstre?
+			if(this.isCorrectCoordinate(c)) { //Est-ce des coordonnées qui ne sont pas en dehors du terrain de jeu?
+				if(this.walls[c.getRow()][c.getCol()]){ //Est-ce qu'il y a un mur?
+					if(this.inReach(this.monster.getCoord(), c, this.monster.getMovingRange())){ //Est-ce que c'est à la portée du monstre ?
+						if(this.isExplored(c)) { //Est-ce que cette case à été exploré par le monstre ?
+							return true;
+						}
+					}
+				}
+				
+			}
+		}
+		return false;
 	}
 
 
@@ -492,22 +504,6 @@ public class Maze extends Subject{
 		return this.hunter.getBonusRange();
 	}
 
-	public String getMonsterIa() {
-		return this.monster.getIA_level();
-	}
-
-	public String getHunterIa() {
-		return this.hunter.getIA_level();
-	}
-
-	public static Logger getLogger() {
-		return LOGGER;
-	}
-
-	public static boolean[][] getDefaultMap() {
-		return DEFAULT_MAP;
-	}
-
 	public boolean[][] getWalls() {
 		return walls;
 	}
@@ -552,6 +548,11 @@ public class Maze extends Subject{
 		this.isMonsterTurn = isMonsterTurn;
 	}
 	
+	public String getMonsterIA() {
+		return this.monster.getIA();
+	}
 	
-
+	public String getHunterIA() {
+		return this.hunter.getIA();
+	}
  }

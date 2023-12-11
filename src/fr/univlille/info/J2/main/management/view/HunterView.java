@@ -262,7 +262,7 @@ public class HunterView extends View{
 	 * @param e L'événement de la souris associé à la sélection.
 	 */
 	public void select(CellWithText r) {
-		if(this.maze.getHunterIa().equals("Player")) {
+		if(this.maze.getHunterIA().equals("Player")) {
 			this.selection.setY(r.getY());
 			this.selection.setX(r.getX());
 			this.selection.toFront();
@@ -271,7 +271,7 @@ public class HunterView extends View{
 	}
 
 	public void selectionLocked(CellWithText cell) {
-		if(this.maze.getHunterIa().equals("Player")) {
+		if(this.maze.getHunterIA().equals("Player")) {
 			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
 			if(this.maze.shoot(c)) {
 				this.actualizeCell(c);

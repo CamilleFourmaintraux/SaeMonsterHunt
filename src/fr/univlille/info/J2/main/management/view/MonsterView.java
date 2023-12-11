@@ -314,7 +314,7 @@ public class MonsterView  extends View {
 	 * @param e L'événement de la souris associé à la sélection.
 	 */
 	public void select(MouseEvent e, ICoordinate c) {
-		if(this.maze.getMonsterIa().equals("Player")) {
+		if(this.maze.getMonsterIA().equals("Player")) {
 			int row=c.getRow();
 			int col=c.getCol();
 			this.selection.setY(this.calculDrawY(row));
@@ -332,7 +332,7 @@ public class MonsterView  extends View {
 	}
 
 	public void selectionLocked(Cell cell) {
-		if(this.maze.getMonsterIa().equals("Player")) {
+		if(this.maze.getMonsterIA().equals("Player")) {
 			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
 			this.maze.move(c);
 		}else {

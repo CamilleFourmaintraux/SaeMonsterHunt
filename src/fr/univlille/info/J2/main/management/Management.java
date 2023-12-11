@@ -444,8 +444,6 @@ public class Management extends Stage implements Observer{
 	public void monsterPlayAt(ICoordinate c) {
 		this.maze.move(c);
 		this.mv.actualize();
-		this.setTitle("MONSTERHUNT");
-
 	}
 
 	/**
@@ -806,26 +804,25 @@ public class Management extends Stage implements Observer{
 			this.maze_height=(int)slider_height.getValue();
 		});
 		tf_height.textProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-
-					if(!tf_height.getText().isEmpty()) {
-						if (tf_height.getText().length() > 2) {
-							String s = tf_height.getText().substring(0, 2);
-							tf_height.setText(s);
-						}
-						if(tf_height.getText().charAt(tf_height.getText().length()-1)<'0' || tf_height.getText().charAt(tf_height.getText().length()-1)>'9') {
-							tf_height.setText(oldValue);
-						}
-						slider_height.setValue(Integer.parseInt(tf_height.getText()));
-						maze_height=Integer.parseInt(tf_height.getText());
-					}else {
-						slider_height.setValue(DEFAULT_MAZE_SIZE);
-						maze_height=DEFAULT_MAZE_SIZE;
-						tf_height.setText(""+DEFAULT_MAZE_SIZE);
+			@Override
+			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
+				if(!tf_height.getText().isEmpty()) {
+					if (tf_height.getText().length() > 2) {
+						String s = tf_height.getText().substring(0, 2);
+						tf_height.setText(s);
 					}
+					if(tf_height.getText().charAt(tf_height.getText().length()-1)<'0' || tf_height.getText().charAt(tf_height.getText().length()-1)>'9') {
+						tf_height.setText(oldValue);
+					}
+					slider_height.setValue(Integer.parseInt(tf_height.getText()));
+					maze_height=Integer.parseInt(tf_height.getText());
+				}else {
+					slider_height.setValue(DEFAULT_MAZE_SIZE);
+					maze_height=DEFAULT_MAZE_SIZE;
+					tf_height.setText(""+DEFAULT_MAZE_SIZE);
 				}
-			});
+			}
+		});
 
 		Slider slider_width = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		Generators.setLayout(slider_width, l_width.getLayoutX(),tf_width.getLayoutY()+25);
