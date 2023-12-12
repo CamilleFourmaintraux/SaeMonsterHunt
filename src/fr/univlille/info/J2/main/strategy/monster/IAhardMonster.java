@@ -53,15 +53,20 @@ class IAhardMonster implements IMonsterStrategy{
      */
 	@Override
 	public void update(ICellEvent ce) {
+		System.out.println("StrategyMonster - Row:"+ce.getCoord().getRow()+" - Col:"+ce.getCoord().getCol());
+		//BUG COMMENCE ICI
 		if(!ce.getState().equals(CellInfo.WALL)) {
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.exit.setCoord(ce.getCoord());
 			}
 			this.current.setCoord(ce.getCoord());
-			this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]=false;
-		}else {
+			System.out.println("borne 1 in update:"+this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]);
 			this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]=true;
+			System.out.println("borne 2 in update:"+this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]);
+		}else {
+			this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]=false;
 		}
+		//BUG FINI ICI
 		if(this.pathMap[ce.getCoord().getRow()][ce.getCoord().getCol()].isTraversable()!=this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]) {
 			this.pathMap[ce.getCoord().getRow()][ce.getCoord().getCol()].setTraversable(this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]);
 			this.path=this.brain.think(pathMap, current, exit);

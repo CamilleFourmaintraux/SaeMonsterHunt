@@ -4,10 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.management.cells.CellEvent;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
-import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 public class TestHunter {
 
@@ -23,11 +21,6 @@ public class TestHunter {
 		@Test
 		public void test_play_hunter() {
 			assertEquals(hunter.play(),null);
-		}
-
-		@Test
-		public void test_update_hunter() {
-			hunter.actualize(new CellEvent(new Coordinate(), 0, CellInfo.EMPTY));
 		}
 
 

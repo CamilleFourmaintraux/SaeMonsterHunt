@@ -5,6 +5,7 @@
  */
 package fr.univlille.info.J2.main.management;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.management.cells.CellEvent;
@@ -236,7 +237,7 @@ public class Maze extends Subject{
 		if(limitedVision) {
 			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),exit.getCoord(), visionRange, movingRange, monster_IA);
 		}else {
-			this.monster = new Monster(this.walls,new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),exit.getCoord(), -1, movingRange, monster_IA);
+			this.monster = new Monster(Arrays.copyOf(walls,walls.length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),exit.getCoord(), -1, movingRange, monster_IA);
 			this.monster.setToAllExplored();
 		}
 		this.setFloor(this.monster.getCoord(),true);
@@ -348,7 +349,7 @@ public class Maze extends Subject{
 	 *
 	 * @param c la coordonnée ou laquelle veut se déplacer le monstre.
 	 * @return true si l'action a reussi, sinon false.
-	 */
+	 */ //BUG qui modifie mon labyrinthe
 	public boolean move(ICoordinate c) { //Fais le déplacement du monstre, retourne true si le déplacement à été possible.
 		this.spotted=false;
 		if(this.canMonsterMoveAt(c)) {
@@ -357,9 +358,10 @@ public class Maze extends Subject{
 			}
 			this.setTrace(c, turn);
 
+			///BUG COMMENCE ICI
 			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
 			this.monster.update(ce);
-
+			///BUG FINI ICI
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
 				this.winner = 1;

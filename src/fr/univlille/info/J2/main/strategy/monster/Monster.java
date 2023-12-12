@@ -66,8 +66,6 @@ public class Monster {
 		CellEvent initEntity;
 		initEntity=new CellEvent(exit, 0, CellInfo.EXIT); //Attention, la stratégie considère avoir bougé
 		this.strategy.update(initEntity);
-		initEntity=new CellEvent(spawn, 0, CellInfo.MONSTER); //Bien pensé à le remttre à sa position initiale
-		this.strategy.update(initEntity);
 		this.visionRange=visionRange;
 		this.movingRange=movingRange;
 	}

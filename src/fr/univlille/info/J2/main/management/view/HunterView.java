@@ -328,10 +328,10 @@ public class HunterView extends View{
 					if(cwt!=null) {
 						this.revealCell(cwt,this.theme.getWallColor(),this.theme.getFloorColor());
 					}else {
-						LOGGER.info("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
+						//LOGGER.info("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
 					}	
 				}catch(Exception e) {
-					LOGGER.info("("+iRow+","+iCol+") Out of bounds in actualizeCell -> Its normal dont worry");
+					//LOGGER.info("("+iRow+","+iCol+") Out of bounds in actualizeCell -> Its normal dont worry");
 				}
 					
 			}
