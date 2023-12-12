@@ -8,7 +8,6 @@ import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 
-
 public class MazeEditor {
 	/**
 	 * Groupe contenant permettant le controle
@@ -25,42 +24,16 @@ public class MazeEditor {
 	 */
 	Group group;
 
-	/**
-	 * Labyrinthe.
-	 */
 	boolean[][] walls;
 
-	/**
-	 * Hauteur de l'éditeur.
-	 */
 	int editor_height;
-	/**
-	 * Largeur de l'éditeur.
-	 */
 	int editor_width;
 
-	/**
-	 * Objet File réprésentant le fichier d'importation de labyrinthe de l'utilisateur.
-	 */
 	File map_import;
 	
 	Theme theme;
 
-<<<<<<< HEAD
-	/**
-	 * Constructeur de la classe MazeEditor.
-	 * 
-	 * @param map_height	Hauteur de l'éditeur.
-	 * @param map_width		Largeur de l'éditeur.
-	 * @param window_height Hauteur de la fenêtre.
-	 * @param window_width  Largeur de la fenêtre.
-	 * @param gap_X			Position horizontale.
-	 * @param gap_Y			Position verticale.
-	 */
-	public MazeEditor(int map_height, int map_width, double window_height, double window_width, int gap_X, int gap_Y){
-=======
 	public MazeEditor(int map_height, int map_width, DisplayValues display, Theme theme){
->>>>>>> master
 		this.editor_height=map_height;
 		this.editor_width=map_width;
 		this.group_map = new Group();
@@ -71,21 +44,7 @@ public class MazeEditor {
 		this.group.getChildren().addAll(group_img,group_map);
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Méthode permettant dans l'éditeur de lorsque l'on clique sur une cellule, placer un mur et si il est déjà existant le supprimer.
-	 * 
-	 * @param map_height	Hauteur de l'éditeur.
-	 * @param map_width		Largeur de l'éditeur.
-	 * @param window_height Hauteur de la fenêtre.
-	 * @param window_width  Largeur de la fenêtre.
-	 * @param gap_X			Position horizontale.
-	 * @param gap_Y			Position verticale.
-	 */
-	public void draw(int map_height, int map_width, double window_height, double window_width, int gap_X, int gap_Y) {
-=======
 	public void draw(int map_height, int map_width, DisplayValues display) {
->>>>>>> master
 		//Adaptation du zoom
 		double height = (display.getWindowHeight() / (map_height*2.7));
 		double width = (display.getWindowWidth()  / (map_width*1.2));
@@ -113,9 +72,6 @@ public class MazeEditor {
 		}
 	}
 
-	/**
-	 * Méthode permettant de supprimer les murs du labyrinthe (ne laissant que des sols).
-	 */
 	public void resetWalls() {
 		for(int h=0; h<this.walls.length; h++) {
 			for(int l=0; l<this.walls[h].length; l++){
@@ -124,36 +80,13 @@ public class MazeEditor {
 		}
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Méthode permettant de réinitialiser l'éditeur.
-	 * 
-	 * @param map_height	Hauteur de l'éditeur.
-	 * @param map_width		Largeur de l'éditeur.
-	 * @param window_height Hauteur de la fenêtre.
-	 * @param window_width  Largeur de la fenêtre.
-	 * @param gap_X			Position horizontale.
-	 * @param gap_Y			Position verticale.
-	 */
-	public void resetDrawing(int map_height, int map_width, double window_height, double window_width, int gap_X, int gap_Y) {
-=======
 	public void resetDrawing(int map_height, int map_width, DisplayValues display) {
->>>>>>> master
 		this.walls = new boolean[map_height][map_width];
 		this.resetWalls();
 		this.draw(map_height,map_width, display);
 	}
 
-<<<<<<< HEAD
-	/**
-	 * Méthode permettant de définir une image pour la cellule selon si c'est un mur ou un sol.
-	 * 
-	 * @param cell Cellule du labyrinthe.
-	 */
-	public void modify(Cell cell) {
-=======
 	public void modify(Cell cell, boolean withImages) {
->>>>>>> master
 		if(this.walls[cell.getRow()][cell.getCol()]) {
 			this.walls[cell.getRow()][cell.getCol()]=false;
 			

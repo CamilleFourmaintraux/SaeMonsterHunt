@@ -23,14 +23,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
-/**
- * Classe de génération des différentes fenêtres, boites de dialogues ou composants.
- * 
- * @author arthur.debacq.etu
- * @author camille.fourmaintraux.etu
- * @author jessy.top.etu
- * @author theo.franos.etu
- */
 public class Generators {
 	
 	/**
@@ -42,11 +34,11 @@ public class Generators {
 	/**
 	 * Génére un bouton avec un texte donné et le positionne aux coordonnées spécifiés.
 	 *
-	 * @param msg 		Le texte affiché sur le bouton.
-	 * @param x 		La position horizontale du bouton.
-	 * @param y 		La position verticale du bouton.
-	 * @param inactive 	La couleur en hexadécimal quand le bouton n'est pas en interaction
-	 * @param active 	La couleur en hexadécimal quand le bouton est en interaction
+	 * @param msg 	Le texte affiché sur le bouton.
+	 * @param x 	La position horizontale du bouton.
+	 * @param y 	La position verticale du bouton.
+	 * @param inactive La couleur en hexadécimal quand le bouton n'est pas en interaction
+	 * @param active La couleur en hexadécimal quand le bouton est en interaction
 	 * @return Le bouton généré.
 	 */
 	public static Button generateButton(String msg, Color active, Color inactive) {
@@ -67,6 +59,7 @@ public class Generators {
 	 * @param msg 		Le texte affiché sur le label.
 	 * @param x 		La position horizontale du label.
 	 * @param y 		La position verticale du label.
+	 * @param minWidth 	La largeur minimale du label.
 	 * @return Le label généré.
 	 */
 	public static Label generateLabel(String msg, double x, double y) {
@@ -195,16 +188,6 @@ public class Generators {
 	}
 
 	/**
-<<<<<<< HEAD
-	 * Génère une fenêtre d'avertissement pour notifier le changement de tour.
-	 * 
-	 * @param title 		Titre de la fenêtre.
-	 * @param text 			Texte d'avertissement de changement de tour.
-	 * @param boutonJouer 	Bouton permettant de confirmer le changement de tour.
-	 * @return Une fenêtre d'alerte.
-	 */
-	public static Alert generateAlert(String title, String text, Collection<ButtonType> boutonJouer) {
-=======
 	 * Génére une alerte (notification)
 	 *
 	 * @param title le titre de l'alerte.
@@ -214,7 +197,6 @@ public class Generators {
 	 * @return l'alerte générée.
 	 */
 	public static Alert generateAlert(String title, String text, Collection<ButtonType> buttons) {
->>>>>>> master
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle(title);
 		alert.setHeaderText(text);
@@ -285,9 +267,7 @@ public class Generators {
 	/**
 	 * Applique un style particulier à un Label de titre.
 	 *
-	 * @param label 	un Label titre.
-	 * @param bgColor 	Une couleur de fond.
-	 * @param textColor Une couleur de police.
+	 * @param label un Label titre.
 	 */
 	public static void applyStyleToTitle(Label label, Color bgColor, Color textColor) {
 		label.setBackground(Utils.setBackGroungFill(bgColor));
@@ -298,9 +278,9 @@ public class Generators {
 	/**
 	 * Applique un style de base à un bouton, y compris le style lors du survol de la souris.
 	 *
-	 * @param b 		Le bouton auquel on applique le style.
-	 * @param inactive 	La couleur en hexadécimal quand le bouton n'est pas en interaction
-	 * @param active 	La couleur en hexadécimal quand le bouton est en interaction
+	 * @param b Le bouton auquel on applique le style.
+	 * @param inactive La couleur en hexadécimal quand le bouton n'est pas en interaction
+	 * @param active La couleur en hexadécimal quand le bouton est en interaction
 	 */
 	public static void applyStyleToButton(Button b, Color inactive, Color active) { //inactive = #ffffff & active = #000000
 		//Style de base
@@ -323,47 +303,4 @@ public class Generators {
 					+ "-fx-background-radius: 20px;\n")
 		);
 	}
-<<<<<<< HEAD
-
-	/**
-	 * Méthode pour générer le fenêtre de sauvegarde de labyrinthe.
-	 * 
-	 * @param walls 			Le labyrinthe et ses murs.
-	 * @param textColor 		Couleur du texte.
-	 * @param textLabel 		Couleur des labels.
-	 * @param textButton 		Couleur des boutons.
-	 * @param textNotification 	Texte de notification de sauvegarde.
-	 * @return Hbox de sauvegarde de labyrinthe.
-	 */
-	public static HBox generateHBoxSaveMap(boolean[][] walls, Color textColor, String textLabel, String textButton, String textNotification) {
-    	Label l_saveMap = Generators.generateLabel(textLabel, 0, 0);
-		l_saveMap.setTextFill(textColor);
-		TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 0, 0, 9, 'A', 'z');
-		Label notification = Generators.generateLabel(textNotification, 0, 0);
-		notification.setTextFill(textColor);
-		notification.setVisible(false);
-		Button b_saveMap = Generators.generateButton(textButton, 0, 0,Color.WHITE,textColor);
-		b_saveMap.setMinWidth(b_saveMap.getPrefWidth());
-		b_saveMap.setOnAction(e->{
-			try {
-				String fileName = tf_saveMap.getText();
-				if(fileName.isEmpty()) {
-					SaveLoadSystemMaps.saveMap(walls, SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE);
-				}else {
-					SaveLoadSystemMaps.saveMap(walls, fileName);
-				}
-				notification.setVisible(true);
-			}catch(IOException ioe) {
-				System.out.println("ERROR - An error occurred while saving the map.");
-				notification.setVisible(false);
-			}
-		});
-		HBox hbox_saveMap = new HBox(10);
-		hbox_saveMap.getChildren().addAll(l_saveMap,tf_saveMap,b_saveMap,notification);
-		return hbox_saveMap;
-    }
-
-
-=======
->>>>>>> master
 }

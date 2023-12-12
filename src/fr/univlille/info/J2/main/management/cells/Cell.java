@@ -11,8 +11,7 @@ import javafx.scene.shape.Rectangle;
 
 /**
  * La classe `Cell` représente une cellule rectangulaire utilisée dans un labyrinthe.
- * Elle extend la classe `Rectangle` de JavaFX pour représenter graphiquement une cellule, elle utilise aussi
- * des objets Image et ImageView pour illustrer les cellules.
+ * Elle extend la classe `Rectangle` de JavaFX pour représenter graphiquement une cellule.
  *
  * @author arthur.debacq.etu
  * @author camille.fourmaintraux.etu
@@ -26,29 +25,17 @@ public class Cell extends Rectangle{
 	 * Coordonnées construite à partir du x et y.
 	 */
 	ICoordinate coord;
-	/**
-	 * Objet ImageView permettant d'afficher les images.
-	 */
 	ImageView iv;
-<<<<<<< HEAD:src/fr/univlille/info/J2/main/application/cells/Cell.java
-	/**
-	 * 
-	 */
-	public boolean isLocked;
-=======
->>>>>>> master:src/fr/univlille/info/J2/main/management/cells/Cell.java
 
 	/**
 	 * Constructeur avec des paramètres limit�s.
 	 * Crée une cellule avec des valeurs de remplissage et d'épaisseur de contour par défaut.
-	 * 
-	 * @param x 		La coordonnée en X de la cellule dans le labyrinthe.
-	 * @param y 		La coordonnée en Y de la cellule dans le labyrinthe.
-	 * @param zoom 		Le facteur de zoom pour la taille de la cellule.
-	 * @param fill 		La couleur de remplissage de la cellule.
-	 * @param gap_X 	La valeur de décalage en X pour la position de la cellule.
-	 * @param gap_Y 	La valeur de décalage en Y pour la position de la cellule.
-	 * @param img 		L'illustration associé au type de cellule.
+	 * @param x La coordonnée en X de la cellule dans le labyrinthe.
+	 * @param y La coordonnée en Y de la cellule dans le labyrinthe.
+	 * @param zoom Le facteur de zoom pour la taille de la cellule.
+	 * @param fill La couleur de remplissage de la cellule.
+	 * @param gap_X La valeur de décalage en X pour la position de la cellule.
+	 * @param gap_Y La valeur de décalage en Y pour la position de la cellule.
 	 */
 	public Cell(int x, int y, double zoom, Color fill, double gap_X, double gap_Y) {
 		this(x,y,zoom,fill,fill, 0, gap_X, gap_Y);
@@ -57,17 +44,15 @@ public class Cell extends Rectangle{
 	/**
 	 * Constructeur avec des paramètres complets.
 	 * Crée une cellule avec des valeurs de remplissage, couleur de contour, et épaisseur de contour personnalisées.
-	 * 
-	 * @see Cell#Cell(int, int, int, Color, int, int, Image)
-	 * @param x 			La coordonnée en X de la cellule dans le labyrinthe.
-	 * @param y 			La coordonnée en Y de la cellule dans le labyrinthe.
-	 * @param zoom 			Le facteur de zoom pour la taille de la cellule.
-	 * @param fill 			La couleur de remplissage de la cellule.
-	 * @param gap_X 		La valeur de décalage en X pour la position de la cellule.
-	 * @param gap_Y 		La valeur de décalage en Y pour la position de la cellule.
-	 * @param img 			L'illustration associé au type de cellule.
-	 * @param stroke 		La couleur de contour de la cellule.
-	 * @param strokeWidth 	L'�paisseur du contour de la cellule.
+	 * @see Cell#Cell(int, int, int, Color, int, int)
+	 * @param x La coordonnée en X de la cellule dans le labyrinthe.
+	 * @param y La coordonnée en Y de la cellule dans le labyrinthe.
+	 * @param zoom Le facteur de zoom pour la taille de la cellule.
+	 * @param fill La couleur de remplissage de la cellule.
+	 * @param stroke La couleur de contour de la cellule.
+	 * @param strokeWidth L'�paisseur du contour de la cellule.
+	 * @param gap_X La valeur de décalage en X pour la position de la cellule.
+	 * @param gap_Y La valeur de décalage en Y pour la position de la cellule.
 	 */
 	public Cell(int x, int y, double zoom, Color fill, Color stroke, int strokeWidth, double gap_X, double gap_Y) {
 		super(x*zoom+gap_X,y*zoom+gap_X,zoom, zoom);
@@ -130,20 +115,11 @@ public class Cell extends Rectangle{
 		return Objects.equals(coord, other.coord);
 	}
 
-	/**
-	 * Retourne l'Image affiché.
-	 * 
-	 * @return Un objet ImageView représentant l'image affiché.
-	 */
+
 	public ImageView getImgv() {
 		return this.iv;
 	}
 
-	/**
-	 * Définit une image à afficher.
-	 * 
-	 * @param img Un objet Image représentant une image.
-	 */
 	public void setImage(Image img) {
 		this.iv.setImage(img);
 	}
