@@ -133,7 +133,9 @@ public class Monster {
      * @param ce L'événement de cellule qui a eu lieu.
      */
 	public void update(ICellEvent ce) {
-		this.setCoord(ce.getCoord());
+		if(!ce.getState().equals(CellInfo.WALL)) {
+			this.setCoord(ce.getCoord());
+		}
 		this.strategy.update(ce);
 	}
 

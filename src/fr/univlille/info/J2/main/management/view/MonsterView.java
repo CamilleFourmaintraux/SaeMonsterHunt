@@ -156,6 +156,9 @@ public class MonsterView  extends View {
 
 		this.scene=new Scene(bp,this.display.getWindowWidth(),this.display.getWindowHeight(), this.theme.getBackgroundColor());
 		this.draw();
+		this.actualize();
+		this.sprite_shot.setVisible(false);
+		this.sprite_shot.getImgv().setVisible(false);
 	}
 
 	/**

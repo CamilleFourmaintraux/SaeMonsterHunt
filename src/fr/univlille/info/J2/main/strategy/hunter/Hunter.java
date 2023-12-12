@@ -155,14 +155,15 @@ public class Hunter {
 	public void setStrategy(IHunterStrategy strategy) {
 		this.strategy = strategy;
 	}
-	
-	public void actualize(ICellEvent ce) {
-		this.setCoord(ce.getCoord());
+	public void actualizeTraces(ICellEvent ce) {
 		if(ce.getState().equals(CellInfo.WALL)) {
 			this.setTrace(ce.getCoord(), -1);
 		}else {
 			this.setTrace(ce.getCoord(), ce.getTurn());
 		}
+	}
+	
+	public void update(ICellEvent ce) {
 		this.strategy.update(ce);
 	}
 	

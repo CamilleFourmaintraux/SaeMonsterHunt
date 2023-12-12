@@ -42,6 +42,8 @@ class IAhardMonster implements IMonsterStrategy{
 		this.pathMap = this.initPathMap(walls);
 		this.brain=new AlgoAStar();
 		this.progress=0;
+		this.current=new Node(0,0,true);
+		this.exit=new Node(0,0,true);
 	}
 	
 	/**
@@ -51,12 +53,10 @@ class IAhardMonster implements IMonsterStrategy{
      */
 	@Override
 	public void update(ICellEvent ce) {
-		if(ce.getState().equals(CellInfo.MONSTER)) {
-			this.current=new Node(ce.getCoord().getRow(),ce.getCoord().getCol(),true);
-		}else if(ce.getState().equals(CellInfo.EXIT)) {
-			this.exit=new Node(ce.getCoord().getRow(),ce.getCoord().getCol(),true);
-		}
 		if(!ce.getState().equals(CellInfo.WALL)) {
+			if(ce.getState().equals(CellInfo.EXIT)) {
+				this.exit.setCoord(ce.getCoord());
+			}
 			this.current.setCoord(ce.getCoord());
 			this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]=false;
 		}else {
@@ -83,7 +83,11 @@ class IAhardMonster implements IMonsterStrategy{
 			progress=0;
 			this.path=this.brain.think(pathMap, current, exit);
 		}
+		try {
 		choice=this.path.get(progress).getCoord();
+		}catch(NullPointerException npe) {
+			return this.current.getCoord();
+		}
 		progress++;
 		return choice;
 	}
@@ -92,9 +96,7 @@ class IAhardMonster implements IMonsterStrategy{
 		Node[][]pathMap=new Node[walls.length][walls[0].length];
 		for(int row=0; row<walls.length; row++) {
 			for(int col=0; col<walls[row].length; col++) {
-				if(walls[row][col] != pathMap[row][col].isTraversable()) {
-					pathMap[row][col].setTraversable(walls[row][col]);
-				}
+				pathMap[row][col]=new Node(row,col,walls[row][col]);
 			}
 		}
 		return pathMap; //Retourne le nombre de modifications

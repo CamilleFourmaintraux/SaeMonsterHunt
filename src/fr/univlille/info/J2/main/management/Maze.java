@@ -371,8 +371,10 @@ public class Maze extends Subject{
 			return true;
 		}
 		if(!this.getMonsterIA().equals(Management.IA_LEVELS[0])) { //Inateignable par un joueur, sert à passer le tour d'une IA qui essaye d'aller à un endroit impossible.
-			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
-			this.monster.update(ce);
+			if(this.areCoordinateInBounds(c)) {
+				CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c)); //TODO
+				this.monster.update(ce);
+			}
 			this.endMonsterTurn();
 		}
 		return false;
@@ -390,31 +392,36 @@ public class Maze extends Subject{
 	 * @param c la coordonnée à laquelle le chasseur tire.
 	 * @return true si l'action a reussi,sinon false.
 	 */
-	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, renvoie toujours true
-		CellEvent ce;
-		Coordinate temp;
-		for(int y=c.getRow()-this.getBonusRange(); y<c.getRow()+(this.getBonusRange()+1); y++) {
-			for(int x=c.getCol()-this.getBonusRange(); x<c.getCol()+(this.getBonusRange()+1); x++) {
-				try {
-					temp = new Coordinate(y,x);
-					ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
-					this.hunter.actualize(ce);
-				}catch(Exception e) {//Signifie que l'est est en dehors de la map
-					LOGGER.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
+	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, renvoie toujours true sauf si c'est pas le tour du chasseur
+		if(!this.isMonsterTurn) {
+			CellEvent ce;
+			Coordinate temp;
+			//S'occupe du tir secondaire si jamais le hunter à un bonus.
+			for(int y=c.getRow()-this.getBonusRange(); y<c.getRow()+(this.getBonusRange()+1); y++) {
+				for(int x=c.getCol()-this.getBonusRange(); x<c.getCol()+(this.getBonusRange()+1); x++) {
+					try {
+						temp = new Coordinate(y,x);
+						ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
+						this.hunter.actualizeTraces(ce);
+						this.hunter.update(ce);
+					}catch(Exception e) {//Signifie que l'est est en dehors de la map
+						LOGGER.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
+					}
 				}
 			}
+			//Vérifie le tir principal.
+			ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
+			this.hunter.setCoord(ce.getCoord());
+			if(ce.getState().equals(CellInfo.MONSTER)) {
+				this.isGameOver=true;
+				this.winner = 2;
+			}
+			this.isMonsterTurn=true;
+			this.notifyObservers();
+			return true;
+			//Faire un Bazooka mode ?
 		}
-		//???
-		ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c)); //TODO Quel est l'interet de ces lignes déja ?
-		this.hunter.actualize(ce);//A Vérifier...
-		//???
-		if(ce.getState().equals(CellInfo.MONSTER)) {
-			this.isGameOver=true;
-			this.winner = 2;
-		}
-		this.isMonsterTurn=true;
-		this.notifyObservers();
-		return true;
+		return false;
 	}
 
 	public void triggersGameOver() {
@@ -430,7 +437,7 @@ public class Maze extends Subject{
 	 */
 	public boolean canMonsterMoveAt(ICoordinate c) {
 		if(this.isMonsterTurn) { //Est-ce le tour du monstre?
-			if(this.isCorrectCoordinate(c)) { //Est-ce des coordonnées qui ne sont pas en dehors du terrain de jeu?
+			if(this.areCoordinateInBounds(c)) { //Est-ce des coordonnées qui ne sont pas en dehors du terrain de jeu?
 				if(this.walls[c.getRow()][c.getCol()]){ //Est-ce qu'il y a un mur?
 					if(this.inReach(this.monster.getCoord(), c, this.monster.getMovingRange())){ //Est-ce que c'est à la portée du monstre ?
 						if(this.isExplored(c)) { //Est-ce que cette case à été exploré par le monstre ?
@@ -445,7 +452,7 @@ public class Maze extends Subject{
 	}
 
 
-	public boolean isCorrectCoordinate(ICoordinate c) {
+	public boolean areCoordinateInBounds(ICoordinate c) {
 		return !((c.getRow()>=this.walls.length)||(c.getCol()>=this.walls[c.getRow()].length));
 	}
 
