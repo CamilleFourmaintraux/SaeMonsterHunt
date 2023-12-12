@@ -16,18 +16,63 @@ public class CellWithText extends Cell{
      */
 	protected Text text;
 
+	/**
+     * Constructeur pour initialiser une cellule avec du texte.
+     *
+     * @param x        La coordonnée X de la cellule.
+     * @param y        La coordonnée Y de la cellule.
+     * @param zoom     Le facteur de zoom de la cellule.
+     * @param fill     La couleur de remplissage de la cellule.
+     * @param gap_X    L'espacement horizontal de la cellule.
+     * @param gap_Y    L'espacement vertical de la cellule.
+     * @param text     Le texte associé à la cellule.
+     */
 	public CellWithText(int x, int y, double zoom, Color fill,double gap_X, double gap_Y, Text text) {
 		this(x, y, zoom, fill, fill, 0,  gap_X, gap_Y, text);
 	}
 
+	/**
+     * Constructeur pour initialiser une cellule avec du texte.
+     *
+     * @param x        La coordonnée X de la cellule.
+     * @param y        La coordonnée Y de la cellule.
+     * @param zoom     Le facteur de zoom de la cellule.
+     * @param fill     La couleur de remplissage de la cellule.
+     * @param gap_X    L'espacement horizontal de la cellule.
+     * @param gap_Y    L'espacement vertical de la cellule.
+     * @param text     Le texte associé à la cellule.
+     */
 	public CellWithText(int x, int y, double zoom, Color fill, double gap_X, double gap_Y, String text) {
 		this(x, y, zoom, fill, fill, 0,  gap_X, gap_Y, new Text(text));
 	}
 
+	/**
+     * Constructeur pour initialiser une cellule avec du texte.
+     *
+     * @param c        Les coordonnées de la cellule.
+     * @param zoom     Le facteur de zoom de la cellule.
+     * @param fill     La couleur de remplissage de la cellule.
+     * @param gap_X    L'espacement horizontal de la cellule.
+     * @param gap_Y    L'espacement vertical de la cellule.
+     * @param text     Le texte associé à la cellule.
+     */
 	public CellWithText(ICoordinate c, double zoom, Color fill,double gap_X, double gap_Y, String text) {
 		this(c.getCol(), c.getRow(), zoom, fill, fill, 0,  gap_X, gap_Y, new Text(text));
 	}
 
+	/**
+     * Constructeur pour initialiser une cellule avec du texte.
+     *
+     * @param x          La coordonnée X de la cellule.
+     * @param y          La coordonnée Y de la cellule.
+     * @param zoom       Le facteur de zoom de la cellule.
+     * @param fill       La couleur de remplissage de la cellule.
+     * @param stroke     La couleur de contour de la cellule.
+     * @param strokeWidth L'épaisseur du contour de la cellule.
+     * @param gap_X      L'espacement horizontal de la cellule.
+     * @param gap_Y      L'espacement vertical de la cellule.
+     * @param text       Le texte associé à la cellule.
+     */
 	public CellWithText(int x, int y, double zoom, Color fill, Color stroke, int strokeWidth, double gap_X, double gap_Y, Text text) {
 		super(x, y, zoom, fill, stroke, strokeWidth, gap_X, gap_Y);
 		this.text=text;
@@ -37,10 +82,35 @@ public class CellWithText extends Cell{
 		this.text.toFront();
 	}
 
+	/**
+     * Constructeur pour initialiser une cellule avec du texte.
+     *
+     * @param x          La coordonnée X de la cellule.
+     * @param y          La coordonnée Y de la cellule.
+     * @param zoom       Le facteur de zoom de la cellule.
+     * @param fill       La couleur de remplissage de la cellule.
+     * @param stroke     La couleur de contour de la cellule.
+     * @param strokeWidth L'épaisseur du contour de la cellule.
+     * @param gap_X      L'espacement horizontal de la cellule.
+     * @param gap_Y      L'espacement vertical de la cellule.
+     * @param text       Le texte associé à la cellule.
+     */
 	public CellWithText(int x, int y, double zoom, Color fill, Color stroke, int strokeWidth, double gap_X, double gap_Y, String text) {
 		this(x, y, zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text));
 	}
 
+	/**
+     * Constructeur pour initialiser une cellule avec du texte.
+     *
+     * @param c          Les coordonnées de la cellule.
+     * @param zoom       Le facteur de zoom de la cellule.
+     * @param fill       La couleur de remplissage de la cellule.
+     * @param stroke     La couleur de contour de la cellule.
+     * @param strokeWidth L'épaisseur du contour de la cellule.
+     * @param gap_X      L'espacement horizontal de la cellule.
+     * @param gap_Y      L'espacement vertical de la cellule.
+     * @param text       Le texte associé à la cellule.
+     */
 	public CellWithText(ICoordinate c, double zoom, Color fill, Color stroke, int strokeWidth, double gap_X, double gap_Y, String text) {
 		this(c.getCol(), c.getRow(), zoom, fill, stroke, strokeWidth, gap_X, gap_Y, new Text(text));
 	}

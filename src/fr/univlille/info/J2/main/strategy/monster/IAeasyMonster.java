@@ -7,7 +7,11 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
+/**
+ * Implémentation de la stratégie du monstre pour un niveau de difficulté facile.
+ */
 class IAeasyMonster implements IMonsterStrategy{
+
 	/**
 	 * La position du monstre pour aider la stratégie à se repérer.
 	 */

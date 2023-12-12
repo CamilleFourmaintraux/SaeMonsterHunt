@@ -23,10 +23,13 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
+/**
+ * Classe utilitaire pour la génération d'éléments graphiques tels que boutons, labels, sliders, etc.
+ */
 public class Generators {
 	
 	/**
-	 * Looger qui permet d'éviter les system.out pour à la place faire de vra ifichiers de log.
+	 * Looger qui permet d'éviter les system.out pour à la place faire de vrai fichiers de log.
 	 */
 	private static final Logger logger = Logger.getLogger(Generators.class.getName());
 
@@ -35,8 +38,6 @@ public class Generators {
 	 * Génére un bouton avec un texte donné et le positionne aux coordonnées spécifiés.
 	 *
 	 * @param msg 	Le texte affiché sur le bouton.
-	 * @param x 	La position horizontale du bouton.
-	 * @param y 	La position verticale du bouton.
 	 * @param inactive La couleur en hexadécimal quand le bouton n'est pas en interaction
 	 * @param active La couleur en hexadécimal quand le bouton est en interaction
 	 * @return Le bouton généré.
@@ -46,6 +47,17 @@ public class Generators {
 		Generators.applyStyleToButton(button, active, inactive);
 		return button;
 	}
+	
+	/**
+     * Génère un bouton avec un texte donné et le positionne aux coordonnées spécifiées.
+     *
+     * @param msg      Le texte affiché sur le bouton.
+     * @param x        La position horizontale du bouton.
+     * @param y        La position verticale du bouton.
+     * @param active   La couleur en hexadécimal quand le bouton est en interaction.
+     * @param inactive La couleur en hexadécimal quand le bouton n'est pas en interaction.
+     * @return Le bouton généré.
+     */
 	public static Button generateButton(String msg, double x, double y, Color active, Color inactive) {
 		Button button = new Button(msg);
 		Generators.setLayout(button, x-(button.getWidth()/2) ,y);
@@ -59,7 +71,6 @@ public class Generators {
 	 * @param msg 		Le texte affiché sur le label.
 	 * @param x 		La position horizontale du label.
 	 * @param y 		La position verticale du label.
-	 * @param minWidth 	La largeur minimale du label.
 	 * @return Le label généré.
 	 */
 	public static Label generateLabel(String msg, double x, double y) {
@@ -68,6 +79,13 @@ public class Generators {
 		Generators.setLayout(label, x, y);
 		return label;
 	}
+	
+	/**
+     * Génère un Label avec le texte donné.
+     *
+     * @param msg Le texte affiché sur le label.
+     * @return Le label généré.
+     */
 	public static Label generateLabel(String msg) {
 		Label label = new Label(msg);
 		label.setMinWidth(label.getPrefWidth());
@@ -96,6 +114,7 @@ public class Generators {
 	 * Génére une liste déroulante (ComboBox) avec les valeurs spécifies et la positionne aux coordonnées spécifiés.
 	 *
 	 * @param values 	Les valeurs affiché dans la liste deroulante.
+	 * 
 	 * @return La liste déroulante générée.
 	 */
 	public static <T> ComboBox<T> generateComboBox(T[] values) {
@@ -190,9 +209,9 @@ public class Generators {
 	/**
 	 * Génére une alerte (notification)
 	 *
-	 * @param title le titre de l'alerte.
-	 * @param text le texte de l'alerte
-	 * @param buttons les boutons de l'alerte
+	 * @param title 	le titre de l'alerte.
+	 * @param text 		le texte de l'alerte
+	 * @param buttons 	les boutons de l'alerte
 	 * 
 	 * @return l'alerte générée.
 	 */
@@ -214,10 +233,10 @@ public class Generators {
 	/**
 	 * Génére un Dialog (notification avancée)
 	 *
-	 * @param title le titre du Dialog
-	 * @param text le texte du Dialog
-	 * @param buttons les boutons du Dialog
-	 * @param nodes liste de liste (rows & cols) des nodes qui seront ajoutés à la Grid du Dialog
+	 * @param title 	le titre du Dialog
+	 * @param text 		le texte du Dialog
+	 * @param buttons 	les boutons du Dialog
+	 * @param nodes 	liste de liste (rows et cols) des nodes qui seront ajoutés à la Grid du Dialog
 	 * 
 	 * @return l'alerte générée.
 	 */
@@ -245,7 +264,12 @@ public class Generators {
 		return dialog;
 	}
 	
-	 // Méthode pour créer un espace vide avec une taille spécifique
+	/**
+     * Méthode pour créer un espace vide avec une taille spécifique.
+     *
+     * @param size La taille de l'espace vide.
+     * @return La région générée.
+     */
     public static Region createEmptySpace(double size) {
         Region spacer = new Region();
         spacer.setPrefHeight(size);
@@ -253,11 +277,12 @@ public class Generators {
         return spacer;
     }
 
-
 	/**
 	 * Positionne un élément aux coordonnées spécifiés.
 	 *
 	 * @param node 	L'élément à positionner.
+	 * @param x 	position horizontale.
+	 * @param y		positon verticale.
 	 */
 	public static void setLayout(Node node, double x, double y) {
 		node.setLayoutX(x);
@@ -267,7 +292,9 @@ public class Generators {
 	/**
 	 * Applique un style particulier à un Label de titre.
 	 *
-	 * @param label un Label titre.
+	 * @param label 	un Label titre.
+	 * @param bgColor 	La couleur de fond à appliquer.
+	 * @param textColor La couleur du texte à appliquer.
 	 */
 	public static void applyStyleToTitle(Label label, Color bgColor, Color textColor) {
 		label.setBackground(Utils.setBackGroungFill(bgColor));
@@ -278,9 +305,9 @@ public class Generators {
 	/**
 	 * Applique un style de base à un bouton, y compris le style lors du survol de la souris.
 	 *
-	 * @param b Le bouton auquel on applique le style.
-	 * @param inactive La couleur en hexadécimal quand le bouton n'est pas en interaction
-	 * @param active La couleur en hexadécimal quand le bouton est en interaction
+	 * @param b 		Le bouton auquel on applique le style.
+	 * @param inactive 	La couleur en hexadécimal quand le bouton n'est pas en interaction
+	 * @param active 	La couleur en hexadécimal quand le bouton est en interaction
 	 */
 	public static void applyStyleToButton(Button b, Color inactive, Color active) { //inactive = #ffffff & active = #000000
 		//Style de base

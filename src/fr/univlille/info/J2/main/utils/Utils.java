@@ -39,6 +39,7 @@ public class Utils {
 	 * Générateur de nombres aléatoires utilisé pour diverses opérations.
 	 */
 	public static final Random random = new Random();
+	
 	/**
 	 * Crée un arrière-plan (Background) avec une couleur de remplissage spécifiée.
 	 *
@@ -49,6 +50,12 @@ public class Utils {
 		return new Background(new BackgroundFill(fill, new CornerRadii(0), Insets.EMPTY));
 	}
 
+	/**
+	 * Méthode permettant de convertir un objet color (donc une couleur) en valeur hexadécimal dans une chaine de caractère.
+	 * 
+	 * @param color Couleur à convertir en valeur hexadécimal.
+	 * @return Chaine de caractère contenant le code hexadécimal.
+	 */
 	public static String convertToHex(Color color) {
         int r = (int) (color.getRed() * 255);
         int g = (int) (color.getGreen() * 255);

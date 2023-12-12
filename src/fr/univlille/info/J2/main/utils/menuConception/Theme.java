@@ -8,16 +8,52 @@ import java.util.HashMap;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+/**
+ * La classe Theme représente les thèmes disponibles pour le jeu Monster Hunt.
+ * Chaque thème est associé à des images, des couleurs et d'autres propriétés visuelles.
+ * Les thèmes disponibles sont : dungeon, cave, meadow, forest et ocean.
+ * 
+ * @author arthur.debacq.etu
+ * @author camille.fourmaintraux.etu
+ * @author jessy.top.etu
+ * @author theo.franos.etu
+ * 
+ */
 
 public class Theme {
+	/**
+     * Chemin du répertoire où sont stockées les images des thèmes.
+     */
 	private static final String IMG_DIRECTORY_PATH = "./res/img/";
 	
+	/**
+     * Clé du thème représentant le donjon.
+     */
 	public static final String THEME_DUNGEON = "dungeon";
+	
+	/**
+     * Clé du thème représentant la caverne.
+     */
 	public static final String THEME_CAVE = "cave";
+	
+	/**
+     * Clé du thème représentant la prairie.
+     */
 	public static final String THEME_MEADOW = "meadow";
+	
+	/**
+     * Clé du thème représentant la forêt.
+     */
 	public static final String THEME_FOREST = "forest";
+	
+	/**
+     * Clé du thème représentant l'océan.
+     */
 	public static final String THEME_OCEAN = "ocean";
 
+	/**
+     * Map associant chaque clé de thème à une instance de la classe Theme.
+     */
 	public static Map<String,Theme> themesMap = new HashMap<>();
 	
 
@@ -76,6 +112,9 @@ public class Theme {
 		Theme.themesMap.put(key, this);
 	}
 	
+	/**
+     * Initialise les thèmes avec leurs propriétés visuelles respectives.
+     */
 	public static void initThemes() {
 		Theme dungeon=new Theme(THEME_DUNGEON);
 		Theme cave=new Theme(THEME_CAVE);
@@ -139,63 +178,131 @@ public class Theme {
 		ocean.textColor=Color.WHITE;
 	}
 	
+	/**
+     * Charge une image à partir du répertoire des images du thème spécifié.
+     * 
+     * @param theme le nom du thème.
+     * @param name le nom de l'image à charger.
+     * @return une instance de la classe Image représentant l'image chargée.
+     */
 	public static Image loadImage(String theme, String name) {
 		return new Image(new File(IMG_DIRECTORY_PATH+theme+"/"+name).toURI().toString());
 	}
 	
+	/**
+     * Obtient le nom du thème.
+     * 
+     * @return le nom du thème.
+     */
 	public String getName() {
 		return this.name;
 	}
 	
+	/**
+     * Renvoie l'image représentant le sol du labyrinthe pour ce thème.
+     * @return L'image du sol.
+     */
 	public Image getFloorImg() {
 		return this.floorImg;
 	}
 
+	/**
+     * Renvoie l'image représentant les murs du labyrinthe pour ce thème.
+     * @return L'image des murs.
+     */
 	public Image getWallImg() {
 		return this.wallImg;
 	}
 
+	/**
+     * Renvoie l'image représentant la sortie du labyrinthe pour ce thème.
+     * @return L'image de la sortie.
+     */
 	public Image getExitImg() {
 		return this.exitImg;
 	}
 
+	/**
+     * Renvoie l'image représentant le monstre du labyrinthe pour ce thème.
+     * @return L'image du monstre.
+     */
 	public Image getMonsterImg() {
 		return this.monsterImg;
 	}
 
+	/**
+     * Renvoie l'image représentant le chasseur du labyrinthe pour ce thème.
+     * @return L'image du chasseur.
+     */
 	public Image getHunterImg() {
 		return this.hunterImg;
 	}
 
+	/**
+     * Renvoie la couleur du sol pour ce thème.
+     * @return La couleur du sol.
+     */
 	public Color getFloorColor() {
 		return this.floorColor;
 	}
 
+	/**
+     * Renvoie la couleur des murs pour ce thème.
+     * @return La couleur des murs.
+     */
 	public Color getWallColor() {
 		return this.wallColor;
 	}
 
+	/**
+     * Renvoie la couleur de la brume pour ce thème.
+     * @return La couleur de la brume.
+     */
 	public Color getFogColor() {
 		return this.fogColor;
 	}
 
+	/**
+     * Renvoie la couleur de fond pour ce thème.
+     * @return La couleur de fond.
+     */
 	public Color getBackgroundColor() {
 		return this.backgroundColor;
 	}
 	
+	/**
+     * Obtient la couleur du texte associée au thème.
+     * 
+     * @return la couleur du texte.
+     */
 	public Color getTextColor() {
 		return this.textColor;
 	}
 
+	/**
+     * Retourne une représentation sous forme de chaîne de caractères du thème.
+     * 
+     * @return le nom du thème.
+     */
 	@Override
 	public String toString() {
 		return this.name;
 	}
 
+	/**
+     * Indique si le thème utilise des images ou des simples couleurs.
+     * 
+     * @return true si le thème utilise des images, sinon false.
+     */
 	public boolean isWithImages() {
 		return isWithImages;
 	}
 
+	/**
+     * Définit si le thème utilise des images ou des simples couleurs.
+     * 
+     * @param isWithImages true si le thème utilise des images, sinon false.
+     */
 	public void setWithImages(boolean isWithImages) {
 		this.isWithImages = isWithImages;
 	}
