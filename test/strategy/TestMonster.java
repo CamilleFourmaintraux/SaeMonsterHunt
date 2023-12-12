@@ -1,19 +1,16 @@
 package strategy;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.Test;
 
 import fr.univlille.info.J2.main.management.cells.CellEvent;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.monster.Monster;
-import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 public class TestMonster {
 	boolean[][] walls = {{true, false, true}, {false, true, true}, {false, false, true}};
-	Monster monster = new Monster(walls,new CellEvent(new Coordinate(4,5),0,CellInfo.EMPTY),0,1,"Player");
+	Monster monster = new Monster(walls,new Coordinate(4,5),new Coordinate(0,0),0,1,"Player");
 
 
 	@Test

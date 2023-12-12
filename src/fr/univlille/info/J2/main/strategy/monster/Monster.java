@@ -4,9 +4,12 @@
  * et les informations concernant la sortie du labyrinthe.
  */
 package fr.univlille.info.J2.main.strategy.monster;
+import fr.univlille.info.J2.main.management.cells.CellEvent;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 /**
  *
  * La classe Monster représente un Monster dans le jeu. Elle implémente l'interface IMonsterStrategy
@@ -53,14 +56,18 @@ public class Monster {
 	 * @param IA_level	 Le niveau de l'IA du monstre.
 	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
 	 */
-	public Monster(boolean[][] walls,ICellEvent ce, int visionRange, int movingRange, String IA) {
+	public Monster(boolean[][] walls,ICoordinate spawn, ICoordinate exit, int visionRange, int movingRange, String IA) {
 		super();
 		this.explored=new boolean[walls.length][walls[0].length];
-		this.coord = ce.getCoord();
+		this.coord = spawn;
 		this.IA=IA;
 		this.strategy=this.chooseMonsterStrategy(IA);
 		this.strategy.initialize(walls);
-		this.strategy.update(ce);
+		CellEvent initEntity;
+		initEntity=new CellEvent(exit, 0, CellInfo.EXIT); //Attention, la stratégie considère avoir bougé
+		this.strategy.update(initEntity);
+		initEntity=new CellEvent(spawn, 0, CellInfo.MONSTER); //Bien pensé à le remttre à sa position initiale
+		this.strategy.update(initEntity);
 		this.visionRange=visionRange;
 		this.movingRange=movingRange;
 	}
@@ -148,6 +155,20 @@ public class Monster {
 	
 	public ICoordinate play() {
 		return this.strategy.play();
+	}
+	
+	protected static ICoordinate createInBoundCoord(int row, int col, boolean[][]walls) {
+		if(row>=walls.length) {
+			row=walls.length-1;
+		}else if(row<0) {
+			row=0;
+		}
+		if(col>=walls[row].length) {
+			col=walls[row].length-1;
+		}else if(col<0) {
+			col=0;
+		}
+		return new Coordinate(row,col);
 	}
 	
 }

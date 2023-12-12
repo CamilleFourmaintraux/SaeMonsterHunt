@@ -233,12 +233,10 @@ public class Maze extends Subject{
 	public void initMonsterExitHunter(String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
 		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
 		this.setFloor(this.exit.getCoord(),true);
-		ICoordinate coordSpawnMonster = new Coordinate(0,Utils.random.nextInt(this.walls[0].length));
-		CellEvent eventSpawnMonster = new CellEvent(coordSpawnMonster, 0, CellInfo.EMPTY);
 		if(limitedVision) {
-			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),eventSpawnMonster, visionRange, movingRange, monster_IA);
+			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),exit.getCoord(), visionRange, movingRange, monster_IA);
 		}else {
-			this.monster = new Monster(this.walls,eventSpawnMonster, -1, movingRange, monster_IA);
+			this.monster = new Monster(this.walls,new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),exit.getCoord(), -1, movingRange, monster_IA);
 			this.monster.setToAllExplored();
 		}
 		this.setFloor(this.monster.getCoord(),true);
@@ -373,7 +371,9 @@ public class Maze extends Subject{
 			return true;
 		}
 		if(!this.getMonsterIA().equals(Management.IA_LEVELS[0])) { //Inateignable par un joueur, sert à passer le tour d'une IA qui essaye d'aller à un endroit impossible.
-			
+			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
+			this.monster.update(ce);
+			this.endMonsterTurn();
 		}
 		return false;
 	}
