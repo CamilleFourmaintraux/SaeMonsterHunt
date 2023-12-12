@@ -42,6 +42,7 @@ Pour gagner, atteignez la sortie sans vous faire tirer dessus.
 
 Vous pouvez retrouvez **toute la [documentation](doc/index.html)** (javadoc) en cliquant **[ici](doc/index.html)** ou sur documentation.
 
+---
 ## Personnalisation de l'expérience de jeu
 
 ### Diffèrent mode de jeu :
@@ -71,11 +72,25 @@ Le **"mode image"** est activé par défaut au lancement, toute fois si les illu
 
 **Thème Forêt** : 
 
-![Partie de MonsterHunt avec le thème forêt](res/forestTheme.jpg)
+![Partie de MonsterHunt avec le thème forêt](res/readMe/forestTheme.jpg)
 
 **Thème Océan** :
 
-![Partie de MonsterHunt avec le thème océan](res/oceanTheme.jpg)
+![Partie de MonsterHunt avec le thème océan](res/readMe/oceanTheme.jpg)
+
+**Thème Donjon** :
+
+![Partie de MonsterHunt avec le thème donjon](res/readMe/dungeonTheme.jpg)
+
+**Thème Cave** :
+
+![Partie de MonsterHunt avec le thème cave](res/readMe/caveTheme.jpg)
+
+**Thème Prairie** :
+
+![Partie de MonsterHunt avec le thème océan](res/readMe/meadownTheme.jpg)
+
+
 
 ---
 ### Génération, Importation & Création de labyrinthe.
