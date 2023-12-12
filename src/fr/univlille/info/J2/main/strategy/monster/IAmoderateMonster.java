@@ -5,11 +5,12 @@ import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 /**
  * Implémentation de la stratégie du monstre pour un niveau de difficulté intérmédiaire.
  */
-public class IAmoderateMonster implements IMonsterStrategy{
+class IAmoderateMonster implements IMonsterStrategy{
 	
 	/**
 	 * Le nombre d'essai max avant que l'ia abandonne.
@@ -48,7 +49,9 @@ public class IAmoderateMonster implements IMonsterStrategy{
      */
 	@Override
 	public void update(ICellEvent ce) {
-		this.current_position=ce.getCoord();
+		if(!ce.getState().equals(CellInfo.WALL)) {
+			this.current_position=ce.getCoord();
+		}
 		this.numAttempt=0;
 	}
 	

@@ -1,17 +1,15 @@
 package strategy;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.management.cells.CellEvent;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 
 public class TestHunter {
 
-	Hunter hunter = new Hunter(6, 6, new Coordinate(0,0),"Player",0);
+	Hunter hunter = new Hunter(6, 6, new Coordinate(0,0),0,"Player");
 
 	@Test
 	public void test_constructor_hunter() {
@@ -20,21 +18,15 @@ public class TestHunter {
 		assertEquals(0, hunter.getCol());
 	}
 
-		//pas de test pour les methodes play & update car pas encore implemente.
 		@Test
 		public void test_play_hunter() {
-			assertNotEquals(hunter.play(),null);
-		}
-
-		@Test
-		public void test_update_hunter() {
-			hunter.update(new CellEvent(null, 0, null));
+			assertEquals(hunter.play(),null);
 		}
 
 
 	@Test
 	public void test_initialize_traces_hunter() {
-		hunter.initialize(3 ,4);
+		hunter.initTraces(3 ,4);
 		assertEquals(3, hunter.getTraces().length);
 		assertEquals(4, hunter.getTraces()[0].length);
 

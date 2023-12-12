@@ -5,6 +5,7 @@
  */
 package fr.univlille.info.J2.main.management;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.management.cells.CellEvent;
@@ -255,12 +256,10 @@ public class Maze extends Subject{
 	public void initMonsterExitHunter(String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
 		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
 		this.setFloor(this.exit.getCoord(),true);
-		ICoordinate coordSpawnMonster = new Coordinate(0,Utils.random.nextInt(this.walls[0].length));
-		CellEvent eventSpawnMonster = new CellEvent(coordSpawnMonster, 0, CellInfo.EMPTY);
 		if(limitedVision) {
-			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),eventSpawnMonster, visionRange, movingRange, monster_IA);
+			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),exit.getCoord(), visionRange, movingRange, monster_IA);
 		}else {
-			this.monster = new Monster(this.walls,eventSpawnMonster, -1, movingRange, monster_IA);
+			this.monster = new Monster(Arrays.copyOf(walls,walls.length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),exit.getCoord(), -1, movingRange, monster_IA);
 			this.monster.setToAllExplored();
 		}
 		this.setFloor(this.monster.getCoord(),true);
@@ -392,7 +391,7 @@ public class Maze extends Subject{
 	 *
 	 * @param c la coordonnée ou laquelle veut se déplacer le monstre.
 	 * @return true si l'action a reussi, sinon false.
-	 */
+	 */ //BUG qui modifie mon labyrinthe
 	public boolean move(ICoordinate c) { //Fais le déplacement du monstre, retourne true si le déplacement à été possible.
 		this.spotted=false;
 		if(this.canMonsterMoveAt(c)) {
@@ -401,9 +400,10 @@ public class Maze extends Subject{
 			}
 			this.setTrace(c, turn);
 
+			///BUG COMMENCE ICI
 			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
 			this.monster.update(ce);
-
+			///BUG FINI ICI
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
 				this.winner = 1;
@@ -415,7 +415,11 @@ public class Maze extends Subject{
 			return true;
 		}
 		if(!this.getMonsterIA().equals(Management.IA_LEVELS[0])) { //Inateignable par un joueur, sert à passer le tour d'une IA qui essaye d'aller à un endroit impossible.
-			
+			if(this.areCoordinateInBounds(c)) {
+				CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c)); //TODO
+				this.monster.update(ce);
+			}
+			this.endMonsterTurn();
 		}
 		return false;
 	}
@@ -443,31 +447,36 @@ public class Maze extends Subject{
 	 * @param c la coordonnée à laquelle le chasseur tire.
 	 * @return true si l'action a reussi,sinon false.
 	 */
-	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, renvoie toujours true
-		CellEvent ce;
-		Coordinate temp;
-		for(int y=c.getRow()-this.getBonusRange(); y<c.getRow()+(this.getBonusRange()+1); y++) {
-			for(int x=c.getCol()-this.getBonusRange(); x<c.getCol()+(this.getBonusRange()+1); x++) {
-				try {
-					temp = new Coordinate(y,x);
-					ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
-					this.hunter.actualize(ce);
-				}catch(Exception e) {//Signifie que l'est est en dehors de la map
-					LOGGER.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
+	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, renvoie toujours true sauf si c'est pas le tour du chasseur
+		if(!this.isMonsterTurn) {
+			CellEvent ce;
+			Coordinate temp;
+			//S'occupe du tir secondaire si jamais le hunter à un bonus.
+			for(int y=c.getRow()-this.getBonusRange(); y<c.getRow()+(this.getBonusRange()+1); y++) {
+				for(int x=c.getCol()-this.getBonusRange(); x<c.getCol()+(this.getBonusRange()+1); x++) {
+					try {
+						temp = new Coordinate(y,x);
+						ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
+						this.hunter.actualizeTraces(ce);
+						this.hunter.update(ce);
+					}catch(Exception e) {//Signifie que l'est est en dehors de la map
+						LOGGER.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
+					}
 				}
 			}
+			//Vérifie le tir principal.
+			ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
+			this.hunter.setCoord(ce.getCoord());
+			if(ce.getState().equals(CellInfo.MONSTER)) {
+				this.isGameOver=true;
+				this.winner = 2;
+			}
+			this.isMonsterTurn=true;
+			this.notifyObservers();
+			return true;
+			//Faire un Bazooka mode ?
 		}
-		//???
-		ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c)); //TODO Quel est l'interet de ces lignes déja ?
-		this.hunter.actualize(ce);//A Vérifier...
-		//???
-		if(ce.getState().equals(CellInfo.MONSTER)) {
-			this.isGameOver=true;
-			this.winner = 2;
-		}
-		this.isMonsterTurn=true;
-		this.notifyObservers();
-		return true;
+		return false;
 	}
 
 	/**
@@ -491,7 +500,7 @@ public class Maze extends Subject{
 	 */
 	public boolean canMonsterMoveAt(ICoordinate c) {
 		if(this.isMonsterTurn) { //Est-ce le tour du monstre?
-			if(this.isCorrectCoordinate(c)) { //Est-ce des coordonnées qui ne sont pas en dehors du terrain de jeu?
+			if(this.areCoordinateInBounds(c)) { //Est-ce des coordonnées qui ne sont pas en dehors du terrain de jeu?
 				if(this.walls[c.getRow()][c.getCol()]){ //Est-ce qu'il y a un mur?
 					if(this.inReach(this.monster.getCoord(), c, this.monster.getMovingRange())){ //Est-ce que c'est à la portée du monstre ?
 						if(this.isExplored(c)) { //Est-ce que cette case à été exploré par le monstre ?
@@ -504,14 +513,13 @@ public class Maze extends Subject{
 		}
 		return false;
 	}
-
 	/**
 	 * Vérifie si la coordonnée spécifiée est valide dans le labyrinthe.
 	 *
 	 * @param c la coordonnée à vérifier.
 	 * @return true si la coordonnée est valide, c'est-à-dire qu'elle se situe à l'intérieur des limites du labyrinthe ; false sinon.
 	 */
-	public boolean isCorrectCoordinate(ICoordinate c) {
+	public boolean areCoordinateInBounds(ICoordinate c) {
 		return !((c.getRow()>=this.walls.length)||(c.getCol()>=this.walls[c.getRow()].length));
 	}
 

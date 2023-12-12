@@ -1,16 +1,16 @@
-# Saé3.02 : Chasse au Monstre
+# Saé3.02 : MonsterHunt
 
 Le monstre évolue dans un labyrinthe, une grille découpée en cases, avec lequel le chasseur interagit sans pour autant s’y situer.
 
 Le monstre **connaît l’entrée** et **la sortie** et a une connaissance partielle ou totale des obstacles du labyrinthe.
 
-Dans un premier temps, on peut supposer qu’un labyrinthe est une grille carrée avec des obstacles (mais ce n’est pas très important, ça pourrait être une grille rectangulaire, une île aux formes mal définies, un tore, pourquoi pas des étages, des pièges, des passages secrets, ...)  et que **le monstre connaît l’emplacement des obstacles**.
+Par défaut, un labyrinthe est une grille carrée avec des obstacles, **le monstre connaît l’emplacement des obstacles**, le chasseur découvre le labyrinthe au fur et à mesure.
 
-Les **obstacles** occupent une case du labyrinthe qui **ne peut être traversée**. Dans un second temps, on pourra supposer que le monstre a une connaissance limitée à quelques cases autours de lui et à la sortie.
+Les **obstacles** occupent une case du labyrinthe qui **ne peut être traversée**. Il est possible de modifier le monstre dans les paramètres pour qu'il ait une connaissance limitée à quelques cases autours de lui et à la sortie.
 
-Pour cette version des règles, le monstre ne pourra pas trouver un chemin à l’avance dans le labyrinthe mais devra y progresser à l’aveugle, en étant parfois obligé de rebrousser chemin. Le chasseur connaît la forme et la dimension de la grille, mais il ne connaît rien d’autre : ni l’emplacement de l’entrée ou de la sortie, ni l’emplacement des obstacles.
+Dans cette version des règles, l'IA du monstre ne pourra pas trouver un chemin à l’avance dans le labyrinthe mais devra y progresser à l’aveugle, en étant parfois obligé de rebrousser chemin. Le chasseur connaît la forme et la dimension de la grille, mais il ne connaît rien d’autre : ni l’emplacement de l’entrée ou de la sortie, ni l’emplacement des obstacles.
 
-Le **but du jeu** pour le chasseur est de **trouver le monstre**, pour le monstre de **réussir à atteindre la sortie du labyrinthe** depuis l’entrée sans se faire attraper par le chasseur. Un tour de jeu consiste en **un coup du monstre suivi d’un coup du chasseur**.
+Le **but du jeu** pour le chasseur est de **trouver le monstre**, pour le monstre de **réussir à atteindre la sortie du labyrinthe** depuis l’entrée sans se faire attraper par le chasseur. Un tour de jeu consiste en **un coup du monstre suivi d’un coup du chasseur**, le chasseur jouant en premier.
 
 ---
 
@@ -27,10 +27,15 @@ ou vous pouvez aussi la démarrer en cliquant sur le fichier launch.sh.
 ---
 ## Utilisations
 
-Lorsque le jeu se lance vous atterissez sur le **menu principal**, depuis vous pouvez choisir le **nom des joueurs** pour chacun des deux rôles ainsi que de choisir si **l'un des joueurs ou les deux joueurs soit/sont un/des IA avec leur niveau de difficulté**. Vous avez aussi la possibilité de **personnaliser votre expérience** de jeu en allant de le menu ***"modify settings"***, ici vous pourrez modifier les **paramètres du jeu** tel que choisir de jouer en écran partagé ou scindé**, choisir la **taille du labyrinthe**, définir un **taux d'apparition des murs** ou encore un **thème pour le jeu**.
+Lorsque le jeu se lance vous atterissez sur le **menu principal**, depuis vous pouvez choisir le **nom des joueurs** pour chacun des **deux rôles** ainsi que de choisir si l'un des joueurs ou les deux joueurs soit/sont un/des **IA** avec leur **niveau de difficulté**. Pour jouer il suffit d'appuyer sur le bouton ***"PLAY"***, le jeu se lance alors, pour **sélectionner une case du labyrinthe** en passant la souris dessus et confirmer votre choix en appuyant **clic gauche** sur la case.
 
-Pour jouer il suffit d'appuyer sur le bouton ***"PLAY"***, le jeu se lance alors, pour **sélectionner une case du labyrinthe** il suffit d'appuyer sur **clic gauche** sur la case.
+Le chasseur joue en premier. En tant que chasseur, sélectionner n'importe quel case la révèlera. Attention, cela révèle son état au moment du tir. Si le monstre passe sur cette case après que vous ayez tiré, vous ne le verrez pas à moins de retirer sur la case. Tirer sur une case où le monstre est passé indique le n° de tour quand est passé le monstre, mais vous serez notifié.
+Vous gagnez si vous arrivez à tirer sur le monstre avant qu'il n'arrive à s'échapper.
 
+En tant que monstre, vous devez sélectionner une case où vous pouvez jouer, c'est à dire une case à portée qui n'est pas un mur. Les cases accessible sont mises en valeur par rapport aux cases non-accessible quand vous passerez la souris dessus.
+
+Essayez de retenir où a tiré le chasseur, car si vous passez sur une case où il a précédemment tiré, il sera avertis, lui donnant un précieux indice sur votre position.
+Pour gagner, atteignez la sortie sans vous faire tirer dessus.
 
 ---
 ## Documentation

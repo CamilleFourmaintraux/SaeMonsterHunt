@@ -202,6 +202,7 @@ public class HunterView extends View{
 		}else {
 			this.notification.setText("");
 		}
+		this.actualizeCells(this.maze.getHunter().getRow(),this.maze.getHunter().getCol());
 	}
 
 	
@@ -275,9 +276,7 @@ public class HunterView extends View{
 	public void selectionLocked(CellWithText cell) {
 		if(this.maze.getHunterIA().equals("Player")) {
 			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
-			if(this.maze.shoot(c)) {
-				this.actualizeCell(c);
-			}
+			this.maze.shoot(c);
 		}else {
 			this.notification.setText("No selection possible : "+this.playerName+" is an AI.");
 		}
@@ -328,30 +327,31 @@ public class HunterView extends View{
 		}
 		return null;
 	}
-	
 	/**
      * Actualise la cellule et ses voisines en fonction des coordonnées spécifiées.
      * Utilise la méthode {@code revealCell} pour mettre à jour visuellement les cellules.
      * 
      * @param c Les coordonnées de la cellule à actualiser.
      */
-	public void actualizeCell(ICoordinate c) {
+	public void actualizeCells(int cRow, int cCol) {
+
 		CellWithText cwt;
-		for(int y=c.getRow()-this.maze.getBonusRange(); y<c.getRow()+(this.maze.getBonusRange()+1); y++) {
-			for(int x=c.getCol()-this.maze.getBonusRange(); x<c.getCol()+(this.maze.getBonusRange()+1); x++) {
+		for(int iRow =cRow-this.maze.getBonusRange(); iRow<cRow+(this.maze.getBonusRange()+1); iRow++) {
+			for(int iCol =cCol-this.maze.getBonusRange(); iCol<cCol+(this.maze.getBonusRange()+1); iCol++) {
 				try {
-					cwt = searchSprite(this.group_map, new Coordinate(y,x));
+					cwt = searchSprite(this.group_map, new Coordinate(iRow,iCol));
 					if(cwt!=null) {
 						this.revealCell(cwt,this.theme.getWallColor(),this.theme.getFloorColor());
 					}else {
-						LOGGER.info("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
+						//LOGGER.info("Error in HunterView at method : actualizeCell => Aucun Rectangle Correspondant !");
 					}	
 				}catch(Exception e) {
-					LOGGER.info("("+y+","+x+") Out of bounds in actualizeCell -> Its normal dont worry");
+					//LOGGER.info("("+iRow+","+iCol+") Out of bounds in actualizeCell -> Its normal dont worry");
 				}
 					
 			}
 		}
 
 	}
+	
 }

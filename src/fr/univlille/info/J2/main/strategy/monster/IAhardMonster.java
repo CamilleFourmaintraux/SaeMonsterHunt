@@ -1,35 +1,39 @@
 package fr.univlille.info.J2.main.strategy.monster;
 
-import fr.univlille.info.J2.main.management.cells.Coordinate;
-import fr.univlille.info.J2.main.utils.Utils;
+import java.util.List;
+
+import fr.univlille.info.J2.main.strategy.monster.brain.*;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 /**
  * Implémentation de la stratégie du monstre pour un niveau de difficulté difficile.
  */
-public class IAhardMonster implements IMonsterStrategy{
-	
-	/**
-	 * Le nombre d'essai max avant que l'ia abandonne.
-	 */
-	private static final int MAX_ATTEMPTS=10;
-	
-	/**
-	 * Le numéro d'essai actuel, si il dépasse le nombre d'essai max, alors l'IA abandonne et passe son tour.
-	 */
-	private int numAttempt=0;
-	
-	/**
-	 * La position du monstre pour aider la stratégie à se repérer.
-	 */
-	private ICoordinate current_position;
-	
+class IAhardMonster implements IMonsterStrategy{
+
 	/**
 	 * La grille de murs du labyrinthe.
 	 */
 	private boolean[][] walls;
+	
+	/**
+	 * La grille des chemins empruntable
+	 */
+	private Node[][] pathMap;
+	
+	/**
+	 * Le chemin que l'IA souhaite emprunter
+	 */
+	private List<Node> path;
+	
+	private Node current;
+	private Node exit;
+	
+	private AlgoAStar brain;
+	
+	private int progress;
 	
 	/**
      * Initialise les murs du labyrinthe pour le monstre.
@@ -39,6 +43,11 @@ public class IAhardMonster implements IMonsterStrategy{
 	@Override
 	public void initialize(boolean[][] walls) {
 		this.walls=walls;
+		this.pathMap = this.initPathMap(walls);
+		this.brain=new AlgoAStar();
+		this.progress=0;
+		this.current=new Node(0,0,true);
+		this.exit=new Node(0,0,true);
 	}
 	
 	/**
@@ -48,8 +57,25 @@ public class IAhardMonster implements IMonsterStrategy{
      */
 	@Override
 	public void update(ICellEvent ce) {
-		this.current_position=ce.getCoord();
-		this.numAttempt=0;
+		System.out.println("StrategyMonster - Row:"+ce.getCoord().getRow()+" - Col:"+ce.getCoord().getCol());
+		//BUG COMMENCE ICI
+		if(!ce.getState().equals(CellInfo.WALL)) {
+			if(ce.getState().equals(CellInfo.EXIT)) {
+				this.exit.setCoord(ce.getCoord());
+			}
+			this.current.setCoord(ce.getCoord());
+			System.out.println("borne 1 in update:"+this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]);
+			this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]=true;
+			System.out.println("borne 2 in update:"+this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]);
+		}else {
+			this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]=false;
+		}
+		//BUG FINI ICI
+		if(this.pathMap[ce.getCoord().getRow()][ce.getCoord().getCol()].isTraversable()!=this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]) {
+			this.pathMap[ce.getCoord().getRow()][ce.getCoord().getCol()].setTraversable(this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]);
+			this.path=this.brain.think(pathMap, current, exit);
+			this.progress=0;
+		}
 	}
 	
 	/**
@@ -61,29 +87,27 @@ public class IAhardMonster implements IMonsterStrategy{
 	 */
 	@Override
 	public ICoordinate play() {
-		ICoordinate c;
-		do {
-			this.numAttempt++;
-			c = this.createInBoundCoord(this.current_position.getRow()+(Utils.random.nextInt(3)-1), this.current_position.getCol()+(Utils.random.nextInt(3)-1));
-		}while(this.numAttempt<MAX_ATTEMPTS && !this.walls[c.getRow()][c.getCol()]);
-		
-		
-		//c=new Coordinate(row,col);
-		
-		return c;
+		ICoordinate choice;
+		if(this.path==null || progress>this.path.size() || progress<0) {
+			progress=0;
+			this.path=this.brain.think(pathMap, current, exit);
+		}
+		try {
+		choice=this.path.get(progress).getCoord();
+		}catch(NullPointerException npe) {
+			return this.current.getCoord();
+		}
+		progress++;
+		return choice;
 	}
 	
-	private ICoordinate createInBoundCoord(int row, int col) {
-		if(row>=this.walls.length) {
-			row=this.walls.length-1;
-		}else if(row<0) {
-			row=0;
+	public Node[][] initPathMap(boolean[][] walls) {
+		Node[][]pathMap=new Node[walls.length][walls[0].length];
+		for(int row=0; row<walls.length; row++) {
+			for(int col=0; col<walls[row].length; col++) {
+				pathMap[row][col]=new Node(row,col,walls[row][col]);
+			}
 		}
-		if(col>=this.walls[row].length) {
-			col=this.walls[row].length-1;
-		}else if(col<0) {
-			col=0;
-		}
-		return new Coordinate(row,col);
+		return pathMap; //Retourne le nombre de modifications
 	}
 }

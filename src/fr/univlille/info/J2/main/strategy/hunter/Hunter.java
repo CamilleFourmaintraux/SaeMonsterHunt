@@ -187,19 +187,26 @@ public class Hunter {
 	public void setStrategy(IHunterStrategy strategy) {
 		this.strategy = strategy;
 	}
-	
-	/**
-	 * Met à jour les informations du chasseur en fonction de l'événement de cellule spécifié.
-	 *
-	 * @param ce L'événement de cellule à prendre en compte.
-	 */
-	public void actualize(ICellEvent ce) {
-		this.setCoord(ce.getCoord());
+
+/**
+ * Met à jour les traces du chasseur en fonction de l'événement de cellule spécifié.
+ *
+ * @param ce L'événement de cellule à prendre en compte.
+ */
+	public void actualizeTraces(ICellEvent ce) {
 		if(ce.getState().equals(CellInfo.WALL)) {
 			this.setTrace(ce.getCoord(), -1);
 		}else {
 			this.setTrace(ce.getCoord(), ce.getTurn());
 		}
+	}
+
+	/**
+	 * Met à jour la stratégie du chasseur en fonction de l'événement de cellule spécifié.
+	 *
+	 * @param ce L'événement de cellule à prendre en compte.
+	 */
+	public void update(ICellEvent ce) {
 		this.strategy.update(ce);
 	}
 	
