@@ -106,15 +106,11 @@ public class MonsterView  extends View {
 
 	/**
      * Constructeur de la classe MonsterView, crée la vue du Monstre.
-	 *
-	 * @param window_height 	Hauteur de la fenêtre.
-	 * @param window_width 		Largeur de la fenêtre.
-	 * @param gap_X 			Position horizontal.
-	 * @param gap_Y				Position vertical.
-	 * @param zoom 				Niveau de zoom.
-	 * @param theme.getWallColor()  	Couleur des murs.
-	 * @param theme.getFloorColor()		Couleur des sols.
-	 * @param maze				Instance du labyrinthe associée à cette vue.
+     * 
+	 * @param maze			Instance du labyrinthe associée à cette vue.
+	 * @param display 		Instance de DisplayValues pour les paramètres d'affichage.
+	 * @param monsterName	Nom du Monstre.
+	 * @param theme			Thème utilisé pour l'affichage.
 	 */
 	public MonsterView(DisplayValues display, Maze maze,  String monsterName, Theme theme) {
 		this.display=display;
@@ -270,6 +266,13 @@ public class MonsterView  extends View {
 		this.group_img_sprite.getChildren().add(this.sprite_shot.getImgv());
 	}
 
+	/**
+     * Ajoute des événements liés à la souris pour une cellule donnée.
+     * Lorsque la souris entre dans la cellule, la méthode select est appelée avec les coordonnées de la cellule.
+     * Si un clic de souris est détecté, la méthode selectionLocked est appelée pour verrouiller la sélection.
+     * 
+     * @param r La cellule pour laquelle les événements de la souris doivent être ajoutés.
+     */
 	public void addMouseEvents(Cell r) {
 		r.setOnMouseEntered(e->{
 			this.select(e, r.getCoord());
@@ -279,8 +282,6 @@ public class MonsterView  extends View {
 
 	/**
      * Dessine le labyrinthe et ses éléments.
-	 *
-	 * @return Un groupe contenant les éléments graphiques du labyrinthe.
 	 */
 	public void draw() {
 		for(int h=0; h<this.maze.getWalls().length; h++) {
@@ -331,6 +332,14 @@ public class MonsterView  extends View {
 		}
 	}
 
+	/**
+	 * Cette méthode est appelée lorsqu'une sélection est verrouillée dans la vue du monstre.
+	 * Si l'intelligence artificielle (IA) du monstre est définie sur "Player", la méthode effectue
+	 * un déplacement du monstre vers la cellule spécifiée. Sinon, elle affiche un message indiquant
+	 * qu'aucune sélection n'est possible car le monstre est contrôlé par une IA.
+	 *
+	 * @param cell La cellule sur laquelle la sélection est verrouillée.
+	 */
 	public void selectionLocked(Cell cell) {
 		if(this.maze.getMonsterIA().equals("Player")) {
 			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());

@@ -289,10 +289,7 @@ public class Management extends Stage implements Observer{
 	/**
 	 * Constructeur de la classe Management.
 	 *
-	 * @param window_height 	La hauteur de la fenetre.
-	 * @param window_width 		La largeur de la fenetre.
-	 * @param gap_X 			L'écart horizontal dans la vue du labyrinthe. Permet de décaler l'entièreté du labyrinthe sur un axe horizontal.
-	 * @param gap_Y 			L'écart vertical dans la vue du labyrinthe.Permet de décaler l'entièreté du labyrinthe sur un axe vertical.
+	 * @param display Les valeurs d'affichage.
 	 */
 	public Management(DisplayValues display) {
 		Theme.initThemes();
@@ -1305,6 +1302,12 @@ public class Management extends Stage implements Observer{
 		return (percentage/100)*total;
 	}
 	
+	/**
+     * Affiche les options de gestion du jeu.
+     *
+     * @param maze          L'instance du labyrinthe associée à la gestion.
+     * @param notification  Le composant de texte pour afficher les notifications.
+     */
 	public static void showOption(Maze maze, Text notification) {
 		ButtonType bt_cancel= new ButtonType("Cancel");
 		ButtonType bt_save = new ButtonType("Save the game & Leave");

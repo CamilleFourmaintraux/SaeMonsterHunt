@@ -109,18 +109,13 @@ public class HunterView extends View{
 	private Text notification;
 
 	/**
-	 * Constructeur de la classe HunterView, crée la vue du chasseur.
-	 *
-	 * @param window_height 	Hauteur de la fenêtre.
-	 * @param window_width 		Largeur de la fenêtre.
-	 * @param gap_X 			Position horizontal.
-	 * @param gap_y				Position vertical.
-	 * @param zoom 				Niveau de zoom.
-	 * @param colorOfWalls  	Couleur des murs.
-	 * @param colorOfFloors		Couleur des sols.
-	 * @param colorOfFog		Couleur du brouillard.
-	 * @param maze				Instance du labyrinthe associée à cette vue.
-	 */
+     * Constructeur de la classe HunterView, crée la vue du chasseur.
+     *
+     * @param display    Instance des valeurs d'affichage.
+     * @param maze       Instance du labyrinthe associée à cette vue.
+     * @param hunterName Nom du chasseur.
+     * @param theme      Thème de l'interface.
+     */
 	public HunterView(DisplayValues display, Maze maze, String hunterName, Theme theme) {
 
 		//Initiation de la fenetre
@@ -191,7 +186,10 @@ public class HunterView extends View{
 		this.actualize();
 	}
 
-
+	/**
+     * Actualise la vue du chasseur en fonction des changements dans le modèle du labyrinthe.
+     * Met à jour la position du sprite du tir, le texte d'indication du tour, et les notifications.
+     */
 	public void actualize() {
 		int x = calculDrawX(this.maze.getHunter().getCol());
 		int y = calculDrawY(this.maze.getHunter().getRow());
@@ -259,7 +257,6 @@ public class HunterView extends View{
      * Méthode pour sélectionner une cellule du labyrinthe.
 	 *
 	 * @param r La cellule à sélectionner.
-	 * @param e L'événement de la souris associé à la sélection.
 	 */
 	public void select(CellWithText r) {
 		if(this.maze.getHunterIA().equals("Player")) {
@@ -270,6 +267,11 @@ public class HunterView extends View{
 		}
 	}
 
+	/**
+     * Effectue une sélection verrouillée sur la cellule spécifiée, déclenchant un tir si l'IA du chasseur est "Player".
+     * 
+     * @param cell La cellule sélectionnée.
+     */
 	public void selectionLocked(CellWithText cell) {
 		if(this.maze.getHunterIA().equals("Player")) {
 			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
@@ -308,7 +310,13 @@ public class HunterView extends View{
 		}
 	}
 
-
+	/**
+     * Recherche un sprite dans le groupe donné en fonction des coordonnées spécifiées.
+     * 
+     * @param group Le groupe dans lequel rechercher le sprite.
+     * @param c Les coordonnées à rechercher.
+     * @return Le sprite trouvé correspondant aux coordonnées, ou null s'il n'est pas trouvé.
+     */
 	public CellWithText searchSprite(Group group, ICoordinate c) {
 		for(Node e:group.getChildren()) {
 			if(e.getClass()==CellWithText.class) {
@@ -320,6 +328,13 @@ public class HunterView extends View{
 		}
 		return null;
 	}
+	
+	/**
+     * Actualise la cellule et ses voisines en fonction des coordonnées spécifiées.
+     * Utilise la méthode {@code revealCell} pour mettre à jour visuellement les cellules.
+     * 
+     * @param c Les coordonnées de la cellule à actualiser.
+     */
 	public void actualizeCell(ICoordinate c) {
 		CellWithText cwt;
 		for(int y=c.getRow()-this.maze.getBonusRange(); y<c.getRow()+(this.maze.getBonusRange()+1); y++) {

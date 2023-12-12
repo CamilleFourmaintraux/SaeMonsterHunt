@@ -6,9 +6,20 @@ import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
+/**
+ * Implémentation de l'interface IHunterStrategy pour une stratégie simple de chasseur.
+ * La stratégie consiste à choisir aléatoirement des coordonnées dans le labyrinthe.
+ */
 public class IAeasyHunter implements IHunterStrategy{
 	
+	/**
+	 * Nombre de lignes du labyrinthe.
+	 */
 	private int rows;
+	
+	/**
+	 * Nombre de colonnes du labyrinthe.
+	 */
 	private int cols;
 	
 	/**

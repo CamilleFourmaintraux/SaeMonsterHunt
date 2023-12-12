@@ -8,6 +8,10 @@ import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
 import javafx.scene.Scene;
 
+/**
+ * Une classe abstraite représentant une vue dans le modèle MVC (Modèle-Vue-Contrôleur).
+ * Cette classe implémente l'interface Observer pour être informée des changements dans le modèle.
+ */
 public abstract class View implements Observer{
 
 	protected static final Logger LOGGER = Logger.getLogger(View.class.getName());
@@ -56,26 +60,55 @@ public abstract class View implements Observer{
 		return (int)(y*this.display.getZoom()+this.display.getGapY());
 	}
 
+	/**
+     * Obtient les valeurs d'affichage associées à cette vue.
+     *
+     * @return Les valeurs d'affichage.
+     */
 	public DisplayValues getDisplay() {
 		return display;
 	}
 
+	/**
+     * Obtient le thème associé à cette vue.
+     *
+     * @return Le thème.
+     */
 	public Theme getTheme() {
 		return theme;
 	}
 
+	/**
+     * Obtient le nom du joueur utilisant cette vue.
+     *
+     * @return Le nom du joueur.
+     */
 	public String getPlayerName() {
 		return playerName;
 	}
 
+	/**
+     * Obtient la scène associée à cette vue.
+     *
+     * @return La scène.
+     */
 	public Scene getScene() {
 		return scene;
 	}
 	
+	/**
+     * Méthode abstraite pour dessiner la vue.
+     */
 	public abstract void draw();
 	
+	/**
+     * Méthode abstraite pour initialiser les sprites de la vue.
+     */
 	protected abstract void initiateSprites();
 	
+	/**
+     * Méthode abstraite pour actualiser la vue en réponse à des changements dans le modèle.
+     */
 	public abstract void actualize();
 	
 }

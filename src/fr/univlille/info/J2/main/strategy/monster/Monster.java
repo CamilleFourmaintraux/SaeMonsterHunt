@@ -49,8 +49,8 @@ public class Monster {
      * Constructeur de la classe Monster, crée un Monstre.
 	 *
 	 * @param walls 		La grille de murs du labyrinthe.
-	 * @param coord 		Les coordonnées initiales du monstre.
-	 * @param IA_level	  	Le niveau de l'IA du monstre.
+	 * @param ce            L'événement de la cellule du monstre.
+	 * @param IA	  		Le niveau de l'IA du monstre.
 	 * @param visionRange 	Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
 	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
 	 */
@@ -66,6 +66,16 @@ public class Monster {
 		this.movingRange=movingRange;
 	}
 	
+	/**
+	 * Choisi une stratégie de monstre en fonction du niveau d'intelligence artificielle spécifié.
+	 *
+	 * @param IA_monster Le niveau d'intelligence artificielle du monstre. Les valeurs possibles sont :
+	 *                   - "IA-Easy" pour une intelligence artificielle facile.
+	 *                   - "IA-Moderate" pour une intelligence artificielle modérée.
+	 *                   - "IA-Hardcore" pour une intelligence artificielle hardcore.
+	 * @return Une instance de l'interface IMonsterStrategy correspondant au niveau d'intelligence artificielle spécifié.
+	 *         Si le niveau spécifié n'est pas reconnu, une instance de NoIAMonster est retournée par défaut.
+	 */
 	private IMonsterStrategy chooseMonsterStrategy(String IA_monster) {
 		if(IA_monster.equals("IA-Easy")){
 			return new IAeasyMonster();
@@ -77,6 +87,12 @@ public class Monster {
 		return new NoIAMonster();
 	}
 
+	/**
+	 * Cette méthode marque toutes les cases comme explorées par le monstre.
+	 * Elle parcourt le tableau bidimensionnel 'explored' et assigne la valeur 'true'
+	 * à chaque élément, indiquant que le monstre a exploré toutes les cases.
+	 * 
+	 */
 	public void setToAllExplored() {
 		for(int h=0;h<this.explored.length;h++) {
 			for(int l=0;l<this.explored[h].length;l++) {
@@ -131,22 +147,50 @@ public class Monster {
 		this.strategy.update(ce);
 	}
 
+	/**
+     * Obtient un tableau indiquant les cases explorées par le monstre.
+     * Une case est explorée si le monstre y est passé au moins une fois.
+     * 
+     * @return Le tableau des cases explorées par le monstre.
+     */
 	public boolean[][] getExplored() {
 		return explored;
 	}
 
+	 /**
+     * Obtient la portée de vision du monstre.
+     * La portée de vision représente la distance maximale à laquelle le monstre peut voir.
+     *
+     * @return La portée de vision du monstre.
+     */
 	public int getVisionRange() {
 		return visionRange;
 	}
 
+	/**
+     * Obtient la portée de déplacement du monstre.
+     * La portée de déplacement représente la distance maximale que le monstre peut se déplacer en un tour.
+     *
+     * @return La portée de déplacement du monstre.
+     */
 	public int getMovingRange() {
 		return movingRange;
 	}
 	
+	/**
+     * Obtient le nom de l'intelligence artificielle (IA) du monstre.
+     *
+     * @return Le nom de l'IA du monstre.
+     */
 	public String getIA() {
 		return this.IA;
 	}
 	
+	/**
+     * Joue un tour pour le monstre en utilisant sa stratégie associée.
+     *
+     * @return Les coordonnées où le monstre a décidé de se déplacer.
+     */
 	public ICoordinate play() {
 		return this.strategy.play();
 	}

@@ -81,7 +81,6 @@ public class Cell extends Rectangle{
      * Définit les coordonnées associées à la cellule.
      *
      * @param c Les nouvelles coordonnées de la cellule.
-     * @return Les coordonnées mises à jour.
      */
 	public void setCoord(ICoordinate c) {
 		this.coord=c;
@@ -115,15 +114,30 @@ public class Cell extends Rectangle{
 		return Objects.equals(coord, other.coord);
 	}
 
-
+	/**
+	 * Récupère l'objet ImageView associé à cet élément.
+	 *
+	 * @return L'objet ImageView associé à cet élément.
+	 */
 	public ImageView getImgv() {
 		return this.iv;
 	}
 
+	/**
+	 * Définit l'image affichée par cet élément en utilisant l'objet Image spécifié.
+	 *
+	 * @param img L'objet Image à afficher.
+	 */
 	public void setImage(Image img) {
 		this.iv.setImage(img);
 	}
 	
+	/**
+	 * Définit les coordonnées (X, Y) de cet élément et de son ImageView associé.
+	 *
+	 * @param x La coordonnée X.
+	 * @param y La coordonnée Y.
+	 */
 	public void setXY(double x, double y) {
 		this.setX(x);
 		this.setY(y);

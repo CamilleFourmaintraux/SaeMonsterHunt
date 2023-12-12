@@ -51,7 +51,7 @@ public class Hunter {
      * @param height     	La hauteur du labyrinthe.
      * @param width      	La largeur du labyrinthe.
      * @param coord_hunter 	Les coordonnées du chasseur.
-     * @param IA_level   	Le niveau de l'IA du chasseur.
+     * @param IA   			Le niveau de l'IA du chasseur.
      * @param bonusRange	La portée bonus de la vision du chasseur.
 	 */
 	public Hunter(int height, int width, ICoordinate coord_hunter, int bonusRange, String IA) {
@@ -63,6 +63,13 @@ public class Hunter {
 		this.strategy.initialize(height, width);
 	}
 	
+	/**
+	 *  Méthode permettant de choisir une stratégie de chasseur en fonction du niveau d'IA spécifié.
+	 *
+	 * @param IA_hunter 	Le niveau d'IA du chasseur. Les valeurs possibles sont "IA-Easy", "IA-Moderate", "IA-Hardcore".
+	 * @return Une instance de l'interface IHunterStrategy correspondant à la stratégie choisie.
+	 *         Si le niveau d'IA n'est pas reconnu, retourne une instance de NoIAHunter.
+	 */
 	public IHunterStrategy chooseHunterStrategy(String IA_hunter) {
 		if(IA_hunter.equals("IA-Easy")){
 			return new IAeasyHunter();
@@ -110,6 +117,12 @@ public class Hunter {
 		this.coord=c;
 	}
 	
+	/**
+     * Initialise le tableau des traces laissées par le chasseur.
+     *
+     * @param nbrRows Le nombre de lignes du labyrinthe.
+     * @param nbrCols Le nombre de colonnes du labyrinthe.
+	 */
 	public void initTraces(int nbrRows, int nbrCols) {
 		this.traces=new int[nbrRows][nbrCols];
 		for(int h=0; h<this.traces.length;h++) {
@@ -139,24 +152,47 @@ public class Hunter {
 		return this.traces[c.getRow()][c.getCol()];
 	}
 
+	/**
+	 * Obtient le tableau des traces laissées par le chasseur dans le labyrinthe.
+	 *
+	 * @return Le tableau des traces laissées par le chasseur.
+	 */
 	public int[][] getTraces() {
 		return traces;
 	}
 
+	/**
+	 * Obtient la portée bonus de la vision du chasseur.
+	 *
+	 * @return La portée bonus de la vision du chasseur.
+	 */
 	public int getBonusRange() {
 		return bonusRange;
 	}
 
-
+	/**
+	 * Obtient le niveau de l'IA du chasseur.
+	 *
+	 * @return Le niveau de l'IA du chasseur.
+	 */
 	public String getIA() {
 		return this.IA;
 	}
 
-
+	/**
+	 * Définit la stratégie du chasseur.
+	 *
+	 * @param strategy La nouvelle stratégie du chasseur.
+	 */
 	public void setStrategy(IHunterStrategy strategy) {
 		this.strategy = strategy;
 	}
 	
+	/**
+	 * Met à jour les informations du chasseur en fonction de l'événement de cellule spécifié.
+	 *
+	 * @param ce L'événement de cellule à prendre en compte.
+	 */
 	public void actualize(ICellEvent ce) {
 		this.setCoord(ce.getCoord());
 		if(ce.getState().equals(CellInfo.WALL)) {
@@ -167,6 +203,11 @@ public class Hunter {
 		this.strategy.update(ce);
 	}
 	
+	/**
+	 * Effectue une action de jeu en utilisant la stratégie actuelle du chasseur.
+	 *
+	 * @return Les coordonnées de l'action effectuée par le chasseur.
+	 */
 	public ICoordinate play() {
 		return this.strategy.play();
 	}

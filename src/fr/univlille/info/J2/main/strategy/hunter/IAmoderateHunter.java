@@ -6,6 +6,9 @@ import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
+/**
+ * Implémentation de la stratégie du chasseur pour un niveau de difficulté intermédiaire.
+ */
 public class IAmoderateHunter implements IHunterStrategy{
 	
 	private int rows;
