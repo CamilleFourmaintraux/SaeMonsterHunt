@@ -1,7 +1,4 @@
-/**
- *
- */
-package fr.univlille.info.J2.main.application.cells;
+package fr.univlille.info.J2.main.management.cells;
 
 import java.util.Objects;
 
@@ -25,8 +22,6 @@ import javafx.scene.shape.Rectangle;
  */
 public class Cell extends Rectangle{
 
-	//public final Image floor = new Image("/home/iutinfo/eclipse-workspace/J2_SAE3A/res/img/floor-Cave.jpg");
-
 	/**
 	 * Coordonnées construite à partir du x et y.
 	 */
@@ -35,10 +30,13 @@ public class Cell extends Rectangle{
 	 * Objet ImageView permettant d'afficher les images.
 	 */
 	ImageView iv;
+<<<<<<< HEAD:src/fr/univlille/info/J2/main/application/cells/Cell.java
 	/**
 	 * 
 	 */
 	public boolean isLocked;
+=======
+>>>>>>> master:src/fr/univlille/info/J2/main/management/cells/Cell.java
 
 	/**
 	 * Constructeur avec des paramètres limit�s.
@@ -52,10 +50,8 @@ public class Cell extends Rectangle{
 	 * @param gap_Y 	La valeur de décalage en Y pour la position de la cellule.
 	 * @param img 		L'illustration associé au type de cellule.
 	 */
-	public Cell(int x, int y, int zoom, Color fill, int gap_X, int gap_Y, Image img) {
-		this(x,y,zoom,fill,fill, 0, gap_X, gap_Y, img);
-
-		//System.out.println("TEST IMG:"+iv.getImage().getUrl());
+	public Cell(int x, int y, double zoom, Color fill, double gap_X, double gap_Y) {
+		this(x,y,zoom,fill,fill, 0, gap_X, gap_Y);
 	}
 
 	/**
@@ -73,10 +69,10 @@ public class Cell extends Rectangle{
 	 * @param stroke 		La couleur de contour de la cellule.
 	 * @param strokeWidth 	L'�paisseur du contour de la cellule.
 	 */
-	public Cell(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y, Image img) {
+	public Cell(int x, int y, double zoom, Color fill, Color stroke, int strokeWidth, double gap_X, double gap_Y) {
 		super(x*zoom+gap_X,y*zoom+gap_X,zoom, zoom);
 		this.coord=new Coordinate(y,x);
-		this.iv = new ImageView(img);
+		this.iv=new ImageView();
 		this.iv.setX(x*zoom+gap_X);
 		this.iv.setY(y*zoom+gap_X);
 		this.iv.setFitHeight(zoom);
@@ -84,7 +80,7 @@ public class Cell extends Rectangle{
 		this.setFill(fill);
 		this.setStroke(stroke);
 		this.setStrokeWidth(strokeWidth);
-		this.isLocked=false;
+		this.iv.setVisible(true);
 	}
 
 	 /**
@@ -102,8 +98,8 @@ public class Cell extends Rectangle{
      * @param c Les nouvelles coordonnées de la cellule.
      * @return Les coordonnées mises à jour.
      */
-	public ICoordinate setCoord(ICoordinate c) {
-		return this.coord=c;
+	public void setCoord(ICoordinate c) {
+		this.coord=c;
 	}
 
 	/**
@@ -150,6 +146,13 @@ public class Cell extends Rectangle{
 	 */
 	public void setImage(Image img) {
 		this.iv.setImage(img);
+	}
+	
+	public void setXY(double x, double y) {
+		this.setX(x);
+		this.setY(y);
+		this.iv.setX(x);
+		this.iv.setY(y);
 	}
 
 

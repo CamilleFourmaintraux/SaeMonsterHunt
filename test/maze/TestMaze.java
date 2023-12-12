@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.info.J2.main.management.Maze;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class TestMaze {
@@ -19,15 +19,13 @@ public class TestMaze {
 
 	@Test
 	public void test_constructor_Maze() {
-		assertEquals(maze_defaultMap.isGameOver,false);
-		assertEquals(maze_defaultMap.isMonsterTurn,false);
-		assertEquals(maze_defaultMap.turn,2);
-		assertEquals(maze_randomMap.isGameOver,false);
-		assertEquals(maze_randomMap.isMonsterTurn,false);
-		assertEquals(maze_randomMap.turn,2);
+		assertEquals(maze_defaultMap.isGameOver(),false);
+		assertEquals(maze_defaultMap.isMonsterTurn(),false);
+		assertEquals(maze_defaultMap.getTurn(),2);
+		assertEquals(maze_randomMap.isGameOver(),false);
+		assertEquals(maze_randomMap.isMonsterTurn(),false);
+		assertEquals(maze_randomMap.getTurn(),2);
 	}
-
-	//TODO faire tous les tests sur Maze
 
 	 @Test
 	 public void testToString() {
@@ -75,20 +73,20 @@ public class TestMaze {
 
 	 @Test
 	 public void testInvalidSboot() {
-		 maze_defaultMap.isMonsterTurn=true;
-		 assertFalse(maze_defaultMap.shoot(maze_defaultMap.monster.getCoord()));
+		 maze_defaultMap.setMonsterTurn(true);
+		 assertFalse(maze_defaultMap.shoot(maze_defaultMap.getMonster().getCoord()));
 	 }
 
 	 @Test
 	 public void testInvalidMove() {
-		 ICoordinate invalidCoorMonster = new Coordinate(maze_defaultMap.monster.getRow()+3,maze_defaultMap.monster.getCol()+3);
+		 ICoordinate invalidCoorMonster = new Coordinate(maze_defaultMap.getMonster().getRow()+3,maze_defaultMap.getMonster().getCol()+3);
 		 assertFalse(maze_defaultMap.move(invalidCoorMonster));
 	 }
 
 	 @Test
 	 public void testCanMonsterMoveAt() {
-		 ICoordinate coorMonster = maze_defaultMap.monster.getCoord();
-		 maze_defaultMap.isMonsterTurn=true;
+		 ICoordinate coorMonster = maze_defaultMap.getMonster().getCoord();
+		 maze_defaultMap.setMonsterTurn(true);
 		 assertTrue(maze_defaultMap.canMonsterMoveAt(new Coordinate(coorMonster.getRow()+1,coorMonster.getCol()+1)));
 		 assertFalse(maze_defaultMap.canMonsterMoveAt(new Coordinate(coorMonster.getRow()+2,coorMonster.getCol()+2)));
 		 assertThrows(IndexOutOfBoundsException.class, () -> maze_defaultMap.canMonsterMoveAt(new Coordinate(32,42)));
@@ -96,17 +94,17 @@ public class TestMaze {
 
 	 @Test
 	 public void testExitMove() {
-		 maze_defaultMap.isMonsterTurn=true;
-		 ICoordinate exitCoorMonster = new Coordinate(maze_defaultMap.exit.getRow(),maze_defaultMap.exit.getCol());
-		 maze_defaultMap.monster.setCoord(new Coordinate(exitCoorMonster.getRow()-1,exitCoorMonster.getCol()-1));
+		 maze_defaultMap.setMonsterTurn(true);
+		 ICoordinate exitCoorMonster = new Coordinate(maze_defaultMap.getExit().getRow(),maze_defaultMap.getExit().getCol());
+		 maze_defaultMap.getMonster().setCoord(new Coordinate(exitCoorMonster.getRow()-1,exitCoorMonster.getCol()-1));
 		 assertTrue(maze_defaultMap.move(exitCoorMonster));
-		 assertTrue(maze_defaultMap.isGameOver);
+		 assertTrue(maze_defaultMap.isGameOver());
 	 }
 
 	 @Test
 	 public void testValidSboot() {
-		 maze_defaultMap.isMonsterTurn=false;
-		 assertTrue(maze_defaultMap.shoot(maze_defaultMap.monster.getCoord()));
-		 assertTrue(maze_defaultMap.isGameOver);
+		 maze_defaultMap.setMonsterTurn(false);
+		 assertTrue(maze_defaultMap.shoot(maze_defaultMap.getMonster().getCoord()));
+		 assertTrue(maze_defaultMap.isGameOver());
 	 }
 }

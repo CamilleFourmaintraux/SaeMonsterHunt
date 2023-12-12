@@ -1,9 +1,9 @@
 package fr.univlille.info.J2.main.utils.menuConception;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Logger;
 
-import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
 import fr.univlille.info.J2.main.utils.Utils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -13,11 +13,12 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -31,8 +32,13 @@ import javafx.scene.text.TextAlignment;
  * @author theo.franos.etu
  */
 public class Generators {
+	
+	/**
+	 * Looger qui permet d'éviter les system.out pour à la place faire de vra ifichiers de log.
+	 */
+	private static final Logger logger = Logger.getLogger(Generators.class.getName());
 
-
+	private Generators() {}
 	/**
 	 * Génére un bouton avec un texte donné et le positionne aux coordonnées spécifiés.
 	 *
@@ -43,11 +49,36 @@ public class Generators {
 	 * @param active 	La couleur en hexadécimal quand le bouton est en interaction
 	 * @return Le bouton généré.
 	 */
+	public static Button generateButton(String msg, Color active, Color inactive) {
+		Button button = new Button(msg);
+		Generators.applyStyleToButton(button, active, inactive);
+		return button;
+	}
 	public static Button generateButton(String msg, double x, double y, Color active, Color inactive) {
 		Button button = new Button(msg);
 		Generators.setLayout(button, x-(button.getWidth()/2) ,y);
 		Generators.applyStyleToButton(button, active, inactive);
 		return button;
+	}
+	
+	/**
+	 * Génére un Label avec le texte donné et la positionne aux coordonnées spécifiés.
+	 *
+	 * @param msg 		Le texte affiché sur le label.
+	 * @param x 		La position horizontale du label.
+	 * @param y 		La position verticale du label.
+	 * @return Le label généré.
+	 */
+	public static Label generateLabel(String msg, double x, double y) {
+		Label label = new Label(msg);
+		label.setMinWidth(label.getPrefWidth());
+		Generators.setLayout(label, x, y);
+		return label;
+	}
+	public static Label generateLabel(String msg) {
+		Label label = new Label(msg);
+		label.setMinWidth(label.getPrefWidth());
+		return label;
 	}
 
 	/**
@@ -56,14 +87,10 @@ public class Generators {
 	 * @param min 			La valeur minimale que peut prendre le slider
 	 * @param default_value La valeur par défault que prend le slider
 	 * @param max 			La valeur maximale que peut prendre le slider
-	 * @param x 			La position horizontale du slider.
-	 * @param y 			La position verticale du slidern.
 	 * @return Le slider généré.
 	 */
-	public static Slider generateSlider(double min, double max, double default_value, double x, double y) {
+	public static Slider generateSlider(double min, double max, double default_value) {
 		Slider slider = new Slider(min, max, default_value);
-		slider.setLayoutX(x);
-		slider.setLayoutY(y);
 		slider.setMinWidth(180);
 		slider.setShowTickLabels(true);
 		slider.setShowTickMarks(true);
@@ -76,48 +103,27 @@ public class Generators {
 	 * Génére une liste déroulante (ComboBox) avec les valeurs spécifies et la positionne aux coordonnées spécifiés.
 	 *
 	 * @param values 	Les valeurs affiché dans la liste deroulante.
-	 * @param x 		La position horizontale de la liste deroulante.
-	 * @param y 		La position verticale de la liste deroulante.
 	 * @return La liste déroulante générée.
 	 */
-	public static ComboBox<String> generateComboBox(String[] values, double x, double y) {
-		ComboBox<String> theme = new ComboBox<>();
-		theme.getItems().addAll(values);
-		theme.setValue(values[0]);
-		Generators.setLayout(theme, x ,y);
-		return theme;
-	}
-
-	/**
-	 * Génére un Label avec le texte donné et la positionne aux coordonnées spécifiés.
-	 *
-	 * @param msg 		Le texte affiché sur le label.
-	 * @param x 		La position horizontale du label.
-	 * @param y 		La position verticale du label.
-	 * @return Le label généré.
-	 */
-	public static Label generateLabel(String msg, double x, double y) {
-		Label label = new Label(msg);
-		label.setMinWidth(label.getPrefWidth());
-		Generators.setLayout(label, x,y);
-		return label;
+	public static <T> ComboBox<T> generateComboBox(T[] values) {
+		ComboBox<T> box = new ComboBox<>();
+		box.getItems().addAll(values);
+		box.setValue(values[0]);
+		return box;
 	}
 
 	/**
 	 * Génére un TextField avec une valeur par défaut et le positionne aux coordonnées spécifiés.
 	 *
 	 * @param defaultValue 	La valeur par défaut du champ de texte.
-	 * @param x 			La position horizontale du champ de texte.
-	 * @param y 			La position verticale du champ de texte.
 	 * @param maxLength 	La longueur maximale du texte autorisé dans le champ.
 	 * @param limit1 		Le premier caractère définissant le début de l'ensemble des caractères autorisés
 	 * @param limit2 		Le deuxime caractère définissant la fin de l'ensemble des caractères autorisés
 	 * @return Le TextField généré.
 	 */
-	public static TextField generateTextField(String defaultValue, double x, double y, int maxLength, char limit1, char limit2) {
+	public static TextField generateTextField(String defaultValue,  int maxLength, char limit1, char limit2) {
 		TextField tf = new TextField(defaultValue);
-		tf.setMaxWidth(8*maxLength+30);
-		Generators.setLayout(tf, x,y);
+		tf.setMaxWidth((double)8*maxLength+30);
 		tf.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
@@ -139,14 +145,11 @@ public class Generators {
 	 * Génére un TextField avec une valeur par défaut et le positionne aux coordonnées spécifiés.
 	 *
 	 * @param defaultValue 	La valeur par défaut du champ de texte.
-	 * @param x 			La position horizontale du champ de texte.
-	 * @param y 			La position verticale du champ de texte.
 	 * @return Le TextField généré.
 	 */
-	public static TextField generateTextField(String defaultValue, double x, double y) { //maxLength devrait être <=16 pour des raisons d'affichage (sinon affichage moins beau)
+	public static TextField generateTextField(String defaultValue) { //maxLength devrait être <=16 pour des raisons d'affichage (sinon affichage moins beau)
 		TextField tf = new TextField(defaultValue);
-		tf.setMaxWidth(8*5+30);
-		Generators.setLayout(tf, x,y);
+		tf.setMaxWidth((double)8*5+30);
 		return tf;
 	}
 
@@ -168,7 +171,9 @@ public class Generators {
 						}else if(Integer.parseInt(tf.getText())>max) {
 							tf.setText(""+max);
 						}
-					}catch(Exception e) {}
+					}catch(Exception e) {
+						logger.info("Error in the listener of addCheckNumericalValueToTextField");
+					}
 				}
 
 			}
@@ -190,6 +195,7 @@ public class Generators {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Génère une fenêtre d'avertissement pour notifier le changement de tour.
 	 * 
 	 * @param title 		Titre de la fenêtre.
@@ -198,6 +204,17 @@ public class Generators {
 	 * @return Une fenêtre d'alerte.
 	 */
 	public static Alert generateAlert(String title, String text, Collection<ButtonType> boutonJouer) {
+=======
+	 * Génére une alerte (notification)
+	 *
+	 * @param title le titre de l'alerte.
+	 * @param text le texte de l'alerte
+	 * @param buttons les boutons de l'alerte
+	 * 
+	 * @return l'alerte générée.
+	 */
+	public static Alert generateAlert(String title, String text, Collection<ButtonType> buttons) {
+>>>>>>> master
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle(title);
 		alert.setHeaderText(text);
@@ -207,18 +224,58 @@ public class Generators {
 		dialogPane.setMinHeight(Region.USE_PREF_SIZE);
 
 		// Boutons de confirmation et d'annulation
-		alert.getButtonTypes().setAll(boutonJouer);
+		alert.getButtonTypes().setAll(buttons);
 
 		return alert;
 	}
+	
+	/**
+	 * Génére un Dialog (notification avancée)
+	 *
+	 * @param title le titre du Dialog
+	 * @param text le texte du Dialog
+	 * @param buttons les boutons du Dialog
+	 * @param nodes liste de liste (rows & cols) des nodes qui seront ajoutés à la Grid du Dialog
+	 * 
+	 * @return l'alerte générée.
+	 */
+	public static Dialog<ButtonType> generateDialog(String title, String text, Collection<ButtonType> buttons, ArrayList<ArrayList<Node>> nodes) {
+		Dialog<ButtonType> dialog = new Dialog<ButtonType>();
+		dialog.setTitle(title);
+		dialog.setHeaderText(text);
+
+		GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        for(int index = 0; index<nodes.size(); index++) {
+        	for(int i = 0; i<nodes.get(index).size(); i++) {
+            	grid.add(nodes.get(index).get(i), i, index);
+            }
+        }
+		dialog.getDialogPane().setContent(grid);
+		// Personnaliser l'apparence de la boîte de dialogue
+		DialogPane dialogPane = dialog.getDialogPane();
+		dialogPane.setMinHeight(Region.USE_PREF_SIZE);
+
+		// Boutons de confirmation et d'annulation
+		dialogPane.getButtonTypes().setAll(buttons);
+
+		return dialog;
+	}
+	
+	 // Méthode pour créer un espace vide avec une taille spécifique
+    public static Region createEmptySpace(double size) {
+        Region spacer = new Region();
+        spacer.setPrefHeight(size);
+        spacer.setPrefWidth(size);
+        return spacer;
+    }
 
 
 	/**
 	 * Positionne un élément aux coordonnées spécifiés.
 	 *
 	 * @param node 	L'élément à positionner.
-	 * @param x 	La position horizontale de l'élément.
-	 * @param y 	La position verticale de l'élément.
 	 */
 	public static void setLayout(Node node, double x, double y) {
 		node.setLayoutX(x);
@@ -238,8 +295,6 @@ public class Generators {
 		label.setStyle("-fx-font-size: 25px;");
 	}
 
-
-
 	/**
 	 * Applique un style de base à un bouton, y compris le style lors du survol de la souris.
 	 *
@@ -249,25 +304,26 @@ public class Generators {
 	 */
 	public static void applyStyleToButton(Button b, Color inactive, Color active) { //inactive = #ffffff & active = #000000
 		//Style de base
-		b.setStyle("	-fx-background-color: "+Utils.convertToHex(active)+";\n"
-				+ "    	-fx-text-fill: "+Utils.convertToHex(inactive)+";\n"
-				+ "    	-fx-font-size: 14px;\n"
-				+ "		-fx-background-radius: 20px;\n");
+		b.setStyle("-fx-background-color: "+Utils.convertToHex(active)+";\n"
+				+ "-fx-text-fill: "+Utils.convertToHex(inactive)+";\n"
+				+ "-fx-font-size: 14px;\n"
+				+ "-fx-background-radius: 20px;\n");
 		//Style lorsque l'utilisateur passe la souris sur le button
-		b.setOnMouseEntered(e -> {
-			b.setStyle("	-fx-background-color: "+Utils.convertToHex(inactive)+";\n"
-					+ "    	-fx-text-fill: "+Utils.convertToHex(active)+";\n"
-					+ "    	-fx-font-size: 14px;\n"
-					+ "		-fx-background-radius: 20px;\n");
-		});
+		b.setOnMouseEntered(e ->
+			b.setStyle("-fx-background-color: "+Utils.convertToHex(inactive)+";\n"
+					+ "-fx-text-fill: "+Utils.convertToHex(active)+";\n"
+					+ "-fx-font-size: 14px;\n"
+					+ "-fx-background-radius: 20px;\n")
+		);
 		// Rétablir le style de base lorsque la souris quitte le bouton
-		b.setOnMouseExited(e -> {
-			b.setStyle("	-fx-background-color: "+Utils.convertToHex(active)+";\n"
-					+ "    	-fx-text-fill: "+Utils.convertToHex(inactive)+";\n"
-					+ "    	-fx-font-size: 14px;\n"
-					+ "		-fx-background-radius: 20px;\n");
-		});
+		b.setOnMouseExited(e ->
+			b.setStyle("-fx-background-color: "+Utils.convertToHex(active)+";\n"
+					+ "-fx-text-fill: "+Utils.convertToHex(inactive)+";\n"
+					+ "-fx-font-size: 14px;\n"
+					+ "-fx-background-radius: 20px;\n")
+		);
 	}
+<<<<<<< HEAD
 
 	/**
 	 * Méthode pour générer le fenêtre de sauvegarde de labyrinthe.
@@ -308,4 +364,6 @@ public class Generators {
     }
 
 
+=======
+>>>>>>> master
 }

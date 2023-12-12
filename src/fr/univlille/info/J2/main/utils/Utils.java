@@ -33,7 +33,7 @@ public class Utils {
 	/**
 	 * Looger qui permet d'éviter les system.out pour à la place faire de vra ifichiers de log.
 	 */
-	private static final Logger logger = Logger.getLogger(Utils.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(Utils.class.getName());
 	
 	/**
 	 * Générateur de nombres aléatoires utilisé pour diverses opérations.
@@ -72,7 +72,7 @@ public class Utils {
 		try {
 			Thread.sleep(secondes*(long)1000);
 		} catch (InterruptedException e) {
-			logger.info("InterruptedException in Utils -> method wait(int)");
+			LOGGER.info("InterruptedException in Utils -> method wait(int)");
 		}
 	}
 }

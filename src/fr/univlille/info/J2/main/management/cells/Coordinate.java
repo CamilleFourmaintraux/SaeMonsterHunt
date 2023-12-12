@@ -1,4 +1,6 @@
-package fr.univlille.info.J2.main.application.cells;
+package fr.univlille.info.J2.main.management.cells;
+
+import java.io.Serializable;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 /**
@@ -10,7 +12,8 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  * @author theo.franos.etu
  *
  */
-public class Coordinate implements ICoordinate{
+public class Coordinate implements ICoordinate, Serializable{
+	private static final long serialVersionUID = 1171241478876210063L;
 	/**
 	 * Le numéro de la ligne.
 	 */
@@ -50,7 +53,6 @@ public class Coordinate implements ICoordinate{
      */
 	@Override
 	public int getRow() {
-		// TODO Auto-generated method stub
 		return this.row;
 	}
 
@@ -61,7 +63,6 @@ public class Coordinate implements ICoordinate{
      */
 	@Override
 	public int getCol() {
-		// TODO Auto-generated method stub
 		return this.col;
 	}
 
