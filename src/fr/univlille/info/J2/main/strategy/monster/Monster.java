@@ -32,21 +32,11 @@ public class Monster {
 	 */
 	private ICoordinate coord;
 	/**
-	* String de la strategy du Monstre
-	**/
-	String IA;
-	/**
 	 * Strategy du monstre.
 	 */
 	private IMonsterStrategy strategy;
-	/**
-	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
-	 */
-	private int visionRange;
-	/**
-	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
-	 */
-	private int movingRange;
+	
+	private GameplayMonsterData data;
 
 	/**
      * Constructeur de la classe Monster, crée un Monstre.
@@ -57,18 +47,19 @@ public class Monster {
 	 * @param visionRange 	Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
 	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
 	 */
-	public Monster(boolean[][] walls,ICoordinate spawn, ICoordinate exit, int visionRange, int movingRange, String IA) {
+	public Monster(boolean[][] walls,ICoordinate spawn, ICoordinate exit, GameplayMonsterData data) {
 		super();
+		this.data=data;
 		this.explored=new boolean[walls.length][walls[0].length];
+		if(!data.isVisionLimited()) {
+			this.setToAllExplored();
+		}
 		this.coord = spawn;
-		this.IA=IA;
-		this.strategy=this.chooseMonsterStrategy(IA);
+		this.strategy=this.chooseMonsterStrategy(data.getIA());
 		this.strategy.initialize(walls);
 		CellEvent initEntity;
 		initEntity=new CellEvent(exit, 0, CellInfo.EXIT); //Attention, la stratégie considère avoir bougé
 		this.strategy.update(initEntity);
-		this.visionRange=visionRange;
-		this.movingRange=movingRange;
 	}
 	
 	/**
@@ -163,35 +154,6 @@ public class Monster {
 	public boolean[][] getExplored() {
 		return explored;
 	}
-
-	 /**
-     * Obtient la portée de vision du monstre.
-     * La portée de vision représente la distance maximale à laquelle le monstre peut voir.
-     *
-     * @return La portée de vision du monstre.
-     */
-	public int getVisionRange() {
-		return visionRange;
-	}
-
-	/**
-     * Obtient la portée de déplacement du monstre.
-     * La portée de déplacement représente la distance maximale que le monstre peut se déplacer en un tour.
-     *
-     * @return La portée de déplacement du monstre.
-     */
-	public int getMovingRange() {
-		return movingRange;
-	}
-	
-	/**
-     * Obtient le nom de l'intelligence artificielle (IA) du monstre.
-     *
-     * @return Le nom de l'IA du monstre.
-     */
-	public String getIA() {
-		return this.IA;
-	}
 	
 	/**
      * Joue un tour pour le monstre en utilisant sa stratégie associée.
@@ -214,6 +176,22 @@ public class Monster {
 			col=0;
 		}
 		return new Coordinate(row,col);
+	}
+
+	public boolean isVisionLimited() {
+		return this.data.isVisionLimited();
+	}
+
+	public int getVisionRange() {
+		return this.data.getVisionRange();
+	}
+
+	public int getMovingRange() {
+		return this.data.getMovingRange();
+	}
+
+	public String getIA() {
+		return this.data.getIA();
 	}
 	
 }

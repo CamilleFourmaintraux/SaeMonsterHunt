@@ -29,18 +29,13 @@ public class Hunter {
 	 * Les coordonnées du dernier tir du chasseur.
 	 */
 	private ICoordinate coord;
-	/**
-	 * La portée bonus pour la vision du hunter à chachun de ses tirs (sachant que seul le tir précis qui touche le monstre déclenche la fin de jeu)
-	 */
-	private int bonusRange;
-	/**
-	* String de la Strategy du chasseur
-	**/
-	String IA;
+	
 	/**
 	* Strategy du chasseur.
 	**/
 	private IHunterStrategy strategy;
+	
+	private GameplayHunterData data;
 	
 
 
@@ -54,11 +49,10 @@ public class Hunter {
      * @param IA   			Le niveau de l'IA du chasseur.
      * @param bonusRange	La portée bonus de la vision du chasseur.
 	 */
-	public Hunter(int height, int width, ICoordinate coord_hunter, int bonusRange, String IA) {
+	public Hunter(int height, int width, ICoordinate coord_hunter, GameplayHunterData data) {
 		this.coord=coord_hunter;
-		this.bonusRange=bonusRange;
-		this.IA=IA;
-		this.strategy=this.chooseHunterStrategy(IA);
+		this.data=data;
+		this.strategy=this.chooseHunterStrategy(data.getIA());
 		this.initTraces(height,width);
 		this.strategy.initialize(height, width);
 	}
@@ -162,24 +156,6 @@ public class Hunter {
 	}
 
 	/**
-	 * Obtient la portée bonus de la vision du chasseur.
-	 *
-	 * @return La portée bonus de la vision du chasseur.
-	 */
-	public int getBonusRange() {
-		return bonusRange;
-	}
-
-	/**
-	 * Obtient le niveau de l'IA du chasseur.
-	 *
-	 * @return Le niveau de l'IA du chasseur.
-	 */
-	public String getIA() {
-		return this.IA;
-	}
-
-	/**
 	 * Définit la stratégie du chasseur.
 	 *
 	 * @param strategy La nouvelle stratégie du chasseur.
@@ -217,6 +193,14 @@ public class Hunter {
 	 */
 	public ICoordinate play() {
 		return this.strategy.play();
+	}
+
+	public int getBonusRange() {
+		return this.data.getBonusRange();
+	}
+
+	public String getIA() {
+		return this.data.getIA();
 	}
 	
 	

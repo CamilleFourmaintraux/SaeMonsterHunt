@@ -298,7 +298,7 @@ public class MonsterView  extends View {
 					r.setImage(this.theme.getFloorImg());
 					r.setFill(theme.getFloorColor());
 				}
-				if(this.maze.getVisionRange()!=-1) {
+				if(this.maze.getMonster().isVisionLimited()) {
 					r.setFill(this.theme.getFogColor());
 					r.setStroke(this.theme.getWallColor());
 					r.setStrokeWidth(1);

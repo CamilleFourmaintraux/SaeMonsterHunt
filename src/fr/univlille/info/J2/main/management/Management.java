@@ -18,6 +18,8 @@ import fr.univlille.info.J2.main.application.system.SaveLoadSystemGames;
 import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
 import fr.univlille.info.J2.main.management.view.HunterView;
 import fr.univlille.info.J2.main.management.view.MonsterView;
+import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
+import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
@@ -25,6 +27,7 @@ import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -285,6 +288,11 @@ public class Management extends Stage implements Observer{
 	 * Objet File représentant un labyrinthe personnnalisé et importé par le joueur.
 	 */
 	public File importedmap;
+	
+	/**
+	 * int utilisé pour determiner qui a gagné a la fin de la partie (0 si le joueur quitte la partie, 1 si le monster gagne et 2 si le chasseur gagne) 
+	 */
+	private int idWinner = 0;
 
 	/**
 	 * Constructeur de la classe Management.
@@ -424,12 +432,12 @@ public class Management extends Stage implements Observer{
 	 */
 	public boolean gameOver() {
 		if(this.maze.isGameOver()) {
-			if (this.maze.winner == 1) {
+			if (this.maze.getIdWinner() == 1) {
 				this.winner.setText("Monster a gagné !");}
-			else if (this.maze.winner == 2) {
+			else if (this.maze.getIdWinner() == 2) {
 				this.winner.setText("Hunter a gagné !");
 			}else {
-				this.winner.setText("Jeu arrêté");
+				this.winner.setText("Fin de la partie.");
 			}
 			
 			this.setScene(this.getScene(ID_GAMEOVER));
@@ -575,15 +583,19 @@ public class Management extends Stage implements Observer{
 			}else {
 				this.display.setZoom(this.display.getWindowHeight()/(this.maze_height+this.maze_width));
 			}
+			
+			//Création des paquets de data
+			GameplayHunterData dataH = new GameplayHunterData(this.hunter_IA,this.bonus_range);
+			GameplayMonsterData dataM = new GameplayMonsterData(this.monster_IA,this.limitedVision,this.vision_range,this.moving_range);
 
 			//Creation of the maze
 			if(this.isGenerationRandom) {
-				this.maze = new Maze(this.probability, this.maze_height, this.maze_width, monster_IA, hunter_IA, this.limitedVision, this.vision_range, this.moving_range, this.bonus_range);
+				this.maze = new Maze(this.probability, this.maze_height, this.maze_width, dataH, dataM);
 			}else {
 				try {
-					this.maze = new Maze(SaveLoadSystemMaps.loadMap(this.importedmap), monster_IA, hunter_IA, this.limitedVision, this.vision_range, this.moving_range, this.bonus_range);
+					this.maze = new Maze(SaveLoadSystemMaps.loadMap(this.importedmap), dataH, dataM);
 				} catch (Exception exception) {
-					this.maze = new Maze(this.probability, this.maze_height, this.maze_width, monster_IA, hunter_IA, this.limitedVision, this.vision_range, this.moving_range, this.bonus_range);
+					this.maze = new Maze(this.probability, this.maze_height, this.maze_width, dataH, dataM);
 				}
 			}
 			this.maze.attach(this);

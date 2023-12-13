@@ -10,8 +10,10 @@ import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.management.cells.CellEvent;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 import fr.univlille.info.J2.main.strategy.monster.Exit;
+import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.strategy.monster.Monster;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
@@ -96,14 +98,14 @@ public class Maze extends Subject{
 	/**
 	 * int utilisé pour determiner qui a gagné a la fin de la partie (0 si le joueur quitte la partie, 1 si le monster gagne et 2 si le chasseur gagne) 
 	 */
-	public  int winner= 0;
+	private int idWinner = 0;
 
 	/**
 	 * Constructeur vide, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
 	 * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
 	 */
 	public Maze() {
-		this(Maze.generateBasicMap(),Management.IA_LEVELS[0],Management.IA_LEVELS[0], false, -1, 1, 0);
+		this(Maze.generateBasicMap(),new GameplayHunterData(Management.IA_LEVELS[0],0),new GameplayMonsterData(Management.IA_LEVELS[0], false, 1, 1));
 	}
 
 	/**
@@ -118,13 +120,13 @@ public class Maze extends Subject{
      * @param movingRange     int correspondant à la portée de déplacement du monstre.
      * @param bonusRange      int correspondant à la portée de bonus du monstre.
      */
-	public Maze(boolean[][] maze, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
+	public Maze(boolean[][] maze, GameplayHunterData dataH, GameplayMonsterData dataM) {
 		this.walls=maze;
 		this.turn=1;
 		this.initTraces();
-		this.initMonsterExitHunter(monster_IA, hunter_IA,limitedVision, visionRange, movingRange, bonusRange);
+		this.initMonsterExitHunter(dataH, dataM);
 		this.isMonsterTurn=true;
-		this.exploring(this.monster.getCoord(), visionRange);
+		this.exploring(this.monster.getCoord(), dataM.getVisionRange());
 		this.move(this.monster.getCoord());
 	}
 
@@ -142,8 +144,8 @@ public class Maze extends Subject{
      * @param movingRange 		int correspondant à la portée de déplacement du monstre.
      * @param bonusRange 		int correspondant à la portée de bonus du monstre.
      */
-	public Maze(int probability, int height, int width, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
-		this(Maze.generateRandomMap(probability, height, width), monster_IA, hunter_IA, limitedVision, visionRange, movingRange, bonusRange);
+	public Maze(int probability, int height, int width, GameplayHunterData dataH, GameplayMonsterData dataM) {
+		this(Maze.generateRandomMap(probability, height, width), dataH, dataM);
 	}
 
 	/**
@@ -226,12 +228,12 @@ public class Maze extends Subject{
 	 * @return un entier correspondant au nombre de murs autour de cette coordonnée.
 	 */
 	//Inutilisé pour le moment
-	/*public int numberOfWallsAround(ICoordinate c){
+	public int numberOfWallsAround(ICoordinate c){
 		int cpt=0;
 		for(int y=c.getRow()-1; y<c.getRow()+2; y++) {
 			for(int x=c.getCol()-1; x<c.getCol()+2; x++) {
 				try {
-					if(this.walls[y][x]==false) {
+					if(!this.walls[y][x]) {
 						cpt++;
 					}
 				}catch(Exception e) {
@@ -240,7 +242,7 @@ public class Maze extends Subject{
 			}
 		}
 		return cpt;
-	}*/
+	}
 
 	/**
 	 * Initialise les coordonnées de la sortie du labyrinthe, le niveau de l'IA du chasseur et du monstre,
@@ -253,18 +255,13 @@ public class Maze extends Subject{
 	 * @param movingRange   Portée de déplacement du monstre.
 	 * @param bonusRange    Bonus de portée du chasseur.
 	 */
-	public void initMonsterExitHunter(String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
+	public void initMonsterExitHunter(GameplayHunterData dataH, GameplayMonsterData dataM) {
 		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
 		this.setFloor(this.exit.getCoord(),true);
-		if(limitedVision) {
-			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),exit.getCoord(), visionRange, movingRange, monster_IA);
-		}else {
-			this.monster = new Monster(Arrays.copyOf(walls,walls.length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),exit.getCoord(), -1, movingRange, monster_IA);
-			this.monster.setToAllExplored();
-		}
+		this.monster = new Monster(Arrays.copyOf(walls,walls.length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),exit.getCoord(),dataM);
 		this.setFloor(this.monster.getCoord(),true);
 
-		this.hunter = new Hunter(this.walls.length,this.walls[0].length,new Coordinate(0,0), bonusRange,hunter_IA);
+		this.hunter = new Hunter(this.walls.length,this.walls[0].length,new Coordinate(0,0), dataH);
 	}
 
 	/**
@@ -406,17 +403,17 @@ public class Maze extends Subject{
 			///BUG FINI ICI
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
-				this.winner = 1;
+				this.idWinner = 1;
 			}
-			if(this.monster.getVisionRange()!=-1) {
+			if(this.monster.isVisionLimited()) {
 				this.exploring(c, this.monster.getVisionRange());
 			}
 			this.endMonsterTurn();
 			return true;
 		}
-		if(!this.getMonsterIA().equals(Management.IA_LEVELS[0])) { //Inateignable par un joueur, sert à passer le tour d'une IA qui essaye d'aller à un endroit impossible.
+		if(!this.getMonsterIA().equals(Management.IA_LEVELS[0])) { //Inatteignable par un joueur, sert à passer le tour d'une IA qui essaye d'aller à un endroit impossible.
 			if(this.areCoordinateInBounds(c)) {
-				CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c)); //TODO
+				CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
 				this.monster.update(ce);
 			}
 			this.endMonsterTurn();
@@ -469,7 +466,7 @@ public class Maze extends Subject{
 			this.hunter.setCoord(ce.getCoord());
 			if(ce.getState().equals(CellInfo.MONSTER)) {
 				this.isGameOver=true;
-				this.winner = 2;
+				this.idWinner = 2;
 			}
 			this.isMonsterTurn=true;
 			this.notifyObservers();
@@ -677,5 +674,9 @@ public class Maze extends Subject{
      */
 	public String getHunterIA() {
 		return this.hunter.getIA();
+	}
+	
+	public int getIdWinner() {
+		return this.idWinner;
 	}
  }
