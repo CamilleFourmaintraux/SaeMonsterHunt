@@ -1,6 +1,9 @@
 package fr.univlille.info.J2.main.strategy.monster;
 
-public class GameplayMonsterData {
+import java.io.Serializable;
+
+public class GameplayMonsterData implements Serializable{
+	private static final long serialVersionUID = -8494532638037902202L;
 	/**
 	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
 	 */

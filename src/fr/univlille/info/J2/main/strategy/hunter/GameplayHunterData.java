@@ -1,6 +1,9 @@
 package fr.univlille.info.J2.main.strategy.hunter;
 
-public class GameplayHunterData {
+import java.io.Serializable;
+
+public class GameplayHunterData implements Serializable{
+	private static final long serialVersionUID = 4790709667460899455L;
 	/**
 	 * La portée bonus pour la vision du hunter à chachun de ses tirs (sachant que seul le tir précis qui touche le monstre déclenche la fin de jeu)
 	 */
