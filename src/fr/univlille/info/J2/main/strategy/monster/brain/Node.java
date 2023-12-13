@@ -10,6 +10,7 @@ public class Node {
     private int costThisToEnd; //h
     private int costTotal; //f
     private Node previous;
+    private boolean marking;
 
     public Node(int row, int col, boolean traversable) {
         this.coord=new Coordinate(row,col);
@@ -74,6 +75,14 @@ public class Node {
 	
 	public void setCoord(ICoordinate newCoord) {
 		this.coord=newCoord;
+	}
+
+	public boolean isMarking() {
+		return marking;
+	}
+
+	public void setMarking(boolean marking) {
+		this.marking = marking;
 	}
     
 }
