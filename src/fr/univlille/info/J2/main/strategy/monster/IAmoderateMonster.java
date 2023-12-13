@@ -68,11 +68,7 @@ class IAmoderateMonster implements IMonsterStrategy{
 		do {
 			this.numAttempt++;
 			c = this.createInBoundCoord(this.current_position.getRow()+(Utils.random.nextInt(3)-1), this.current_position.getCol()+(Utils.random.nextInt(3)-1));
-		}while(this.numAttempt<MAX_ATTEMPTS && !this.walls[c.getRow()][c.getCol()]);
-		
-		
-		//c=new Coordinate(row,col);
-		
+		}while(this.numAttempt<MAX_ATTEMPTS && (!this.walls[c.getRow()][c.getCol()] || this.current_position.equals(c)));
 		return c;
 	}
 	
