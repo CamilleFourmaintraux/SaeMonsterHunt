@@ -23,8 +23,10 @@
 
 ## Semaine du 04/12 au 08/12
 
-**Arthur DEBACQ :** Poursuite de la javaDoc.  
+**Arthur Debacq :** Poursuite de la javaDoc.
+**Camille Fourmaintraux :** Intégration des thèmes
 
 ##Semaine du 11/12 au 15/12
 
-**Arthur DEBACQ :** Terminer la javaDoc, reprise des tests pour augmenter le coverage du modèle et mise à jour du readMe avec les diffèrentes fonctionnalités et ajout des thèmes.    
+**Arthur Debacq :** Terminer la javaDoc, reprise des tests pour augmenter le coverage du modèle et mise à jour du readMe avec les diffèrentes fonctionnalités et ajout des thèmes.
+**Camille Fourmaintraux :** Intégration des stratégies pour rendre notre application compatible avec celles des autres groupes.
