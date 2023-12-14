@@ -19,10 +19,8 @@ Le **but du jeu** pour le chasseur est de **trouver le monstre**, pour le monstr
 Il faudra ouvrir un terminal, se déplacer dans le dossier application et entrer cette commande :
 
 ```bash
-java --module-path ./javafx-sdk-11.0.2/lib/ --add-modules javafx.controls,javafx.fxml -jar MonsterHunt.jar
+./launch.sh
 ```
-
-ou vous pouvez aussi la démarrer en cliquant sur le fichier launch.sh.
 
 ---
 ## Utilisations
