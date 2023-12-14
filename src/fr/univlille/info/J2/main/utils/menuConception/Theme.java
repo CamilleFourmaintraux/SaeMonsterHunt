@@ -135,7 +135,7 @@ public class Theme {
 		
 		cave.floorImg=loadImage(THEME_CAVE,"stone.png");
 		cave.wallImg=loadImage(THEME_CAVE,"rock.png");
-		cave.monsterImg=loadImage(THEME_CAVE,"bat.png");
+		cave.monsterImg=loadImage(THEME_CAVE,"animation_bat.gif");
 		cave.exitImg=loadImage(THEME_CAVE,"wayout.png");
 		cave.hunterImg=loadImage(THEME_CAVE,"rifleScope.png");
 		cave.floorColor=Color.DARKGRAY;
