@@ -1,6 +1,6 @@
 package fr.univlille.info.J2.main.strategy.monster.brain;
 
-import java.util.Queue;
+//import java.util.Queue;
 
 public class AlgoQueue {
 	

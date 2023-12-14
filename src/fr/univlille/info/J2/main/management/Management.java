@@ -288,11 +288,6 @@ public class Management extends Stage implements Observer{
 	 * Objet File représentant un labyrinthe personnnalisé et importé par le joueur.
 	 */
 	public File importedmap;
-	
-	/**
-	 * int utilisé pour determiner qui a gagné a la fin de la partie (0 si le joueur quitte la partie, 1 si le monster gagne et 2 si le chasseur gagne) 
-	 */
-	private int idWinner = 0;
 
 	/**
 	 * Constructeur de la classe Management.
