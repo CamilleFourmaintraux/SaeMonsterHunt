@@ -7,8 +7,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import fr.univlille.info.J2.main.management.Maze;
+import fr.univlille.info.J2.main.management.exit.SaveExitData;
 import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
+import fr.univlille.info.J2.main.utils.menuConception.Theme;
 
 /**
  * La classe SaveLoadSystemGames fournit des méthodes statiques pour sauvegarder et charger des objets de type Maze
@@ -59,7 +61,7 @@ public class SaveLoadSystemGames {
     //Exemple d'utilisation
     public static void main(String[] args) {
         // Exemple d'utilisation
-    	SaveMazeData smad = new SaveMazeData(Maze.DEFAULT_MAP, new int[10][10], 4, false);
+    	SaveMazeData smad = new SaveMazeData(Maze.DEFAULT_MAP, new int[10][10], 4, false, Theme.THEME_DUNGEON);
     	SaveExitData sexd = new SaveExitData(8, 8);
     	SaveMonsterData smod = new SaveMonsterData(new GameplayMonsterData("Monster","Player", false, 1, 1), new boolean[10][10], Maze.DEFAULT_MAP, 1, 8);
     	SaveHunterData shud = new SaveHunterData(new GameplayHunterData("Hunter","Player", 0), new int[10][10], 8, 1);

@@ -3,9 +3,10 @@
  * des monstres dans le jeu. Il propose des stratégies pour le comportement des monstres
  * et les informations concernant la sortie du labyrinthe.
  */
-package fr.univlille.info.J2.main.strategy.monster;
+package fr.univlille.info.J2.main.management.exit;
 
 
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 /**
@@ -20,16 +21,17 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  */
 public class Exit{
 	/**
-	 * Les coordonées de la sortie du labyrinthe.
+	 * L'objet contenant les coordonées de la sortie du labyrinthe.
 	 */
-	ICoordinate coord;
+	SaveExitData data;
+	
 	/**
      * Crée un objet Exit avec les coordonnées de la sortie du labyrinthe.
      *
      * @param coord Les coordonnées de la sortie.
      */
 	public Exit(ICoordinate coord) {
-		this.coord=coord;
+		this.data = new SaveExitData(coord.getRow(), coord.getCol());
 	}
 	/**
      * Récupère la ligne de la sortie.
@@ -37,7 +39,7 @@ public class Exit{
      * @return  un entier représentant la ligne de la coordonnée de la sortie.
      */
 	public int getRow() {
-		return this.coord.getRow();
+		return this.data.getRow();
 	}
 	/**
      * Récupère la colonne de la sortie.
@@ -45,7 +47,7 @@ public class Exit{
      * @return un entier représentant la colonne de la coordonnée de la sortie.
      */
 	public int getCol() {
-		return this.coord.getCol();
+		return this.data.getCol();
 	}
 	/**
      * Récupère les coordonnées de la sortie.
@@ -53,7 +55,7 @@ public class Exit{
      * @return un objet ICoordinate contenant les coordonnées de la sortie.
      */
 	public ICoordinate getCoord() {
-		return this.coord;
+		return new Coordinate(getRow(),getCol());
 	}
 }
 

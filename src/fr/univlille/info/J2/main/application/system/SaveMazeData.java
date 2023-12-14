@@ -9,8 +9,9 @@ public class SaveMazeData implements Serializable{
 	private int[][] traces;
 	private int turn;
 	private boolean isMonsterTurn;
+	private String theme;
 	
-	public SaveMazeData(boolean[][] maze, int[][] traces, int turn, boolean isMonsterTurn) {
+	public SaveMazeData(boolean[][] maze, int[][] traces, int turn, boolean isMonsterTurn, String theme) {
 		this.maze = maze;
 		this.traces = traces;
 		this.turn = turn;
