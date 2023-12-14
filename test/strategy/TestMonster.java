@@ -11,7 +11,7 @@ import fr.univlille.info.J2.main.strategy.monster.Monster;
 
 public class TestMonster {
 	boolean[][] walls = {{true, false, true}, {false, true, true}, {false, false, true}};
-	Monster monster = new Monster(walls,new Coordinate(4,5),new Coordinate(0,0),new GameplayMonsterData("Player",false,0,1));
+	Monster monster = new Monster(walls,new Coordinate(4,5),new Coordinate(0,0),new GameplayMonsterData("Monster","Player",false,0,1));
 
 
 	@Test

@@ -13,9 +13,12 @@ public class GameplayHunterData implements Serializable{
 	**/
 	private String IA;
 	
-	public GameplayHunterData(String IA, int bonusRange) {
+	private String name;
+	
+	public GameplayHunterData(String name, String IA, int bonusRange) {
 		this.IA = IA;
 		this.bonusRange = bonusRange;
+		this.name=name;
 	}
 
 	/**
@@ -34,5 +37,10 @@ public class GameplayHunterData implements Serializable{
 	 */
 	protected int getBonusRange() {
 		return bonusRange;
+	}
+	
+	
+	protected String getName() {
+		return this.name;
 	}
 }

@@ -22,7 +22,6 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  *
  */
 public class Monster {
-	
 	/**
 	 * La grille des parties déjà explorés du labyrinthe
 	 */
@@ -192,6 +191,10 @@ public class Monster {
 
 	public String getIA() {
 		return this.data.getIA();
+	}
+	
+	public String getName() {
+		return this.data.getName();
 	}
 	
 }

@@ -26,11 +26,6 @@ public abstract class View implements Observer{
 	protected Theme theme;
 
 	/**
-	 * Nom du joueur utilisant la view
-	 */
-	protected String playerName;
-
-	/**
 	 * Sujet (pour le modèle observé)
 	 */
 	protected Maze maze;
@@ -76,15 +71,6 @@ public abstract class View implements Observer{
      */
 	public Theme getTheme() {
 		return theme;
-	}
-
-	/**
-     * Obtient le nom du joueur utilisant cette vue.
-     *
-     * @return Le nom du joueur.
-     */
-	public String getPlayerName() {
-		return playerName;
 	}
 
 	/**

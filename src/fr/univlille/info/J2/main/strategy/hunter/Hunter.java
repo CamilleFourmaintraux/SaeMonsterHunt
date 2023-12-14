@@ -203,5 +203,9 @@ public class Hunter {
 		return this.data.getIA();
 	}
 	
+	public String getName() {
+		return this.data.getName();
+	}
+	
 	
 }

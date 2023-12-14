@@ -7,6 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import fr.univlille.info.J2.main.management.Maze;
+import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
+import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 
 /**
  * La classe SaveLoadSystemGames fournit des méthodes statiques pour sauvegarder et charger des objets de type Maze
@@ -34,9 +36,9 @@ public class SaveLoadSystemGames {
      * @param fileName Le nom du fichier dans lequel sauvegarder l'objet.
      * @throws IOException Si une erreur d'entrée/sortie se produit lors de la sauvegarde.
      */
-    public static void saveGame(Maze maze, String fileName) throws IOException {
+    public static void saveGame(Save save, String fileName) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(GAMES_DIRECTORY+fileName+".obj"))) {
-            oos.writeObject(maze);
+            oos.writeObject(save);
         }
     }
 
@@ -48,16 +50,20 @@ public class SaveLoadSystemGames {
      * @throws IOException            Si une erreur d'entrée/sortie se produit lors du chargement.
      * @throws ClassNotFoundException Si la classe Maze n'est pas trouvée lors du chargement.
      */
-    public static Maze loadGame(String fileName) throws IOException, ClassNotFoundException {
+    public static Save loadGame(String fileName) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GAMES_DIRECTORY+fileName+".obj"))) {
-            return (Maze) ois.readObject();
+            return (Save) ois.readObject();
         }
     }
 
     //Exemple d'utilisation
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         // Exemple d'utilisation
-        Maze saved = new Maze();
+    	SaveMazeData smad = new SaveMazeData(Maze.DEFAULT_MAP, new int[10][10], 4, false);
+    	SaveExitData sexd = new SaveExitData(8, 8);
+    	SaveMonsterData smod = new SaveMonsterData(new GameplayMonsterData("Monster","Player", false, 1, 1), new boolean[10][10], Maze.DEFAULT_MAP, 1, 8);
+    	SaveHunterData shud = new SaveHunterData(new GameplayHunterData("Hunter","Player", 0), new int[10][10], 8, 1);
+        Save saved = new Save(smad, sexd, smod, shud);
         String cheminFichier = "saveTest";
 
         // Sauvegarder l'objet
@@ -70,20 +76,13 @@ public class SaveLoadSystemGames {
 
         // Charger l'objet
         try {
-            Maze loaded = loadGame(cheminFichier);
-            System.out.println("Objet chargé avec succès.");
+            Save loaded = loadGame(cheminFichier);
+            System.out.print("Objet chargé avec succès :");
             System.out.println(loaded.toString());
-            for(int h=0; h<loaded.walls.length; h++) {
-        		System.out.print('[');
-        		System.out.print(loaded.walls[h][0]);
-            	for(int l=1; l<loaded.walls[h].length; l++) {
-            		System.out.print(',');
-            		System.out.print(loaded.walls[h][l]);
-            	}
-        		System.out.println(']');
-            }
+            System.out.println(loaded.getData_monster().getRowM());
+            System.out.println(loaded.getData_monster().getColM());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 }

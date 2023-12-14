@@ -116,12 +116,11 @@ public class HunterView extends View{
      * @param hunterName Nom du chasseur.
      * @param theme      Thème de l'interface.
      */
-	public HunterView(DisplayValues display, Maze maze, String hunterName, Theme theme) {
+	public HunterView(DisplayValues display, Maze maze, Theme theme) {
 
 		//Initiation de la fenetre
 		this.display=display;
 		this.theme=theme;
-		this.playerName=hunterName;
 
 		this.maze = maze;
 		this.maze.attach(this);
@@ -145,7 +144,7 @@ public class HunterView extends View{
 		b_option.setOnAction(e-> Management.showOption(this.maze,notification) );
 		
 		VBox vbox = new VBox();
-		Label player_name = new Label(this.playerName);
+		Label player_name = new Label(this.maze.getHunter().getName());
 		player_name.setTextFill(this.theme.getTextColor());
 		this.turnIndication.setFill(this.theme.getTextColor());
 		this.notification.setFill(this.theme.getTextColor());
@@ -278,7 +277,7 @@ public class HunterView extends View{
 			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
 			this.maze.shoot(c);
 		}else {
-			this.notification.setText("No selection possible : "+this.playerName+" is an AI.");
+			this.notification.setText("No selection possible : "+this.maze.getHunter().getName()+" is an AI.");
 		}
 	}
 

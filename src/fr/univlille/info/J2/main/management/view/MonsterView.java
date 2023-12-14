@@ -112,10 +112,9 @@ public class MonsterView  extends View {
 	 * @param monsterName	Nom du Monstre.
 	 * @param theme			Thème utilisé pour l'affichage.
 	 */
-	public MonsterView(DisplayValues display, Maze maze,  String monsterName, Theme theme) {
+	public MonsterView(DisplayValues display, Maze maze, Theme theme) {
 		this.display=display;
 		this.theme=theme;
-		this.playerName=monsterName;
 
 		this.maze = maze;
 		this.maze.attach(this);
@@ -141,7 +140,7 @@ public class MonsterView  extends View {
 		b_option.setOnAction(e-> Management.showOption(this.maze, notification) );
 		
 		VBox vbox = new VBox();
-		Label player_name = new Label(this.playerName);
+		Label player_name = new Label(this.maze.getMonster().getName());
 		player_name.setTextFill(this.theme.getTextColor());
 		this.turnIndication.setFill(this.theme.getTextColor());
 		this.notification.setFill(this.theme.getTextColor());
@@ -180,22 +179,32 @@ public class MonsterView  extends View {
 	}
 
 	public void actualize() {
+		this.actualizeSprites();
+		this.actualizeMsg();
+		this.actualizeView();
+	}
+	
+	private void actualizeSprites() {
+		this.selection.setVisible(false);
+		this.actualizeSpriteMonster();
+		this.actualizeSpriteShot();
+	}
+	
+	private void actualizeSpriteMonster() {
 		this.sprite_monster.setXY(this.calculDrawX(this.maze.getMonster().getCol()),this.calculDrawY(this.maze.getMonster().getRow()));
 		this.sprite_monster.setCoord(this.maze.getMonster().getCoord());
 		this.sprite_monster.setVisible(true);
-		
+		this.sprite_monster.getImgv().setVisible(true);
+	}
+	
+	private void actualizeSpriteShot() {
 		this.sprite_shot.setXY(this.calculDrawX(this.maze.getHunter().getCol()),this.calculDrawY(this.maze.getHunter().getRow()));
 		this.sprite_shot.setCoord(this.maze.getHunter().getCoord());
 		this.sprite_shot.setVisible(true);
 		this.sprite_shot.getImgv().setVisible(true);
-		
-		this.selection.setVisible(false);
-		this.turnIndication.setText("Turn n°"+this.maze.getTurn());
-		if(this.maze.isSpotted()) {
-			this.notification.setText("WARNING - You have crossed a square previously discovered\nby the hunter and he has been warned.");
-		}else {
-			this.notification.setText("");
-		}
+	}
+	
+	private void actualizeView() {
 		for(Node n:this.group_map.getChildren()) {
 			try {
 				Cell cell = (Cell)n;
@@ -214,6 +223,15 @@ public class MonsterView  extends View {
 			}catch(Exception e) {
 				LOGGER.info("Error - in class MonsterView -> method actualize");
 			}
+		}
+	}
+	
+	private void actualizeMsg() {
+		this.turnIndication.setText("Turn n°"+this.maze.getTurn());
+		if(this.maze.isSpotted()) {
+			this.notification.setText("WARNING - You have crossed a square previously discovered\nby the hunter and he has been warned.");
+		}else {
+			this.notification.setText("");
 		}
 	}
 
@@ -348,7 +366,7 @@ public class MonsterView  extends View {
 			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
 			this.maze.move(c);
 		}else {
-			this.notification.setText("No selection possible: "+this.playerName+" is an AI.");
+			this.notification.setText("No selection possible: "+this.maze.getMonster().getName()+" is an AI.");
 		}
 	}
 

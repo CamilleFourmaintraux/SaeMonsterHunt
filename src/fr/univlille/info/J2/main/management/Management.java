@@ -580,8 +580,8 @@ public class Management extends Stage implements Observer{
 			}
 			
 			//Création des paquets de data
-			GameplayHunterData dataH = new GameplayHunterData(this.hunter_IA,this.bonus_range);
-			GameplayMonsterData dataM = new GameplayMonsterData(this.monster_IA,this.limitedVision,this.vision_range,this.moving_range);
+			GameplayHunterData dataH = new GameplayHunterData(this.hunter_name, this.hunter_IA,this.bonus_range);
+			GameplayMonsterData dataM = new GameplayMonsterData(this.monster_name, this.monster_IA,this.limitedVision,this.vision_range,this.moving_range);
 
 			//Creation of the maze
 			if(this.isGenerationRandom) {
@@ -595,8 +595,8 @@ public class Management extends Stage implements Observer{
 			}
 			this.maze.attach(this);
 
-			this.mv=new MonsterView(this.display,this.maze,this.monster_name,this.current_theme);
-			this.hv=new HunterView(this.display,this.maze,this.hunter_name,this.current_theme);
+			this.mv=new MonsterView(this.display,this.maze,this.current_theme);
+			this.hv=new HunterView(this.display,this.maze,this.current_theme);
 			if(this.isSameScreen) {
 				this.viewCommon.setScene(hv.getScene());
 				this.viewCommon.show();

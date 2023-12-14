@@ -4,24 +4,30 @@ import java.io.Serializable;
 
 public class GameplayMonsterData implements Serializable{
 	private static final long serialVersionUID = -8494532638037902202L;
-	/**
-	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
-	 */
-	private int visionRange;
-	/**
-	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
-	 */
-	private int movingRange;
+	
+	private String name;
+	
 	/**
 	 * Détermine si le monstre aura une vision limité dans la labyrinthe ou non.
 	 */
 	private boolean isVisionLimited;
+	
+	/**
+	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
+	 */
+	private int visionRange;
+	
+	/**
+	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
+	 */
+	private int movingRange;
+	
 	/**
 	* String de la strategy du Monstre
 	**/
 	private String IA;
 	
-	public GameplayMonsterData(String IA, boolean isVisionLimited, int visionRange, int movingRange) {
+	public GameplayMonsterData(String name, String IA, boolean isVisionLimited, int visionRange, int movingRange) {
 		this.IA=IA;
 		this.isVisionLimited=isVisionLimited;
 		this.visionRange=visionRange;
@@ -35,7 +41,7 @@ public class GameplayMonsterData implements Serializable{
     *
     * @return Le boolean du brouillard actif ou non.
     */
-	public boolean isVisionLimited() {
+	protected boolean isVisionLimited() {
 		return isVisionLimited;
 	}
 	
@@ -45,7 +51,7 @@ public class GameplayMonsterData implements Serializable{
      *
      * @return La portée de vision du monstre.
      */
-	public int getVisionRange() {
+	protected int getVisionRange() {
 		return visionRange;
 	}
 	
@@ -66,5 +72,9 @@ public class GameplayMonsterData implements Serializable{
      */
 	protected String getIA() {
 		return IA;
+	}
+	
+	protected String getName() {
+		return this.name;
 	}
 }

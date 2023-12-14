@@ -11,6 +11,7 @@ public class SaveMonsterData implements Serializable{
 	private boolean[][] wallsM;
 	private int rowM;
 	private int colM;
+	private String name;
 	
 	public SaveMonsterData(GameplayMonsterData dataM, boolean[][] exploredM, boolean[][] wallsM, int rowM, int colM) {
 		this.dataM = dataM;
@@ -42,6 +43,10 @@ public class SaveMonsterData implements Serializable{
 
 	public int getColM() {
 		return colM;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 }

@@ -10,6 +10,7 @@ public class SaveHunterData implements Serializable{
 	private int[][] tracesH;
 	private int rowH;
 	private int colH;
+	private String name;
 	
 	public SaveHunterData(GameplayHunterData dataH, int[][] tracesH, int rowH, int colH) {
 		this.dataH = dataH;
@@ -32,6 +33,9 @@ public class SaveHunterData implements Serializable{
 	}
 	public int getColH() {
 		return colH;
+	}
+	public String getName() {
+		return this.name;
 	}
 	
 }

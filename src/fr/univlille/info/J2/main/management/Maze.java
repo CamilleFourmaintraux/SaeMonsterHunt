@@ -36,7 +36,7 @@ public class Maze extends Subject{
 
 	private static final Logger LOGGER = Logger.getLogger(Maze.class.getName());
 
-	private static final boolean[][] DEFAULT_MAP = new boolean[][] {
+	public static final boolean[][] DEFAULT_MAP = new boolean[][] {
 		{false,true,false,true,true,false,true,false,true,false}, 	// X . X . . X . X . X
 		{false,true,true,true,true,false,true,false,true,true},		// X . . . . X . X . .
 		{true,true,true,true,false,false,true,false,false,true},	// . . . . X X . X X .
@@ -105,7 +105,7 @@ public class Maze extends Subject{
 	 * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
 	 */
 	public Maze() {
-		this(Maze.generateBasicMap(),new GameplayHunterData(Management.IA_LEVELS[0],0),new GameplayMonsterData(Management.IA_LEVELS[0], false, 1, 1));
+		this(Maze.generateBasicMap(),new GameplayHunterData("Hunter",Management.IA_LEVELS[0],0),new GameplayMonsterData("Monster",Management.IA_LEVELS[0], false, 1, 1));
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class Maze extends Subject{
 		this.initTraces();
 		this.initMonsterExitHunter(dataH, dataM);
 		this.isMonsterTurn=true;
-		this.exploring(this.monster.getCoord(), dataM.getVisionRange());
+		this.exploring(this.monster.getCoord(), this.monster.getVisionRange());
 		this.move(this.monster.getCoord());
 	}
 
