@@ -134,7 +134,7 @@ public class MonsterView  extends View {
 		this.group_stage.getChildren().add(this.group_sprite);
 
 		this.turnIndication = new Text("Turn n°1");
-		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
+		this.notification = new Text("Welcome to MonsterHunt - THE GAME");
 	
 		Button b_option = Generators.generateButton("-> Option", this.theme.getTextColor(), this.theme.getBackgroundColor());
 		b_option.setOnAction(e-> Management.showOption(this.maze, notification) );
@@ -229,7 +229,7 @@ public class MonsterView  extends View {
 	private void actualizeMsg() {
 		this.turnIndication.setText("Turn n°"+this.maze.getTurn());
 		if(this.maze.isSpotted()) {
-			this.notification.setText("WARNING - You have crossed a square previously discovered\nby the hunter and he has been warned.");
+			this.notification.setText("WARNING - You have crossed a square previously discovered\nby "+this.maze.getHunter().getName()+" and he has been warned.");
 		}else {
 			this.notification.setText("");
 		}
@@ -336,7 +336,7 @@ public class MonsterView  extends View {
 	 * @param e L'événement de la souris associé à la sélection.
 	 */
 	public void select(MouseEvent e, ICoordinate c) {
-		if(this.maze.getMonsterIA().equals("Player")) {
+		if(this.maze.getMonsterIA().equals(Management.getDefaultIaPlayer())) {
 			int row=c.getRow();
 			int col=c.getCol();
 			this.selection.setY(this.calculDrawY(row));
@@ -362,14 +362,13 @@ public class MonsterView  extends View {
 	 * @param cell La cellule sur laquelle la sélection est verrouillée.
 	 */
 	public void selectionLocked(Cell cell) {
-		if(this.maze.getMonsterIA().equals("Player")) {
+		if(this.maze.getMonsterIA().equals(Management.getDefaultIaPlayer())) {
 			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
 			this.maze.move(c);
 		}else {
 			this.notification.setText("No selection possible: "+this.maze.getMonster().getName()+" is an AI.");
 		}
 	}
-
 
 	/**
      * Invalide la sélection en cours en changeant la couleur de la sélection.

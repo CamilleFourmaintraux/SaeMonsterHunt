@@ -190,4 +190,7 @@ public class Monster {
 		return new Coordinate(this.data.getRow(),this.data.getCol());
 	}
 	
+	public SaveMonsterData getData() {
+		return this.data;
+	}
 }

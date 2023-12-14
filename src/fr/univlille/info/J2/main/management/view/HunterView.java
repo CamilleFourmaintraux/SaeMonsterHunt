@@ -138,7 +138,7 @@ public class HunterView extends View{
 		this.group_stage.getChildren().add(group_sprite);
 
 		this.turnIndication = new Text("Turn n°1");
-		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
+		this.notification = new Text("Welcome to MonsterHunt - THE GAME");
 
 		Button b_option = Generators.generateButton("-> Option", this.theme.getTextColor(), this.theme.getBackgroundColor());
 		b_option.setOnAction(e-> Management.showOption(this.maze,notification) );
@@ -197,7 +197,7 @@ public class HunterView extends View{
 		this.sprite_shot.getImgv().setVisible(true);
 		this.turnIndication.setText("Turn n°"+this.maze.getTurn());
 		if(this.maze.isSpotted()) {
-			this.notification.setText("WARNING - The monster has been detected in one of your squares\nalready discovered during a previous turn!");
+			this.notification.setText("WARNING - "+this.maze.getMonster().getName()+" has been detected in one of your squares\nalready discovered during a previous turn!");
 		}else {
 			this.notification.setText("");
 		}
@@ -259,7 +259,7 @@ public class HunterView extends View{
 	 * @param r La cellule à sélectionner.
 	 */
 	public void select(CellWithText r) {
-		if(this.maze.getHunterIA().equals("Player")) {
+		if(this.maze.getHunterIA().equals(Management.getDefaultIaPlayer())) {
 			this.selection.setY(r.getY());
 			this.selection.setX(r.getX());
 			this.selection.toFront();
@@ -273,7 +273,7 @@ public class HunterView extends View{
      * @param cell La cellule sélectionnée.
      */
 	public void selectionLocked(CellWithText cell) {
-		if(this.maze.getHunterIA().equals("Player")) {
+		if(this.maze.getHunterIA().equals(Management.getDefaultIaPlayer())) {
 			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
 			this.maze.shoot(c);
 		}else {

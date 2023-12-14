@@ -6,7 +6,6 @@
 package fr.univlille.info.J2.main.management;
 
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.management.cells.CellEvent;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
@@ -33,8 +32,6 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  */
 
 public class Maze extends Subject{
-
-	private static final Logger LOGGER = Logger.getLogger(Maze.class.getName());
 
 	public static final boolean[][] DEFAULT_MAP = new boolean[][] {
 		{false,true,false,true,true,false,true,false,true,false}, 	// X . X . . X . X . X
@@ -649,5 +646,9 @@ public class Maze extends Subject{
 	
 	public int getIdWinner() {
 		return this.idWinner;
+	}
+	
+	public SaveMazeData getData() {
+		return this.data;
 	}
  }

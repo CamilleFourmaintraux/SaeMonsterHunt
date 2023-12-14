@@ -43,6 +43,7 @@ public class GameplayMonsterData implements Serializable{
 		this.isVisionLimited=isVisionLimited;
 		this.visionRange=visionRange;
 		this.movingRange=movingRange;
+		this.name=name;
 	}
 
 	

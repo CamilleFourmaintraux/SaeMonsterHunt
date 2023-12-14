@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import fr.univlille.info.J2.main.management.Management;
 import fr.univlille.info.J2.main.management.Maze;
 import fr.univlille.info.J2.main.management.SaveMazeData;
 import fr.univlille.info.J2.main.management.exit.SaveExitData;
@@ -66,8 +67,8 @@ public class SaveLoadSystemGames {
         // Exemple d'utilisation
     	SaveMazeData smad = new SaveMazeData(Maze.DEFAULT_MAP, new int[10][10], 4, false, Theme.THEME_DUNGEON);
     	SaveExitData sexd = new SaveExitData(8, 8);
-    	SaveMonsterData smod = new SaveMonsterData(new GameplayMonsterData("Monster","Player", false, 1, 1), new boolean[10][10], Maze.DEFAULT_MAP, 1, 8);
-    	SaveHunterData shud = new SaveHunterData(new GameplayHunterData("Hunter","Player", 0), new int[10][10], 8, 1);
+    	SaveMonsterData smod = new SaveMonsterData(new GameplayMonsterData("Martha",Management.getDefaultIaPlayer(), true, 1, 1), new boolean[10][10], Maze.DEFAULT_MAP, 1, 8);
+    	SaveHunterData shud = new SaveHunterData(new GameplayHunterData("Henty",Management.getDefaultIaPlayer(), 20), new int[10][10], 8, 1);
         Save saved = new Save(smad, sexd, smod, shud);
         String cheminFichier = "saveTest";
 
@@ -84,8 +85,10 @@ public class SaveLoadSystemGames {
             Save loaded = loadGame(cheminFichier);
             System.out.print("Objet chargé avec succès :");
             System.out.println(loaded.toString());
-            System.out.println(loaded.getData_monster().getRow());
-            System.out.println(loaded.getData_monster().getCol());
+            System.out.println(loaded.getData_hunter().getName());
+            System.out.println(loaded.getData_hunter().getIA());
+            System.out.println("("+loaded.getData_hunter().getRow()+","+loaded.getData_hunter().getCol()+")");
+            System.out.println(loaded.getData_hunter().getBonusRange());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

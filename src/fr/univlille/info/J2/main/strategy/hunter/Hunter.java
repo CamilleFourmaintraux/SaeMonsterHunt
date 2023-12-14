@@ -198,5 +198,9 @@ public class Hunter {
 		return this.data.getName();
 	}
 	
+	public SaveHunterData getData() {
+		return this.data;
+	}
+	
 	
 }

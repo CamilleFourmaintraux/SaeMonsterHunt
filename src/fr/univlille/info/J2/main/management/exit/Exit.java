@@ -57,5 +57,9 @@ public class Exit{
 	public ICoordinate getCoord() {
 		return new Coordinate(getRow(),getCol());
 	}
+	
+	public SaveExitData getData() {
+		return this.data;
+	}
 }
 

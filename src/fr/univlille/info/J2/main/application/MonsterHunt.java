@@ -26,9 +26,6 @@ public class MonsterHunt extends Application{
 
 	public static void main(String[] args) {
 		launch();
-		//TODO LISTE DES BUGS A CORRIGER
-		//-(Non-Urgent) BUG d'affichage au 1er tour lorsque l'on met une IA à monster et écran séparé
-		//-(Moyennement Urgent) BUG d'update de l'affichage quand l'on met une IA à hunter et écran séparé
 	}
 	/**
      * Méthode de démarrage de l'application.
