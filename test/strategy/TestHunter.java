@@ -5,11 +5,12 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 
 public class TestHunter {
 
-	Hunter hunter = new Hunter(6, 6, new Coordinate(0,0),0,"Player");
+	Hunter hunter = new Hunter(6, 6, new Coordinate(0,0),new GameplayHunterData("Player",0));
 
 	@Test
 	public void test_constructor_hunter() {
