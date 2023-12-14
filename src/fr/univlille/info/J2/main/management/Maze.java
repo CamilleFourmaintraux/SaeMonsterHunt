@@ -83,7 +83,7 @@ public class Maze extends Subject{
 	private int idWinner = 0;
 
 	/**
-	 * Constructeur vide, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
+	 * Constructeur sans paramètres, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
 	 * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
 	 */
 	public Maze() {
@@ -95,12 +95,8 @@ public class Maze extends Subject{
      *
      * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
      * @param maze            un labyrinthe.
-     * @param monster_IA      Niveau de l'IA du monstre.
-     * @param hunter_IA       Niveau de l'IA du chasseur.
-     * @param limitedVision   boolean indiquant si la vision du monstre est limitée.
-     * @param visionRange     int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
-     * @param movingRange     int correspondant à la portée de déplacement du monstre.
-     * @param bonusRange      int correspondant à la portée de bonus du monstre.
+     * @param dataH				objet GameplayHunterData pour stoker et transférer facilement des données entre les classes concernant le hunter.
+     * @param dataM				objet GameplayMonsterData pour stoker et transférer facilement des données entre les classes concernant le monster.
      */
 	public Maze(boolean[][] maze, GameplayHunterData dataH, GameplayMonsterData dataM) {
 		this.data = new SaveMazeData(maze, new int[maze.length][maze[0].length], 1, true, "themeNonSpécifié");
@@ -117,12 +113,8 @@ public class Maze extends Subject{
      * @param probability 		le taux de chances qu'une case du labyrinthe soit un mur.
      * @param height 			la hauteur du labyrinthe.
      * @param width 			la largeur du labyrinthe.
-     * @param monster_IA 		Niveau de l'IA du monstre.
-     * @param hunter_IA 		Niveau de l'IA du chasseur.
-     * @param limitedVision 	boolean indiquant si la vision du monstre est limitée.
-     * @param visionRange 		int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
-     * @param movingRange 		int correspondant à la portée de déplacement du monstre.
-     * @param bonusRange 		int correspondant à la portée de bonus du monstre.
+     * @param dataH				objet GameplayHunterData pour stoker et transférer facilement des données entre les classes concernant le hunter.
+     * @param dataM				objet GameplayMonsterData pour stoker et transférer facilement des données entre les classes concernant le monster.
      */
 	public Maze(int probability, int height, int width, GameplayHunterData dataH, GameplayMonsterData dataM) {
 		this(Maze.generateRandomMap(probability, height, width), dataH, dataM);
@@ -435,8 +427,8 @@ public class Maze extends Subject{
 						ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
 						this.hunter.actualizeTraces(ce);
 						this.hunter.update(ce);
-					}catch(Exception e) {//Signifie que l'est est en dehors de la map
-						LOGGER.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
+					}catch(Exception e) {
+						//Signifie que l'est est en dehors de la map
 					}
 				}
 			}

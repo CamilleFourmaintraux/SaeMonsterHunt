@@ -12,9 +12,17 @@ public class GameplayHunterData implements Serializable{
 	* String de la Strategy du chasseur
 	**/
 	private String IA;
-	
+	/**
+	* String du nom du joueur
+	**/
 	private String name;
 	
+	/**
+	 * Crée un objet pour stocker les données du chassseur concernant les paramètres de gameplay.
+	 * @param name				Nom du joueur associé à ce objet de données
+     * @param hunter_IA 		Niveau de l'IA du chasseur.
+     * @param bonusRange 		int correspondant à la portée de bonus du monstre.
+	 */
 	public GameplayHunterData(String name, String IA, int bonusRange) {
 		this.IA = IA;
 		this.bonusRange = bonusRange;
@@ -26,7 +34,7 @@ public class GameplayHunterData implements Serializable{
 	 *
 	 * @return Le niveau de l'IA du chasseur.
 	 */
-	protected String getIA() {
+	public String getIA() {
 		return IA;
 	}
 
@@ -35,12 +43,26 @@ public class GameplayHunterData implements Serializable{
 	 *
 	 * @return La portée bonus de la vision du chasseur.
 	 */
-	protected int getBonusRange() {
+	public int getBonusRange() {
 		return bonusRange;
 	}
 	
 	
-	protected String getName() {
+	public String getName() {
 		return this.name;
 	}
+
+	public void setBonusRange(int bonusRange) {
+		this.bonusRange = bonusRange;
+	}
+
+	public void setIA(String iA) {
+		IA = iA;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 }

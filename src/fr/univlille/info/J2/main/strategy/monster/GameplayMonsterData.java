@@ -5,6 +5,9 @@ import java.io.Serializable;
 public class GameplayMonsterData implements Serializable{
 	private static final long serialVersionUID = -8494532638037902202L;
 	
+	/**
+	* String du nom du joueur
+	**/
 	private String name;
 	
 	/**
@@ -27,6 +30,14 @@ public class GameplayMonsterData implements Serializable{
 	**/
 	private String IA;
 	
+	/**
+	 * Crée un objet pour stocker les données du monstre concernant les paramètres de gameplay.
+	 * @param name				Nom du joueur associé à ce objet de données
+	 * @param monster_IA 		Niveau de l'IA du monstre.
+     * @param limitedVision 	boolean indiquant si la vision du monstre est limitée.
+     * @param visionRange 		int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
+     * @param movingRange 		int correspondant à la portée de déplacement du monstre.
+	 */
 	public GameplayMonsterData(String name, String IA, boolean isVisionLimited, int visionRange, int movingRange) {
 		this.IA=IA;
 		this.isVisionLimited=isVisionLimited;
@@ -41,7 +52,7 @@ public class GameplayMonsterData implements Serializable{
     *
     * @return Le boolean du brouillard actif ou non.
     */
-	protected boolean isVisionLimited() {
+	public boolean isVisionLimited() {
 		return isVisionLimited;
 	}
 	
@@ -51,7 +62,7 @@ public class GameplayMonsterData implements Serializable{
      *
      * @return La portée de vision du monstre.
      */
-	protected int getVisionRange() {
+	public int getVisionRange() {
 		return visionRange;
 	}
 	
@@ -61,7 +72,7 @@ public class GameplayMonsterData implements Serializable{
      *
      * @return La portée de déplacement du monstre.
      */
-	protected int getMovingRange() {
+	public int getMovingRange() {
 		return movingRange;
 	}
 
@@ -70,36 +81,36 @@ public class GameplayMonsterData implements Serializable{
      *
      * @return Le nom de l'IA du monstre.
      */
-	protected String getIA() {
+	public String getIA() {
 		return IA;
 	}
 	
-	protected String getName() {
+	public String getName() {
 		return this.name;
 	}
 
 
-	protected void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
 
-	protected void setVisionLimited(boolean isVisionLimited) {
+	public void setVisionLimited(boolean isVisionLimited) {
 		this.isVisionLimited = isVisionLimited;
 	}
 
 
-	protected void setVisionRange(int visionRange) {
+	public void setVisionRange(int visionRange) {
 		this.visionRange = visionRange;
 	}
 
 
-	protected void setMovingRange(int movingRange) {
+	public void setMovingRange(int movingRange) {
 		this.movingRange = movingRange;
 	}
 
 
-	protected void setIA(String iA) {
+	public void setIA(String iA) {
 		IA = iA;
 	}
 	
