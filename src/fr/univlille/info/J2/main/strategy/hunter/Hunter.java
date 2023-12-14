@@ -4,6 +4,7 @@
  */
 package fr.univlille.info.J2.main.strategy.hunter;
 
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -20,22 +21,12 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class Hunter {
 	
-	/**
-     * Tableau pour stocker les traces laissées par le chasseur dans le labyrinthe.
-	 */
-	private int[][] traces;
-	
-	/**
-	 * Les coordonnées du dernier tir du chasseur.
-	 */
-	private ICoordinate coord;
+	private SaveHunterData data;
 	
 	/**
 	* Strategy du chasseur.
 	**/
 	private IHunterStrategy strategy;
-	
-	private GameplayHunterData data;
 	
 
 
@@ -49,9 +40,8 @@ public class Hunter {
      * @param IA   			Le niveau de l'IA du chasseur.
      * @param bonusRange	La portée bonus de la vision du chasseur.
 	 */
-	public Hunter(int height, int width, ICoordinate coord_hunter, GameplayHunterData data) {
-		this.coord=coord_hunter;
-		this.data=data;
+	public Hunter(int height, int width, ICoordinate coord_hunter, GameplayHunterData gameplay) {
+		this.data = new SaveHunterData(gameplay, new int[height][width], coord_hunter.getRow(), coord_hunter.getCol());
 		this.strategy=this.chooseHunterStrategy(data.getIA());
 		this.initTraces(height,width);
 		this.strategy.initialize(height, width);
@@ -81,7 +71,7 @@ public class Hunter {
      * @return Le numéro de ligne actuelle du chasseur.
 	 */
 	public int getRow() {
-		return this.coord.getRow();
+		return this.data.getRow();
 	}
 
 	/**
@@ -90,7 +80,7 @@ public class Hunter {
      * @return Le numéro de colonne actuelle du chasseur.
 	 */
 	public int getCol() {
-		return this.coord.getCol();
+		return this.data.getCol();
 	}
 
 	/**
@@ -99,7 +89,7 @@ public class Hunter {
      * @return Les coordonnées actuelles du chasseur.
 	 */
 	public ICoordinate getCoord() {
-		return this.coord;
+		return new Coordinate(this.data.getRow(),this.data.getCol());
 	}
 
 	/**
@@ -108,7 +98,8 @@ public class Hunter {
      * @param c Les nouvelles coordonnées du chasseur.
 	 */
 	public void setCoord(ICoordinate c) {
-		this.coord=c;
+		this.data.setRow(c.getRow());
+		this.data.setCol(c.getCol());
 	}
 	
 	/**
@@ -118,10 +109,10 @@ public class Hunter {
      * @param nbrCols Le nombre de colonnes du labyrinthe.
 	 */
 	public void initTraces(int nbrRows, int nbrCols) {
-		this.traces=new int[nbrRows][nbrCols];
-		for(int h=0; h<this.traces.length;h++) {
-			for(int l=0; l<this.traces[h].length;l++) {
-				traces[h][l]=-2;// -2 -> Inexploré, -1 -> Mur, 0 -> pas de trace >0 -> trace (tour)
+		for(int h=0; h<this.getTraces().length;h++) {
+			for(int l=0; l<this.getTraces()[h].length;l++) {
+				// -2 -> Inexploré, -1 -> Mur, 0 -> pas de trace >0 -> trace (tour)
+				this.data.setTrace(h,l, -2);
 			}
 		}
 	}
@@ -133,7 +124,7 @@ public class Hunter {
      * @param trace La valeur de la trace.
 	 */
 	public void setTrace(ICoordinate c, int trace) {
-		this.traces[c.getRow()][c.getCol()]=trace;
+		this.data.setTrace(c, trace);
 	}
 	
 	/**
@@ -143,7 +134,7 @@ public class Hunter {
      * @return La valeur de la trace.
 	 */
 	public int getTrace(ICoordinate c) {
-		return this.traces[c.getRow()][c.getCol()];
+		return this.getTraces()[c.getRow()][c.getCol()];
 	}
 
 	/**
@@ -152,7 +143,7 @@ public class Hunter {
 	 * @return Le tableau des traces laissées par le chasseur.
 	 */
 	public int[][] getTraces() {
-		return traces;
+		return this.data.getTraces();
 	}
 
 	/**

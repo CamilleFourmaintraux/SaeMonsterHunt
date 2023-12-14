@@ -40,11 +40,10 @@ public class Monster {
 	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
 	 */
 	public Monster(boolean[][] walls,ICoordinate spawn, ICoordinate exit, GameplayMonsterData gameplay) {
-		this.data = new SaveMonsterData(gameplay, new boolean[walls.length][walls[0].length], walls, 0, 0);
+		this.data = new SaveMonsterData(gameplay, new boolean[walls.length][walls[0].length], walls, spawn.getRow(), spawn.getCol());
 		if(!data.getGameplay().isVisionLimited()) {
 			this.setToAllExplored();
 		}
-		this.setCoord(spawn);
 		this.strategy=this.chooseMonsterStrategy(data.getIA());
 		this.strategy.initialize(walls);
 		CellEvent initEntity;
