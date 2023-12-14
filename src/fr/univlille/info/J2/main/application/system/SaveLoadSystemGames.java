@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import fr.univlille.info.J2.main.management.Maze;
+import fr.univlille.info.J2.main.management.SaveMazeData;
 import fr.univlille.info.J2.main.management.exit.SaveExitData;
 import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.hunter.SaveHunterData;

@@ -2,6 +2,7 @@ package fr.univlille.info.J2.main.application.system;
 
 import java.io.Serializable;
 
+import fr.univlille.info.J2.main.management.SaveMazeData;
 import fr.univlille.info.J2.main.management.exit.SaveExitData;
 import fr.univlille.info.J2.main.strategy.hunter.SaveHunterData;
 import fr.univlille.info.J2.main.strategy.monster.SaveMonsterData;
