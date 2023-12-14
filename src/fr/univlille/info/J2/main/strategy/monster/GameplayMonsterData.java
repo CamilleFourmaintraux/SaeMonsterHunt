@@ -77,4 +77,31 @@ public class GameplayMonsterData implements Serializable{
 	protected String getName() {
 		return this.name;
 	}
+
+
+	protected void setName(String name) {
+		this.name = name;
+	}
+
+
+	protected void setVisionLimited(boolean isVisionLimited) {
+		this.isVisionLimited = isVisionLimited;
+	}
+
+
+	protected void setVisionRange(int visionRange) {
+		this.visionRange = visionRange;
+	}
+
+
+	protected void setMovingRange(int movingRange) {
+		this.movingRange = movingRange;
+	}
+
+
+	protected void setIA(String iA) {
+		IA = iA;
+	}
+	
+	
 }

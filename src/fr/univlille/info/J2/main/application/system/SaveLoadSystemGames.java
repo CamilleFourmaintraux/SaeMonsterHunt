@@ -9,7 +9,9 @@ import java.io.ObjectOutputStream;
 import fr.univlille.info.J2.main.management.Maze;
 import fr.univlille.info.J2.main.management.exit.SaveExitData;
 import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
+import fr.univlille.info.J2.main.strategy.hunter.SaveHunterData;
 import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
+import fr.univlille.info.J2.main.strategy.monster.SaveMonsterData;
 import fr.univlille.info.J2.main.utils.menuConception.Theme;
 
 /**
@@ -81,8 +83,8 @@ public class SaveLoadSystemGames {
             Save loaded = loadGame(cheminFichier);
             System.out.print("Objet chargé avec succès :");
             System.out.println(loaded.toString());
-            System.out.println(loaded.getData_monster().getRowM());
-            System.out.println(loaded.getData_monster().getColM());
+            System.out.println(loaded.getData_monster().getRow());
+            System.out.println(loaded.getData_monster().getCol());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -3,6 +3,8 @@ package fr.univlille.info.J2.main.application.system;
 import java.io.Serializable;
 
 import fr.univlille.info.J2.main.management.exit.SaveExitData;
+import fr.univlille.info.J2.main.strategy.hunter.SaveHunterData;
+import fr.univlille.info.J2.main.strategy.monster.SaveMonsterData;
 
 public class Save implements Serializable{
 	private static final long serialVersionUID = -1006454071348557007L;

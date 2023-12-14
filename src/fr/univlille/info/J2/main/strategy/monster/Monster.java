@@ -22,20 +22,13 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  *
  */
 public class Monster {
-	/**
-	 * La grille des parties déjà explorés du labyrinthe
-	 */
-	private boolean[][] explored;
-	/**
-	 * Les coordonnées initiales du monstre.
-	 */
-	private ICoordinate coord;
+	
+	private SaveMonsterData data;
+	
 	/**
 	 * Strategy du monstre.
 	 */
 	private IMonsterStrategy strategy;
-	
-	private GameplayMonsterData data;
 
 	/**
      * Constructeur de la classe Monster, crée un Monstre.
@@ -46,14 +39,12 @@ public class Monster {
 	 * @param visionRange 	Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
 	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
 	 */
-	public Monster(boolean[][] walls,ICoordinate spawn, ICoordinate exit, GameplayMonsterData data) {
-		super();
-		this.data=data;
-		this.explored=new boolean[walls.length][walls[0].length];
-		if(!data.isVisionLimited()) {
+	public Monster(boolean[][] walls,ICoordinate spawn, ICoordinate exit, GameplayMonsterData gameplay) {
+		this.data = new SaveMonsterData(gameplay, new boolean[walls.length][walls[0].length], walls, 0, 0);
+		if(!data.getGameplay().isVisionLimited()) {
 			this.setToAllExplored();
 		}
-		this.coord = spawn;
+		this.setCoord(spawn);
 		this.strategy=this.chooseMonsterStrategy(data.getIA());
 		this.strategy.initialize(walls);
 		CellEvent initEntity;
@@ -89,48 +80,14 @@ public class Monster {
 	 * 
 	 */
 	public void setToAllExplored() {
-		for(int h=0;h<this.explored.length;h++) {
-			for(int l=0;l<this.explored[h].length;l++) {
-				this.explored[h][l]=true;
+		for(int h=0;h<this.data.getExplored().length;h++) {
+			for(int l=0;l<this.data.getExplored()[h].length;l++) {
+				this.data.getExplored()[h][l]=true;
 			}
 		}
 	}
 
-	/**
-     * Obtient la ligne de la coordonnée du monstre.
-     *
-     * @return La ligne de la coordonnée du monstre.
-	 */
-	public int getRow() {
-		return this.coord.getRow();
-	}
-
-	/**
-     * Obtient la colonne de la coordonnée du monstre.
-     *
-     * @return La colonne de la coordonnée du monstre.
-	 */
-	public int getCol() {
-		return this.coord.getCol();
-	}
-
-	/**
-     * Obtient les coordonnées du monstre.
-     *
-     * @return Les coordonnées du monstre.
-	 */
-	public ICoordinate getCoord() {
-		return this.coord;
-	}
-
-	/**
-     * Définit les coordonnées du monstre.
-     *
-     * @param c Les nouvelles coordonnées du monstre.
-	 */
-	public void setCoord(ICoordinate c) {
-		this.coord=c;
-	}
+	
 
 	/**
      * Met à jour l'état du monstre en fonction d'un événement de cellule.
@@ -151,7 +108,7 @@ public class Monster {
      * @return Le tableau des cases explorées par le monstre.
      */
 	public boolean[][] getExplored() {
-		return explored;
+		return this.data.getExplored();
 	}
 	
 	/**
@@ -195,6 +152,43 @@ public class Monster {
 	
 	public String getName() {
 		return this.data.getName();
+	}
+	
+	/**
+     * Définit les coordonnées du monstre.
+     *
+     * @param c Les nouvelles coordonnées du monstre.
+	 */
+	public void setCoord(ICoordinate c) {
+		this.data.setRow(c.getRow());
+		this.data.setCol(c.getCol());
+	}
+	
+	/**
+     * Obtient la ligne de la coordonnée du monstre.
+     *
+     * @return La ligne de la coordonnée du monstre.
+	 */
+	public int getRow() {
+		return this.data.getRow();
+	}
+
+	/**
+     * Obtient la colonne de la coordonnée du monstre.
+     *
+     * @return La colonne de la coordonnée du monstre.
+	 */
+	public int getCol() {
+		return this.data.getCol();
+	}
+
+	/**
+     * Obtient les coordonnées du monstre.
+     *
+     * @return Les coordonnées du monstre.
+	 */
+	public ICoordinate getCoord() {
+		return new Coordinate(this.data.getRow(),this.data.getCol());
 	}
 	
 }
