@@ -259,6 +259,11 @@ public class Management extends Stage implements Observer{
 	 */
 	public File importedmap;
 	
+	/**
+	 * Objet File représentant une save importée par le joueur
+	 */
+	public File loadedSave;
+	
 	private GameplayHunterData gameplayH;
 	private GameplayMonsterData gameplayM;
 
@@ -585,7 +590,7 @@ public class Management extends Stage implements Observer{
 		
 		Button bLoad = Generators.generateButton("Load",Color.WHITE, Color.BLACK);
 		bLoad.setOnAction(e->
-			this.setScene(this.getScene(ID_MAZE_EDITOR))
+			this.showLoadMenu()
 		);
 
 		Button bSettings = Generators.generateButton("Modify Settings",Color.WHITE, Color.BLACK);
@@ -1372,6 +1377,66 @@ public class Management extends Stage implements Observer{
 				areYouSure.showAndWait().ifPresent(confirmation->{
 					if (confirmation.equals(bt_noSave)) {
 						maze.triggersGameOver();
+					}
+				});
+			}
+		});
+	}
+	
+	/**
+     *Permet de charger une précédente sauvegarde
+     *
+     */
+	public void showLoadMenu() {
+		
+        //////////::
+		ButtonType bt_cancel= new ButtonType("Cancel");
+		ButtonType bt_load = new ButtonType("Load this game");
+        
+        ArrayList<ButtonType> alb = new ArrayList<>();
+		alb.add(bt_cancel);
+		alb.add(bt_load);
+		
+		Text message = new Text();
+		
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Choose a map to import");
+		// Créer un filtre pour les fichiers .dat
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Fichiers DAT (*.obj)", "*.obj");
+        fileChooser.getExtensionFilters().add(extFilter);
+        // Définir le répertoire initial du FileChooser
+        File initialDirectory = new File(SaveLoadSystemGames.GAMES_DIRECTORY);
+        fileChooser.setInitialDirectory(initialDirectory);
+        
+       
+        
+        Button bLoad = Generators.generateButton("Import",Color.WHITE,Color.BLACK);
+		bLoad.setOnAction(e->{
+			loadedSave = fileChooser.showOpenDialog(this);
+			if(loadedSave==null) {
+				message.setText("Operation canceled : no file selected");
+			}else {
+				message.setText("File selected : "+loadedSave.getName());
+			}
+
+		});
+        
+        ArrayList<Node> ligne1 = new ArrayList<>();
+        ligne1.add(bLoad);
+        ligne1.add(message);
+        ArrayList<ArrayList<Node>> nodes = new ArrayList<>();
+        nodes.add(ligne1);
+        
+        Dialog<ButtonType> dialog = Generators.generateDialog("Loading a save", "Which save do you want to load ?", alb, nodes);
+		dialog.showAndWait().ifPresent(response -> {
+			if(response.equals(bt_load)&&loadedSave!=null) {
+				ArrayList<ButtonType> bt_list = new ArrayList<ButtonType>();
+				bt_list.add(bt_cancel);
+				bt_list.add(bt_load);
+				Alert areYouSure = Generators.generateAlert("Are you sure ?", "This save will be loaded and a game will started.", bt_list);
+				areYouSure.showAndWait().ifPresent(confirmation->{
+					if (confirmation.equals(bt_load)) {
+						//Start game
 					}
 				});
 			}
