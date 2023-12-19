@@ -21,6 +21,8 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class Hunter {
 	
+	public static final int UNDISCOVERED = -2;
+	
 	private SaveHunterData data;
 	
 	/**
@@ -45,6 +47,12 @@ public class Hunter {
 		this.strategy=this.chooseHunterStrategy(data.getIA());
 		this.initTraces(height,width);
 		this.strategy.initialize(height, width);
+	}
+	
+	public Hunter(SaveHunterData data) {
+		this.data=data;
+		this.strategy=this.chooseHunterStrategy(data.getIA());
+		this.strategy.initialize(data.getTraces().length, data.getTraces()[0].length);
 	}
 	
 	/**
@@ -112,7 +120,7 @@ public class Hunter {
 		for(int h=0; h<this.getTraces().length;h++) {
 			for(int l=0; l<this.getTraces()[h].length;l++) {
 				// -2 -> Inexploré, -1 -> Mur, 0 -> pas de trace >0 -> trace (tour)
-				this.data.setTrace(h,l, -2);
+				this.data.setTrace(h,l, UNDISCOVERED);
 			}
 		}
 	}

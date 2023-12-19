@@ -7,6 +7,7 @@ package fr.univlille.info.J2.main.management;
 
 import java.util.Arrays;
 
+import fr.univlille.info.J2.main.application.system.Save;
 import fr.univlille.info.J2.main.management.cells.CellEvent;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.management.exit.Exit;
@@ -118,6 +119,15 @@ public class Maze extends Subject{
 	public Maze(int probability, int height, int width, GameplayHunterData dataH, GameplayMonsterData dataM, SaveManagementData dataMan) {
 		this(Maze.generateRandomMap(probability, height, width), dataH, dataM, dataMan);
 	}
+	
+	public Maze(Save save) {
+		System.out.println("TOUR DU MONSTRE:"+save.getData_maze().isMonsterTurn());
+		this.data=save.getData_maze();
+		this.dataMan=save.getData_management();
+		this.initMonsterExitHunter(save);
+		this.exploring(this.monster.getCoord(), this.monster.getVisionRange());
+		this.move(this.monster.getCoord());
+	}
 
 	/**
 	 * Initialisation du tableau des traces du monstre vu par le chasseur.
@@ -225,6 +235,15 @@ public class Maze extends Subject{
 	 * @param movingRange   Portée de déplacement du monstre.
 	 * @param bonusRange    Bonus de portée du chasseur.
 	 */
+	public void initMonsterExitHunter(Save save) {
+		this.exit = new Exit(new Coordinate(save.getData_exit().getRow(),save.getData_exit().getCol()));
+		
+		this.monster = new Monster(save.getData_monster(),exit.getCoord());
+		
+		this.hunter = new Hunter(save.getData_hunter());
+	
+	}
+	
 	public void initMonsterExitHunter(GameplayHunterData dataH, GameplayMonsterData dataM) {
 		this.exit = new Exit(new Coordinate(this.getWalls().length-1, Utils.random.nextInt(this.getWalls()[this.getWalls().length-1].length)));
 		this.setFloor(this.exit.getCoord(),true);
@@ -233,6 +252,7 @@ public class Maze extends Subject{
 
 		this.hunter = new Hunter(this.getWalls().length,this.getWalls()[0].length,new Coordinate(0,0), dataH);
 	}
+
 
 	/**
 	 * Affichage en ASCII (Terminal) du labyrinthe.
@@ -652,5 +672,9 @@ public class Maze extends Subject{
 	
 	public SaveMazeData getData() {
 		return this.data;
+	}
+	
+	public SaveManagementData getDataMan() {
+		return this.dataMan;
 	}
  }

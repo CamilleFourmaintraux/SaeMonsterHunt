@@ -51,6 +51,15 @@ public class Monster {
 		this.strategy.update(initEntity);
 	}
 	
+	public Monster(SaveMonsterData data,ICoordinate exit) {
+		this.data=data;
+		this.strategy=this.chooseMonsterStrategy(data.getIA());
+		this.strategy.initialize(data.getWalls());
+		CellEvent initEntity;
+		initEntity=new CellEvent(exit, 0, CellInfo.EXIT); //Attention, la stratégie considère avoir bougé
+		this.strategy.update(initEntity);
+	}
+
 	/**
 	 * Choisi une stratégie de monstre en fonction du niveau d'intelligence artificielle spécifié.
 	 *

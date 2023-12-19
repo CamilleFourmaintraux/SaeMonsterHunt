@@ -9,6 +9,7 @@ import fr.univlille.info.J2.main.management.Management;
 import fr.univlille.info.J2.main.management.Maze;
 import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
@@ -219,6 +220,10 @@ public class HunterView extends View{
 					cell.setImage(this.theme.getWallImg());
 				}else {
 					cell.setImage(this.theme.getFloorImg());
+				}
+				if(this.maze.getHunter().getTraces()[h][l]!=Hunter.UNDISCOVERED) {
+					cell.setFill(Color.TRANSPARENT);
+					cell.setStroke(Color.TRANSPARENT);
 				}
 				cell.setFocusTraversable(false);
 				cell.setOnMouseEntered(event -> {

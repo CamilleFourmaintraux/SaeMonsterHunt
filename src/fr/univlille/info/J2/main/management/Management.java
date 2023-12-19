@@ -266,8 +266,6 @@ public class Management extends Stage implements Observer{
 	
 	private GameplayHunterData gameplayH;
 	private GameplayMonsterData gameplayM;
-	
-	private SaveManagementData data;
 
 	/**
 	 * Constructeur de la classe Management.
@@ -456,13 +454,13 @@ public class Management extends Stage implements Observer{
 	public void switchInGameView() {
 		ICoordinate c;
 		if(this.maze.isMonsterTurn()) {
-			this.toMonsterView();
+			this.toMonsterView(this.getMonster_IA(), this.getHunter_IA(), this.maze.getDataMan().isSameScreen());
 			c = this.maze.getMonster().play();
 			if(c!=null) {
 				this.monsterPlayAt(c);
 			}
 		}else {
-			this.toHunterView();
+			this.toHunterView(this.getMonster_IA(), this.getHunter_IA(), this.maze.getDataMan().isSameScreen());
 			c = this.maze.getHunter().play();
 			if(c!=null) {
 				this.hunterPlayAt(c);
@@ -473,14 +471,14 @@ public class Management extends Stage implements Observer{
 	/**
 	 * Affiche une boite d'avertissement indiquant que c'est le tour du chasseur.
 	 */
-	public void toHunterView() {
-		if(this.isSameScreen) {
-			if(this.getMonster_IA().equals(DEFAULT_IA_PLAYER)&&this.getHunter_IA().equals(Management.IA_LEVELS[0])) {
+	public void toHunterView(String IAMonster, String IAHunter, boolean isSameScreen) {
+		if(isSameScreen) {
+			if(IAMonster.equals(DEFAULT_IA_PLAYER) && IAHunter.equals(Management.IA_LEVELS[0])) {
 				this.viewCommon.setScene(this.getScene(ID_WAIT));
 				ArrayList<ButtonType> alb = new ArrayList<>();
 				ButtonType boutonJouer = new ButtonType("Play");
 				alb.add(boutonJouer);
-				Alert alert = Generators.generateAlert("It’s the "+DEFAULT_NAME_HUNTER+"’s turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
+				Alert alert = Generators.generateAlert("It’s the "+DEFAULT_NAME_HUNTER+" turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
 				alert.setOnCloseRequest(e-> this.viewCommon.setScene(hv.getScene()) );
 				alert.showAndWait().ifPresent(response -> {
 					if(response == boutonJouer){
@@ -495,25 +493,25 @@ public class Management extends Stage implements Observer{
 
 	}
 	
-	private Object getHunter_IA() {
+	private String getHunter_IA() {
 		return this.gameplayH.getIA();
 	}
 
-	private Object getMonster_IA() {
+	private String getMonster_IA() {
 		return this.gameplayM.getIA();
 	}
 
 	/**
 	 * Affiche une boite d'avertissement indiquant que c'est le tour du monstre.
 	 */
-	public void toMonsterView() {
-		if(this.isSameScreen) {
-			if(this.getMonster_IA().equals(DEFAULT_IA_PLAYER)&&this.getHunter_IA().equals(Management.IA_LEVELS[0])){
+	public void toMonsterView(String IAMonster, String IAHunter, boolean isSameScreen) {
+		if(isSameScreen) {
+			if(IAMonster.equals(DEFAULT_IA_PLAYER)&&IAHunter.equals(Management.IA_LEVELS[0])){
 				this.viewCommon.setScene(this.getScene(ID_WAIT));
 				ArrayList<ButtonType> alb = new ArrayList<>();
 				ButtonType boutonJouer = new ButtonType("Play");
 				alb.add(boutonJouer);
-				Alert alert = Generators.generateAlert("It’s the "+DEFAULT_NAME_MONSTER+"’s turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
+				Alert alert = Generators.generateAlert("It’s the "+DEFAULT_NAME_MONSTER+" turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
 				alert.setOnCloseRequest(e-> this.viewCommon.setScene(mv.getScene()) );
 				alert.showAndWait().ifPresent(response -> {
 					if(response == boutonJouer){
@@ -561,7 +559,7 @@ public class Management extends Stage implements Observer{
 			}
 			
 			//Création des paquets de data de management
-			SaveManagementData dataMan = new SaveManagementData();
+			SaveManagementData dataMan = new SaveManagementData(this.current_theme.getName(), this.isSameScreen);
 			
 			//Creation of the maze
 			if(this.isGenerationRandom) {
@@ -1439,20 +1437,20 @@ public class Management extends Stage implements Observer{
 					if (confirmation.equals(bt_load)) {
 						try {
 							Save save = SaveLoadSystemGames.loadGame(loadedSave.getName());
-							
 							//Adaptation du zoom
 							if(this.display.getWindowHeight()>this.display.getWindowWidth()) {
 								this.display.setZoom(this.display.getWindowWidth()/(this.maze_height+this.maze_width));
 							}else {
 								this.display.setZoom(this.display.getWindowHeight()/(this.maze_height+this.maze_width));
 							}
-							SaveManagementData dataMan = new SaveManagementData();
-							this.maze = new Maze(save.getData_maze().getWalls(), save.getData_hunter().getGameplay(), save.getData_monster().getGameplay(), dataMan);
+							this.maze = new Maze(save);
 							
 							this.maze.attach(this);
-							this.mv=new MonsterView(this.display,this.maze, this.current_theme); 
-							this.hv=new HunterView(this.display,this.maze,this.current_theme);
-							if(this.isSameScreen) {
+							
+							Theme theme = Theme.themesMap.get(save.getData_management().getTheme());
+							this.mv=new MonsterView(this.display,this.maze, theme); 
+							this.hv=new HunterView(this.display,this.maze,theme);
+							if(save.getData_management().isSameScreen()) {
 								this.viewCommon.setScene(hv.getScene());
 								this.viewCommon.show();
 								this.setScene(hv.getScene());
