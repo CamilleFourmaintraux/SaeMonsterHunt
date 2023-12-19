@@ -8,13 +8,13 @@ import java.io.ObjectOutputStream;
 
 import fr.univlille.info.J2.main.management.Management;
 import fr.univlille.info.J2.main.management.Maze;
+import fr.univlille.info.J2.main.management.SaveManagementData;
 import fr.univlille.info.J2.main.management.SaveMazeData;
 import fr.univlille.info.J2.main.management.exit.SaveExitData;
 import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.hunter.SaveHunterData;
 import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.strategy.monster.SaveMonsterData;
-import fr.univlille.info.J2.main.utils.menuConception.Theme;
 
 /**
  * La classe SaveLoadSystemGames fournit des méthodes statiques pour sauvegarder et charger des objets de type Maze
@@ -57,7 +57,7 @@ public class SaveLoadSystemGames {
      * @throws ClassNotFoundException Si la classe Maze n'est pas trouvée lors du chargement.
      */
     public static Save loadGame(String fileName) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GAMES_DIRECTORY+fileName+".obj"))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GAMES_DIRECTORY+fileName))) {
             return (Save) ois.readObject();
         }
     }
@@ -65,11 +65,12 @@ public class SaveLoadSystemGames {
     //Exemple d'utilisation
     public static void main(String[] args) {
         // Exemple d'utilisation
-    	SaveMazeData smad = new SaveMazeData(Maze.DEFAULT_MAP, new int[10][10], 4, false, Theme.THEME_DUNGEON);
+    	SaveManagementData smand = new SaveManagementData();
+    	SaveMazeData smazd = new SaveMazeData(Maze.DEFAULT_MAP, new int[10][10], 4, false);
     	SaveExitData sexd = new SaveExitData(8, 8);
     	SaveMonsterData smod = new SaveMonsterData(new GameplayMonsterData("Martha",Management.getDefaultIaPlayer(), true, 1, 1), new boolean[10][10], Maze.DEFAULT_MAP, 1, 8);
     	SaveHunterData shud = new SaveHunterData(new GameplayHunterData("Henty",Management.getDefaultIaPlayer(), 20), new int[10][10], 8, 1);
-        Save saved = new Save(smad, sexd, smod, shud);
+        Save saved = new Save(smand, smazd, sexd, smod, shud);
         String cheminFichier = "saveTest";
 
         // Sauvegarder l'objet
@@ -82,7 +83,7 @@ public class SaveLoadSystemGames {
 
         // Charger l'objet
         try {
-            Save loaded = loadGame(cheminFichier);
+            Save loaded = loadGame(cheminFichier+".obj");
             System.out.print("Objet chargé avec succès :");
             System.out.println(loaded.toString());
             System.out.println(loaded.getData_hunter().getName());

@@ -47,6 +47,7 @@ public class Maze extends Subject{
 	};
 	
 	private SaveMazeData data;
+	public SaveManagementData dataMan;
 
 	/**
 	 * La sortie (les coordonnées) du labyrinthe.
@@ -84,7 +85,7 @@ public class Maze extends Subject{
 	 * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
 	 */
 	public Maze() {
-		this(Maze.generateBasicMap(),new GameplayHunterData("Hunter",Management.IA_LEVELS[0],0),new GameplayMonsterData("Monster",Management.IA_LEVELS[0], false, 1, 1));
+		this(Maze.generateBasicMap(),new GameplayHunterData("Hunter",Management.IA_LEVELS[0],0),new GameplayMonsterData("Monster",Management.IA_LEVELS[0], false, 1, 1),null);
 	}
 
 	/**
@@ -95,8 +96,9 @@ public class Maze extends Subject{
      * @param dataH				objet GameplayHunterData pour stoker et transférer facilement des données entre les classes concernant le hunter.
      * @param dataM				objet GameplayMonsterData pour stoker et transférer facilement des données entre les classes concernant le monster.
      */
-	public Maze(boolean[][] maze, GameplayHunterData dataH, GameplayMonsterData dataM) {
-		this.data = new SaveMazeData(maze, new int[maze.length][maze[0].length], 1, true, "themeNonSpécifié");
+	public Maze(boolean[][] maze, GameplayHunterData dataH, GameplayMonsterData dataM, SaveManagementData dataMan) {
+		this.data = new SaveMazeData(maze, new int[maze.length][maze[0].length], 1, true);
+		this.dataMan=dataMan;
 		this.initTraces();
 		this.initMonsterExitHunter(dataH, dataM);
 		this.exploring(this.monster.getCoord(), this.monster.getVisionRange());
@@ -113,8 +115,8 @@ public class Maze extends Subject{
      * @param dataH				objet GameplayHunterData pour stoker et transférer facilement des données entre les classes concernant le hunter.
      * @param dataM				objet GameplayMonsterData pour stoker et transférer facilement des données entre les classes concernant le monster.
      */
-	public Maze(int probability, int height, int width, GameplayHunterData dataH, GameplayMonsterData dataM) {
-		this(Maze.generateRandomMap(probability, height, width), dataH, dataM);
+	public Maze(int probability, int height, int width, GameplayHunterData dataH, GameplayMonsterData dataM, SaveManagementData dataMan) {
+		this(Maze.generateRandomMap(probability, height, width), dataH, dataM, dataMan);
 	}
 
 	/**

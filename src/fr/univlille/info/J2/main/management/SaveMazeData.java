@@ -26,17 +26,12 @@ public class SaveMazeData implements Serializable{
 	 */
 	private boolean isMonsterTurn;
 	
-	/**
-	 * Nom du thème associé à la partie
-	 */
-	private String theme;
 	
-	public SaveMazeData(boolean[][] walls, int[][] traces, int turn, boolean isMonsterTurn, String theme) {
+	public SaveMazeData(boolean[][] walls, int[][] traces, int turn, boolean isMonsterTurn) {
 		this.walls = walls;
 		this.traces = traces;
 		this.turn = turn;
 		this.isMonsterTurn = isMonsterTurn;
-		this.theme=theme;
 	}
 
 	public static long getSerialversionuid() {
@@ -58,10 +53,6 @@ public class SaveMazeData implements Serializable{
 	public boolean isMonsterTurn() {
 		return isMonsterTurn;
 	}
-	
-	public String getTheme() {
-		return this.theme;
-	}
 
 	protected void setWalls(boolean[][] walls) {
 		this.walls = walls;
@@ -81,10 +72,6 @@ public class SaveMazeData implements Serializable{
 
 	protected void setMonsterTurn(boolean isMonsterTurn) {
 		this.isMonsterTurn = isMonsterTurn;
-	}
-
-	protected void setTheme(String theme) {
-		this.theme = theme;
 	}
 	
 }

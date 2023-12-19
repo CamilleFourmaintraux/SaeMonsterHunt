@@ -266,6 +266,8 @@ public class Management extends Stage implements Observer{
 	
 	private GameplayHunterData gameplayH;
 	private GameplayMonsterData gameplayM;
+	
+	private SaveManagementData data;
 
 	/**
 	 * Constructeur de la classe Management.
@@ -558,16 +560,17 @@ public class Management extends Stage implements Observer{
 				this.display.setZoom(this.display.getWindowHeight()/(this.maze_height+this.maze_width));
 			}
 			
-			//Création des paquets de data
+			//Création des paquets de data de management
+			SaveManagementData dataMan = new SaveManagementData();
 			
 			//Creation of the maze
 			if(this.isGenerationRandom) {
-				this.maze = new Maze(this.probability, this.maze_height, this.maze_width, gameplayH, gameplayM);
+				this.maze = new Maze(this.probability, this.maze_height, this.maze_width, gameplayH, gameplayM,dataMan );
 			}else {
 				try {
-					this.maze = new Maze(SaveLoadSystemMaps.loadMap(this.importedmap), gameplayH, gameplayM);
+					this.maze = new Maze(SaveLoadSystemMaps.loadMap(this.importedmap), gameplayH, gameplayM,dataMan );
 				} catch (Exception exception) {
-					this.maze = new Maze(this.probability, this.maze_height, this.maze_width, gameplayH, gameplayM);
+					this.maze = new Maze(this.probability, this.maze_height, this.maze_width, gameplayH, gameplayM,dataMan );
 				}
 			}
 			this.maze.attach(this);
@@ -1408,8 +1411,6 @@ public class Management extends Stage implements Observer{
         File initialDirectory = new File(SaveLoadSystemGames.GAMES_DIRECTORY);
         fileChooser.setInitialDirectory(initialDirectory);
         
-       
-        
         Button bLoad = Generators.generateButton("Import",Color.WHITE,Color.BLACK);
 		bLoad.setOnAction(e->{
 			loadedSave = fileChooser.showOpenDialog(this);
@@ -1436,7 +1437,43 @@ public class Management extends Stage implements Observer{
 				Alert areYouSure = Generators.generateAlert("Are you sure ?", "This save will be loaded and a game will started.", bt_list);
 				areYouSure.showAndWait().ifPresent(confirmation->{
 					if (confirmation.equals(bt_load)) {
-						//Start game
+						try {
+							Save save = SaveLoadSystemGames.loadGame(loadedSave.getName());
+							
+							//Adaptation du zoom
+							if(this.display.getWindowHeight()>this.display.getWindowWidth()) {
+								this.display.setZoom(this.display.getWindowWidth()/(this.maze_height+this.maze_width));
+							}else {
+								this.display.setZoom(this.display.getWindowHeight()/(this.maze_height+this.maze_width));
+							}
+							SaveManagementData dataMan = new SaveManagementData();
+							this.maze = new Maze(save.getData_maze().getWalls(), save.getData_hunter().getGameplay(), save.getData_monster().getGameplay(), dataMan);
+							
+							this.maze.attach(this);
+							this.mv=new MonsterView(this.display,this.maze, this.current_theme); 
+							this.hv=new HunterView(this.display,this.maze,this.current_theme);
+							if(this.isSameScreen) {
+								this.viewCommon.setScene(hv.getScene());
+								this.viewCommon.show();
+								this.setScene(hv.getScene());
+							}else {
+								this.viewM.setScene(mv.getScene());
+								this.viewH.setScene(hv.getScene());
+								this.viewM.show();
+								this.viewH.show();
+							}
+							this.hide();
+							this.switchInGameView(); //Ici Vérifie qui joue (IA ou joueur) pour pouvoir démarrer le jeu.
+							
+						} catch (ClassNotFoundException e1) {
+							LOGGER.info("ClassNotFoundException when loading a save.");
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							LOGGER.info("IOException when loading a save.");
+							e1.printStackTrace();
+						}
+						
+						
 					}
 				});
 			}
@@ -1444,7 +1481,7 @@ public class Management extends Stage implements Observer{
 	}
 	
 	public static Save createSave(Maze maze) {
-		return new Save(maze.getData(), maze.getExit().getData(), maze.getMonster().getData(), maze.getHunter().getData());
+		return new Save(maze.dataMan, maze.getData(), maze.getExit().getData(), maze.getMonster().getData(), maze.getHunter().getData());
 	}
 
 	public static String getDefaultNameMonster() {
