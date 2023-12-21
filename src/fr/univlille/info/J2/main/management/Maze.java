@@ -675,6 +675,6 @@ public class Maze extends Subject{
 	}
 	
 	public SaveManagementData getDataMan() {
-		return this.dataMan;
+		return this.dataMan;	
 	}
  }

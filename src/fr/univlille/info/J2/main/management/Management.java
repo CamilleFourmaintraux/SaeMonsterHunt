@@ -416,7 +416,7 @@ public class Management extends Stage implements Observer{
 			this.setHeight(this.display.getWindowHeight());
 			this.setWidth(this.display.getWindowWidth());
 			this.show();
-			if(this.isSameScreen) {
+			if(this.maze.getDataMan().isSameScreen()) {
 				this.viewCommon.hide();
 			}else {
 				this.viewM.hide();
