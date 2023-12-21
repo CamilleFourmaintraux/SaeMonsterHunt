@@ -1205,7 +1205,7 @@ public class Management extends Stage implements Observer{
 		Button statButton = Generators.generateButton("stat", 0, 0,Color.WHITE, Color.BLACK);
 		statButton.setOnAction(e -> {
 		    // Create a label to display the custom text
-		    Label popupLabel = new Label("COUCOU !");
+		    Label popupLabel = new Label("The game ended in turn "+this.maze.getTurn());
 
 		    // Create a pane to hold the label
 		    Pane popupPane = new Pane();
