@@ -7,25 +7,60 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+/**
+ * Cette classe fournit des méthodes pour sauvegarder et charger des tableaux boolean[][] (map) dans des fichiers.
+ * Elle utilise la sérialisation d'objets pour accomplir ces opérations.
+ */
 public class SaveLoadSystemMaps {
+	
+    /** 
+     * Répertoire par défaut pour sauvegarder les labyrinthes. 
+     */
 	public static final String MAZES_DIRECTORY = "res/saves/mazes/";
+	
+	/** 
+	 * Nom par défaut pour la sauvegarde des labyrinthes. 
+	 */
 	public final static String DEFAULT_NAME_FOR_MAP_SAVE = "default_map_name";
 
-    // Méthode pour sauvegarder un tableau boolean[][] dans un fichier
+	/**
+     * Sauvegarde un tableau boolean[][] dans un fichier avec le nom spécifié.
+     *
+     * @param map       Le tableau boolean[][] à sauvegarder.
+     * @param saveName  Le nom du fichier de sauvegarde (sans extension).
+     * 
+     * @throws IOException  En cas d'erreur lors de l'écriture du fichier.
+     */
     public static void saveMap(boolean[][] map, String saveName) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(MAZES_DIRECTORY+saveName+".dat"))) {
             oos.writeObject(map);
         }
     }
 
-    // Méthode pour charger un tableau boolean[][] depuis un fichier avec le chemin
+    /**
+     * Charge un tableau boolean[][] depuis un fichier en utilisant le nom du fichier.
+     *
+     * @param fileName  Le nom du fichier de sauvegarde (sans extension).
+     * @return          Le tableau boolean[][] chargé depuis le fichier.
+     * 
+     * @throws IOException            En cas d'erreur lors de la lecture du fichier.
+     * @throws ClassNotFoundException Si la classe du tableau n'a pas été trouvée.
+     */
     public static boolean[][] loadMap(String fileName) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(MAZES_DIRECTORY+fileName+".dat"))) {
             return (boolean[][]) ois.readObject();
         }
     }
 
- // Méthode pour charger un tableau boolean[][] depuis un fichier
+    /**
+     * Charge un tableau boolean[][] depuis un fichier en utilisant un objet de type File.
+     *
+     * @param file  L'objet File représentant le fichier à charger.
+     * @return      Le tableau boolean[][] chargé depuis le fichier.
+     * 
+     * @throws IOException            En cas d'erreur lors de la lecture du fichier.
+     * @throws ClassNotFoundException Si la classe du tableau n'a pas été trouvée.
+     */
     public static boolean[][] loadMap(File file) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             return (boolean[][]) ois.readObject();

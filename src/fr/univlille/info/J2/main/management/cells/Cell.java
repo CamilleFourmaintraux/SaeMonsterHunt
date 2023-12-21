@@ -37,7 +37,7 @@ public class Cell extends Rectangle{
 	 * @param gap_X La valeur de décalage en X pour la position de la cellule.
 	 * @param gap_Y La valeur de décalage en Y pour la position de la cellule.
 	 */
-	public Cell(int x, int y, int zoom, Color fill, int gap_X, int gap_Y) {
+	public Cell(int x, int y, double zoom, Color fill, double gap_X, double gap_Y) {
 		this(x,y,zoom,fill,fill, 0, gap_X, gap_Y);
 	}
 
@@ -54,7 +54,7 @@ public class Cell extends Rectangle{
 	 * @param gap_X La valeur de décalage en X pour la position de la cellule.
 	 * @param gap_Y La valeur de décalage en Y pour la position de la cellule.
 	 */
-	public Cell(int x, int y, int zoom, Color fill, Color stroke, int strokeWidth, int gap_X, int gap_Y) {
+	public Cell(int x, int y, double zoom, Color fill, Color stroke, int strokeWidth, double gap_X, double gap_Y) {
 		super(x*zoom+gap_X,y*zoom+gap_X,zoom, zoom);
 		this.coord=new Coordinate(y,x);
 		this.iv=new ImageView();
@@ -81,7 +81,6 @@ public class Cell extends Rectangle{
      * Définit les coordonnées associées à la cellule.
      *
      * @param c Les nouvelles coordonnées de la cellule.
-     * @return Les coordonnées mises à jour.
      */
 	public void setCoord(ICoordinate c) {
 		this.coord=c;
@@ -115,15 +114,30 @@ public class Cell extends Rectangle{
 		return Objects.equals(coord, other.coord);
 	}
 
-
+	/**
+	 * Récupère l'objet ImageView associé à cet élément.
+	 *
+	 * @return L'objet ImageView associé à cet élément.
+	 */
 	public ImageView getImgv() {
 		return this.iv;
 	}
 
+	/**
+	 * Définit l'image affichée par cet élément en utilisant l'objet Image spécifié.
+	 *
+	 * @param img L'objet Image à afficher.
+	 */
 	public void setImage(Image img) {
 		this.iv.setImage(img);
 	}
 	
+	/**
+	 * Définit les coordonnées (X, Y) de cet élément et de son ImageView associé.
+	 *
+	 * @param x La coordonnée X.
+	 * @param y La coordonnée Y.
+	 */
 	public void setXY(double x, double y) {
 		this.setX(x);
 		this.setY(y);

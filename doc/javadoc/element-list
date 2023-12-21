@@ -1,6 +1,9 @@
-main.application
-main.maze
-main.maze.cells
-main.strategy.hunter
-main.strategy.monster
-main.utils
+fr.univlille.info.J2.main.application
+fr.univlille.info.J2.main.application.cells
+fr.univlille.info.J2.main.application.system
+fr.univlille.info.J2.main.management
+fr.univlille.info.J2.main.strategy.hunter
+fr.univlille.info.J2.main.strategy.monster
+fr.univlille.info.J2.main.utils
+fr.univlille.info.J2.main.utils.menuConception
+fr.univlille.info.J2.main.utils.patrons

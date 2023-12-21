@@ -6,33 +6,72 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import fr.univlille.info.J2.main.management.Management;
 import fr.univlille.info.J2.main.management.Maze;
+import fr.univlille.info.J2.main.management.SaveManagementData;
+import fr.univlille.info.J2.main.management.SaveMazeData;
+import fr.univlille.info.J2.main.management.exit.SaveExitData;
+import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
+import fr.univlille.info.J2.main.strategy.hunter.SaveHunterData;
+import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
+import fr.univlille.info.J2.main.strategy.monster.SaveMonsterData;
+import fr.univlille.info.J2.main.utils.menuConception.Theme;
 
+/**
+ * La classe SaveLoadSystemGames fournit des méthodes statiques pour sauvegarder et charger des objets de type Maze
+ * en utilisant la sérialisation Java. Elle permet de stocker des instances de la classe Maze dans des fichiers
+ * pour les sauvegarder et les restaurer ultérieurement.
+ */
 public class SaveLoadSystemGames {
 	
 	private SaveLoadSystemGames() {};
 
+	/**
+     * Le répertoire par défaut où seront sauvegardés les fichiers de jeux.
+     */
 	public static final String GAMES_DIRECTORY = "res/saves/games/";
+	
+	/**
+     * Nom par défaut pour la sauvegarde d'un jeu.
+     */
 	public final static String DEFAULT_NAME_FOR_GAME_SAVE = "default_save_name";
 
-	// Méthode pour sauvegarder un objet dans un fichier
-    public static void saveGame(Maze maze, String fileName) throws IOException {
+	/**
+     * Sauvegarde un objet de type Maze dans un fichier.
+     *
+     * @param maze     L'objet Maze à sauvegarder.
+     * @param fileName Le nom du fichier dans lequel sauvegarder l'objet.
+     * @throws IOException Si une erreur d'entrée/sortie se produit lors de la sauvegarde.
+     */
+    public static void saveGame(Save save, String fileName) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(GAMES_DIRECTORY+fileName+".obj"))) {
-            oos.writeObject(maze);
+            oos.writeObject(save);
         }
     }
 
-    // Méthode pour charger un objet depuis un fichier
-    public static Maze loadGame(String fileName) throws IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GAMES_DIRECTORY+fileName+".obj"))) {
-            return (Maze) ois.readObject();
+    /**
+     * Charge un objet de type Maze depuis un fichier.
+     *
+     * @param fileName Le nom du fichier à partir duquel charger l'objet.
+     * @return L'objet Maze chargé depuis le fichier.
+     * @throws IOException            Si une erreur d'entrée/sortie se produit lors du chargement.
+     * @throws ClassNotFoundException Si la classe Maze n'est pas trouvée lors du chargement.
+     */
+    public static Save loadGame(String fileName) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(GAMES_DIRECTORY+fileName))) {
+            return (Save) ois.readObject();
         }
     }
 
     //Exemple d'utilisation
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         // Exemple d'utilisation
-        Maze saved = new Maze();
+    	SaveManagementData smand = new SaveManagementData(Theme.THEME_DUNGEON,false);
+    	SaveMazeData smazd = new SaveMazeData(Maze.DEFAULT_MAP, new int[10][10], 4, false);
+    	SaveExitData sexd = new SaveExitData(8, 8);
+    	SaveMonsterData smod = new SaveMonsterData(new GameplayMonsterData("Martha",Management.getDefaultIaPlayer(), true, 1, 1), new boolean[10][10], Maze.DEFAULT_MAP, 1, 8);
+    	SaveHunterData shud = new SaveHunterData(new GameplayHunterData("Henty",Management.getDefaultIaPlayer(), 20), new int[10][10], 8, 1);
+        Save saved = new Save(smand, smazd, sexd, smod, shud);
         String cheminFichier = "saveTest";
 
         // Sauvegarder l'objet
@@ -45,20 +84,15 @@ public class SaveLoadSystemGames {
 
         // Charger l'objet
         try {
-            Maze loaded = loadGame(cheminFichier);
-            System.out.println("Objet chargé avec succès.");
+            Save loaded = loadGame(cheminFichier+".obj");
+            System.out.print("Objet chargé avec succès :");
             System.out.println(loaded.toString());
-            for(int h=0; h<loaded.walls.length; h++) {
-        		System.out.print('[');
-        		System.out.print(loaded.walls[h][0]);
-            	for(int l=1; l<loaded.walls[h].length; l++) {
-            		System.out.print(',');
-            		System.out.print(loaded.walls[h][l]);
-            	}
-        		System.out.println(']');
-            }
+            System.out.println(loaded.getData_hunter().getName());
+            System.out.println(loaded.getData_hunter().getIA());
+            System.out.println("("+loaded.getData_hunter().getRow()+","+loaded.getData_hunter().getCol()+")");
+            System.out.println(loaded.getData_hunter().getBonusRange());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 }
