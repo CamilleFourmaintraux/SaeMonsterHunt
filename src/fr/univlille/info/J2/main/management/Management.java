@@ -1417,7 +1417,6 @@ public class Management extends Stage implements Observer{
 			}else {
 				message.setText("File selected : "+loadedSave.getName());
 			}
-
 		});
         
         ArrayList<Node> ligne1 = new ArrayList<>();
@@ -1427,7 +1426,8 @@ public class Management extends Stage implements Observer{
         nodes.add(ligne1);
         
         Dialog<ButtonType> dialog = Generators.generateDialog("Loading a save", "Which save do you want to load ?", alb, nodes);
-		dialog.showAndWait().ifPresent(response -> {
+		dialog.setResizable(true);
+        dialog.showAndWait().ifPresent(response -> {
 			if(response.equals(bt_load)&&loadedSave!=null) {
 				ArrayList<ButtonType> bt_list = new ArrayList<ButtonType>();
 				bt_list.add(bt_cancel);
