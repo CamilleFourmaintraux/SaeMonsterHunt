@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import fr.univlille.info.J2.main.management.cells.Coordinate;
-import fr.univlille.info.J2.main.strategy.monster.Exit;
+import fr.univlille.info.J2.main.management.exit.Exit;
 
 public class TestExit {
 

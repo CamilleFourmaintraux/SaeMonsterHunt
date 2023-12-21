@@ -4,28 +4,46 @@ import java.io.Serializable;
 
 public class GameplayMonsterData implements Serializable{
 	private static final long serialVersionUID = -8494532638037902202L;
+	
 	/**
-	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
-	 */
-	private int visionRange;
-	/**
-	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
-	 */
-	private int movingRange;
+	* String du nom du joueur
+	**/
+	private String name;
+	
 	/**
 	 * Détermine si le monstre aura une vision limité dans la labyrinthe ou non.
 	 */
 	private boolean isVisionLimited;
+	
+	/**
+	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
+	 */
+	private int visionRange;
+	
+	/**
+	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
+	 */
+	private int movingRange;
+	
 	/**
 	* String de la strategy du Monstre
 	**/
 	private String IA;
 	
-	public GameplayMonsterData(String IA, boolean isVisionLimited, int visionRange, int movingRange) {
+	/**
+	 * Crée un objet pour stocker les données du monstre concernant les paramètres de gameplay.
+	 * @param name				Nom du joueur associé à ce objet de données
+	 * @param monster_IA 		Niveau de l'IA du monstre.
+     * @param limitedVision 	boolean indiquant si la vision du monstre est limitée.
+     * @param visionRange 		int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
+     * @param movingRange 		int correspondant à la portée de déplacement du monstre.
+	 */
+	public GameplayMonsterData(String name, String IA, boolean isVisionLimited, int visionRange, int movingRange) {
 		this.IA=IA;
 		this.isVisionLimited=isVisionLimited;
 		this.visionRange=visionRange;
 		this.movingRange=movingRange;
+		this.name=name;
 	}
 
 	
@@ -55,7 +73,7 @@ public class GameplayMonsterData implements Serializable{
      *
      * @return La portée de déplacement du monstre.
      */
-	protected int getMovingRange() {
+	public int getMovingRange() {
 		return movingRange;
 	}
 
@@ -64,7 +82,38 @@ public class GameplayMonsterData implements Serializable{
      *
      * @return Le nom de l'IA du monstre.
      */
-	protected String getIA() {
+	public String getIA() {
 		return IA;
 	}
+	
+	public String getName() {
+		return this.name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public void setVisionLimited(boolean isVisionLimited) {
+		this.isVisionLimited = isVisionLimited;
+	}
+
+
+	public void setVisionRange(int visionRange) {
+		this.visionRange = visionRange;
+	}
+
+
+	public void setMovingRange(int movingRange) {
+		this.movingRange = movingRange;
+	}
+
+
+	public void setIA(String iA) {
+		IA = iA;
+	}
+	
+	
 }

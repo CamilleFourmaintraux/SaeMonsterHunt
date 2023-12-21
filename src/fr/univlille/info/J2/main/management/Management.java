@@ -14,12 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import fr.univlille.info.J2.main.application.system.Save;
 import fr.univlille.info.J2.main.application.system.SaveLoadSystemGames;
 import fr.univlille.info.J2.main.application.system.SaveLoadSystemMaps;
 import fr.univlille.info.J2.main.management.view.HunterView;
 import fr.univlille.info.J2.main.management.view.MonsterView;
-import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
+import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
@@ -115,29 +116,26 @@ public class Management extends Stage implements Observer{
 	 * Constante ID de l'éditeur de labyrinthe.
 	 */
 	private static final int ID_MAZE_EDITOR = 8;
+	
+	private static final String DEFAULT_NAME_MONSTER = "Monster";
+	private static final String DEFAULT_NAME_HUNTER = "Hunter";
+	
 
+
+	private static final String DEFAULT_IA_PLAYER = "Player";
 	/**
 	 * Constante utilisée dans les comboBox pour le choix des joueurs.
 	 */
-	protected static final String[] IA_LEVELS = new String[] {"Player","IA-Easy","IA-Moderate","IA-Hardcore"};
+	protected static final String[] IA_LEVELS = new String[] {DEFAULT_IA_PLAYER,"IA-Easy","IA-Moderate","IA-Hardcore"};
 
 	/**
 	 * Constante utilisée dans les comboBox pour le choix des themes.
 	 */
-	private static final String[] THEMES = new String[] {Theme.THEME_DUNGEON, Theme.THEME_CAVE, Theme.THEME_MEADOW, Theme.THEME_FOREST, Theme.THEME_OCEAN};
+	protected static final String[] THEMES = new String[] {Theme.THEME_DUNGEON, Theme.THEME_CAVE, Theme.THEME_MEADOW, Theme.THEME_FOREST, Theme.THEME_OCEAN};
 	/**
 	 * Theme actuellement utilisé par le jeu
 	 */
 	private Theme current_theme;
-	
-	/**
-	 * label qui indique le gagnant
-	 */
-	private Label winner ;
-	
-	private DisplayValues display;
-	
-
 	/**
 	 * Constante de largeur minimum des labels.
 	 */
@@ -184,7 +182,6 @@ public class Management extends Stage implements Observer{
 	 */
 	private static final int MAX_VISION_RANGE = 9;
 
-
 	/**
 	 * Constante de la portée par défault de la vision bonus du chasseur
 	 * Les constantes MIN_BONUS_RANGE ni MAX_BONUS_RANGEont étés retirés car elles n'étaient pas utiles.
@@ -206,6 +203,15 @@ public class Management extends Stage implements Observer{
 	 */
 	private HunterView hv;
 	
+	/**
+	 * label qui indique le gagnant
+	 */
+	private Label winner ;
+	
+	/**
+	 * bjet pour stocker les valeurs relative à l'écran (taille de la fenêtre, etc..)
+	 */
+	private DisplayValues display;
 	
 	/**
 	 * stocke la hauteur du labyrinthe
@@ -219,42 +225,6 @@ public class Management extends Stage implements Observer{
 	 * taux d'apparrition des murs
 	 */
 	private int probability;
-	/**
-	 * portée de déplacement du monstre
-	 */
-	private int moving_range;
-	/**
-	 * portée de vision du monstre
-	 */
-	private int vision_range;
-	/**
-	 * indique si le monstre aura une vision limité ou totale du terrain
-	 */
-	private boolean limitedVision;
-	/**
-	 * portée de vision bonus du chasseur
-	 */
-	private int bonus_range;
-	
-	/**
-	 * stocke le nom du joueur Monster
-	 */
-	private String monster_name;
-
-	/**
-	 * stocke le nom du joueur Hunter
-	 */
-	private String hunter_name;
-
-	/**
-	 * indique le type de joueur (humain, niveaux de l'ia)
-	 */
-	private String monster_IA;
-
-	/**
-	 * indique le type de joueur (humain, niveaux de l'ia)
-	 */
-	private String hunter_IA;
 	
 	/**
 	 * indique si le jeu se deroule sur la meme fenetre (true) ou sur des fenetres separees (false).
@@ -280,7 +250,7 @@ public class Management extends Stage implements Observer{
 	public Stage viewCommon;
 
 	/**
-	 * 
+	 * boolean permettant de déterminer si le maze devrais se générer aléatoirement ou non.
 	 */
 	public boolean isGenerationRandom;
 
@@ -288,6 +258,14 @@ public class Management extends Stage implements Observer{
 	 * Objet File représentant un labyrinthe personnnalisé et importé par le joueur.
 	 */
 	public File importedmap;
+	
+	/**
+	 * Objet File représentant une save importée par le joueur
+	 */
+	public File loadedSave;
+	
+	private GameplayHunterData gameplayH;
+	private GameplayMonsterData gameplayM;
 
 	/**
 	 * Constructeur de la classe Management.
@@ -300,15 +278,14 @@ public class Management extends Stage implements Observer{
 		this.display=display;
 		
 		this.menus=new HashMap<>();
-		this.isSameScreen=true;
-		this.limitedVision=false;
 		this.maze_height=DEFAULT_MAZE_SIZE;
 		this.maze_width=DEFAULT_MAZE_SIZE;
 		this.probability=DEFAULT_PROBABILITY;
-		this.vision_range=DEFAULT_VISION_RANGE;
-		this.moving_range=DEFAULT_MOVING_RANGE;
-		this.bonus_range=DEFAULT_BONUS_RANGE;
 		this.isGenerationRandom=true;
+		this.isSameScreen=true;
+
+		gameplayH = new GameplayHunterData(DEFAULT_NAME_HUNTER, DEFAULT_IA_PLAYER, DEFAULT_BONUS_RANGE);
+		gameplayM = new GameplayMonsterData(DEFAULT_NAME_MONSTER, DEFAULT_IA_PLAYER, false, DEFAULT_VISION_RANGE, DEFAULT_MOVING_RANGE);
 
 		this.generateWaitingNextPlayer();
 		this.generateSettingsMiscellaneous();
@@ -325,8 +302,8 @@ public class Management extends Stage implements Observer{
 		this.viewCommon = new Stage();
 		viewM.setFullScreenExitHint("");
 		viewH.setFullScreenExitHint("");
-		viewM.setTitle("MONSTERHUNT - MonsterView");
-		viewH.setTitle("MONSTERHUNT - HunterView");
+		viewM.setTitle("MONSTERHUNT - "+DEFAULT_NAME_MONSTER+"View");
+		viewH.setTitle("MONSTERHUNT - "+DEFAULT_NAME_HUNTER+"View");
 		viewCommon.setFullScreenExitHint("");
 		viewCommon.setTitle("MONTERHUNT");
 
@@ -428,11 +405,11 @@ public class Management extends Stage implements Observer{
 	public boolean gameOver() {
 		if(this.maze.isGameOver()) {
 			if (this.maze.getIdWinner() == 1) {
-				this.winner.setText("Monster a gagné !");}
-			else if (this.maze.getIdWinner() == 2) {
-				this.winner.setText("Hunter a gagné !");
+				this.winner.setText(this.gameplayM.getName()+" won !");
+			}else if (this.maze.getIdWinner() == 2) {
+				this.winner.setText(this.gameplayH.getName()+" won !");
 			}else {
-				this.winner.setText("Fin de la partie.");
+				this.winner.setText("Tie - The game was stopped.");
 			}
 			
 			this.setScene(this.getScene(ID_GAMEOVER));
@@ -477,13 +454,13 @@ public class Management extends Stage implements Observer{
 	public void switchInGameView() {
 		ICoordinate c;
 		if(this.maze.isMonsterTurn()) {
-			this.toMonsterView();
+			this.toMonsterView(this.getMonster_IA(), this.getHunter_IA(), this.maze.getDataMan().isSameScreen());
 			c = this.maze.getMonster().play();
 			if(c!=null) {
 				this.monsterPlayAt(c);
 			}
 		}else {
-			this.toHunterView();
+			this.toHunterView(this.getMonster_IA(), this.getHunter_IA(), this.maze.getDataMan().isSameScreen());
 			c = this.maze.getHunter().play();
 			if(c!=null) {
 				this.hunterPlayAt(c);
@@ -494,14 +471,14 @@ public class Management extends Stage implements Observer{
 	/**
 	 * Affiche une boite d'avertissement indiquant que c'est le tour du chasseur.
 	 */
-	public void toHunterView() {
-		if(this.isSameScreen) {
-			if(this.monster_IA.equals(Management.IA_LEVELS[0])&&this.hunter_IA.equals(Management.IA_LEVELS[0])) {
+	public void toHunterView(String IAMonster, String IAHunter, boolean isSameScreen) {
+		if(isSameScreen) {
+			if(IAMonster.equals(DEFAULT_IA_PLAYER) && IAHunter.equals(Management.IA_LEVELS[0])) {
 				this.viewCommon.setScene(this.getScene(ID_WAIT));
 				ArrayList<ButtonType> alb = new ArrayList<>();
 				ButtonType boutonJouer = new ButtonType("Play");
 				alb.add(boutonJouer);
-				Alert alert = Generators.generateAlert("It’s the Hunter’s turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
+				Alert alert = Generators.generateAlert("It’s the "+DEFAULT_NAME_HUNTER+" turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
 				alert.setOnCloseRequest(e-> this.viewCommon.setScene(hv.getScene()) );
 				alert.showAndWait().ifPresent(response -> {
 					if(response == boutonJouer){
@@ -511,22 +488,30 @@ public class Management extends Stage implements Observer{
 			}else {
 				this.viewCommon.setScene(hv.getScene());
 			}
-			this.viewCommon.setTitle("MONTERHUNT - HunterView");
+			this.viewCommon.setTitle("MONTERHUNT - "+DEFAULT_NAME_HUNTER+"View");
 		}
 
 	}
 	
+	private String getHunter_IA() {
+		return this.gameplayH.getIA();
+	}
+
+	private String getMonster_IA() {
+		return this.gameplayM.getIA();
+	}
+
 	/**
 	 * Affiche une boite d'avertissement indiquant que c'est le tour du monstre.
 	 */
-	public void toMonsterView() {
-		if(this.isSameScreen) {
-			if(this.monster_IA.equals(Management.IA_LEVELS[0])&&this.hunter_IA.equals(Management.IA_LEVELS[0])){
+	public void toMonsterView(String IAMonster, String IAHunter, boolean isSameScreen) {
+		if(isSameScreen) {
+			if(IAMonster.equals(DEFAULT_IA_PLAYER)&&IAHunter.equals(Management.IA_LEVELS[0])){
 				this.viewCommon.setScene(this.getScene(ID_WAIT));
 				ArrayList<ButtonType> alb = new ArrayList<>();
 				ButtonType boutonJouer = new ButtonType("Play");
 				alb.add(boutonJouer);
-				Alert alert = Generators.generateAlert("It’s the Monster’s turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
+				Alert alert = Generators.generateAlert("It’s the "+DEFAULT_NAME_MONSTER+" turn", "Do you want to start your turn?", alb);// Attendre la réponse de l'utilisateur
 				alert.setOnCloseRequest(e-> this.viewCommon.setScene(mv.getScene()) );
 				alert.showAndWait().ifPresent(response -> {
 					if(response == boutonJouer){
@@ -536,7 +521,7 @@ public class Management extends Stage implements Observer{
 			}else {
 				this.viewCommon.setScene(mv.getScene());
 			}
-			viewCommon.setTitle("MONTERHUNT - MonsterView");
+			viewCommon.setTitle("MONTERHUNT - "+DEFAULT_NAME_MONSTER+"View");
 		}
 	}
 
@@ -549,28 +534,22 @@ public class Management extends Stage implements Observer{
 
 		Label title = Generators.generateTitle("Main Menu");
 
-		TextField tf_name_monster = Generators.generateTextField("Monster", 16, 'A', 'z');
-		//this.calculPercentage(this.display.getWindowWidth(), 10), this.calculPercentage(this.display.getWindowHeight(), 40)
-		TextField tf_name_hunter = Generators.generateTextField("Hunter", 16, 'A', 'z');
-		//this.calculPercentage(this.display.getWindowWidth(), 60), this.calculPercentage(this.display.getWindowHeight(), 40)
-
-		Label l_nameM = Generators.generateLabel("Monster Name", tf_name_monster.getLayoutX(),tf_name_monster.getLayoutY()-15);
-		Label l_nameH = Generators.generateLabel("Hunter Name", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15);
+		TextField tf_name_monster = Generators.generateTextField(DEFAULT_NAME_MONSTER, 16, 'A', 'z');
+		TextField tf_name_hunter = Generators.generateTextField(DEFAULT_NAME_HUNTER, 16, 'A', 'z');
+		
+		Label l_nameM = Generators.generateLabel(DEFAULT_NAME_MONSTER+" Name", tf_name_monster.getLayoutX(),tf_name_monster.getLayoutY()-15);
+		Label l_nameH = Generators.generateLabel(DEFAULT_NAME_HUNTER+" Name", tf_name_hunter.getLayoutX(),tf_name_hunter.getLayoutY()-15);
 
 		ComboBox<String> choixIA_Monster = Generators.generateComboBox(Management.IA_LEVELS);
-		//this.calculPercentage(this.display.getWindowWidth(), 10), this.calculPercentage(this.display.getWindowHeight(), 50)
 		ComboBox<String> choixIA_Hunter = Generators.generateComboBox(Management.IA_LEVELS);
-		//this.calculPercentage(this.display.getWindowWidth(), 60), this.calculPercentage(this.display.getWindowHeight(), 50)
 		
 		Button bPlay = Generators.generateButton("PLAY",Color.WHITE, Color.BLACK);
-		//this.calculPercentage(this.display.getWindowWidth(), 45), this.calculPercentage(this.display.getWindowHeight(),90)
 		bPlay.setOnAction(e->{
 			//intantiation of the settings
-			this.monster_name=tf_name_monster.getText();
-			this.monster_IA=choixIA_Monster.getValue();
-			this.hunter_name=tf_name_hunter.getText();
-			this.hunter_IA=choixIA_Hunter.getValue();
-			
+			this.gameplayM.setName(tf_name_monster.getText());
+			this.gameplayH.setName(tf_name_hunter.getText());
+			this.gameplayM.setIA(choixIA_Monster.getValue());
+			this.gameplayH.setIA(choixIA_Hunter.getValue());
 			
 			//Adaptation du zoom
 			if(this.display.getWindowHeight()>this.display.getWindowWidth()) {
@@ -579,24 +558,23 @@ public class Management extends Stage implements Observer{
 				this.display.setZoom(this.display.getWindowHeight()/(this.maze_height+this.maze_width));
 			}
 			
-			//Création des paquets de data
-			GameplayHunterData dataH = new GameplayHunterData(this.hunter_IA,this.bonus_range);
-			GameplayMonsterData dataM = new GameplayMonsterData(this.monster_IA,this.limitedVision,this.vision_range,this.moving_range);
-
+			//Création des paquets de data de management
+			SaveManagementData dataMan = new SaveManagementData(this.current_theme.getName(), this.isSameScreen);
+			
 			//Creation of the maze
 			if(this.isGenerationRandom) {
-				this.maze = new Maze(this.probability, this.maze_height, this.maze_width, dataH, dataM);
+				this.maze = new Maze(this.probability, this.maze_height, this.maze_width, gameplayH, gameplayM,dataMan );
 			}else {
 				try {
-					this.maze = new Maze(SaveLoadSystemMaps.loadMap(this.importedmap), dataH, dataM);
+					this.maze = new Maze(SaveLoadSystemMaps.loadMap(this.importedmap), gameplayH, gameplayM,dataMan );
 				} catch (Exception exception) {
-					this.maze = new Maze(this.probability, this.maze_height, this.maze_width, dataH, dataM);
+					this.maze = new Maze(this.probability, this.maze_height, this.maze_width, gameplayH, gameplayM,dataMan );
 				}
 			}
 			this.maze.attach(this);
 
-			this.mv=new MonsterView(this.display,this.maze,this.monster_name,this.current_theme);
-			this.hv=new HunterView(this.display,this.maze,this.hunter_name,this.current_theme);
+			this.mv=new MonsterView(this.display,this.maze,this.current_theme);
+			this.hv=new HunterView(this.display,this.maze,this.current_theme);
 			if(this.isSameScreen) {
 				this.viewCommon.setScene(hv.getScene());
 				this.viewCommon.show();
@@ -610,9 +588,13 @@ public class Management extends Stage implements Observer{
 			this.hide();
 			this.switchInGameView(); //Ici Vérifie qui joue (IA ou joueur) pour pouvoir démarrer le jeu.
 		});
+		
+		Button bLoad = Generators.generateButton("Load",Color.WHITE, Color.BLACK);
+		bLoad.setOnAction(e->
+			this.showLoadMenu()
+		);
 
 		Button bSettings = Generators.generateButton("Modify Settings",Color.WHITE, Color.BLACK);
-		//this.calculPercentage(this.display.getWindowWidth(), 38), this.calculPercentage(this.display.getWindowHeight(),80)
 		bSettings.setOnAction(e->
 			this.setScene(this.getScene(ID_SETTINGS))
 		);
@@ -621,27 +603,37 @@ public class Management extends Stage implements Observer{
 		bQuit.setOnAction(e ->
 			System.exit(0)
 		);
-
-
-		  VBox TitleVbox = new VBox(20);
-		  TitleVbox.getChildren().addAll(title);
-		  TitleVbox.setAlignment(Pos.TOP_CENTER);
+		  
+		  HBox monsterLayout = new HBox(10);
+		  monsterLayout.getChildren().addAll(l_nameM, tf_name_monster, choixIA_Monster);
+		  HBox hunterLayout = new HBox(10);
+		  hunterLayout.getChildren().addAll(l_nameH, tf_name_hunter, choixIA_Hunter);
 
 		 // Créez un layout vertical pour les boutons
-		  VBox buttonsLayout = new VBox(15);
+		  VBox playersLayout = new VBox(15);
 
 		  // Ajoutez les éléments du menu aux boutons
-		  buttonsLayout.getChildren().addAll(l_nameM, tf_name_monster, choixIA_Monster, l_nameH, tf_name_hunter, choixIA_Hunter, bPlay, bSettings, bQuit);
+		  playersLayout.getChildren().addAll(monsterLayout, hunterLayout);
+		  
+		  VBox buttonsLayout = new VBox(15);
+		  buttonsLayout.getChildren().addAll(bPlay, bLoad, bSettings, bQuit);
 
 		  // Centrez les boutons horizontalement et verticalement
+		  monsterLayout.setAlignment(Pos.CENTER);
+		  hunterLayout.setAlignment(Pos.CENTER);
 		  buttonsLayout.setAlignment(Pos.CENTER);
+		  
+		  Group group = new Group();
+		  group.getChildren().add(playersLayout);
 
 		  // Créez un layout pour le titre et les boutons
-		  StackPane root = new StackPane();
+		  BorderPane root = new BorderPane(group);
 		  root.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
 
 		  // Ajoutez le titre et les boutons au layout
-		  root.getChildren().addAll(TitleVbox, buttonsLayout);
+		  root.setTop(title);
+		  BorderPane.setAlignment(title, Pos.CENTER);
+		  root.setBottom(buttonsLayout);
 
 		  // Centrez le layout sur l'écran
 		  StackPane.setAlignment(root, Pos.CENTER);
@@ -693,14 +685,14 @@ public class Management extends Stage implements Observer{
 		);
 		toMaze.setMinWidth(150);
 
-		Button toMons = Generators.generateButton("Monster",Color.WHITE, Color.BLACK);
+		Button toMons = Generators.generateButton(DEFAULT_NAME_MONSTER,Color.WHITE, Color.BLACK);
 		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),50)
 		toMons.setOnAction(e->
 			this.setScene(this.getScene(ID_MONSTER_SETTINGS))
 		);
 		toMons.setMinWidth(150);
 
-		Button toHunt = Generators.generateButton("Hunter",Color.WHITE, Color.BLACK);
+		Button toHunt = Generators.generateButton(DEFAULT_NAME_HUNTER,Color.WHITE, Color.BLACK);
 		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),60)
 		toHunt.setOnAction(e->
 			this.setScene(this.getScene(ID_HUNTER_SETTINGS))
@@ -986,7 +978,7 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu des paramètres gérant le monstre
 	 */
 	public void generateSettingsMonster() {
-		Label title = Generators.generateTitle("Settings - Monster");
+		Label title = Generators.generateTitle("Settings - "+DEFAULT_NAME_MONSTER);
 		TextField tf_vision = Generators.generateTextField(""+DEFAULT_VISION_RANGE, 1, '0', '9');
 		Generators.setLayout(tf_vision, this.calculPercentage(this.display.getWindowWidth(),70), this.calculPercentage(this.display.getWindowHeight(),39));
 		Generators.addCheckNumericalValueToTextField(tf_vision, MIN_VISION_RANGE, MAX_VISION_RANGE);
@@ -994,12 +986,12 @@ public class Management extends Stage implements Observer{
 		Button b_vision = Generators.generateButton("NO", calculPercentage(this.display.getWindowWidth(),70),calculPercentage(this.display.getWindowHeight(),30),Color.WHITE, Color.BLACK);
 		b_vision.setMinWidth(50);
 		b_vision.setOnAction(e->{
-			if(limitedVision) {
-				this.limitedVision=false;
+			if(this.gameplayM.isVisionLimited()) {
+				this.gameplayM.setVisionLimited(false);
 				b_vision.setText("NO");
 				tf_vision.setDisable(true);
 			}else {
-				this.limitedVision=true;
+				this.gameplayM.setVisionLimited(true);
 				b_vision.setText("YES");
 				tf_vision.setDisable(false);
 			}
@@ -1016,16 +1008,16 @@ public class Management extends Stage implements Observer{
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(ID_SETTINGS));
 			if(tf_vision.getText().isEmpty()) {
-				this.vision_range=DEFAULT_VISION_RANGE;
+				this.gameplayM.setVisionRange(DEFAULT_VISION_RANGE);
 				tf_vision.setText(""+DEFAULT_VISION_RANGE);
 			}else {
-				this.vision_range=Integer.parseInt(tf_vision.getText());
+				this.gameplayM.setVisionRange(Integer.parseInt(tf_vision.getText()));
 			}
 			if(tf_range.getText().isEmpty()) {
-				this.moving_range=DEFAULT_MOVING_RANGE;
+				this.gameplayM.setMovingRange(DEFAULT_MOVING_RANGE);
 				tf_range.setText(""+DEFAULT_MOVING_RANGE);
 			}else {
-				this.moving_range=Integer.parseInt(tf_range.getText());
+				this.gameplayM.setMovingRange(Integer.parseInt(tf_range.getText()));
 			}
 		});
 
@@ -1046,7 +1038,7 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu des paramètres gérant le chasseur
 	 */
 	public void generateSettingsHunter() {
-		Label title = Generators.generateTitle("Settings - Hunter");
+		Label title = Generators.generateTitle("Settings - "+DEFAULT_NAME_HUNTER);
 
 		TextField tf_bonusRange = Generators.generateTextField(""+DEFAULT_BONUS_RANGE, 1, '0', '9');
 		Label l_bonusRange = Generators.generateLabel("Bonus Vision Range", tf_bonusRange.getLayoutX()-LABEL_MIN_WIDTH-40, tf_bonusRange.getLayoutY());
@@ -1055,10 +1047,10 @@ public class Management extends Stage implements Observer{
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(ID_SETTINGS));
 			if(tf_bonusRange.getText().isEmpty()) {
-				this.bonus_range=DEFAULT_BONUS_RANGE;
+				this.gameplayH.setBonusRange(DEFAULT_BONUS_RANGE);
 				tf_bonusRange.setText(""+DEFAULT_BONUS_RANGE);
 			}else {
-				this.bonus_range=Integer.parseInt(tf_bonusRange.getText());
+				this.gameplayH.setBonusRange(Integer.parseInt(tf_bonusRange.getText()));
 			}
 		});
 
@@ -1194,7 +1186,7 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu de GameOver.
 	 */
 	public void generateGameOverScreen() {
-		Label title = Generators.generateTitle("Game Over Menu");
+		Label title = Generators.generateTitle("Game Over");
 		Label Credit = Generators.generateLabel("Jeu réalisé par Fourmaintraux Camille | Top Jessy | Debacq Arthur | Franos Théo ", 0, 0);
 		
 		
@@ -1322,7 +1314,7 @@ public class Management extends Stage implements Observer{
 		
         TextField tf_saveMap = Generators.generateTextField(SaveLoadSystemMaps.DEFAULT_NAME_FOR_MAP_SAVE, 24, 'A', 'z');
         tf_saveMap.setMinWidth(200);
-        Button b_saveMap = Generators.generateButton("save the map", 0, 0, Color.BLACK, Color.LIGHTGRAY);
+        Button b_saveMap = Generators.generateButton("Save the map", 0, 0, Color.BLACK, Color.LIGHTGRAY);
         b_saveMap.setOnAction(e->{
         	try {
 				String fileName = tf_saveMap.getText();
@@ -1333,17 +1325,22 @@ public class Management extends Stage implements Observer{
 				}
 				notification.setText("Map successfully saved.");
 			}catch(IOException ioe) {
-				LOGGER.info("ERROR - An error occurred while saving the map.");
-				notification.setText("Error when saving the map.");
+				LOGGER.info("IOException - An error occurred while saving the map.");
+				notification.setText("Error - Impossible to save the map.");
 			}
         });
         TextField tf_saveGame = Generators.generateTextField(SaveLoadSystemGames.DEFAULT_NAME_FOR_GAME_SAVE, 24, 'A', 'z');
         tf_saveGame.setMinWidth(200);
         Button b_saveGame = Generators.generateButton("save the game", 0, 0, Color.BLACK, Color.LIGHTGRAY);
         b_saveGame.setOnAction(e->{
-        	notification.setText("Sauvegarde impossible car pas encore implémanté :/");
-			LOGGER.info("Sauvegarde impossible car pas encore implémanté :/"); //TODO implémanter la sauvegarde
-        });
+        	try {
+				SaveLoadSystemGames.saveGame(createSave(maze), tf_saveGame.getText());
+				notification.setText("Game successfully saved.");
+			} catch (IOException ioe) {
+				LOGGER.info("IOException - An error occured when saving the game.");
+				notification.setText("Error - Impossible to save the game.");
+			}
+		});
         
         ArrayList<ButtonType> alb = new ArrayList<>();
 		alb.add(bt_cancel);
@@ -1365,13 +1362,138 @@ public class Management extends Stage implements Observer{
 		Dialog<ButtonType> dialog = Generators.generateDialog("Leaving the game", "Are you sure you want to leave the game ?\n", alb, nodes);
 		dialog.showAndWait().ifPresent(response -> {
 			if (response.equals(bt_save)) {
-				notification.setText("Sauvegarde impossible car pas encore implémanté :/");
-				LOGGER.info("Sauvegarde impossible car pas encore implémanté :/"); //TODO implémanter la sauvegarde
+				try {
+					SaveLoadSystemGames.saveGame(createSave(maze), tf_saveGame.getText());
+					notification.setText("Game successfully saved.");
+				} catch (IOException ioe) {
+					LOGGER.info("IOException - An error occured when saving the game.");
+					notification.setText("Error - Impossible to save the game.");
+				}
 				maze.triggersGameOver();
 			}else if(response.equals(bt_noSave)) {
-				maze.triggersGameOver();
+				ArrayList<ButtonType> bt_list = new ArrayList<ButtonType>();
+				bt_list.add(bt_cancel);
+				bt_list.add(bt_noSave);
+				Alert areYouSure = Generators.generateAlert("Are you sure ?", "The game will not be saved.", bt_list);
+				areYouSure.showAndWait().ifPresent(confirmation->{
+					if (confirmation.equals(bt_noSave)) {
+						maze.triggersGameOver();
+					}
+				});
 			}
 		});
 	}
+	
+	/**
+     *Permet de charger une précédente sauvegarde
+     *
+     */
+	public void showLoadMenu() {
+		
+        //////////::
+		ButtonType bt_cancel= new ButtonType("Cancel");
+		ButtonType bt_load = new ButtonType("Load this game");
+        
+        ArrayList<ButtonType> alb = new ArrayList<>();
+		alb.add(bt_cancel);
+		alb.add(bt_load);
+		
+		Text message = new Text();
+		
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Choose a map to import");
+		// Créer un filtre pour les fichiers .dat
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Fichiers DAT (*.obj)", "*.obj");
+        fileChooser.getExtensionFilters().add(extFilter);
+        // Définir le répertoire initial du FileChooser
+        File initialDirectory = new File(SaveLoadSystemGames.GAMES_DIRECTORY);
+        fileChooser.setInitialDirectory(initialDirectory);
+        
+        Button bLoad = Generators.generateButton("Import",Color.WHITE,Color.BLACK);
+		bLoad.setOnAction(e->{
+			loadedSave = fileChooser.showOpenDialog(this);
+			if(loadedSave==null) {
+				message.setText("Operation canceled : no file selected");
+			}else {
+				message.setText("File selected : "+loadedSave.getName());
+			}
+
+		});
+        
+        ArrayList<Node> ligne1 = new ArrayList<>();
+        ligne1.add(bLoad);
+        ligne1.add(message);
+        ArrayList<ArrayList<Node>> nodes = new ArrayList<>();
+        nodes.add(ligne1);
+        
+        Dialog<ButtonType> dialog = Generators.generateDialog("Loading a save", "Which save do you want to load ?", alb, nodes);
+		dialog.showAndWait().ifPresent(response -> {
+			if(response.equals(bt_load)&&loadedSave!=null) {
+				ArrayList<ButtonType> bt_list = new ArrayList<ButtonType>();
+				bt_list.add(bt_cancel);
+				bt_list.add(bt_load);
+				Alert areYouSure = Generators.generateAlert("Are you sure ?", "This save will be loaded and a game will started.", bt_list);
+				areYouSure.showAndWait().ifPresent(confirmation->{
+					if (confirmation.equals(bt_load)) {
+						try {
+							Save save = SaveLoadSystemGames.loadGame(loadedSave.getName());
+							//Adaptation du zoom
+							if(this.display.getWindowHeight()>this.display.getWindowWidth()) {
+								this.display.setZoom(this.display.getWindowWidth()/(this.maze_height+this.maze_width));
+							}else {
+								this.display.setZoom(this.display.getWindowHeight()/(this.maze_height+this.maze_width));
+							}
+							this.maze = new Maze(save);
+							
+							this.maze.attach(this);
+							
+							Theme theme = Theme.themesMap.get(save.getData_management().getTheme());
+							this.mv=new MonsterView(this.display,this.maze, theme); 
+							this.hv=new HunterView(this.display,this.maze,theme);
+							if(save.getData_management().isSameScreen()) {
+								this.viewCommon.setScene(hv.getScene());
+								this.viewCommon.show();
+								this.setScene(hv.getScene());
+							}else {
+								this.viewM.setScene(mv.getScene());
+								this.viewH.setScene(hv.getScene());
+								this.viewM.show();
+								this.viewH.show();
+							}
+							this.hide();
+							this.switchInGameView(); //Ici Vérifie qui joue (IA ou joueur) pour pouvoir démarrer le jeu.
+							
+						} catch (ClassNotFoundException e1) {
+							LOGGER.info("ClassNotFoundException when loading a save.");
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							LOGGER.info("IOException when loading a save.");
+							e1.printStackTrace();
+						}
+						
+						
+					}
+				});
+			}
+		});
+	}
+	
+	public static Save createSave(Maze maze) {
+		return new Save(maze.dataMan, maze.getData(), maze.getExit().getData(), maze.getMonster().getData(), maze.getHunter().getData());
+	}
+
+	public static String getDefaultNameMonster() {
+		return DEFAULT_NAME_MONSTER;
+	}
+
+	public static String getDefaultNameHunter() {
+		return DEFAULT_NAME_HUNTER;
+	}
+	
+	public static String getDefaultIaPlayer() {
+		return DEFAULT_IA_PLAYER;
+	}
+	
+	
 
 }

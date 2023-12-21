@@ -9,6 +9,7 @@ import fr.univlille.info.J2.main.management.Management;
 import fr.univlille.info.J2.main.management.Maze;
 import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
 import fr.univlille.info.J2.main.utils.menuConception.Generators;
@@ -116,12 +117,11 @@ public class HunterView extends View{
      * @param hunterName Nom du chasseur.
      * @param theme      Thème de l'interface.
      */
-	public HunterView(DisplayValues display, Maze maze, String hunterName, Theme theme) {
+	public HunterView(DisplayValues display, Maze maze, Theme theme) {
 
 		//Initiation de la fenetre
 		this.display=display;
 		this.theme=theme;
-		this.playerName=hunterName;
 
 		this.maze = maze;
 		this.maze.attach(this);
@@ -139,13 +139,13 @@ public class HunterView extends View{
 		this.group_stage.getChildren().add(group_sprite);
 
 		this.turnIndication = new Text("Turn n°1");
-		this.notification = new Text("Welcome to Monster Hunter - THE GAME");
+		this.notification = new Text("Welcome to MonsterHunt - THE GAME");
 
 		Button b_option = Generators.generateButton("-> Option", this.theme.getTextColor(), this.theme.getBackgroundColor());
 		b_option.setOnAction(e-> Management.showOption(this.maze,notification) );
 		
 		VBox vbox = new VBox();
-		Label player_name = new Label(this.playerName);
+		Label player_name = new Label(this.maze.getHunter().getName());
 		player_name.setTextFill(this.theme.getTextColor());
 		this.turnIndication.setFill(this.theme.getTextColor());
 		this.notification.setFill(this.theme.getTextColor());
@@ -198,7 +198,7 @@ public class HunterView extends View{
 		this.sprite_shot.getImgv().setVisible(true);
 		this.turnIndication.setText("Turn n°"+this.maze.getTurn());
 		if(this.maze.isSpotted()) {
-			this.notification.setText("WARNING - The monster has been detected in one of your squares\nalready discovered during a previous turn!");
+			this.notification.setText("WARNING - "+this.maze.getMonster().getName()+" has been detected in one of your squares\nalready discovered during a previous turn!");
 		}else {
 			this.notification.setText("");
 		}
@@ -220,6 +220,10 @@ public class HunterView extends View{
 					cell.setImage(this.theme.getWallImg());
 				}else {
 					cell.setImage(this.theme.getFloorImg());
+				}
+				if(this.maze.getHunter().getTraces()[h][l]!=Hunter.UNDISCOVERED) {
+					cell.setFill(Color.TRANSPARENT);
+					cell.setStroke(Color.TRANSPARENT);
 				}
 				cell.setFocusTraversable(false);
 				cell.setOnMouseEntered(event -> {
@@ -260,7 +264,7 @@ public class HunterView extends View{
 	 * @param r La cellule à sélectionner.
 	 */
 	public void select(CellWithText r) {
-		if(this.maze.getHunterIA().equals("Player")) {
+		if(this.maze.getHunterIA().equals(Management.getDefaultIaPlayer())) {
 			this.selection.setY(r.getY());
 			this.selection.setX(r.getX());
 			this.selection.toFront();
@@ -274,11 +278,11 @@ public class HunterView extends View{
      * @param cell La cellule sélectionnée.
      */
 	public void selectionLocked(CellWithText cell) {
-		if(this.maze.getHunterIA().equals("Player")) {
+		if(this.maze.getHunterIA().equals(Management.getDefaultIaPlayer())) {
 			ICoordinate c = new Coordinate(cell.getRow(),cell.getCol());
 			this.maze.shoot(c);
 		}else {
-			this.notification.setText("No selection possible : "+this.playerName+" is an AI.");
+			this.notification.setText("No selection possible : "+this.maze.getHunter().getName()+" is an AI.");
 		}
 	}
 
