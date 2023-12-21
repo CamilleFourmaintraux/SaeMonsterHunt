@@ -159,7 +159,11 @@ public class Maze extends Subject{
 	 * @return un tableau de boolean représentant un labyrinthe.
 	 */
 	public static boolean[][] generateRandomMap(int probability, int height, int width) {
-		boolean[][] maze = Maze.initEmptyMaze(height, width);
+		System.out.println("PROBABILITY TEST1:"+probability);
+		return MazeGenerator.getMazeGenerator().generateRandomMaze(height, width, probability);
+		
+		
+		/*boolean[][] maze = Maze.initEmptyMaze(height, width);
 		boolean onlyWalls;
 		for(int h=1; h<maze.length; h+=2) {
 			onlyWalls=true;
@@ -175,7 +179,7 @@ public class Maze extends Subject{
 				maze[h][Utils.random.nextInt(maze[h].length)]=true;
 			}
 		}
-		return maze;
+		return maze;*/
 	}
 
 	/**
