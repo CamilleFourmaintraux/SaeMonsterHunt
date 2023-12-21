@@ -23,6 +23,9 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class Monster {
 	
+	/**
+	 * Données de sauvegarde du Monstre.
+	 */
 	private SaveMonsterData data;
 	
 	/**
@@ -34,10 +37,9 @@ public class Monster {
      * Constructeur de la classe Monster, crée un Monstre.
 	 *
 	 * @param walls 		La grille de murs du labyrinthe.
-	 * @param ce            L'événement de la cellule du monstre.
-	 * @param IA	  		Le niveau de l'IA du monstre.
-	 * @param visionRange 	Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
-	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
+	 * @param spawn			Coordonnée de l'apparition du monstre.
+	 * @param exit			Coordonnée de l'appartiation de la sortie.
+	 * @param gameplay		Les données de gameplay du monstre.
 	 */
 	public Monster(boolean[][] walls,ICoordinate spawn, ICoordinate exit, GameplayMonsterData gameplay) {
 		this.data = new SaveMonsterData(gameplay, new boolean[walls.length][walls[0].length], walls, spawn.getRow(), spawn.getCol());
@@ -51,6 +53,12 @@ public class Monster {
 		this.strategy.update(initEntity);
 	}
 	
+	/**
+	 * Constructeur du Monstre à partir d'une sauvegarde.
+	 * 
+	 * @param data les données sauvegardées du monstre.
+	 * @param exit les coordonnées de la sortie.
+	 */
 	public Monster(SaveMonsterData data,ICoordinate exit) {
 		this.data=data;
 		this.strategy=this.chooseMonsterStrategy(data.getIA());
@@ -199,6 +207,11 @@ public class Monster {
 		return new Coordinate(this.data.getRow(),this.data.getCol());
 	}
 	
+	/**
+	 * Récupère les données sauvegardé du Monstre. 
+	 * 
+	 * @return un Objet SaveMonsterData contenant les données sauvegardé du Monstre.
+	 */
 	public SaveMonsterData getData() {
 		return this.data;
 	}

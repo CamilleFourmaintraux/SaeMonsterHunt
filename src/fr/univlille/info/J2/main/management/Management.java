@@ -117,11 +117,19 @@ public class Management extends Stage implements Observer{
 	 */
 	private static final int ID_MAZE_EDITOR = 8;
 	
+	/**
+	 * Nom du Monstre par défaut.
+	 */
 	private static final String DEFAULT_NAME_MONSTER = "Monster";
+	/**
+	 * Nom du Chasseur par défaut.
+	 */
 	private static final String DEFAULT_NAME_HUNTER = "Hunter";
 	
 
-
+	/**
+	 * 
+	 */
 	private static final String DEFAULT_IA_PLAYER = "Player";
 	/**
 	 * Constante utilisée dans les comboBox pour le choix des joueurs.
@@ -470,6 +478,10 @@ public class Management extends Stage implements Observer{
 
 	/**
 	 * Affiche une boite d'avertissement indiquant que c'est le tour du chasseur.
+	 * 
+	 * @param IAMonster 		Nom de l'IA du monstre.
+	 * @param IAHunter			Nom de l'IA du Chasseur.
+	 * @param isSameScreen		Boolean true->si écran partagé sinon false.
 	 */
 	public void toHunterView(String IAMonster, String IAHunter, boolean isSameScreen) {
 		if(isSameScreen) {
@@ -493,16 +505,30 @@ public class Management extends Stage implements Observer{
 
 	}
 	
+	/**
+	 * Récupère la difficulté de l'IA du chasseur.
+	 * 
+	 * @return la difficulté de l'IA du chasseur.
+	 */
 	private String getHunter_IA() {
 		return this.gameplayH.getIA();
 	}
 
+	/**
+	 * Récupère la difficulté de l'IA du Monster.
+	 * 
+	 * @return la difficulté de l'IA du Monster.
+	 */
 	private String getMonster_IA() {
 		return this.gameplayM.getIA();
 	}
 
 	/**
 	 * Affiche une boite d'avertissement indiquant que c'est le tour du monstre.
+	 * 
+	 * @param IAMonster 		Nom de l'IA du monstre.
+	 * @param IAHunter			Nom de l'IA du Chasseur.
+	 * @param isSameScreen		Boolean true->si écran partagé sinon false.
 	 */
 	public void toMonsterView(String IAMonster, String IAHunter, boolean isSameScreen) {
 		if(isSameScreen) {
@@ -650,7 +676,7 @@ public class Management extends Stage implements Observer{
 		}
 
 	/**
-	 * Génére la scene s'affichant
+	 * Génére la fenêtre d'attente en attendant la confirmation du changement de tour.
 	 */
 	public void generateWaitingNextPlayer() {
 
@@ -975,7 +1001,7 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Génére le menu des paramètres gérant le monstre
+	 * Génére le menu des paramètres gérant le monstre.
 	 */
 	public void generateSettingsMonster() {
 		Label title = Generators.generateTitle("Settings - "+DEFAULT_NAME_MONSTER);
@@ -1385,8 +1411,7 @@ public class Management extends Stage implements Observer{
 	}
 	
 	/**
-     *Permet de charger une précédente sauvegarde
-     *
+     * Permet de charger le menu pour charger un labyrinthe et de jouer sur celle-ci.
      */
 	public void showLoadMenu() {
 		
@@ -1478,18 +1503,40 @@ public class Management extends Stage implements Observer{
 		});
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param maze le Labyrinthe.
+	 * 
+	 * @return Un objet Save qui est 
+	 */
 	public static Save createSave(Maze maze) {
 		return new Save(maze.dataMan, maze.getData(), maze.getExit().getData(), maze.getMonster().getData(), maze.getHunter().getData());
 	}
 
+	/**
+	 * Récupère le nom du Monstre par défaut (Monster).
+	 * 
+	 * @return Monster.
+	 */
 	public static String getDefaultNameMonster() {
 		return DEFAULT_NAME_MONSTER;
 	}
 
+	/**
+	 * Récupère le nom du chasseur par défaut (Hunter).
+	 * 
+	 * @return Hunter.
+	 */
 	public static String getDefaultNameHunter() {
 		return DEFAULT_NAME_HUNTER;
 	}
 	
+	/**
+	 * Récupère le niveau de l'IA par défaut.
+	 * 
+	 * @return niveau de l'IA par défaut.
+	 */
 	public static String getDefaultIaPlayer() {
 		return DEFAULT_IA_PLAYER;
 	}

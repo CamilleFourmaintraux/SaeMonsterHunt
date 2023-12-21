@@ -105,7 +105,11 @@ public class Theme {
 	 */
 	private Color textColor;
 	
-	
+	/**
+	 * Constructueur du Thème.
+	 * 
+	 * @param key clé correspondant à un thème.
+	 */
 	public Theme(String key) {
 		this.name=key;
 		this.isWithImages=true;

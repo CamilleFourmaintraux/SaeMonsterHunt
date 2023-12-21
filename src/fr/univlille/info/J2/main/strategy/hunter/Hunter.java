@@ -21,17 +21,20 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class Hunter {
 	
+	/**
+	 * Entier représentant l'état "non découvert" de la case.
+	 */
 	public static final int UNDISCOVERED = -2;
 	
+	/**
+	 * Sauvegarde des données du chasseur.
+	 */
 	private SaveHunterData data;
 	
 	/**
 	* Strategy du chasseur.
 	**/
 	private IHunterStrategy strategy;
-	
-
-
 
 	/**
      * Constructeur de la classe Hunter, crée un Chasseur.
@@ -39,8 +42,7 @@ public class Hunter {
      * @param height     	La hauteur du labyrinthe.
      * @param width      	La largeur du labyrinthe.
      * @param coord_hunter 	Les coordonnées du chasseur.
-     * @param IA   			Le niveau de l'IA du chasseur.
-     * @param bonusRange	La portée bonus de la vision du chasseur.
+     * @param gameplay		Données de gameplay du monstre.
 	 */
 	public Hunter(int height, int width, ICoordinate coord_hunter, GameplayHunterData gameplay) {
 		this.data = new SaveHunterData(gameplay, new int[height][width], coord_hunter.getRow(), coord_hunter.getCol());
@@ -49,6 +51,11 @@ public class Hunter {
 		this.strategy.initialize(height, width);
 	}
 	
+	/**
+	 * Constructeur de Hunter à partir d'une sauvegarde.
+	 * 
+	 * @param data Données de sauvegarde d'un chasseur.
+	 */
 	public Hunter(SaveHunterData data) {
 		this.data=data;
 		this.strategy=this.chooseHunterStrategy(data.getIA());
@@ -194,18 +201,38 @@ public class Hunter {
 		return this.strategy.play();
 	}
 
+	/**
+	 * Récupère la vision bonus autour de la case sur laquelle il a tiré à partir de la sauvegarde.
+	 * 
+	 * @return vision bonus du chasseur.
+	 */
 	public int getBonusRange() {
 		return this.data.getBonusRange();
 	}
 
+	/**
+	 * Récupère le niveau de l'IA à partir de la sauvegarde.
+	 * 
+	 * @return niveau de l'IA.
+	 */
 	public String getIA() {
 		return this.data.getIA();
 	}
 	
+	/**
+	 * Récupère le nom du joueur à partir de la sauvegarde.
+	 * 
+	 * @return nom du joueur.
+	 */
 	public String getName() {
 		return this.data.getName();
 	}
 	
+	/**
+	 * Récupère les données sauvegardé du chasseur. 
+	 * 
+	 * @return un Objet SaveHunterData contenant les données sauvegardé du chasseur.
+	 */
 	public SaveHunterData getData() {
 		return this.data;
 	}

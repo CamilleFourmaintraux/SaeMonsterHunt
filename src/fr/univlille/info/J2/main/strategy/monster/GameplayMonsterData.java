@@ -33,8 +33,8 @@ public class GameplayMonsterData implements Serializable{
 	/**
 	 * Crée un objet pour stocker les données du monstre concernant les paramètres de gameplay.
 	 * @param name				Nom du joueur associé à ce objet de données
-	 * @param monster_IA 		Niveau de l'IA du monstre.
-     * @param limitedVision 	boolean indiquant si la vision du monstre est limitée.
+	 * @param IA 				Niveau de l'IA du monstre.
+     * @param isVisionLimited 	boolean indiquant si la vision du monstre est limitée.
      * @param visionRange 		int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
      * @param movingRange 		int correspondant à la portée de déplacement du monstre.
 	 */
@@ -49,7 +49,6 @@ public class GameplayMonsterData implements Serializable{
 	
 	/**
     * Obtient de si la vision limité est activé ou non
-    * La portée de déplacement représente la distance maximale que le monstre peut se déplacer en un tour.
     *
     * @return Le boolean du brouillard actif ou non.
     */
@@ -86,31 +85,56 @@ public class GameplayMonsterData implements Serializable{
 		return IA;
 	}
 	
+	/**
+	 * Obtient le nom du monstre (joueur).
+	 * 
+	 * @return nom du joueur.
+	 */
 	public String getName() {
 		return this.name;
 	}
 
-
+	/**
+	 * Définit le nom du Monstre (joueur).
+	 * 
+	 * @param name nom du monstre
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-
+	/**
+	 * Définit si le monstre a une vision limitée ou non.
+	 * 
+	 * @param isVisionLimited Boolean true->la vision est limité sinon non.
+	 */
 	public void setVisionLimited(boolean isVisionLimited) {
 		this.isVisionLimited = isVisionLimited;
 	}
 
-
+	/**
+	 * Définit la portée de la vision du Monstre quand la vision limitée de celui-ci est activé.
+	 * 
+	 * @param visionRange Portée bonus de la vision.
+	 */
 	public void setVisionRange(int visionRange) {
 		this.visionRange = visionRange;
 	}
 
-
+	/**
+	 * Définit la distance bonus de déplacement du monstre.
+	 * 
+	 * @param movingRange Distance de déplacement bonus.
+	 */
 	public void setMovingRange(int movingRange) {
 		this.movingRange = movingRange;
 	}
 
-
+	/**
+	 * Définit l'IA à utiliser.
+	 * 
+	 * @param iA le nom de l'IA.
+	 */
 	public void setIA(String iA) {
 		IA = iA;
 	}

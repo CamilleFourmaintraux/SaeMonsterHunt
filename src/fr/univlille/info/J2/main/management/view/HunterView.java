@@ -114,7 +114,6 @@ public class HunterView extends View{
      *
      * @param display    Instance des valeurs d'affichage.
      * @param maze       Instance du labyrinthe associée à cette vue.
-     * @param hunterName Nom du chasseur.
      * @param theme      Thème de l'interface.
      */
 	public HunterView(DisplayValues display, Maze maze, Theme theme) {
@@ -335,7 +334,8 @@ public class HunterView extends View{
      * Actualise la cellule et ses voisines en fonction des coordonnées spécifiées.
      * Utilise la méthode {@code revealCell} pour mettre à jour visuellement les cellules.
      * 
-     * @param c Les coordonnées de la cellule à actualiser.
+     * @param cRow La ligne de la cellule à actualiser.
+     * @param cCol La colonne de la cellule à actualiser. 
      */
 	public void actualizeCells(int cRow, int cCol) {
 
