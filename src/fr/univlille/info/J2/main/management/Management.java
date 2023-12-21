@@ -1479,7 +1479,7 @@ public class Management extends Stage implements Observer{
 	}
 	
 	public static Save createSave(Maze maze) {
-		return new Save(maze.dataMan, maze.getData(), maze.getExit().getData(), maze.getMonster().getData(), maze.getHunter().getData());
+		return new Save(maze.getDataMan(), maze.getData(), maze.getExit().getData(), maze.getMonster().getData(), maze.getHunter().getData());
 	}
 
 	public static String getDefaultNameMonster() {
