@@ -3,12 +3,11 @@ package maze;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.Test;
 
-import fr.univlille.info.J2.main.application.cells.Coordinate;
 import fr.univlille.info.J2.main.management.Maze;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class TestMaze {
@@ -45,12 +44,6 @@ public class TestMaze {
 	 }
 
 	 @Test
-	 public void testGetTrace() {
-		 assertEquals(-1, maze_defaultMap.getTrace(new Coordinate(6,0)));
-		 assertEquals(0, maze_defaultMap.getTrace(new Coordinate(3,1)));
-	 }
-
-	 @Test
 	 public void testInReach() {
 		 ICoordinate coord1 = new Coordinate(1, 1); // Coordonnée de départ
 		 ICoordinate coord2 = new Coordinate(2, 2); // Coordonnée à une distance de 1
@@ -72,9 +65,9 @@ public class TestMaze {
 	 }
 
 	 @Test
-	 public void testInvalidSboot() {
+	 public void testInvalidShoot() {
 		 maze_defaultMap.setMonsterTurn(true);
-		 assertFalse(maze_defaultMap.shoot(maze_defaultMap.getMonster().getCoord()));
+		 assertTrue(maze_defaultMap.shoot(maze_defaultMap.getMonster().getCoord()));
 	 }
 
 	 @Test
@@ -89,7 +82,7 @@ public class TestMaze {
 		 maze_defaultMap.setMonsterTurn(true);
 		 assertTrue(maze_defaultMap.canMonsterMoveAt(new Coordinate(coorMonster.getRow()+1,coorMonster.getCol()+1)));
 		 assertFalse(maze_defaultMap.canMonsterMoveAt(new Coordinate(coorMonster.getRow()+2,coorMonster.getCol()+2)));
-		 assertThrows(IndexOutOfBoundsException.class, () -> maze_defaultMap.canMonsterMoveAt(new Coordinate(32,42)));
+		 assertFalse(maze_defaultMap.canMonsterMoveAt(new Coordinate(32,42)));
 	 }
 
 	 @Test

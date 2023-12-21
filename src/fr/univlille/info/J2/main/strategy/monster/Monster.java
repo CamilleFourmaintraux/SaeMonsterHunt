@@ -4,12 +4,12 @@
  * et les informations concernant la sortie du labyrinthe.
  */
 package fr.univlille.info.J2.main.strategy.monster;
-
-import fr.univlille.info.J2.main.application.cells.Coordinate;
-import fr.univlille.info.J2.main.utils.Utils;
+import fr.univlille.info.J2.main.management.cells.CellEvent;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 /**
  *
  * La classe Monster représente un Monster dans le jeu. Elle implémente l'interface IMonsterStrategy
@@ -21,75 +21,164 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  * @author theo.franos.etu
  *
  */
-public class Monster implements IMonsterStrategy{
+public class Monster {
+	
+	private SaveMonsterData data;
+	
 	/**
-	 * La grille de murs du labyrinthe.
+	 * Strategy du monstre.
 	 */
-	private boolean[][] walls;
-	/**
-	 * La grille des parties déjà explorés du labyrinthe
-	 */
-	private boolean[][] explored;
-	/**
-	 * Les coordonnées initiales du monstre.
-	 */
-	private ICoordinate coord;
-	/**
-	 * Le niveau de l'IA du monstre.
-	 */
-	private String IA_level;
-	/**
-	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
-	 */
-	private int visionRange;
-	/**
-	 * La portée de la vision du monstre (seulement si l'attribut boolean visionLimited de Maze est True, sinon vaut -1)
-	 */
-	private int movingRange;
+	private IMonsterStrategy strategy;
 
 	/**
      * Constructeur de la classe Monster, crée un Monstre.
 	 *
-	 * @param walls 	La grille de murs du labyrinthe.
-	 * @param coord		Les coordonnées initiales du monstre.
-	 * @param IA_level	 Le niveau de l'IA du monstre.
-	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
+	 * @param walls 		La grille de murs du labyrinthe.
+	 * @param ce            L'événement de la cellule du monstre.
+	 * @param IA	  		Le niveau de l'IA du monstre.
+	 * @param visionRange 	Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
+	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
 	 */
-	public Monster(boolean[][] walls,ICoordinate coord, String IA_level, int visionRange, int movingRange) {
-		super();
-		this.initialize(walls);
-		this.explored=new boolean[walls.length][walls[0].length];
-		this.coord = coord;
-		this.IA_level=IA_level;
-		this.visionRange=visionRange;
-		this.movingRange=movingRange;
+	public Monster(boolean[][] walls,ICoordinate spawn, ICoordinate exit, GameplayMonsterData gameplay) {
+		this.data = new SaveMonsterData(gameplay, new boolean[walls.length][walls[0].length], walls, spawn.getRow(), spawn.getCol());
+		if(!data.getGameplay().isVisionLimited()) {
+			this.setToAllExplored();
+		}
+		this.strategy=this.chooseMonsterStrategy(data.getIA());
+		this.strategy.initialize(walls);
+		CellEvent initEntity;
+		initEntity=new CellEvent(exit, 0, CellInfo.EXIT); //Attention, la stratégie considère avoir bougé
+		this.strategy.update(initEntity);
+	}
+	
+	public Monster(SaveMonsterData data,ICoordinate exit) {
+		this.data=data;
+		this.strategy=this.chooseMonsterStrategy(data.getIA());
+		this.strategy.initialize(data.getWalls());
+		CellEvent initEntity;
+		initEntity=new CellEvent(exit, 0, CellInfo.EXIT); //Attention, la stratégie considère avoir bougé
+		this.strategy.update(initEntity);
 	}
 
 	/**
-     * Initialise les murs du labyrinthe pour le monstre.
-     *
-     * @param walls La grille de murs du labyrinthe.
+	 * Choisi une stratégie de monstre en fonction du niveau d'intelligence artificielle spécifié.
+	 *
+	 * @param IA_monster Le niveau d'intelligence artificielle du monstre. Les valeurs possibles sont :
+	 *                   - "IA-Easy" pour une intelligence artificielle facile.
+	 *                   - "IA-Moderate" pour une intelligence artificielle modérée.
+	 *                   - "IA-Hardcore" pour une intelligence artificielle hardcore.
+	 * @return Une instance de l'interface IMonsterStrategy correspondant au niveau d'intelligence artificielle spécifié.
+	 *         Si le niveau spécifié n'est pas reconnu, une instance de NoIAMonster est retournée par défaut.
 	 */
-	@Override
-	public void initialize(boolean[][] walls) {
-		this.walls=walls;
+	private IMonsterStrategy chooseMonsterStrategy(String IA_monster) {
+		if(IA_monster.equals("IA-Easy")){
+			return new IAeasyMonster();
+		}else if(IA_monster.equals("IA-Moderate")) {
+			return new IAmoderateMonster();
+		}else if(IA_monster.equals("IA-Hardcore")) {
+			return new IAhardMonster();
+		}
+		return new NoIAMonster();
 	}
 
-	public void allExplored() {
-		for(int h=0;h<this.explored.length;h++) {
-			for(int l=0;l<this.explored[h].length;l++) {
-				this.explored[h][l]=true;
+	/**
+	 * Cette méthode marque toutes les cases comme explorées par le monstre.
+	 * Elle parcourt le tableau bidimensionnel 'explored' et assigne la valeur 'true'
+	 * à chaque élément, indiquant que le monstre a exploré toutes les cases.
+	 * 
+	 */
+	public void setToAllExplored() {
+		for(int h=0;h<this.data.getExplored().length;h++) {
+			for(int l=0;l<this.data.getExplored()[h].length;l++) {
+				this.data.getExplored()[h][l]=true;
 			}
 		}
 	}
 
+	
+
+	/**
+     * Met à jour l'état du monstre en fonction d'un événement de cellule.
+     *
+     * @param ce L'événement de cellule qui a eu lieu.
+     */
+	public void update(ICellEvent ce) {
+		if(!ce.getState().equals(CellInfo.WALL)) {
+			this.setCoord(ce.getCoord());
+		}
+		this.strategy.update(ce);
+	}
+
+	/**
+     * Obtient un tableau indiquant les cases explorées par le monstre.
+     * Une case est explorée si le monstre y est passé au moins une fois.
+     * 
+     * @return Le tableau des cases explorées par le monstre.
+     */
+	public boolean[][] getExplored() {
+		return this.data.getExplored();
+	}
+	
+	/**
+     * Joue un tour pour le monstre en utilisant sa stratégie associée.
+     *
+     * @return Les coordonnées où le monstre a décidé de se déplacer.
+     */
+	public ICoordinate play() {
+		return this.strategy.play();
+	}
+	
+	protected static ICoordinate createInBoundCoord(int row, int col, boolean[][]walls) {
+		if(row>=walls.length) {
+			row=walls.length-1;
+		}else if(row<0) {
+			row=0;
+		}
+		if(col>=walls[row].length) {
+			col=walls[row].length-1;
+		}else if(col<0) {
+			col=0;
+		}
+		return new Coordinate(row,col);
+	}
+
+	public boolean isVisionLimited() {
+		return this.data.isVisionLimited();
+	}
+
+	public int getVisionRange() {
+		return this.data.getVisionRange();
+	}
+
+	public int getMovingRange() {
+		return this.data.getMovingRange();
+	}
+
+	public String getIA() {
+		return this.data.getIA();
+	}
+	
+	public String getName() {
+		return this.data.getName();
+	}
+	
+	/**
+     * Définit les coordonnées du monstre.
+     *
+     * @param c Les nouvelles coordonnées du monstre.
+	 */
+	public void setCoord(ICoordinate c) {
+		this.data.setRow(c.getRow());
+		this.data.setCol(c.getCol());
+	}
+	
 	/**
      * Obtient la ligne de la coordonnée du monstre.
      *
      * @return La ligne de la coordonnée du monstre.
 	 */
 	public int getRow() {
-		return this.coord.getRow();
+		return this.data.getRow();
 	}
 
 	/**
@@ -98,7 +187,7 @@ public class Monster implements IMonsterStrategy{
      * @return La colonne de la coordonnée du monstre.
 	 */
 	public int getCol() {
-		return this.coord.getCol();
+		return this.data.getCol();
 	}
 
 	/**
@@ -107,97 +196,10 @@ public class Monster implements IMonsterStrategy{
      * @return Les coordonnées du monstre.
 	 */
 	public ICoordinate getCoord() {
-		return this.coord;
+		return new Coordinate(this.data.getRow(),this.data.getCol());
 	}
-
-	/**
-     * Définit les coordonnées du monstre.
-     *
-     * @param c Les nouvelles coordonnées du monstre.
-	 */
-	public void setCoord(ICoordinate c) {
-		this.coord=c;
-	}
-
-	/**
-     * Obtient la grille de murs du labyrinthe.
-     *
-     * @return La grille de murs du labyrinthe.
-	 */
-	public boolean[][] getWalls() {
-		return walls;
-	}
-
-	/**
-     * Implémente l'action de l'IA facile du monstre.
-     *
-     * @return Les nouvelles coordonnées du monstre après une action de l'IA facile.
-	 */
-	public ICoordinate easy_IA_action() {
-		//Utils.wait(1);
-		int x = this.getCol()+(Utils.random.nextInt(3)-1);
-		int y = this.getRow()+(Utils.random.nextInt(3)-1);
-		return new Coordinate(y,x);
-	}
-
-	/**
-     * Implémente l'action de l'IA modérée du monstre.
-     *
-     * @return Les nouvelles coordonnées du monstre après une action de l'IA modérée.
-	 */
-	public ICoordinate moderate_IA_action() {
-		return this.easy_IA_action(); //TODO
-	}
-
-	/**
-     * Implémente l'action de l'IA hardcore du monstre.
-     *
-     * @return Les nouvelles coordonnées du monstre après une action de l'IA hardcore.
-	 */
-	public ICoordinate hardcore_IA_action() {
-		return this.easy_IA_action(); //TODO
-	}
-
-	/**
-     * Méthode principale pour le jeu du monstre. Implémente le comportement du monstre.
-     *
-     * @return Les nouvelles coordonnées du monstre après son action.
-	 */
-	@Override
-	public ICoordinate play() {
-		if(this.IA_level.equals("IA-Easy")){
-			return this.easy_IA_action();
-		}else if(this.IA_level.equals("IA-Moderate")) {
-			return this.moderate_IA_action();
-		}else if(this.IA_level.equals("IA-Hardcore")) {
-			return this.hardcore_IA_action();
-		}
-		return null;
-	}
-
-	/**
-     * Met à jour l'état du monstre en fonction d'un événement de cellule.
-     *
-     * @param ce L'événement de cellule qui a eu lieu.
-     */
-	@Override
-	public void update(ICellEvent ce) {
-		this.setCoord(ce.getCoord());
-	}
-
-	public boolean[][] getExplored() {
-		return explored;
-	}
-
-	public String getIA_level() {
-		return IA_level;
-	}
-
-	public int getVisionRange() {
-		return visionRange;
-	}
-
-	public int getMovingRange() {
-		return movingRange;
+	
+	public SaveMonsterData getData() {
+		return this.data;
 	}
 }

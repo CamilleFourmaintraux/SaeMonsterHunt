@@ -5,12 +5,15 @@
  */
 package fr.univlille.info.J2.main.management;
 
-import java.util.logging.Logger;
+import java.util.Arrays;
 
-import fr.univlille.info.J2.main.application.cells.CellEvent;
-import fr.univlille.info.J2.main.application.cells.Coordinate;
+import fr.univlille.info.J2.main.application.system.Save;
+import fr.univlille.info.J2.main.management.cells.CellEvent;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.management.exit.Exit;
+import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
-import fr.univlille.info.J2.main.strategy.monster.Exit;
+import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.strategy.monster.Monster;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
@@ -31,9 +34,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class Maze extends Subject{
 
-	private static final Logger logger = Logger.getLogger(Maze.class.getName());
-
-	private static final boolean[][] DEFAULT_MAP = new boolean[][] {
+	public static final boolean[][] DEFAULT_MAP = new boolean[][] {
 		{false,true,false,true,true,false,true,false,true,false}, 	// X . X . . X . X . X
 		{false,true,true,true,true,false,true,false,true,true},		// X . . . . X . X . .
 		{true,true,true,true,false,false,true,false,false,true},	// . . . . X X . X X .
@@ -45,16 +46,9 @@ public class Maze extends Subject{
 		{true,true,false,true,true,false,true,false,false,false},	// . . X . . X . X X X
 		{false,false,true,true,false,false,true,true,true,false}	// X X . . X X . . . X
 	};
-
-	/**
-	 * Tableau de boolean représentant les murs plein ou non du labyrinthe (false=mur true=pas de mur).
-	 */
-	private boolean[][] walls;
-
-	/**
-	 * Tableau d'entier stockant les numéros de tours ou le monstre est déjà passé.
-	 */
-	private int[][] traces;
+	
+	private SaveMazeData data;
+	public SaveManagementData dataMan;
 
 	/**
 	 * La sortie (les coordonnées) du labyrinthe.
@@ -72,16 +66,6 @@ public class Maze extends Subject{
 	private Hunter hunter;
 
 	/**
-	 * Le numéro du tour actuel.
-	 */
-	private int turn;
-
-	/**
-	 * Boolean qui permet de savoir si c'est le tour du monstre ou non.
-	 */
-	private boolean isMonsterTurn;
-
-	/**
 	 * Boolean utilisé dans les actions move du monstre et shoot du chasseur pour indique si la partie est fini.
 	 * (i.e si le monstre/chasseur s'est échappé/fait tirer dessus).
 	 */
@@ -95,57 +79,63 @@ public class Maze extends Subject{
 	/**
 	 * int utilisé pour determiner qui a gagné a la fin de la partie (0 si le joueur quitte la partie, 1 si le monster gagne et 2 si le chasseur gagne) 
 	 */
-	public  int winner= 0;
+	private int idWinner = 0;
 
 	/**
-	 * Constructeur vide, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
-	 * @see Maze#Maze(boolean[][], String, String)
+	 * Constructeur sans paramètres, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
+	 * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
 	 */
 	public Maze() {
-		this(Maze.generateBasicMap(),Management.IA_LEVELS[0],Management.IA_LEVELS[0], false, -1, 1, 0);
+		this(Maze.generateBasicMap(),new GameplayHunterData("Hunter",Management.IA_LEVELS[0],0),new GameplayMonsterData("Monster",Management.IA_LEVELS[0], false, 1, 1),null);
 	}
 
 	/**
-	 * Constructeur originel, crée un labyrinthe Maze à partir d'un labyrinthe existant donné en parametre.
-	 * @see Maze#Maze()
-	 * @param maze 			un labyrinthe.
-	 * @param monster_IA 	Niveau de l'ia du monstre
-	 * @param hunter_IA		Niveau de l'ia du chasseur@param limitedVision boolean indiquant si oui ou non la vision du monstre est limité
-	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
-	 */
-	public Maze(boolean[][] maze, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
-		this.walls=maze;
-		this.turn=1;
-		this.initMonsterExitHunter(monster_IA, hunter_IA,limitedVision, visionRange, movingRange, bonusRange);
+     * Constructeur originel, crée un labyrinthe Maze à partir d'un labyrinthe existant donné en paramètre.
+     *
+     * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
+     * @param maze            un labyrinthe.
+     * @param dataH				objet GameplayHunterData pour stoker et transférer facilement des données entre les classes concernant le hunter.
+     * @param dataM				objet GameplayMonsterData pour stoker et transférer facilement des données entre les classes concernant le monster.
+     */
+	public Maze(boolean[][] maze, GameplayHunterData dataH, GameplayMonsterData dataM, SaveManagementData dataMan) {
+		this.data = new SaveMazeData(maze, new int[maze.length][maze[0].length], 1, true);
+		this.dataMan=dataMan;
 		this.initTraces();
-		this.isMonsterTurn=true;
-		this.exploring(this.monster.getCoord(), visionRange);
+		this.initMonsterExitHunter(dataH, dataM);
+		this.exploring(this.monster.getCoord(), this.monster.getVisionRange());
 		this.move(this.monster.getCoord());
 	}
 
 	/**
-	 * Constructeur spécial, crée un labyrinthe Maze personnalisé et génére aléatoirement à partir de la largeur, la hauteur et la probabilité d'apparition de murs.
-	 *
-	 * @param probability le taux de chances qu'une case du labyrinthe soit un mur.
-	 * @param height la hauteur du labyrinthe.
-	 * @param width la largeur du labyrinthe.
-	 * @param monster_IA 	Niveau de l'ia du monstre
-	 * @param hunter_IA		Niveau de l'ia du chasseur
-	 */
-	public Maze(int probability, int height, int width, String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
-		this(Maze.generateRandomMap(probability, height, width), monster_IA, hunter_IA, limitedVision, visionRange, movingRange, bonusRange);
+     * Constructeur spécial, crée un labyrinthe Maze personnalisé et génère aléatoirement à partir de la largeur, la hauteur
+     * et la probabilité d'apparition de murs.
+     *
+     * @param probability 		le taux de chances qu'une case du labyrinthe soit un mur.
+     * @param height 			la hauteur du labyrinthe.
+     * @param width 			la largeur du labyrinthe.
+     * @param dataH				objet GameplayHunterData pour stoker et transférer facilement des données entre les classes concernant le hunter.
+     * @param dataM				objet GameplayMonsterData pour stoker et transférer facilement des données entre les classes concernant le monster.
+     */
+	public Maze(int probability, int height, int width, GameplayHunterData dataH, GameplayMonsterData dataM, SaveManagementData dataMan) {
+		this(Maze.generateRandomMap(probability, height, width), dataH, dataM, dataMan);
+	}
+	
+	public Maze(Save save) {
+		System.out.println("TOUR DU MONSTRE:"+save.getData_maze().isMonsterTurn());
+		this.data=save.getData_maze();
+		this.dataMan=save.getData_management();
+		this.initMonsterExitHunter(save);
+		this.exploring(this.monster.getCoord(), this.monster.getVisionRange());
+		this.move(this.monster.getCoord());
 	}
 
 	/**
 	 * Initialisation du tableau des traces du monstre vu par le chasseur.
-	 *
-	 * @return un tableau d'entier initialise a zero si la case correspond à une case vide et -1 si la case correspond à un mur.
 	 */
 	public void initTraces(){
-		this.traces = new int[this.walls.length][this.walls[0].length];
-		for(int h=0; h<this.walls.length;h++) {
-			for(int l=0; l<this.walls[h].length;l++) {
-				this.traces[h][l]=0;
+		for(int h=0; h<this.getWalls().length;h++) {
+			for(int l=0; l<this.getWalls()[h].length;l++) {
+				this.getTraces()[h][l]=0;
 			}
 		}
 	}
@@ -162,9 +152,10 @@ public class Maze extends Subject{
 	/**
 	 * Méthode de génération personnalisé du labyrinthe avec sa taille voulu ainsi que le taux d'apparition des murs.
 	 *
-	 * @param probability le taux de chances que la case du labyrinthe soit un mur plein.
-	 * @param height la hauteur du labyrinthe.
-	 * @param width la largeur du labyrinthe.
+	 * @param probability 	le taux de chances que la case du labyrinthe soit un mur plein.
+	 * @param height 		la hauteur du labyrinthe.
+	 * @param width 		la largeur du labyrinthe.
+	 * 
 	 * @return un tableau de boolean représentant un labyrinthe.
 	 */
 	public static boolean[][] generateRandomMap(int probability, int height, int width) {
@@ -187,7 +178,17 @@ public class Maze extends Subject{
 		return maze;
 	}
 
-
+	/**
+	 * Initialise un labyrinthe vide représenté par un tableau de booléens.
+	 *
+	 * @param height La hauteur du labyrinthe.
+	 * @param width  La largeur du labyrinthe.
+	 * 
+	 * @return Un tableau bidimensionnel de booléens représentant un labyrinthe vide,
+	 *         où chaque case est initialement définie comme libre (true).
+	 *         
+	 * @throws IllegalArgumentException Si la hauteur ou la largeur est inférieure ou égale à zéro.
+	 */
 	public static boolean[][] initEmptyMaze(int height, int width) {
 		boolean[][] maze = new boolean[height][width];
 		for(int h=0; h<maze.length; h++) {
@@ -207,12 +208,12 @@ public class Maze extends Subject{
 	 * @return un entier correspondant au nombre de murs autour de cette coordonnée.
 	 */
 	//Inutilisé pour le moment
-	/*public int numberOfWallsAround(ICoordinate c){
+	public int numberOfWallsAround(ICoordinate c){
 		int cpt=0;
 		for(int y=c.getRow()-1; y<c.getRow()+2; y++) {
 			for(int x=c.getCol()-1; x<c.getCol()+2; x++) {
 				try {
-					if(this.walls[y][x]==false) {
+					if(!this.getWalls()[y][x]) {
 						cpt++;
 					}
 				}catch(Exception e) {
@@ -221,27 +222,37 @@ public class Maze extends Subject{
 			}
 		}
 		return cpt;
-	}*/
+	}
 
 	/**
-	 * Initialise les coordonnées de la sortie du labyrinthe.
-	 * @param hunter_IA niveau de l'IA du chasseur.
-	 * @param monster_IA niveau de l'IA du monstre.
-	 * @param limitedVision boolean indiquant si oui ou non la vision du monstre est limité
-	 * @param visionRange int correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True)
+	 * Initialise les coordonnées de la sortie du labyrinthe, le niveau de l'IA du chasseur et du monstre,
+	 * ainsi que les paramètres liés à la vision du monstre.
+	 *
+	 * @param monster_IA   	Niveau de l'IA du monstre.
+	 * @param hunter_IA    	Niveau de l'IA du chasseur.
+	 * @param limitedVision Boolean indiquant si la vision du monstre est limitée.
+	 * @param visionRange   Distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
+	 * @param movingRange   Portée de déplacement du monstre.
+	 * @param bonusRange    Bonus de portée du chasseur.
 	 */
-	public void initMonsterExitHunter(String monster_IA, String hunter_IA, boolean limitedVision, int visionRange, int movingRange, int bonusRange) {
-		this.exit = new Exit(new Coordinate(this.walls.length-1, Utils.random.nextInt(this.walls[this.walls.length-1].length)));
-		this.setFloor(this.exit.getCoord(),true);
-		if(limitedVision) {
-			this.monster = new Monster(Maze.initEmptyMaze(this.walls.length, this.walls[0].length),new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),monster_IA, visionRange, movingRange);
-		}else {
-			this.monster = new Monster(this.walls,new Coordinate(0,Utils.random.nextInt(this.walls[0].length)),monster_IA, -1, movingRange);
-			this.monster.allExplored();
-		}
-		this.setFloor(this.monster.getCoord(),true);
-		this.hunter = new Hunter(this.walls.length,this.walls[0].length,new Coordinate(0,0),hunter_IA, bonusRange);
+	public void initMonsterExitHunter(Save save) {
+		this.exit = new Exit(new Coordinate(save.getData_exit().getRow(),save.getData_exit().getCol()));
+		
+		this.monster = new Monster(save.getData_monster(),exit.getCoord());
+		
+		this.hunter = new Hunter(save.getData_hunter());
+	
 	}
+	
+	public void initMonsterExitHunter(GameplayHunterData dataH, GameplayMonsterData dataM) {
+		this.exit = new Exit(new Coordinate(this.getWalls().length-1, Utils.random.nextInt(this.getWalls()[this.getWalls().length-1].length)));
+		this.setFloor(this.exit.getCoord(),true);
+		this.monster = new Monster(Arrays.copyOf(this.getWalls(),this.getWalls().length),new Coordinate(0,Utils.random.nextInt(this.getWalls()[0].length)),exit.getCoord(),dataM);
+		this.setFloor(this.monster.getCoord(),true);
+
+		this.hunter = new Hunter(this.getWalls().length,this.getWalls()[0].length,new Coordinate(0,0), dataH);
+	}
+
 
 	/**
 	 * Affichage en ASCII (Terminal) du labyrinthe.
@@ -249,7 +260,7 @@ public class Maze extends Subject{
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (boolean[] wall : this.walls) {
+		for (boolean[] wall : this.getWalls()) {
 			for(int l=0; l<wall.length; l++) {
 				if(wall[l]) {
 					sb.append('.');
@@ -268,14 +279,25 @@ public class Maze extends Subject{
 	 * Affichage en ASCII (Terminal ) du tableau des traces laissées par le monstre.
 	 */
 	public void printTraces() {
-		for(int h=0; h<this.walls.length;h++) {
-			for(int l=0; l<this.walls[h].length;l++) {
-				System.out.print(" "+this.traces[h][l]+" ");
+		for(int h=0; h<this.getWalls().length;h++) {
+			for(int l=0; l<this.getWalls()[h].length;l++) {
+				System.out.print(" "+this.getWalls()[h][l]+" ");
 			}
 			System.out.println();
 		}
 	}
 
+	/**
+	 * Retourne des informations sur le contenu d'une cellule à une coordonnée spécifique du labyrinthe.
+	 *
+	 * @param c la coordonnée de la cellule dans le labyrinthe.
+	 * @return une valeur de l'énumération CellInfo indiquant le contenu de la cellule à la coordonnée spécifiée.
+	 *         - {@link CellInfo#MONSTER} si la cellule contient le monstre.
+	 *         - {@link CellInfo#HUNTER} si la cellule contient le chasseur.
+	 *         - {@link CellInfo#EXIT} si la cellule contient la sortie.
+	 *         - {@link CellInfo#EMPTY} si la cellule est vide (pas un mur).
+	 *         - {@link CellInfo#WALL} si la cellule est un mur.
+	 */
 	public CellInfo getCellInfo(ICoordinate c) {
 		if(this.monster.getCoord().equals(c)) {
 			return CellInfo.MONSTER;
@@ -283,7 +305,7 @@ public class Maze extends Subject{
 			return CellInfo.HUNTER;
 		}else if(this.exit.getCoord().equals(c)) {
 			return CellInfo.EXIT;
-		}else if(this.walls[c.getRow()][c.getCol()]) {
+		}else if(this.getWalls()[c.getRow()][c.getCol()]) {
 			return CellInfo.EMPTY;
 		}else {
 			return CellInfo.WALL;
@@ -297,7 +319,7 @@ public class Maze extends Subject{
 	 * @return false si la coordonnée indiqué est un mur, sinon true.
 	 */
 	public boolean isFloor(ICoordinate c) {
-		return this.walls[c.getRow()][c.getCol()];
+		return this.getWalls()[c.getRow()][c.getCol()];
 	}
 
 	/**
@@ -307,7 +329,7 @@ public class Maze extends Subject{
 	 * @param empty un boolean -> si True : la case du labyrinthe à c sera vide, -> si False : la case du labyrinthe à c sera un mur
 	 */
 	public void setFloor(ICoordinate c, boolean empty) {
-		this.walls[c.getRow()][c.getCol()]=empty;
+		this.getWalls()[c.getRow()][c.getCol()]=empty;
 	}
 
 	/**
@@ -321,15 +343,24 @@ public class Maze extends Subject{
 	}
 
 	/**
-	 * Définis la présence d'un ou non d'un mur à une coordonée précise du labyrinthe
+	 * Définit la présence ou l'absence d'un mur à une coordonnée précise dans le labyrinthe.
 	 *
-	 * @param c une coordonnée du labyrinthe.
-	 * @param empty un boolean -> si True : la case du labyrinthe à c sera vide, -> si False : la case du labyrinthe à c sera un mur
+	 * @param c la coordonnée du labyrinthe.
+	 * @param explored un booléen :
+	 *                 - Si true : la case du labyrinthe à la coordonnée c sera considérée comme explorée.
+	 *                 - Si false : la case du labyrinthe à la coordonnée c sera considérée comme un mur.
 	 */
 	public void setExplored(ICoordinate c, boolean explored) {
 		this.monster.getExplored()[c.getRow()][c.getCol()]=explored;
 	}
 
+	/**
+	 * Explore les cellules autour d'une coordonnée donnée dans une portée de vision spécifiée.
+	 *
+	 * @param c La coordonnée autour de laquelle explorer.
+	 * @param visionRange La portée de vision pour l'exploration.
+	 * @throws IndexOutOfBoundsException Si la coordonnée spécifiée est en dehors des limites du labyrinthe.
+	 */
 	public void exploring(ICoordinate c, int visionRange) {
 		for(int y=c.getRow()-visionRange; y<c.getRow()+(visionRange+1); y++) {
 			for(int x=c.getCol()-visionRange; x<c.getCol()+(visionRange+1); x++) {
@@ -347,39 +378,54 @@ public class Maze extends Subject{
 	 *
 	 * @param c la coordonnée ou laquelle veut se déplacer le monstre.
 	 * @return true si l'action a reussi, sinon false.
-	 */
-	public boolean move(ICoordinate c) { //Fais le déplcament du monstre, retoure true si le déplacement à été possible.:
+	 */ //BUG qui modifie mon labyrinthe
+	public boolean move(ICoordinate c) { //Fais le déplacement du monstre, retourne true si le déplacement à été possible.
 		this.spotted=false;
 		if(this.canMonsterMoveAt(c)) {
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
-				//[Tour n°"+this.turn+"]
 				this.spotted=true;
 			}
-			this.setTrace(c, turn);
+			this.setTrace(c, this.getTurn());
 
+			///BUG COMMENCE ICI
 			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
-
 			this.monster.update(ce);
-
+			///BUG FINI ICI
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
-				this.winner = 1;
-				System.out.println("MONSTER GAGNE"); //TODO A ENLEVER ET A PLACER DANS LE MENU GAME OVER
+				this.idWinner = 1;
 			}
-
-			this.turn++;  //On passe au tour suivant
-			this.isMonsterTurn=false;
-			if(this.monster.getVisionRange()!=-1) {
+			if(this.monster.isVisionLimited()) {
 				this.exploring(c, this.monster.getVisionRange());
 			}
-			this.notifyObservers();
+			this.endMonsterTurn();
 			return true;
 		}
-		if(!this.getMonsterIa().equals(Management.IA_LEVELS[0])) {
-			this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
-			this.isMonsterTurn=false;
+		if(!this.getMonsterIA().equals(Management.IA_LEVELS[0])) { //Inatteignable par un joueur, sert à passer le tour d'une IA qui essaye d'aller à un endroit impossible.
+			if(this.areCoordinateInBounds(c)) {
+				CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
+				this.monster.update(ce);
+			}
+			this.endMonsterTurn();
 		}
 		return false;
+	}
+	
+	/**
+	 * Termine le tour du monstre en incrémentant le numéro de tour,
+	 * en indiquant que ce n'est plus le tour du monstre, et notifie
+	 * les observateurs du labyrinthe.
+	 * 
+	 * Cette méthode est appelée pour finaliser le tour du monstre après
+	 * que celui-ci a effectué son déplacement dans le labyrinthe. Elle
+	 * incrémente également le numéro de tour, indique que ce n'est plus
+	 * le tour du monstre, puis notifie les observateurs (si présents)
+	 * qu'une mise à jour a eu lieu.
+	 */
+	public void endMonsterTurn() {
+		this.data.incrementTurn();
+		this.setMonsterTurn(false);
+		this.notifyObservers();
 	}
 
 	/**
@@ -388,37 +434,46 @@ public class Maze extends Subject{
 	 * @param c la coordonnée à laquelle le chasseur tire.
 	 * @return true si l'action a reussi,sinon false.
 	 */
-	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, devrait toujours renvoyer true logiquement, peut etre changer le type de retour.
-		if(!this.isMonsterTurn) {
+	public boolean shoot(ICoordinate c) { //Fais le tir du chasseur, renvoie toujours true sauf si c'est pas le tour du chasseur
+		if(!this.isMonsterTurn()) {
 			CellEvent ce;
 			Coordinate temp;
+			//S'occupe du tir secondaire si jamais le hunter à un bonus.
 			for(int y=c.getRow()-this.getBonusRange(); y<c.getRow()+(this.getBonusRange()+1); y++) {
 				for(int x=c.getCol()-this.getBonusRange(); x<c.getCol()+(this.getBonusRange()+1); x++) {
 					try {
 						temp = new Coordinate(y,x);
 						ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
+						this.hunter.actualizeTraces(ce);
 						this.hunter.update(ce);
-					}catch(Exception e) {//Signifie que l'est est en dehors de la map
-						logger.info("["+y+"]["+x+"] Out of Bounds in Maze -> normal behavior don't worry");
+					}catch(Exception e) {
+						//Signifie que l'est est en dehors de la map
 					}
-
 				}
 			}
+			//Vérifie le tir principal.
 			ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
-			this.hunter.update(ce);
+			this.hunter.setCoord(ce.getCoord());
 			if(ce.getState().equals(CellInfo.MONSTER)) {
 				this.isGameOver=true;
-				this.winner = 2;
-				System.out.println("HUNTER GAGNE");//TODO A ENLEVER
+				this.idWinner = 2;
 			}
-			this.isMonsterTurn=true;
+			this.setMonsterTurn(true);
 			this.notifyObservers();
 			return true;
+			//Faire un Bazooka mode ?
 		}
-		this.notifyObservers(); //Jamais atteint par un joueur humain, permet de passer le tour d'un bot
 		return false;
 	}
 
+	/**
+	 * Déclenche la fin de partie en mettant à jour le statut de la partie à "game over" 
+	 * et en notifiant les observateurs enregistrés.
+	 * 
+	 * Cette méthode met à jour le drapeau indiquant que la partie est terminée (isGameOver)
+	 * et informe les observateurs en appelant la méthode notifyObservers().
+	 * Les observateurs enregistrés seront ainsi notifiés du changement d'état de la partie.
+	 */
 	public void triggersGameOver() {
 		this.isGameOver=true;
 		this.notifyObservers();
@@ -431,18 +486,28 @@ public class Maze extends Subject{
 	 * @return true si le Monstre peut se déplacer à la case demandé, sinon false.
 	 */
 	public boolean canMonsterMoveAt(ICoordinate c) {
-		if(this.isCorrectCoordinate(c)) {
-			//Vérifie que c'est à une bonne distance et que c'est une case explorée et vérifie que ce n'est pas un mur
-			if(this.isMonsterTurn && this.inReach(this.monster.getCoord(), c, this.monster.getMovingRange()) && this.isExplored(c) && this.walls[c.getRow()][c.getCol()]) { //Vérifie que c'est le tour du monstre
-				return true;
+		if(this.isMonsterTurn()) { //Est-ce le tour du monstre?
+			if(this.areCoordinateInBounds(c)) { //Est-ce des coordonnées qui ne sont pas en dehors du terrain de jeu?
+				if(this.getWalls()[c.getRow()][c.getCol()]){ //Est-ce qu'il y a un mur?
+					if(this.inReach(this.monster.getCoord(), c, this.monster.getMovingRange())){ //Est-ce que c'est à la portée du monstre ?
+						if(this.isExplored(c)) { //Est-ce que cette case à été exploré par le monstre ?
+							return true;
+						}
+					}
+				}
+				
 			}
 		}
 		return false;
 	}
-
-
-	public boolean isCorrectCoordinate(ICoordinate c) {
-		return !((c.getRow()>=this.walls.length)||(c.getCol()>=this.walls[c.getRow()].length));
+	/**
+	 * Vérifie si la coordonnée spécifiée est valide dans le labyrinthe.
+	 *
+	 * @param c la coordonnée à vérifier.
+	 * @return true si la coordonnée est valide, c'est-à-dire qu'elle se situe à l'intérieur des limites du labyrinthe ; false sinon.
+	 */
+	public boolean areCoordinateInBounds(ICoordinate c) {
+		return !((c.getRow()>=this.getWalls().length)||(c.getCol()>=this.getWalls()[c.getRow()].length));
 	}
 
 	/**
@@ -480,7 +545,7 @@ public class Maze extends Subject{
 	 * @param trace la trace que le monstre laisse (correspondant au numero du tour actuel)
 	 */
 	public void setTrace(ICoordinate c, int trace) {
-		this.traces[c.getRow()][c.getCol()]=trace;
+		this.getTraces()[c.getRow()][c.getCol()]=trace;
 	}
 	/**
 	 * Renvoie la potentielle trace du Monstre sur la coordonnée indiquée.
@@ -489,77 +554,127 @@ public class Maze extends Subject{
 	 * @return un entier correspondant au numéro du tour du passage du Monstre sur la coordonnée du labyrinthe (0 si le monstre n'y est jamais passé).
 	 */
 	public int getTrace(ICoordinate c) {
-		return this.traces[c.getRow()][c.getCol()];
+		return this.getTraces()[c.getRow()][c.getCol()];
 	}
 
+	/**
+	 * Récupère la portée de vision du monstre.
+	 *
+	 * @return La portée de vision actuelle du monstre.
+	 */
 	public int getVisionRange() {
 		return this.monster.getVisionRange();
 	}
 
+	/**
+	 * Récupère la portée bonus du chasseur.
+	 *
+	 * @return La portée bonus actuelle du chasseur.
+	 */
 	public int getBonusRange() {
 		return this.hunter.getBonusRange();
 	}
 
-	public String getMonsterIa() {
-		return this.monster.getIA_level();
-	}
-
-	public String getHunterIa() {
-		return this.hunter.getIA_level();
-	}
-
-	public static Logger getLogger() {
-		return logger;
-	}
-
-	public static boolean[][] getDefaultMap() {
-		return DEFAULT_MAP;
-	}
-
+	/**
+     * @return Le tableau de boolean représentant les murs plein ou non du labyrinthe (false=mur, true=pas de mur).
+     */
 	public boolean[][] getWalls() {
-		return walls;
+		return data.getWalls();
 	}
 
+	/**
+     * @return Le tableau d'entier stockant les numéros de tours où le monstre est déjà passé.
+     */
 	public int[][] getTraces() {
-		return traces;
+		return data.getTraces();
 	}
 
+	/**
+     * @return La sortie (les coordonnées) du labyrinthe.
+     */
 	public Exit getExit() {
 		return exit;
 	}
 
+	/**
+     * @return Le Monstre associé au labyrinthe.
+     */
 	public Monster getMonster() {
 		return monster;
 	}
 
+	/**
+     * @return Le Chasseur associé au labyrinthe.
+     */
 	public Hunter getHunter() {
 		return hunter;
 	}
 
+	/**
+     * @return Le numéro du tour actuel.
+     */
 	public int getTurn() {
-		return turn;
+		return data.getTurn();
 	}
 
+	/**
+     * @return true si c'est le tour du monstre, sinon false.
+     */
 	public boolean isMonsterTurn() {
-		return isMonsterTurn;
+		return data.isMonsterTurn();
 	}
 
+	/**
+     * @return true si la partie est terminée, sinon false.
+     */
 	public boolean isGameOver() {
 		return isGameOver;
 	}
 
+	/**
+     * @return true si le monstre a traversé une case déjà découverte par le chasseur, sinon false.
+     */
 	public boolean isSpotted() {
 		return spotted;
 	}
 
+	/**
+     * @param isGameOver Boolean utilisé dans les actions move du monstre et shoot du chasseur pour indiquer si la partie est finie.
+     */
 	public void setGameOver(boolean isGameOver) {
 		this.isGameOver = isGameOver;
 	}
 
+	/**
+     * @param isMonsterTurn Boolean qui permet de savoir si c'est le tour du monstre ou non.
+     */
 	public void setMonsterTurn(boolean isMonsterTurn) {
-		this.isMonsterTurn = isMonsterTurn;
+		this.data.setMonsterTurn(isMonsterTurn);
 	}
 	
+	/**
+     * @return Le niveau de l'intelligence artificielle du monstre.
+     */
+	public String getMonsterIA() {
+		return this.monster.getIA();
+	}
 	
-
+	/**
+     * @return Le niveau de l'intelligence artificielle du chasseur.
+     */
+	public String getHunterIA() {
+		return this.hunter.getIA();
+	}
+	
+	public int getIdWinner() {
+		return this.idWinner;
+	}
+	
+	public SaveMazeData getData() {
+		return this.data;
+	}
+	
+	public SaveManagementData getDataMan() {
+		return this.dataMan;
+	}
  }
