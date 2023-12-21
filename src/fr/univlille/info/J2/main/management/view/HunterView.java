@@ -248,10 +248,6 @@ public class HunterView extends View{
 		//initialisation du sprite du tir
 		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.display.getZoom(), Color.TRANSPARENT, SHOT_COLOR, SHOT_STROKE_THICKNESS, this.display.getGapX(),this.display.getGapY(), "Shot");
 		this.sprite_shot.setVisible(false);
-		this.sprite_shot.setOnMouseEntered(event -> {
-			this.select(this.sprite_shot);
-			this.scene.setOnMouseClicked(e -> this.selectionLocked(this.sprite_shot) );
-		});
 
 		//On ajoute les sprites au groupe associé.
 		this.group_sprite.getChildren().add(this.sprite_shot);
