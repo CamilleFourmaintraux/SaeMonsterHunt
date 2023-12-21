@@ -46,6 +46,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -1200,6 +1201,26 @@ public class Management extends Stage implements Observer{
 			this.setScene(this.getScene(ID_PLAY));
 			this.show();
 		});
+		
+		Button statButton = Generators.generateButton("stat", 0, 0,Color.WHITE, Color.BLACK);
+		statButton.setOnAction(e -> {
+		    // Create a label to display the custom text
+		    Label popupLabel = new Label("COUCOU !");
+
+		    // Create a pane to hold the label
+		    Pane popupPane = new Pane();
+		    popupPane.getChildren().add(popupLabel);
+
+		    // Create a popup scene
+		    Scene popupScene = new Scene(popupPane, 200, 100);
+
+		    // Create a popup stage
+		    Stage popupStage = new Stage();
+		    popupStage.setScene(popupScene);
+
+		    // Show the popup
+		    popupStage.show();
+		});
 
 		Button quitButton = Generators.generateButton("Quitter", 0, 0,Color.WHITE, Color.BLACK);
 		quitButton.setOnAction(e -> System.exit(0) );
@@ -1225,7 +1246,7 @@ public class Management extends Stage implements Observer{
 		quitButton.setPrefWidth(150); 		
 		quitButton.setPrefHeight(30);
 		buttonLayout.setSpacing(20); 
-		buttonLayout.getChildren().addAll(restartButton, quitButton);
+		buttonLayout.getChildren().addAll(restartButton, statButton, quitButton);
 		
 		buttonLayout.setAlignment(Pos.CENTER);
 		
