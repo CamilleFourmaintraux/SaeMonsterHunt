@@ -22,11 +22,12 @@ import fr.univlille.info.J2.main.management.view.MonsterView;
 import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.utils.Utils;
-import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
-import fr.univlille.info.J2.main.utils.menuConception.Generators;
-import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
+import fr.univlille.info.J2.main.utils.resources.DisplayValues;
+import fr.univlille.info.J2.main.utils.resources.Generators;
+import fr.univlille.info.J2.main.utils.resources.MediaLoader;
+import fr.univlille.info.J2.main.utils.resources.Theme;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 import javafx.beans.value.ChangeListener;
@@ -277,6 +278,7 @@ public class Management extends Stage implements Observer{
 		this.current_theme=Theme.themesMap.get(Theme.THEME_DUNGEON);
 		this.display=display;
 		
+		
 		this.menus=new HashMap<>();
 		this.maze_height=DEFAULT_MAZE_SIZE;
 		this.maze_width=DEFAULT_MAZE_SIZE;
@@ -434,7 +436,8 @@ public class Management extends Stage implements Observer{
      * @param c Coordonnée à laquelle le monstre veut se déplacer.
 	 */
 	public void monsterPlayAt(ICoordinate c) {
-		this.maze.move(c);
+		System.out.println("IF C NULL"+(c==null));
+		System.out.println("VERIF"+this.maze.move(c));
 		this.mv.actualize();
 	}
 
@@ -452,12 +455,17 @@ public class Management extends Stage implements Observer{
 	 * Bascule entre la vue du monstre et la vue du chasseur en fonction du tour actuel du jeu.
 	 */
 	public void switchInGameView() {
+		System.out.println("SWITCHVIEW IA JOUE"+this.maze.isMonsterTurn());
 		ICoordinate c;
 		if(this.maze.isMonsterTurn()) {
 			this.toMonsterView(this.getMonster_IA(), this.getHunter_IA(), this.maze.getDataMan().isSameScreen());
 			c = this.maze.getMonster().play();
 			if(c!=null) {
+				System.out.println("IAWILLPLAY");
 				this.monsterPlayAt(c);
+			}else {
+				System.out.println("C IS NULL. END OF THE WORLD");
+				this.monsterPlayAt(this.maze.getMonster().getCoord());
 			}
 		}else {
 			this.toHunterView(this.getMonster_IA(), this.getHunter_IA(), this.maze.getDataMan().isSameScreen());
@@ -545,6 +553,7 @@ public class Management extends Stage implements Observer{
 		
 		Button bPlay = Generators.generateButton("PLAY",Color.WHITE, Color.BLACK);
 		bPlay.setOnAction(e->{
+			MediaLoader.media_loader.playSound("squeak.mp3");
 			//intantiation of the settings
 			this.gameplayM.setName(tf_name_monster.getText());
 			this.gameplayH.setName(tf_name_hunter.getText());

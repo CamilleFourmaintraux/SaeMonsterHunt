@@ -35,7 +35,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 public class Maze extends Subject{
 
 	public static final boolean[][] DEFAULT_MAP = new boolean[][] {
-		{false,true,false,true,true,false,true,false,true,false}, 	// X . X . . X . X . X
+		{true,true,false,true,true,false,true,false,true,false}, 	// . . X . . X . X . X
 		{false,true,true,true,true,false,true,false,true,true},		// X . . . . X . X . .
 		{true,true,true,true,false,false,true,false,false,true},	// . . . . X X . X X .
 		{true,true,false,true,true,false,true,true,true,true},		// . . X . . X . . . .
@@ -44,7 +44,7 @@ public class Maze extends Subject{
 		{false,true,true,true,false,true,true,true,true,true},		// X . . . X . . . . .
 		{true,true,true,true,true,true,true,false,true,false},		// . . . . . . . X . X
 		{true,true,false,true,true,false,true,false,false,false},	// . . X . . X . X X X
-		{false,false,true,true,false,false,true,true,true,false}	// X X . . X X . . . X
+		{false,false,true,true,false,false,true,true,true,true}		// X X . . X X . . . .
 	};
 	
 	private SaveMazeData data;
@@ -375,6 +375,7 @@ public class Maze extends Subject{
 	 * @return true si l'action a reussi, sinon false.
 	 */ //BUG qui modifie mon labyrinthe
 	public boolean move(ICoordinate c) { //Fais le déplacement du monstre, retourne true si le déplacement à été possible.
+		System.out.println("MOVING");
 		this.spotted=false;
 		if(this.canMonsterMoveAt(c)) {
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
@@ -382,10 +383,9 @@ public class Maze extends Subject{
 			}
 			this.setTrace(c, this.getTurn());
 
-			///BUG COMMENCE ICI
 			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
+			this.monster.setCoord(c);
 			this.monster.update(ce);
-			///BUG FINI ICI
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
 				this.idWinner = 1;
@@ -394,13 +394,16 @@ public class Maze extends Subject{
 				this.exploring(c, this.monster.getVisionRange());
 			}
 			this.endMonsterTurn();
+			System.out.println("SUCCESS MONSTER MOVED");
 			return true;
 		}
 		if(!this.getMonsterIA().equals(Management.IA_LEVELS[0])) { //Inatteignable par un joueur, sert à passer le tour d'une IA qui essaye d'aller à un endroit impossible.
-			if(this.areCoordinateInBounds(c)) {
+			if(this.canMonsterMoveAt(c)) {
+				this.monster.setCoord(c);
 				CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
 				this.monster.update(ce);
 			}
+			System.out.println("FAILURE MONSTER CANNOT MOVE");
 			this.endMonsterTurn();
 		}
 		return false;
@@ -513,13 +516,18 @@ public class Maze extends Subject{
 	 * @return un tableau d'entier de 2 cases contenant la distance en largeur en première case
 	 * puis la distance en hauteur en seconde case.
 	 */
-	public static int[] calculDistance(ICoordinate c1, ICoordinate c2) {
+	public static int[] calculDistanceTab(ICoordinate c1, ICoordinate c2) {
 		int[] distances = new int[2];
 		int distanceX= Math.abs(c1.getCol()-c2.getCol());
 		int distanceY= Math.abs(c1.getRow()-c2.getRow());
 		distances[0]=distanceX;
 		distances[1]=distanceY;
 		return distances;
+	}
+	
+	public static int calculDistance(ICoordinate c1, ICoordinate c2) {
+		int[] distances = calculDistanceTab(c1,c2);
+		return distances[0]+distances[1];
 	}
 
 	/**
@@ -531,7 +539,8 @@ public class Maze extends Subject{
 	 * @return true si les deux coordonnées sont à portée,sinon false.
 	 */
 	public boolean inReach(ICoordinate c1, ICoordinate c2, int reach) {
-		return (calculDistance(c1, c2)[0]<reach+1 && calculDistance(c1, c2)[1]<reach+1);
+		int[] distances = calculDistanceTab(c1,c2);
+		return (distances[0]<reach+1 && distances[1]<reach+1);
 	}
 	/**
 	 * Modifie le tableau de traces à la coordonnée c pour ajouter la nouvelle trace.
@@ -677,13 +686,11 @@ public class Maze extends Subject{
 	
 	protected static ICoordinate farthestCell(ICoordinate cell, boolean[][]walls) throws IllegalArgumentException{
 		int distance = 0;
-		int[] tabDistances;
 		ICoordinate far=null;
 		for(int row=0; row<walls.length; row++) {
 			for(int col=0; col<walls[row].length;col++) {
-				tabDistances = Maze.calculDistance(cell,new Coordinate (row,col));
-				if(distance<tabDistances[0]+tabDistances[1] && walls[row][col]) {
-					distance=tabDistances[0]+tabDistances[1];
+				if(distance<Maze.calculDistance(cell,new Coordinate (row,col)) && walls[row][col]) {
+					distance=Maze.calculDistance(cell,new Coordinate (row,col));
 					far=new Coordinate (row,col);
 				}
 			}

@@ -1,8 +1,6 @@
 package fr.univlille.info.J2.main.management;
 
-import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
-import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class MazeGenerator {
 	

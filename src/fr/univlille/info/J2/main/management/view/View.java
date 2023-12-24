@@ -3,9 +3,9 @@ package fr.univlille.info.J2.main.management.view;
 import java.util.logging.Logger;
 
 import fr.univlille.info.J2.main.management.Maze;
-import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
-import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
+import fr.univlille.info.J2.main.utils.resources.DisplayValues;
+import fr.univlille.info.J2.main.utils.resources.Theme;
 import javafx.scene.Scene;
 
 /**

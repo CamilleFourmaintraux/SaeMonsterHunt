@@ -3,8 +3,8 @@ package fr.univlille.info.J2.main.management;
 import java.io.File;
 
 import fr.univlille.info.J2.main.management.cells.Cell;
-import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
-import fr.univlille.info.J2.main.utils.menuConception.Theme;
+import fr.univlille.info.J2.main.utils.resources.DisplayValues;
+import fr.univlille.info.J2.main.utils.resources.Theme;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 

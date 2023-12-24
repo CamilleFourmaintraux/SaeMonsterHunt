@@ -15,7 +15,7 @@ import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.hunter.SaveHunterData;
 import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.strategy.monster.SaveMonsterData;
-import fr.univlille.info.J2.main.utils.menuConception.Theme;
+import fr.univlille.info.J2.main.utils.resources.Theme;
 
 /**
  * La classe SaveLoadSystemGames fournit des méthodes statiques pour sauvegarder et charger des objets de type Maze

@@ -2,7 +2,9 @@ package fr.univlille.info.J2.main.strategy.monster;
 
 import java.util.List;
 
-import fr.univlille.info.J2.main.strategy.monster.brain.*;
+import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.strategy.monster.astar.AStar;
+import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -19,20 +21,11 @@ class IAhardMonster implements IMonsterStrategy{
 	private boolean[][] walls;
 	
 	/**
-	 * La grille des chemins empruntable
-	 */
-	private Node[][] pathMap;
-	
-	/**
 	 * Le chemin que l'IA souhaite emprunter
 	 */
-	private List<Node> path;
-	
-	private Node current;
-	private Node exit;
-	
-	private AlgoAStar brain;
-	
+	private List<ICoordinate> path;
+	private ICoordinate monsterPos;
+	private ICoordinate exitPos;
 	private int progress;
 	
 	/**
@@ -43,11 +36,7 @@ class IAhardMonster implements IMonsterStrategy{
 	@Override
 	public void initialize(boolean[][] walls) {
 		this.walls=walls;
-		this.pathMap = this.initPathMap(walls);
-		this.brain=new AlgoAStar();
-		this.progress=0;
-		this.current=new Node(0,0,true);
-		this.exit=new Node(0,0,true);
+		progress=1;
 	}
 	
 	/**
@@ -59,17 +48,20 @@ class IAhardMonster implements IMonsterStrategy{
 	public void update(ICellEvent ce) {
 		if(!ce.getState().equals(CellInfo.WALL)) {
 			if(ce.getState().equals(CellInfo.EXIT)) {
-				this.exit.setCoord(ce.getCoord());
+				this.setExitPos(ce.getCoord());
+			}else if(ce.getState().equals(CellInfo.MONSTER)) {
+				this.setMonsterPos(ce.getCoord());
+
+				this.path=AStar.findPath(walls,monsterPos,exitPos);
+				this.progress=0;
+				
+			}else{
+				
 			}
-			this.current.setCoord(ce.getCoord());
+			this.setMonsterPos(ce.getCoord());
 			this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]=true;
 		}else {
 			this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]=false;
-		}
-		if(this.pathMap[ce.getCoord().getRow()][ce.getCoord().getCol()].isTraversable()!=this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]) {
-			this.pathMap[ce.getCoord().getRow()][ce.getCoord().getCol()].setTraversable(this.walls[ce.getCoord().getRow()][ce.getCoord().getCol()]);
-			this.path=this.brain.think(pathMap, current, exit);
-			this.progress=0;
 		}
 	}
 	
@@ -82,27 +74,32 @@ class IAhardMonster implements IMonsterStrategy{
 	 */
 	@Override
 	public ICoordinate play() {
-		ICoordinate choice;
-		if(this.path==null || progress>this.path.size() || progress<0) {
-			progress=0;
-			this.path=this.brain.think(pathMap, current, exit);
+		if(path.isEmpty()) {
+			return new Coordinate(this.getMonsterPos().getRow()+(Utils.random.nextInt(3)-1), this.getMonsterPos().getCol()+(Utils.random.nextInt(3)-1));
+		}else {
+			if(progress>=path.size()) {
+				progress=0;
+			}
+			progress++;
+			return path.get(progress);
 		}
-		try {
-		choice=this.path.get(progress).getCoord();
-		}catch(NullPointerException npe) {
-			return this.current.getCoord();
-		}
-		progress++;
-		return choice;
+		
+	}
+
+	public ICoordinate getMonsterPos() {
+		return monsterPos;
+	}
+
+	public void setMonsterPos(ICoordinate monsterPos) {
+		this.monsterPos = monsterPos;
+	}
+
+	public ICoordinate getExitPos() {
+		return exitPos;
+	}
+
+	public void setExitPos(ICoordinate exitPos) {
+		this.exitPos = exitPos;
 	}
 	
-	public Node[][] initPathMap(boolean[][] walls) {
-		Node[][]pathMap=new Node[walls.length][walls[0].length];
-		for(int row=0; row<walls.length; row++) {
-			for(int col=0; col<walls[row].length; col++) {
-				pathMap[row][col]=new Node(row,col,walls[row][col]);
-			}
-		}
-		return pathMap; //Retourne le nombre de modifications
-	}
 }
