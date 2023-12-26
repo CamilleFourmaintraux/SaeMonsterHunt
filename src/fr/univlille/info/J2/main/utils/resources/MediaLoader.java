@@ -7,9 +7,9 @@ import java.io.File;
 public class MediaLoader {
 	private static final String SOUND_DIRECTORY_PATH = "./res/sound/";
 	public static MediaLoader media_loader;
-	private MediaPlayer media_player;
+	private static MediaPlayer media_player;
 	
-	public void playSound(String name) {
+	public static void playSound(String name) {
 		System.out.println(SOUND_DIRECTORY_PATH+name);
 
 		System.out.println(new File(".").getAbsolutePath());

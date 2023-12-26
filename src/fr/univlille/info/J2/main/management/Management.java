@@ -436,8 +436,6 @@ public class Management extends Stage implements Observer{
      * @param c Coordonnée à laquelle le monstre veut se déplacer.
 	 */
 	public void monsterPlayAt(ICoordinate c) {
-		System.out.println("IF C NULL"+(c==null));
-		System.out.println("VERIF"+this.maze.move(c));
 		this.mv.actualize();
 	}
 
@@ -447,6 +445,7 @@ public class Management extends Stage implements Observer{
      * @param c Coordonnée à laquelle le chasseur veut tirer.
 	 */
 	public void hunterPlayAt(ICoordinate c) {
+		MediaLoader.playSound("shot.mp3");
 		this.maze.shoot(c);
 		this.hv.actualize();
 	}
@@ -455,16 +454,13 @@ public class Management extends Stage implements Observer{
 	 * Bascule entre la vue du monstre et la vue du chasseur en fonction du tour actuel du jeu.
 	 */
 	public void switchInGameView() {
-		System.out.println("SWITCHVIEW IA JOUE"+this.maze.isMonsterTurn());
 		ICoordinate c;
 		if(this.maze.isMonsterTurn()) {
 			this.toMonsterView(this.getMonster_IA(), this.getHunter_IA(), this.maze.getDataMan().isSameScreen());
 			c = this.maze.getMonster().play();
 			if(c!=null) {
-				System.out.println("IAWILLPLAY");
 				this.monsterPlayAt(c);
 			}else {
-				System.out.println("C IS NULL. END OF THE WORLD");
 				this.monsterPlayAt(this.maze.getMonster().getCoord());
 			}
 		}else {
@@ -553,7 +549,7 @@ public class Management extends Stage implements Observer{
 		
 		Button bPlay = Generators.generateButton("PLAY",Color.WHITE, Color.BLACK);
 		bPlay.setOnAction(e->{
-			MediaLoader.media_loader.playSound("squeak.mp3");
+			MediaLoader.playSound("squeak.mp3");
 			//intantiation of the settings
 			this.gameplayM.setName(tf_name_monster.getText());
 			this.gameplayH.setName(tf_name_hunter.getText());
