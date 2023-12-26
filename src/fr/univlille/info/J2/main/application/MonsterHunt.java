@@ -3,6 +3,8 @@
  */
 package fr.univlille.info.J2.main.application;
 
+//Runtime components
+//--module-path /home/iutinfo/ExternalJars/Jars/javafx-sdk-21/lib --add-modules=javafx.controls,javafx.media
 
 import fr.univlille.info.J2.main.management.Management;
 import fr.univlille.info.J2.main.utils.resources.DisplayValues;
