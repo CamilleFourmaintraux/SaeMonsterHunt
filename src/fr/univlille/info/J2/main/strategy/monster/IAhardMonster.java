@@ -81,9 +81,14 @@ class IAhardMonster implements IMonsterStrategy{
 				progress=0;
 			}
 			progress++;
-			if(path.get(progress)==null) {
-				return this.randomMove();
+			try {
+				ICoordinate c = path.get(progress);
+				if(c==null) {
+					throw new IllegalArgumentException();
 				}
+			}catch(Exception e){
+				return this.randomMove();
+			}
 			return path.get(progress);
 		}
 		
