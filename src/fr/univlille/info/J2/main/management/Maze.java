@@ -375,7 +375,6 @@ public class Maze extends Subject{
 	 * @return true si l'action a reussi, sinon false.
 	 */ //BUG qui modifie mon labyrinthe
 	public boolean move(ICoordinate c) { //Fais le déplacement du monstre, retourne true si le déplacement à été possible.
-		System.out.println("MOVING");
 		this.spotted=false;
 		if(this.canMonsterMoveAt(c)) {
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
@@ -394,7 +393,6 @@ public class Maze extends Subject{
 				this.exploring(c, this.monster.getVisionRange());
 			}
 			this.endMonsterTurn();
-			System.out.println("SUCCESS MONSTER MOVED");
 			return true;
 		}
 		if(!this.getMonsterIA().equals(Management.IA_LEVELS[0])) { //Inatteignable par un joueur, sert à passer le tour d'une IA qui essaye d'aller à un endroit impossible.

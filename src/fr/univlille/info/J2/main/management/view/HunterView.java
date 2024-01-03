@@ -138,7 +138,7 @@ public class HunterView extends View{
 		this.group_stage.getChildren().add(group_texts);
 		this.group_stage.getChildren().add(group_sprite);
 
-		this.turnIndication = new Text("Turn n°1");
+		this.turnIndication = new Text("Turn n°"+maze.getTurn());
 		this.notification = new Text("Welcome to MonsterHunt - THE GAME");
 
 		Button b_option = Generators.generateButton("-> Option", this.theme.getTextColor(), this.theme.getBackgroundColor());
