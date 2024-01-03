@@ -1237,7 +1237,7 @@ public class Management extends Stage implements Observer{
 		/**
 		 * Groupe pour afficher le jeu final
 		 */
-		Group board = this.hv.getGameBoard(this.mv.getSpriteMonster(), this.mv.getSpriteExit());
+		Group board = this.hv.getGameBoard();
 
 		// Superposez le titre et les boutons
 		layout.setTop(vBoxTitle);

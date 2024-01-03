@@ -7,6 +7,7 @@ package fr.univlille.info.J2.main.management.view;
 
 import fr.univlille.info.J2.main.management.Management;
 import fr.univlille.info.J2.main.management.Maze;
+import fr.univlille.info.J2.main.management.cells.CellEvent;
 import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
@@ -60,9 +61,6 @@ public class HunterView extends View{
 	 * Constante de la largeur du contour des cases brouillard
 	 */
 	private static final int FOG_STROKE_THICKNESS=1;
-	
-	
-
 
 	/**
 	 * Sprite représentant le tir.
@@ -190,9 +188,7 @@ public class HunterView extends View{
      * Actualise la vue du chasseur en fonction des changements dans le modèle du labyrinthe.
      * Met à jour la position du sprite du tir, le texte d'indication du tour, et les notifications.
      */
-	public void actualize() {
-		int x = calculDrawX(this.maze.getHunter().getCol());
-		int y = calculDrawY(this.maze.getHunter().getRow());
+	public void actualize(int x, int y) {
 		this.sprite_shot.setXY(x,y);
 		this.sprite_shot.setVisible(true);
 		this.sprite_shot.getImgv().setVisible(true);
@@ -203,6 +199,12 @@ public class HunterView extends View{
 			this.notification.setText("");
 		}
 		this.actualizeCells(this.maze.getHunter().getRow(),this.maze.getHunter().getCol());
+	}
+	
+	public void actualize() {
+		int x = calculDrawX(this.maze.getHunter().getCol());
+		int y = calculDrawY(this.maze.getHunter().getRow());
+		this.actualize(x,y);
 	}
 
 	
@@ -263,7 +265,6 @@ public class HunterView extends View{
 		if(this.maze.getHunterIA().equals(Management.getDefaultIaPlayer())) {
 			this.selection.setY(r.getY());
 			this.selection.setX(r.getX());
-			this.selection.toFront();
 			this.selection.setVisible(true);
 		}
 	}
@@ -354,23 +355,36 @@ public class HunterView extends View{
 
 	}
 	
-	public Group getGameBoard(CellWithText sprite_monster, CellWithText sprite_exit) {
-		for(Node e:this.group_map.getChildren()) {
-			if(e.getClass()==CellWithText.class) {
-				CellWithText s = (CellWithText) e;
-				this.revealCell(s, this.theme.getWallColor(), this.theme.getFloorColor());
+	public Group getGameBoard() {
+		CellWithText cwt;
+		for(int row = 0; row<this.maze.getWalls().length;row++) {
+			for(int col = 0; col<this.maze.getWalls()[row].length;col++) {
+				try {
+					ICoordinate c = new Coordinate(row,col);
+					CellEvent ce = new CellEvent(c, this.maze.getTrace(c), this.maze.getCellInfo(c));
+					this.maze.getHunter().actualizeTraces(ce);
+					this.maze.getHunter().update(ce);
+					this.actualizeCells(row,col);
+					cwt = searchSprite(this.group_map, c);
+					this.revealCell(cwt,this.theme.getWallColor(),this.theme.getFloorColor());
+				}catch(ArrayIndexOutOfBoundsException aioobe) {
+					//En dehors de la carte
+				}
 			}
 		}
-		for(Node e:this.group_texts.getChildren()) {
-			if(e.getClass()==CellWithText.class) {
-				Text t= (Text) e;
-				t.setVisible(true);
-			}
-		}
+		CellWithText sprite_monster = new CellWithText(this.maze.getMonster().getCoord(), this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY(), "Monster");
 		sprite_monster.setVisible(true);
 		sprite_monster.getImgv().setVisible(true);
+		sprite_monster.setImage(Theme.themesMap.get(this.theme.getName()).getMonsterImg());
 		this.group_sprite.getChildren().add(sprite_monster);
 		this.group_sprite.getChildren().add(sprite_monster.getImgv());
+		this.sprite_shot.setImage(Theme.themesMap.get(this.theme.getName()).getHunterImg());
+		this.group_sprite.getChildren().add(sprite_shot.getImgv());
+		CellWithText sprite_exit = new CellWithText(this.maze.getExit().getCoord(), this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY(), "Exit");
+		sprite_exit.setImage(Theme.themesMap.get(this.theme.getName()).getExitImg());
+		sprite_exit.setVisible(true);
+		sprite_exit.getImgv().setVisible(true);
+		this.selection.setVisible(false);
 		this.group_map.getChildren().add(sprite_exit);
 		this.group_map.getChildren().add(sprite_exit.getImgv());
 		return this.group_stage;
