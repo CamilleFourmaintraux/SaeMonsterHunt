@@ -24,12 +24,10 @@ public class AStar {
         Node startNode = new Node(start, 0, heuristic(start, end), null);
         openSet.add(startNode);
         nodeMap.put(start, startNode);
-        System.out.println("STARTING A* ALGO");
         while (!openSet.isEmpty()&&cpt<MAX_CPT) {
         	cpt++;
             Node currentNode = openSet.poll();
             if (currentNode.coordinate.equals(end)) {
-                System.out.println("A* SUCCESS {"+cpt);
                 return reconstructPath(currentNode);
             }
 
@@ -54,7 +52,6 @@ public class AStar {
                 nodeMap.put(neighbor, neighborNode);
             }
         }
-        System.out.println("A* FAILURE {"+cpt);
         return new ArrayList<>();
     }
 
