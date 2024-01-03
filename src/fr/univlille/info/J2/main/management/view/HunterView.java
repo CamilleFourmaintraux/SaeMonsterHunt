@@ -354,4 +354,8 @@ public class HunterView extends View{
 
 	}
 	
+	public Group getGameBoard() {
+		return this.group_stage;
+	}
+	
 }

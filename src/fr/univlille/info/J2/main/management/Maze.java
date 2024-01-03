@@ -375,6 +375,7 @@ public class Maze extends Subject{
 	 * @return true si l'action a reussi, sinon false.
 	 */ //BUG qui modifie mon labyrinthe
 	public boolean move(ICoordinate c) { //Fais le déplacement du monstre, retourne true si le déplacement à été possible.
+		System.out.println("T"+this.getTurn()+" : MONSTER TRY ("+c.getRow()+","+c.getCol()+")");
 		this.spotted=false;
 		if(this.canMonsterMoveAt(c)) {
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {

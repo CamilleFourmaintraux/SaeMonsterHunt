@@ -20,7 +20,7 @@ import javafx.scene.paint.Color;
  */
 public class MazeEditor {
 	/**
-	 * Groupe contenant permettant le controle
+	 * Groupe contenant permettant d'éditer, de sélectionner
 	 */
 	Group group_map;
 
