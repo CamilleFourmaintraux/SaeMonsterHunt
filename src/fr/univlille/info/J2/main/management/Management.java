@@ -201,11 +201,6 @@ public class Management extends Stage implements Observer{
 	private HunterView hv;
 	
 	/**
-	 * label qui indique le gagnant
-	 */
-	private Label winner ;
-	
-	/**
 	 * bjet pour stocker les valeurs relative à l'écran (taille de la fenêtre, etc..)
 	 */
 	private DisplayValues display;
@@ -284,7 +279,8 @@ public class Management extends Stage implements Observer{
 
 		gameplayH = new GameplayHunterData(DEFAULT_NAME_HUNTER, DEFAULT_IA_PLAYER, DEFAULT_BONUS_RANGE);
 		gameplayM = new GameplayMonsterData(DEFAULT_NAME_MONSTER, DEFAULT_IA_PLAYER, false, DEFAULT_VISION_RANGE, DEFAULT_MOVING_RANGE);
-
+		
+		//Génération des menus
 		this.menus.put(Integer.valueOf(ID_SETTINGS), this.generateSettingsMainMenu());
 		this.menus.put(Integer.valueOf(ID_PLAY), this.generatePlayMenu());
 		this.menus.put(Integer.valueOf(ID_WAIT), this.generateWaitingNextPlayer());
@@ -293,7 +289,8 @@ public class Management extends Stage implements Observer{
 		this.menus.put(Integer.valueOf(ID_MONSTER_SETTINGS), this.generateSettingsMonster());
 		this.menus.put(Integer.valueOf(ID_HUNTER_SETTINGS), this.generateSettingsHunter());
 		this.menus.put(Integer.valueOf(ID_MAZE_EDITOR), this.generateMazeEditor());
-		 
+		//Game Over est généré à chaque fin de partie
+		
 		this.viewM = new Stage();
 		this.viewH = new Stage();
 		this.viewCommon = new Stage();
@@ -399,13 +396,6 @@ public class Management extends Stage implements Observer{
 	 */
 	public boolean gameOver() {
 		if(this.maze.isGameOver()) {
-			if (this.maze.getIdWinner() == 1) {
-				this.winner.setText(this.gameplayM.getName()+" won !");
-			}else if (this.maze.getIdWinner() == 2) {
-				this.winner.setText(this.gameplayH.getName()+" won !");
-			}else {
-				this.winner.setText("Tie - The game was stopped.");
-			}
 			this.setScene(this.generateGameOverScreen());
 			this.setHeight(this.display.getWindowHeight());
 			this.setWidth(this.display.getWindowWidth());
@@ -453,16 +443,12 @@ public class Management extends Stage implements Observer{
 			c = this.maze.getMonster().play();
 			if(c!=null) {
 				this.monsterPlayAt(c);
-			}else {
-				this.monsterPlayAt(this.maze.getMonster().getCoord());
 			}
 		}else {
 			this.toHunterView(this.getMonster_IA(), this.getHunter_IA(), this.maze.getDataMan().isSameScreen());
 			c = this.maze.getHunter().play();
 			if(c!=null) {
 				this.hunterPlayAt(c);
-			}else {
-				this.hunterPlayAt(this.maze.getHunter().getCoord());
 			}
 		}
 	}
@@ -1190,10 +1176,17 @@ public class Management extends Stage implements Observer{
 	 */
 	public Scene generateGameOverScreen() {
 		Label title = Generators.generateTitle("Game Over");
+		Label winner = new Label();
 		Label Credit = Generators.generateLabel("Jeu réalisé par Fourmaintraux Camille | Top Jessy | Debacq Arthur | Franos Théo ", 0, 0);
 		
+		if (this.maze.getIdWinner() == 1) {
+			winner.setText(this.gameplayM.getName()+" won !");
+		}else if (this.maze.getIdWinner() == 2) {
+			winner.setText(this.gameplayH.getName()+" won !");
+		}else {
+			winner.setText("Tie - The game was stopped.");
+		}
 		
-		this.winner = new Label();
 		winner.setFont(new Font("Arial", 24));
 		winner.setTextFill(Color.BLACK);
 		
@@ -1216,7 +1209,7 @@ public class Management extends Stage implements Observer{
 		// Laissez un espace en haut de la page
 
 		VBox vBoxTitle = new VBox(10);
-		vBoxTitle.getChildren().addAll(title ,this.winner);
+		vBoxTitle.getChildren().addAll(title ,winner);
 		vBoxTitle.setAlignment(Pos.TOP_CENTER);
 		vBoxTitle.setSpacing(60);
 		
@@ -1244,7 +1237,7 @@ public class Management extends Stage implements Observer{
 		/**
 		 * Groupe pour afficher le jeu final
 		 */
-		Group board = new Group();
+		Group board = this.hv.getGameBoard(this.mv.getSpriteMonster(), this.mv.getSpriteExit());
 
 		// Superposez le titre et les boutons
 		layout.setTop(vBoxTitle);

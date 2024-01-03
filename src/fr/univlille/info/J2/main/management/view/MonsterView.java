@@ -63,6 +63,7 @@ public class MonsterView  extends View {
 	private CellWithText sprite_monster;
 	private CellWithText  sprite_shot;
 	private CellWithText  selection;
+	private CellWithText  sprite_exit;
 
 	/**
 	 * Groupe pour la gestion des images.
@@ -239,7 +240,6 @@ public class MonsterView  extends View {
 	 * Initialisation des sprites.
 	 */
 	protected void initiateSprites() {
-		CellWithText  sprite_exit;
 		//Initialisation du sprite du monstre
 		this.sprite_monster=new CellWithText(this.maze.getMonster().getCoord(), this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY(), "Monster");
 		if(this.theme.isWithImages()) {
@@ -385,4 +385,13 @@ public class MonsterView  extends View {
 		this.selection.setStroke(VALID_SELECTION_COLOR);
 		this.selection.setStrokeWidth(3);
 	}
+
+	public CellWithText getSpriteMonster() {
+		return sprite_monster;
+	}
+	
+	public CellWithText getSpriteExit() {
+		return sprite_exit;
+	}
+	
 }

@@ -354,7 +354,25 @@ public class HunterView extends View{
 
 	}
 	
-	public Group getGameBoard() {
+	public Group getGameBoard(CellWithText sprite_monster, CellWithText sprite_exit) {
+		for(Node e:this.group_map.getChildren()) {
+			if(e.getClass()==CellWithText.class) {
+				CellWithText s = (CellWithText) e;
+				this.revealCell(s, this.theme.getWallColor(), this.theme.getFloorColor());
+			}
+		}
+		for(Node e:this.group_texts.getChildren()) {
+			if(e.getClass()==CellWithText.class) {
+				Text t= (Text) e;
+				t.setVisible(true);
+			}
+		}
+		sprite_monster.setVisible(true);
+		sprite_monster.getImgv().setVisible(true);
+		this.group_sprite.getChildren().add(sprite_monster);
+		this.group_sprite.getChildren().add(sprite_monster.getImgv());
+		this.group_map.getChildren().add(sprite_exit);
+		this.group_map.getChildren().add(sprite_exit.getImgv());
 		return this.group_stage;
 	}
 	

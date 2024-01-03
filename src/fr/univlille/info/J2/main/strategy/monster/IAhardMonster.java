@@ -75,15 +75,22 @@ class IAhardMonster implements IMonsterStrategy{
 	@Override
 	public ICoordinate play() {
 		if(path.isEmpty()) {
-			return new Coordinate(this.getMonsterPos().getRow()+(Utils.random.nextInt(3)-1), this.getMonsterPos().getCol()+(Utils.random.nextInt(3)-1));
+			return this.randomMove();
 		}else {
 			if(progress>=path.size()) {
 				progress=0;
 			}
 			progress++;
+			if(path.get(progress)==null) {
+				return this.randomMove();
+				}
 			return path.get(progress);
 		}
 		
+	}
+	
+	public ICoordinate randomMove() {
+		return new Coordinate(this.getMonsterPos().getRow()+(Utils.random.nextInt(3)-1), this.getMonsterPos().getCol()+(Utils.random.nextInt(3)-1));
 	}
 
 	public ICoordinate getMonsterPos() {
