@@ -452,7 +452,11 @@ public class Maze extends Subject{
 				for(int x=c.getCol()-this.getBonusRange(); x<c.getCol()+(this.getBonusRange()+1); x++) {
 					try {
 						temp = new Coordinate(y,x);
-						ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
+						if(this.getCellInfo(temp)!=CellInfo.WALL) {
+							ce = new CellEvent(temp, this.getTrace(temp), CellInfo.EMPTY);
+						}else {
+							ce = new CellEvent(temp, this.getTrace(temp), CellInfo.WALL);
+						}
 						this.hunter.actualizeTraces(ce);
 						this.hunter.update(ce);
 					}catch(Exception e) {

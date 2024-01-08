@@ -1,8 +1,8 @@
 package fr.univlille.info.J2.main.utils.resources;
 
-import javafx.scene.media.Media;
+/*import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import java.io.File;
+import java.io.File;*/
 
 public class MediaLoader {
 	/*private static final String SOUND_DIRECTORY_PATH = "./res/sound/";
