@@ -1185,16 +1185,24 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu de GameOver.
 	 */
 	public Scene generateGameOverScreen() {
+		/**
+		 * Groupe pour afficher le jeu final
+		 */
+		Group board;
+		
 		Label title = Generators.generateTitle("Game Over");
 		Label winner = new Label();
 		Label Credit = Generators.generateLabel("Jeu réalisé par Fourmaintraux Camille | Top Jessy | Debacq Arthur | Franos Théo ", 0, 0);
 		
 		if (this.maze.getIdWinner() == 1) {
 			winner.setText(this.gameplayM.getName()+" won !");
+			board = this.hv.getGameBoard();
 		}else if (this.maze.getIdWinner() == 2) {
 			winner.setText(this.gameplayH.getName()+" won !");
+			board = this.hv.getGameBoard();
 		}else {
 			winner.setText("Tie - The game was stopped.");
+			board = new Group();
 		}
 		
 		winner.setFont(new Font("Arial", 24));
@@ -1244,10 +1252,6 @@ public class Management extends Stage implements Observer{
 
 		layout.setPadding(new Insets(20));
 		
-		/**
-		 * Groupe pour afficher le jeu final
-		 */
-		Group board = this.hv.getGameBoard();
 
 		// Superposez le titre et les boutons
 		layout.setTop(vBoxTitle);
