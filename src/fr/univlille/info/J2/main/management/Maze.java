@@ -228,14 +228,28 @@ public class Maze extends Subject{
 	}
 	
 	public void initMonsterExitHunter(GameplayHunterData dataH, GameplayMonsterData dataM) {
-		this.exit = new Exit(new Coordinate(this.getWalls().length-1, Utils.random.nextInt(this.getWalls()[this.getWalls().length-1].length-2)+1));
-		this.setFloor(this.exit.getCoord(),true);
-		ICoordinate far;
-		try {
-			far=farthestCell(exit.getCoord(),getWalls());
-		}catch(IllegalArgumentException iae) {
-			far=new Coordinate(0, Utils.random.nextInt(this.getWalls()[this.getWalls().length-1].length-2)+1);
+		int exit_x = Utils.random.nextInt(this.getWalls()[0].length);
+		int exit_y = Utils.random.nextInt(this.getWalls().length);
+		if(Utils.random.nextBoolean()) {
+			if(exit_x>this.getWalls()[0].length/2) {
+				exit_x=this.getWalls()[0].length-2;
+			}else {
+				exit_x=1;
+			}
+		}else {
+			if(exit_y>this.getWalls().length/2) {
+				exit_y=this.getWalls().length-2;
+			}else {
+				exit_y=1;
+			}
 		}
+		this.exit = new Exit(new Coordinate(exit_y, exit_x));
+		this.setFloor(this.exit.getCoord(),true);
+		
+		int monster_x = (this.getWalls()[0].length-this.exit.getCol())-1;
+		int monster_y = (this.getWalls().length-this.exit.getRow())-1;
+		ICoordinate far = new Coordinate(monster_y, monster_x);
+		
 		this.monster = new Monster(Arrays.copyOf(this.getWalls(),this.getWalls().length),far,exit.getCoord(),dataM);
 		this.setFloor(this.monster.getCoord(),true);
 
@@ -681,7 +695,7 @@ public class Maze extends Subject{
 	
 
 	
-	protected static ICoordinate farthestCell(ICoordinate cell, boolean[][]walls) throws IllegalArgumentException{
+	/*protected static ICoordinate farthestCell(ICoordinate cell, boolean[][]walls) throws IllegalArgumentException{
 		int distance = 0;
 		ICoordinate far=null;
 		for(int row=0; row<walls.length; row++) {
@@ -696,5 +710,5 @@ public class Maze extends Subject{
 			throw new IllegalArgumentException();
 		}
 		return far;
-	}
+	}*/
  }
