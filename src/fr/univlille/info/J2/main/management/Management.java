@@ -139,9 +139,14 @@ public class Management extends Stage implements Observer{
 	private static final int LABEL_MIN_WIDTH = 120;
 
 	/**
+	 * Constante de taille minimal du labyrinthe pour les textFields
+	 */
+	private static final int MIN_MAZE_SIZE_MANDATORY = 1;
+	
+	/**
 	 * Constante de taille minimal du labyrinthe.
 	 */
-	private static final int MIN_MAZE_SIZE = 1;
+	private static final int MIN_MAZE_SIZE = 3;
 
 	/**
 	 * Constante de taille par défault du labyrinthe.
@@ -785,8 +790,8 @@ public class Management extends Stage implements Observer{
 
 		TextField tf_height = Generators.generateTextField("10");
 		TextField tf_width = Generators.generateTextField("10");
-		Generators.addCheckNumericalValueToTextField(tf_height, MIN_MAZE_SIZE, MAX_MAZE_SIZE);
-		Generators.addCheckNumericalValueToTextField(tf_width, MIN_MAZE_SIZE, MAX_MAZE_SIZE);
+		Generators.addCheckNumericalValueToTextField(tf_height, MIN_MAZE_SIZE_MANDATORY , MAX_MAZE_SIZE);
+		Generators.addCheckNumericalValueToTextField(tf_width, MIN_MAZE_SIZE_MANDATORY , MAX_MAZE_SIZE);
 
 		TextField tf_probability = Generators.generateTextField("20", 3, '0', '9');
 		Generators.addCheckNumericalValueToTextField(tf_probability, 0, 100);
@@ -795,7 +800,7 @@ public class Management extends Stage implements Observer{
 		Label l_height = Generators.generateLabel("Maze Height ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", tf_height.getLayoutX()-LABEL_MIN_WIDTH-5, tf_height.getLayoutY());
 		Label l_width= Generators.generateLabel("Maze Width ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", tf_width.getLayoutX()-LABEL_MIN_WIDTH-5, tf_width.getLayoutY());
 
-		Slider slider_height = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
+		Slider slider_height = Generators.generateSlider(MIN_MAZE_SIZE_MANDATORY,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		Generators.setLayout(slider_height, l_height.getLayoutX(),tf_height.getLayoutY()+25);
 		slider_height.valueProperty().addListener(e->{
 			tf_height.setText(""+(int)slider_height.getValue());
@@ -815,14 +820,14 @@ public class Management extends Stage implements Observer{
 					slider_height.setValue(Integer.parseInt(tf_height.getText()));
 					maze_height=Integer.parseInt(tf_height.getText());
 				}else {
-					slider_height.setValue(DEFAULT_MAZE_SIZE);
-					maze_height=DEFAULT_MAZE_SIZE;
-					tf_height.setText(""+DEFAULT_MAZE_SIZE);
+					slider_height.setValue(MIN_MAZE_SIZE_MANDATORY);
+					maze_height=MIN_MAZE_SIZE_MANDATORY;
+					tf_height.setText(""+MIN_MAZE_SIZE_MANDATORY);
 				}
 			}
 		});
 
-		Slider slider_width = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
+		Slider slider_width = Generators.generateSlider(MIN_MAZE_SIZE_MANDATORY,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		Generators.setLayout(slider_width, l_width.getLayoutX(),tf_width.getLayoutY()+25);
 		slider_width.valueProperty().addListener(e->{
 			tf_width.setText(""+(int)slider_width.getValue());
@@ -843,9 +848,9 @@ public class Management extends Stage implements Observer{
 					slider_width.setValue(Integer.parseInt(tf_width.getText()));
 					maze_width=Integer.parseInt(tf_width.getText());
 				}else {
-					slider_width.setValue(DEFAULT_MAZE_SIZE);
-					maze_width=DEFAULT_MAZE_SIZE;
-					tf_width.setText(""+DEFAULT_MAZE_SIZE);
+					slider_width.setValue(MIN_MAZE_SIZE_MANDATORY);
+					maze_width=MIN_MAZE_SIZE_MANDATORY;
+					tf_width.setText(""+MIN_MAZE_SIZE_MANDATORY);
 				}
 			}
 		});
@@ -886,6 +891,11 @@ public class Management extends Stage implements Observer{
 				tf_probability.setText(""+DEFAULT_PROBABILITY);
 			}else {
 				probability=Integer.parseInt(tf_probability.getText());
+			}
+			if(this.maze_height<MIN_MAZE_SIZE) {
+				this.maze_height=MIN_MAZE_SIZE;
+			}if(this.maze_width<MIN_MAZE_SIZE) {
+				this.maze_width=MIN_MAZE_SIZE;
 			}
 		});
 
@@ -1068,12 +1078,12 @@ public class Management extends Stage implements Observer{
 		Label l_height = Generators.generateLabel("Maze Height ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", 0, 0);
 		Label l_width= Generators.generateLabel("Maze Width ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", 0, 0);
 
-		Slider slider_editor_height = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
+		Slider slider_editor_height = Generators.generateSlider(MIN_MAZE_SIZE_MANDATORY,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		slider_editor_height.valueProperty().addListener(e->{
 			mEdit.editor_height=(int)slider_editor_height.getValue();
 			l_height.setText("Height of the maze ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+") : "+mEdit.editor_height);
 		});
-		Slider slider_editor_width = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
+		Slider slider_editor_width = Generators.generateSlider(MIN_MAZE_SIZE_MANDATORY,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		slider_editor_width.valueProperty().addListener(e->{
 			mEdit.editor_width=(int)slider_editor_width.getValue();
 			l_width.setText("Width of the maze ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+") : "+mEdit.editor_width);
