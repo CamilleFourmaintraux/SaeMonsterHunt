@@ -134,7 +134,7 @@ public class Theme {
 	
 		dungeon.floorImg=loadImage(THEME_DUNGEON,"tiles.png");
 		dungeon.wallImg=loadImage(THEME_DUNGEON,"bricks.png");
-		dungeon.monsterImg=loadImage(THEME_DUNGEON,"slime.png");
+		dungeon.monsterImg=loadImage(THEME_DUNGEON,"animation_slime.gif");
 		dungeon.exitImg=loadImage(THEME_DUNGEON,"stairs.png");
 		dungeon.hunterImg=loadImage(THEME_DUNGEON,"magicScope.png");
 		dungeon.floorColor=Color.LIGHTGREY;
