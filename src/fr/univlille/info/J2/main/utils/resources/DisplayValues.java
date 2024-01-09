@@ -1,4 +1,4 @@
-package fr.univlille.info.J2.main.utils.menuConception;
+package fr.univlille.info.J2.main.utils.resources;
 
 /**
  * La classe DisplayValues représente les valeurs de configuration pour l'affichage, notamment

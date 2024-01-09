@@ -41,3 +41,14 @@
 ## Semaine du 18/12 au 22/12
 
  **Théo Franos :** poursuite des animations des images pour les thèmes(gif)
+**Camille Fourmaintraux :** Système de sauvegarde de partie et générateur de labyrinthe
+
+## Vacances du 23/12 au 07/01
+
+**Camille Fourmaintraux :** Tentative d'ajout d'effets sonores, corrections de bugs et écran de fin de partie.
+
+
+
+## Semaine du 08/01 au 10/01
+
+**Camille Fourmaintraux :** Améliorations des IAs et Derniers correctifs

@@ -35,7 +35,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 public class Maze extends Subject{
 
 	public static final boolean[][] DEFAULT_MAP = new boolean[][] {
-		{false,true,false,true,true,false,true,false,true,false}, 	// X . X . . X . X . X
+		{true,true,false,true,true,false,true,false,true,false}, 	// . . X . . X . X . X
 		{false,true,true,true,true,false,true,false,true,true},		// X . . . . X . X . .
 		{true,true,true,true,false,false,true,false,false,true},	// . . . . X X . X X .
 		{true,true,false,true,true,false,true,true,true,true},		// . . X . . X . . . .
@@ -44,11 +44,11 @@ public class Maze extends Subject{
 		{false,true,true,true,false,true,true,true,true,true},		// X . . . X . . . . .
 		{true,true,true,true,true,true,true,false,true,false},		// . . . . . . . X . X
 		{true,true,false,true,true,false,true,false,false,false},	// . . X . . X . X X X
-		{false,false,true,true,false,false,true,true,true,false}	// X X . . X X . . . X
+		{false,false,true,true,false,false,true,true,true,true}		// X X . . X X . . . .
 	};
 	
 	private SaveMazeData data;
-	public SaveManagementData dataMan;
+	private SaveManagementData dataMan;
 
 	/**
 	 * La sortie (les coordonnées) du labyrinthe.
@@ -121,7 +121,6 @@ public class Maze extends Subject{
 	}
 	
 	public Maze(Save save) {
-		System.out.println("TOUR DU MONSTRE:"+save.getData_maze().isMonsterTurn());
 		this.data=save.getData_maze();
 		this.dataMan=save.getData_management();
 		this.initMonsterExitHunter(save);
@@ -159,23 +158,7 @@ public class Maze extends Subject{
 	 * @return un tableau de boolean représentant un labyrinthe.
 	 */
 	public static boolean[][] generateRandomMap(int probability, int height, int width) {
-		boolean[][] maze = Maze.initEmptyMaze(height, width);
-		boolean onlyWalls;
-		for(int h=1; h<maze.length; h+=2) {
-			onlyWalls=true;
-			for(int l=0; l<maze[h].length; l++) {
-				if(probability<Utils.random.nextInt(100)+1) {
-					//maze[h][l]=true; //De base mit à true, grâce à la fonction intEmptyMaze
-					onlyWalls=false;
-				}else {
-					maze[h][l]=false;
-				}
-			}
-			if(onlyWalls) {
-				maze[h][Utils.random.nextInt(maze[h].length)]=true;
-			}
-		}
-		return maze;
+		return MazeGenerator.getMazeGenerator().generateRandomMaze(height, width, probability);
 	}
 
 	/**
@@ -245,9 +228,29 @@ public class Maze extends Subject{
 	}
 	
 	public void initMonsterExitHunter(GameplayHunterData dataH, GameplayMonsterData dataM) {
-		this.exit = new Exit(new Coordinate(this.getWalls().length-1, Utils.random.nextInt(this.getWalls()[this.getWalls().length-1].length)));
+		int exit_x = Utils.random.nextInt(this.getWalls()[0].length);
+		int exit_y = Utils.random.nextInt(this.getWalls().length);
+		if(Utils.random.nextBoolean()) {
+			if(exit_x>this.getWalls()[0].length/2) {
+				exit_x=this.getWalls()[0].length-2;
+			}else {
+				exit_x=1;
+			}
+		}else {
+			if(exit_y>this.getWalls().length/2) {
+				exit_y=this.getWalls().length-2;
+			}else {
+				exit_y=1;
+			}
+		}
+		this.exit = new Exit(new Coordinate(exit_y, exit_x));
 		this.setFloor(this.exit.getCoord(),true);
-		this.monster = new Monster(Arrays.copyOf(this.getWalls(),this.getWalls().length),new Coordinate(0,Utils.random.nextInt(this.getWalls()[0].length)),exit.getCoord(),dataM);
+		
+		int monster_x = (this.getWalls()[0].length-this.exit.getCol())-1;
+		int monster_y = (this.getWalls().length-this.exit.getRow())-1;
+		ICoordinate far = new Coordinate(monster_y, monster_x);
+		
+		this.monster = new Monster(Arrays.copyOf(this.getWalls(),this.getWalls().length),far,exit.getCoord(),dataM);
 		this.setFloor(this.monster.getCoord(),true);
 
 		this.hunter = new Hunter(this.getWalls().length,this.getWalls()[0].length,new Coordinate(0,0), dataH);
@@ -259,10 +262,14 @@ public class Maze extends Subject{
 	 */
 	@Override
 	public String toString() {
+		return Maze.toString(getWalls());
+	}
+	
+	public static String toString(boolean[][] walls) {
 		StringBuilder sb = new StringBuilder();
-		for (boolean[] wall : this.getWalls()) {
-			for(int l=0; l<wall.length; l++) {
-				if(wall[l]) {
+		for (int h=0; h<walls.length; h++) {
+			for(int l=0; l<walls[h].length; l++) {
+				if(walls[h][l]) {
 					sb.append('.');
 				}else {
 					sb.append('X');
@@ -278,13 +285,15 @@ public class Maze extends Subject{
 	/**
 	 * Affichage en ASCII (Terminal ) du tableau des traces laissées par le monstre.
 	 */
-	public void printTraces() {
+	public String getStringTraces() {
+		StringBuilder sb = new StringBuilder();
 		for(int h=0; h<this.getWalls().length;h++) {
 			for(int l=0; l<this.getWalls()[h].length;l++) {
-				System.out.print(" "+this.getWalls()[h][l]+" ");
+				sb.append(" "+this.getWalls()[h][l]+" ");
 			}
-			System.out.println();
+			sb.append("\n");
 		}
+		return sb.toString();
 	}
 
 	/**
@@ -387,10 +396,9 @@ public class Maze extends Subject{
 			}
 			this.setTrace(c, this.getTurn());
 
-			///BUG COMMENCE ICI
 			CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
+			this.monster.setCoord(c);
 			this.monster.update(ce);
-			///BUG FINI ICI
 			if(ce.getState().equals(CellInfo.EXIT)) {
 				this.isGameOver=true;
 				this.idWinner = 1;
@@ -402,7 +410,8 @@ public class Maze extends Subject{
 			return true;
 		}
 		if(!this.getMonsterIA().equals(Management.IA_LEVELS[0])) { //Inatteignable par un joueur, sert à passer le tour d'une IA qui essaye d'aller à un endroit impossible.
-			if(this.areCoordinateInBounds(c)) {
+			if(this.canMonsterMoveAt(c)) {
+				this.monster.setCoord(c);
 				CellEvent ce = new CellEvent(c, this.getTrace(c), this.getCellInfo(c));
 				this.monster.update(ce);
 			}
@@ -443,7 +452,11 @@ public class Maze extends Subject{
 				for(int x=c.getCol()-this.getBonusRange(); x<c.getCol()+(this.getBonusRange()+1); x++) {
 					try {
 						temp = new Coordinate(y,x);
-						ce = new CellEvent(temp, this.getTrace(temp), this.getCellInfo(temp));
+						if(this.getCellInfo(temp)!=CellInfo.WALL) {
+							ce = new CellEvent(temp, this.getTrace(temp), CellInfo.EMPTY);
+						}else {
+							ce = new CellEvent(temp, this.getTrace(temp), CellInfo.WALL);
+						}
 						this.hunter.actualizeTraces(ce);
 						this.hunter.update(ce);
 					}catch(Exception e) {
@@ -518,13 +531,18 @@ public class Maze extends Subject{
 	 * @return un tableau d'entier de 2 cases contenant la distance en largeur en première case
 	 * puis la distance en hauteur en seconde case.
 	 */
-	public int[] calculDistance(ICoordinate c1, ICoordinate c2) {
+	public static int[] calculDistanceTab(ICoordinate c1, ICoordinate c2) {
 		int[] distances = new int[2];
 		int distanceX= Math.abs(c1.getCol()-c2.getCol());
 		int distanceY= Math.abs(c1.getRow()-c2.getRow());
 		distances[0]=distanceX;
 		distances[1]=distanceY;
 		return distances;
+	}
+	
+	public static int calculDistance(ICoordinate c1, ICoordinate c2) {
+		int[] distances = calculDistanceTab(c1,c2);
+		return distances[0]+distances[1];
 	}
 
 	/**
@@ -536,7 +554,8 @@ public class Maze extends Subject{
 	 * @return true si les deux coordonnées sont à portée,sinon false.
 	 */
 	public boolean inReach(ICoordinate c1, ICoordinate c2, int reach) {
-		return (this.calculDistance(c1, c2)[0]<reach+1 && this.calculDistance(c1, c2)[1]<reach+1);
+		int[] distances = calculDistanceTab(c1,c2);
+		return (distances[0]<reach+1 && distances[1]<reach+1);
 	}
 	/**
 	 * Modifie le tableau de traces à la coordonnée c pour ajouter la nouvelle trace.
@@ -677,4 +696,23 @@ public class Maze extends Subject{
 	public SaveManagementData getDataMan() {
 		return this.dataMan;	
 	}
+	
+
+	
+	/*protected static ICoordinate farthestCell(ICoordinate cell, boolean[][]walls) throws IllegalArgumentException{
+		int distance = 0;
+		ICoordinate far=null;
+		for(int row=0; row<walls.length; row++) {
+			for(int col=0; col<walls[row].length;col++) {
+				if(distance<Maze.calculDistance(cell,new Coordinate (row,col)) && walls[row][col]) {
+					distance=Maze.calculDistance(cell,new Coordinate (row,col));
+					far=new Coordinate (row,col);
+				}
+			}
+		}
+		if(far==null) {
+			throw new IllegalArgumentException();
+		}
+		return far;
+	}*/
  }

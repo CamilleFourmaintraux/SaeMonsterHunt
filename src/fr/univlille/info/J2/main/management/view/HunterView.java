@@ -7,14 +7,15 @@ package fr.univlille.info.J2.main.management.view;
 
 import fr.univlille.info.J2.main.management.Management;
 import fr.univlille.info.J2.main.management.Maze;
+import fr.univlille.info.J2.main.management.cells.CellEvent;
 import fr.univlille.info.J2.main.management.cells.CellWithText;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 import fr.univlille.info.J2.main.utils.Utils;
-import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
-import fr.univlille.info.J2.main.utils.menuConception.Generators;
-import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
+import fr.univlille.info.J2.main.utils.resources.DisplayValues;
+import fr.univlille.info.J2.main.utils.resources.Generators;
+import fr.univlille.info.J2.main.utils.resources.Theme;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -60,9 +61,6 @@ public class HunterView extends View{
 	 * Constante de la largeur du contour des cases brouillard
 	 */
 	private static final int FOG_STROKE_THICKNESS=1;
-	
-	
-
 
 	/**
 	 * Sprite représentant le tir.
@@ -138,7 +136,7 @@ public class HunterView extends View{
 		this.group_stage.getChildren().add(group_texts);
 		this.group_stage.getChildren().add(group_sprite);
 
-		this.turnIndication = new Text("Turn n°1");
+		this.turnIndication = new Text("Turn n°"+maze.getTurn());
 		this.notification = new Text("Welcome to MonsterHunt - THE GAME");
 
 		Button b_option = Generators.generateButton("-> Option", this.theme.getTextColor(), this.theme.getBackgroundColor());
@@ -190,9 +188,7 @@ public class HunterView extends View{
      * Actualise la vue du chasseur en fonction des changements dans le modèle du labyrinthe.
      * Met à jour la position du sprite du tir, le texte d'indication du tour, et les notifications.
      */
-	public void actualize() {
-		int x = calculDrawX(this.maze.getHunter().getCol());
-		int y = calculDrawY(this.maze.getHunter().getRow());
+	public void actualize(int x, int y) {
 		this.sprite_shot.setXY(x,y);
 		this.sprite_shot.setVisible(true);
 		this.sprite_shot.getImgv().setVisible(true);
@@ -203,6 +199,12 @@ public class HunterView extends View{
 			this.notification.setText("");
 		}
 		this.actualizeCells(this.maze.getHunter().getRow(),this.maze.getHunter().getCol());
+	}
+	
+	public void actualize() {
+		int x = calculDrawX(this.maze.getHunter().getCol());
+		int y = calculDrawY(this.maze.getHunter().getRow());
+		this.actualize(x,y);
 	}
 
 	
@@ -248,10 +250,6 @@ public class HunterView extends View{
 		//initialisation du sprite du tir
 		this.sprite_shot=new CellWithText(this.maze.getHunter().getCoord(), this.display.getZoom(), Color.TRANSPARENT, SHOT_COLOR, SHOT_STROKE_THICKNESS, this.display.getGapX(),this.display.getGapY(), "Shot");
 		this.sprite_shot.setVisible(false);
-		this.sprite_shot.setOnMouseEntered(event -> {
-			this.select(this.sprite_shot);
-			this.scene.setOnMouseClicked(e -> this.selectionLocked(this.sprite_shot) );
-		});
 
 		//On ajoute les sprites au groupe associé.
 		this.group_sprite.getChildren().add(this.sprite_shot);
@@ -267,7 +265,6 @@ public class HunterView extends View{
 		if(this.maze.getHunterIA().equals(Management.getDefaultIaPlayer())) {
 			this.selection.setY(r.getY());
 			this.selection.setX(r.getX());
-			this.selection.toFront();
 			this.selection.setVisible(true);
 		}
 	}
@@ -356,6 +353,41 @@ public class HunterView extends View{
 			}
 		}
 
+	}
+	
+	public Group getGameBoard() {
+		CellWithText cwt;
+		for(int row = 0; row<this.maze.getWalls().length;row++) {
+			for(int col = 0; col<this.maze.getWalls()[row].length;col++) {
+				try {
+					ICoordinate c = new Coordinate(row,col);
+					CellEvent ce = new CellEvent(c, this.maze.getTrace(c), this.maze.getCellInfo(c));
+					this.maze.getHunter().actualizeTraces(ce);
+					this.maze.getHunter().update(ce);
+					this.actualizeCells(row,col);
+					cwt = searchSprite(this.group_map, c);
+					this.revealCell(cwt,this.theme.getWallColor(),this.theme.getFloorColor());
+				}catch(ArrayIndexOutOfBoundsException aioobe) {
+					//En dehors de la carte
+				}
+			}
+		}
+		CellWithText sprite_monster = new CellWithText(this.maze.getMonster().getCoord(), this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY(), "Monster");
+		sprite_monster.setVisible(true);
+		sprite_monster.getImgv().setVisible(true);
+		sprite_monster.setImage(Theme.themesMap.get(this.theme.getName()).getMonsterImg());
+		this.group_sprite.getChildren().add(sprite_monster);
+		this.group_sprite.getChildren().add(sprite_monster.getImgv());
+		this.sprite_shot.setImage(Theme.themesMap.get(this.theme.getName()).getHunterImg());
+		this.group_sprite.getChildren().add(sprite_shot.getImgv());
+		CellWithText sprite_exit = new CellWithText(this.maze.getExit().getCoord(), this.display.getZoom(), Color.TRANSPARENT, this.display.getGapX(), this.display.getGapY(), "Exit");
+		sprite_exit.setImage(Theme.themesMap.get(this.theme.getName()).getExitImg());
+		sprite_exit.setVisible(true);
+		sprite_exit.getImgv().setVisible(true);
+		this.selection.setVisible(false);
+		this.group_map.getChildren().add(sprite_exit);
+		this.group_map.getChildren().add(sprite_exit.getImgv());
+		return this.group_stage;
 	}
 	
 }
