@@ -1252,7 +1252,7 @@ public class Management extends Stage implements Observer{
 		vBoxTitle.setAlignment(Pos.TOP_CENTER);
 		vBoxTitle.setSpacing(60);
 		
-		VBox buttonLayout = new VBox(20);
+		HBox buttonLayout = new HBox(20);
 		buttonLayout.setPrefWidth(200); 
 		buttonLayout.setPrefHeight(50);
 		restartButton.setPrefWidth(150);
@@ -1266,18 +1266,16 @@ public class Management extends Stage implements Observer{
 		
 		
 		VBox vBoxCredit = new VBox(10);
-		vBoxCredit.getChildren().add(Credit);
+		vBoxCredit.getChildren().addAll(buttonLayout ,Credit);
 		vBoxCredit.setAlignment(Pos.BOTTOM_LEFT);
 		
-		buttonLayout.getChildren().add(vBoxCredit);
-
 		layout.setPadding(new Insets(20));
 		
 
 		// Superposez le titre et les boutons
 		layout.setTop(vBoxTitle);
 		layout.setCenter(board);
-		layout.setBottom(buttonLayout);
+		layout.setBottom(vBoxCredit);
 		
 		return new Scene(layout, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
 	}
