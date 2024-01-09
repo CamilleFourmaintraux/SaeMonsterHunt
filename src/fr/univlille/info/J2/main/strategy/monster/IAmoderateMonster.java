@@ -1,5 +1,7 @@
 package fr.univlille.info.J2.main.strategy.monster;
 
+import java.util.List;
+import java.util.ArrayList;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
@@ -26,11 +28,17 @@ class IAmoderateMonster implements IMonsterStrategy{
 	 * La position du monstre pour aider la stratégie à se repérer.
 	 */
 	private ICoordinate current_position;
+	/**
+	 * La position de la sortie pour aider la stratégie à se repérer.
+	 */
+	private ICoordinate exit_position;
 	
 	/**
 	 * La grille de murs du labyrinthe.
 	 */
 	private boolean[][] walls;
+	
+	private List<ICoordinate> visited;
 	
 	/**
      * Initialise les murs du labyrinthe pour le monstre.
@@ -40,6 +48,7 @@ class IAmoderateMonster implements IMonsterStrategy{
 	@Override
 	public void initialize(boolean[][] walls) {
 		this.walls=walls;
+		visited = new ArrayList<>();
 	}
 	
 	/**
@@ -50,6 +59,9 @@ class IAmoderateMonster implements IMonsterStrategy{
 	@Override
 	public void update(ICellEvent ce) {
 		if(!ce.getState().equals(CellInfo.WALL)) {
+			if(ce.getState().equals(CellInfo.EXIT)) {
+				this.exit_position=ce.getCoord();
+			}
 			this.current_position=ce.getCoord();
 		}
 		this.numAttempt=0;
@@ -64,12 +76,46 @@ class IAmoderateMonster implements IMonsterStrategy{
 	 */
 	@Override
 	public ICoordinate play() {
-		ICoordinate c;
-		do {
+		int y=this.current_position.getRow();
+		if(current_position.getRow()<exit_position.getRow()) {
+			y++;
+		}else {
+			y--;
+		}
+		int x=this.current_position.getCol();
+		if(current_position.getCol()<exit_position.getCol()){
+			x++;
+		}else {
+			x--;
+		}
+
+		ICoordinate c=null;
+		ICoordinate[] preTentatives = new ICoordinate[3];
+		preTentatives[0] = new Coordinate(y,x);
+		preTentatives[1] = new Coordinate(y,this.current_position.getCol());
+		preTentatives[2] = new Coordinate(this.current_position.getRow(),x);
+		for(int i=0; i<preTentatives.length; i++) {
+			if(!(seemIncorrect(preTentatives[i])||this.visited.contains(preTentatives[i]))) {
+				c=preTentatives[i];
+				visited.add(preTentatives[i]);
+				break;
+			}
+		}
+		while(seemIncorrect(c) && this.numAttempt<MAX_ATTEMPTS){
 			this.numAttempt++;
 			c = this.createInBoundCoord(this.current_position.getRow()+(Utils.random.nextInt(3)-1), this.current_position.getCol()+(Utils.random.nextInt(3)-1));
-		}while(this.numAttempt<MAX_ATTEMPTS && (!this.walls[c.getRow()][c.getCol()] || this.current_position.equals(c)));
+		}
+		if(c==null) {
+			c=this.current_position;
+		}
 		return c;
+	}
+	
+	private boolean seemIncorrect(ICoordinate c) {
+		if(c==null) {
+			return true;
+		}
+		return (!this.walls[c.getRow()][c.getCol()] || this.current_position.equals(c));
 	}
 	
 	private ICoordinate createInBoundCoord(int row, int col) {

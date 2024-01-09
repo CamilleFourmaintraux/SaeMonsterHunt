@@ -1,4 +1,4 @@
-package fr.univlille.info.J2.main.utils.menuConception;
+package fr.univlille.info.J2.main.utils.resources;
 
 import java.util.ArrayList;
 import java.util.Collection;

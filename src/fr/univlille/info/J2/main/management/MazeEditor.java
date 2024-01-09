@@ -3,8 +3,8 @@ package fr.univlille.info.J2.main.management;
 import java.io.File;
 
 import fr.univlille.info.J2.main.management.cells.Cell;
-import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
-import fr.univlille.info.J2.main.utils.menuConception.Theme;
+import fr.univlille.info.J2.main.utils.resources.DisplayValues;
+import fr.univlille.info.J2.main.utils.resources.Theme;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 
@@ -20,7 +20,7 @@ import javafx.scene.paint.Color;
  */
 public class MazeEditor {
 	/**
-	 * Groupe contenant permettant le controle
+	 * Groupe contenant permettant d'éditer, de sélectionner
 	 */
 	Group group_map;
 

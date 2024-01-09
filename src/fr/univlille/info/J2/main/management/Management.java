@@ -22,11 +22,11 @@ import fr.univlille.info.J2.main.management.view.MonsterView;
 import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.utils.Utils;
-import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
-import fr.univlille.info.J2.main.utils.menuConception.Generators;
-import fr.univlille.info.J2.main.utils.menuConception.Theme;
 import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
+import fr.univlille.info.J2.main.utils.resources.DisplayValues;
+import fr.univlille.info.J2.main.utils.resources.Generators;
+import fr.univlille.info.J2.main.utils.resources.Theme;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 import javafx.beans.value.ChangeListener;
@@ -77,31 +77,28 @@ public class Management extends Stage implements Observer{
 	 * Constante ID de la scene d'attente entre deux joueurs.
 	 */
 	private static final int ID_WAIT = 0;
-
-	/**
-	 * Constante ID du menu settings.
-	 */
-	private static final int ID_SETTINGS = 1;
+	
 
 	/**
 	 * Constante ID du menu play.
 	 */
-	private static final int ID_PLAY = 2;
+	private static final int ID_PLAY = 1;
 
 	/**
-	 * Constante ID du menu de GameOver.
+	 * Constante ID du menu settings.
 	 */
-	private static final int ID_GAMEOVER = 3;
+	private static final int ID_SETTINGS = 2;
+
 
 	/**
 	 * Constante ID du menu de settings-Miscellaneous.
 	 */
-	private static final int ID_MISCELLANEOUS_SETTINGS = 4;
+	private static final int ID_MISCELLANEOUS_SETTINGS = 3;
 
 	/**
 	 * Constante ID du menu de settings-Hunter.
 	 */
-	private static final int ID_MAZE_SETTINGS = 5;
+	private static final int ID_MAZE_SETTINGS = 4;
 
 	/**
 	 * Constante ID du menu de settings-Monster.
@@ -143,9 +140,14 @@ public class Management extends Stage implements Observer{
 	private static final int LABEL_MIN_WIDTH = 120;
 
 	/**
+	 * Constante de taille minimal du labyrinthe pour les textFields
+	 */
+	private static final int MIN_MAZE_SIZE_MANDATORY = 1;
+	
+	/**
 	 * Constante de taille minimal du labyrinthe.
 	 */
-	private static final int MIN_MAZE_SIZE = 1;
+	private static final int MIN_MAZE_SIZE = 3;
 
 	/**
 	 * Constante de taille par défault du labyrinthe.
@@ -203,11 +205,6 @@ public class Management extends Stage implements Observer{
 	 * La vue du Chasseur.
 	 */
 	private HunterView hv;
-	
-	/**
-	 * label qui indique le gagnant
-	 */
-	private Label winner ;
 	
 	/**
 	 * bjet pour stocker les valeurs relative à l'écran (taille de la fenêtre, etc..)
@@ -278,6 +275,7 @@ public class Management extends Stage implements Observer{
 		this.current_theme=Theme.themesMap.get(Theme.THEME_DUNGEON);
 		this.display=display;
 		
+		
 		this.menus=new HashMap<>();
 		this.maze_height=DEFAULT_MAZE_SIZE;
 		this.maze_width=DEFAULT_MAZE_SIZE;
@@ -287,17 +285,18 @@ public class Management extends Stage implements Observer{
 
 		gameplayH = new GameplayHunterData(DEFAULT_NAME_HUNTER, DEFAULT_IA_PLAYER, DEFAULT_BONUS_RANGE);
 		gameplayM = new GameplayMonsterData(DEFAULT_NAME_MONSTER, DEFAULT_IA_PLAYER, false, DEFAULT_VISION_RANGE, DEFAULT_MOVING_RANGE);
-
-		this.generateWaitingNextPlayer();
-		this.generateSettingsMiscellaneous();
-		this.generateSettingsMaze();
-		this.generateSettingsMonster();
-		this.generateSettingsHunter();
-		this.generateSettingsMainMenu();
-		this.generateMazeEditor();
-		this.generatePlayMenu();
-		this.generateGameOverScreen();
-
+		
+		//Génération des menus
+		this.menus.put(Integer.valueOf(ID_SETTINGS), this.generateSettingsMainMenu());
+		this.menus.put(Integer.valueOf(ID_PLAY), this.generatePlayMenu());
+		this.menus.put(Integer.valueOf(ID_WAIT), this.generateWaitingNextPlayer());
+		this.menus.put(Integer.valueOf(ID_MAZE_SETTINGS), this.generateSettingsMaze());
+		this.menus.put(Integer.valueOf(ID_MISCELLANEOUS_SETTINGS), this.generateSettingsMiscellaneous());
+		this.menus.put(Integer.valueOf(ID_MONSTER_SETTINGS), this.generateSettingsMonster());
+		this.menus.put(Integer.valueOf(ID_HUNTER_SETTINGS), this.generateSettingsHunter());
+		this.menus.put(Integer.valueOf(ID_MAZE_EDITOR), this.generateMazeEditor());
+		//Game Over est généré à chaque fin de partie
+		
 		this.viewM = new Stage();
 		this.viewH = new Stage();
 		this.viewCommon = new Stage();
@@ -368,8 +367,6 @@ public class Management extends Stage implements Observer{
 			this.viewCommon.setHeight(this.display.getWindowHeight());
 			this.viewCommon.setWidth(this.display.getWindowWidth());
 		});
-
-
 	}
 
 	/**
@@ -405,19 +402,11 @@ public class Management extends Stage implements Observer{
 	 */
 	public boolean gameOver() {
 		if(this.maze.isGameOver()) {
-			if (this.maze.getIdWinner() == 1) {
-				this.winner.setText(this.gameplayM.getName()+" won !");
-			}else if (this.maze.getIdWinner() == 2) {
-				this.winner.setText(this.gameplayH.getName()+" won !");
-			}else {
-				this.winner.setText("Tie - The game was stopped.");
-			}
-			
-			this.setScene(this.getScene(ID_GAMEOVER));
+			this.setScene(this.generateGameOverScreen());
 			this.setHeight(this.display.getWindowHeight());
 			this.setWidth(this.display.getWindowWidth());
 			this.show();
-			if(this.isSameScreen) {
+			if(this.maze.getDataMan().isSameScreen()) {
 				this.viewCommon.hide();
 			}else {
 				this.viewM.hide();
@@ -445,6 +434,7 @@ public class Management extends Stage implements Observer{
      * @param c Coordonnée à laquelle le chasseur veut tirer.
 	 */
 	public void hunterPlayAt(ICoordinate c) {
+		//MediaLoader.playSound("shot.mp3");
 		this.maze.shoot(c);
 		this.hv.actualize();
 	}
@@ -531,7 +521,7 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu principal du jeu, permettant  l'utilisateur de définir des paramètres pour le jeu
 	 * (noms des personnages, niveaux d'IA, etc.) et de lancer une partie.
 	 */
-	public void generatePlayMenu() {
+	public Scene generatePlayMenu() {
 
 		Label title = Generators.generateTitle("Main Menu");
 
@@ -646,22 +636,22 @@ public class Management extends Stage implements Observer{
 		  Scene scene = new Scene(root, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
 
 		  // Ajoutez la scène aux menus
-		  this.menus.put(Integer.valueOf(ID_PLAY), scene);
-
+		  return scene;
 		}
 
 	/**
 	 * Génére la scene s'affichant
 	 */
-	public void generateWaitingNextPlayer() {
+	public Scene generateWaitingNextPlayer() {
 
 		Label label = new Label("Waiting for the next player.");
 		label.setTextFill(this.current_theme.getTextColor());
 
 		BorderPane root = new BorderPane(label);
 		root.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-
-		this.menus.put(Integer.valueOf(ID_WAIT), new Scene(root, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getBackgroundColor()));
+		
+		return new Scene(root, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getBackgroundColor());
+		
 	}
 
 
@@ -669,7 +659,7 @@ public class Management extends Stage implements Observer{
 	 * Génére le menu des paramètres du jeu, permettant  l'utilisateur de personnaliser diverses options telles que
 	 * la taille du labyrinthe, le thème, etc.
 	 */
-	public void generateSettingsMainMenu() {
+	public Scene generateSettingsMainMenu() {
 		Label title = Generators.generateTitle("Settings");
 
 		Button toMisc = Generators.generateButton("Screen",Color.WHITE, Color.BLACK);
@@ -717,14 +707,14 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(bBack);
 		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_SETTINGS), new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor()));
+		return new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
 	}
 
 
 	/**
 	 * Génére le menu des paramètres gérant des paramètres généreaux
 	 */
-	public void generateSettingsMiscellaneous() {
+	public Scene generateSettingsMiscellaneous() {
 		Label title = Generators.generateTitle("Settings - Miscellaneous");
 		
 		Button bScreenType = Generators.generateButton("Same Screen", Color.WHITE, Color.BLACK);
@@ -783,13 +773,14 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(bBack);
 		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_MISCELLANEOUS_SETTINGS), new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor()));
+		return new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
+		
 	}
 
 	/**
 	 * Génére le menu des paramètres gérant le labyrinthe
 	 */
-	public void generateSettingsMaze() {
+	public Scene generateSettingsMaze() {
 
 		Label title = Generators.generateTitle("Settings - Maze");
 
@@ -800,8 +791,8 @@ public class Management extends Stage implements Observer{
 
 		TextField tf_height = Generators.generateTextField("10");
 		TextField tf_width = Generators.generateTextField("10");
-		Generators.addCheckNumericalValueToTextField(tf_height, MIN_MAZE_SIZE, MAX_MAZE_SIZE);
-		Generators.addCheckNumericalValueToTextField(tf_width, MIN_MAZE_SIZE, MAX_MAZE_SIZE);
+		Generators.addCheckNumericalValueToTextField(tf_height, MIN_MAZE_SIZE_MANDATORY , MAX_MAZE_SIZE);
+		Generators.addCheckNumericalValueToTextField(tf_width, MIN_MAZE_SIZE_MANDATORY , MAX_MAZE_SIZE);
 
 		TextField tf_probability = Generators.generateTextField("20", 3, '0', '9');
 		Generators.addCheckNumericalValueToTextField(tf_probability, 0, 100);
@@ -810,7 +801,7 @@ public class Management extends Stage implements Observer{
 		Label l_height = Generators.generateLabel("Maze Height ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", tf_height.getLayoutX()-LABEL_MIN_WIDTH-5, tf_height.getLayoutY());
 		Label l_width= Generators.generateLabel("Maze Width ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", tf_width.getLayoutX()-LABEL_MIN_WIDTH-5, tf_width.getLayoutY());
 
-		Slider slider_height = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
+		Slider slider_height = Generators.generateSlider(MIN_MAZE_SIZE_MANDATORY,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		Generators.setLayout(slider_height, l_height.getLayoutX(),tf_height.getLayoutY()+25);
 		slider_height.valueProperty().addListener(e->{
 			tf_height.setText(""+(int)slider_height.getValue());
@@ -830,14 +821,14 @@ public class Management extends Stage implements Observer{
 					slider_height.setValue(Integer.parseInt(tf_height.getText()));
 					maze_height=Integer.parseInt(tf_height.getText());
 				}else {
-					slider_height.setValue(DEFAULT_MAZE_SIZE);
-					maze_height=DEFAULT_MAZE_SIZE;
-					tf_height.setText(""+DEFAULT_MAZE_SIZE);
+					slider_height.setValue(MIN_MAZE_SIZE_MANDATORY);
+					maze_height=MIN_MAZE_SIZE_MANDATORY;
+					tf_height.setText(""+MIN_MAZE_SIZE_MANDATORY);
 				}
 			}
 		});
 
-		Slider slider_width = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
+		Slider slider_width = Generators.generateSlider(MIN_MAZE_SIZE_MANDATORY,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		Generators.setLayout(slider_width, l_width.getLayoutX(),tf_width.getLayoutY()+25);
 		slider_width.valueProperty().addListener(e->{
 			tf_width.setText(""+(int)slider_width.getValue());
@@ -858,9 +849,9 @@ public class Management extends Stage implements Observer{
 					slider_width.setValue(Integer.parseInt(tf_width.getText()));
 					maze_width=Integer.parseInt(tf_width.getText());
 				}else {
-					slider_width.setValue(DEFAULT_MAZE_SIZE);
-					maze_width=DEFAULT_MAZE_SIZE;
-					tf_width.setText(""+DEFAULT_MAZE_SIZE);
+					slider_width.setValue(MIN_MAZE_SIZE_MANDATORY);
+					maze_width=MIN_MAZE_SIZE_MANDATORY;
+					tf_width.setText(""+MIN_MAZE_SIZE_MANDATORY);
 				}
 			}
 		});
@@ -901,6 +892,11 @@ public class Management extends Stage implements Observer{
 				tf_probability.setText(""+DEFAULT_PROBABILITY);
 			}else {
 				probability=Integer.parseInt(tf_probability.getText());
+			}
+			if(this.maze_height<MIN_MAZE_SIZE) {
+				this.maze_height=MIN_MAZE_SIZE;
+			}if(this.maze_width<MIN_MAZE_SIZE) {
+				this.maze_width=MIN_MAZE_SIZE;
 			}
 		});
 
@@ -972,13 +968,14 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(bottomPanel);
 		BorderPane.setAlignment(bottomPanel, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_MAZE_SETTINGS), new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor()));
+		return new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
+		
 	}
 
 	/**
 	 * Génére le menu des paramètres gérant le monstre
 	 */
-	public void generateSettingsMonster() {
+	public Scene generateSettingsMonster() {
 		Label title = Generators.generateTitle("Settings - "+DEFAULT_NAME_MONSTER);
 		TextField tf_vision = Generators.generateTextField(""+DEFAULT_VISION_RANGE, 1, '0', '9');
 		Generators.setLayout(tf_vision, this.calculPercentage(this.display.getWindowWidth(),70), this.calculPercentage(this.display.getWindowHeight(),39));
@@ -1032,13 +1029,14 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(bBack);
 		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_MONSTER_SETTINGS), new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor()));
+		return new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
+		
 	}
 
 	/**
 	 * Génére le menu des paramètres gérant le chasseur
 	 */
-	public void generateSettingsHunter() {
+	public Scene generateSettingsHunter() {
 		Label title = Generators.generateTitle("Settings - "+DEFAULT_NAME_HUNTER);
 
 		TextField tf_bonusRange = Generators.generateTextField(""+DEFAULT_BONUS_RANGE, 1, '0', '9');
@@ -1065,13 +1063,14 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(bBack);
 		BorderPane.setAlignment(bBack, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_HUNTER_SETTINGS), new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor()));
+		return new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
+		
 	}
 	
 	/**
 	 * Génére le menu de l'éditeur de labyrinthe.
 	 */
-	public void generateMazeEditor() {
+	public Scene generateMazeEditor() {
   MazeEditor mEdit;
 		Label title = Generators.generateTitle("Maze Editor");
 
@@ -1080,12 +1079,12 @@ public class Management extends Stage implements Observer{
 		Label l_height = Generators.generateLabel("Maze Height ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", 0, 0);
 		Label l_width= Generators.generateLabel("Maze Width ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+")", 0, 0);
 
-		Slider slider_editor_height = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
+		Slider slider_editor_height = Generators.generateSlider(MIN_MAZE_SIZE_MANDATORY,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		slider_editor_height.valueProperty().addListener(e->{
 			mEdit.editor_height=(int)slider_editor_height.getValue();
 			l_height.setText("Height of the maze ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+") : "+mEdit.editor_height);
 		});
-		Slider slider_editor_width = Generators.generateSlider(MIN_MAZE_SIZE,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
+		Slider slider_editor_width = Generators.generateSlider(MIN_MAZE_SIZE_MANDATORY,MAX_MAZE_SIZE,DEFAULT_MAZE_SIZE);
 		slider_editor_width.valueProperty().addListener(e->{
 			mEdit.editor_width=(int)slider_editor_width.getValue();
 			l_width.setText("Width of the maze ("+MIN_MAZE_SIZE+"-"+MAX_MAZE_SIZE+") : "+mEdit.editor_width);
@@ -1179,19 +1178,34 @@ public class Management extends Stage implements Observer{
 		bp.setBottom(controlPanel);
 		BorderPane.setAlignment(controlPanel, Pos.BOTTOM_CENTER);
 		bp.setBackground(Utils.setBackGroungFill(Color.TRANSPARENT));
-		this.menus.put(Integer.valueOf(ID_MAZE_EDITOR), new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor()));
+		return new Scene(bp, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
 	}
 
 
 	/**
 	 * Génére le menu de GameOver.
 	 */
-	public void generateGameOverScreen() {
+	public Scene generateGameOverScreen() {
+		/**
+		 * Groupe pour afficher le jeu final
+		 */
+		Group board;
+		
 		Label title = Generators.generateTitle("Game Over");
+		Label winner = new Label();
 		Label Credit = Generators.generateLabel("Jeu réalisé par Fourmaintraux Camille | Top Jessy | Debacq Arthur | Franos Théo ", 0, 0);
 		
+		if (this.maze.getIdWinner() == 1) {
+			winner.setText(this.gameplayM.getName()+" won !");
+			board = this.hv.getGameBoard();
+		}else if (this.maze.getIdWinner() == 2) {
+			winner.setText(this.gameplayH.getName()+" won !");
+			board = this.hv.getGameBoard();
+		}else {
+			winner.setText("Tie - The game was stopped.");
+			board = new Group();
+		}
 		
-		this.winner = new Label();
 		winner.setFont(new Font("Arial", 24));
 		winner.setTextFill(Color.BLACK);
 		
@@ -1234,11 +1248,11 @@ public class Management extends Stage implements Observer{
 		// Laissez un espace en haut de la page
 
 		VBox vBoxTitle = new VBox(10);
-		vBoxTitle.getChildren().addAll(title ,this.winner);
+		vBoxTitle.getChildren().addAll(title ,winner);
 		vBoxTitle.setAlignment(Pos.TOP_CENTER);
 		vBoxTitle.setSpacing(60);
 		
-		HBox buttonLayout = new HBox(20);
+		VBox buttonLayout = new VBox(20);
 		buttonLayout.setPrefWidth(200); 
 		buttonLayout.setPrefHeight(50);
 		restartButton.setPrefWidth(150);
@@ -1254,15 +1268,18 @@ public class Management extends Stage implements Observer{
 		VBox vBoxCredit = new VBox(10);
 		vBoxCredit.getChildren().add(Credit);
 		vBoxCredit.setAlignment(Pos.BOTTOM_LEFT);
+		
+		buttonLayout.getChildren().add(vBoxCredit);
 
 		layout.setPadding(new Insets(20));
+		
 
 		// Superposez le titre et les boutons
 		layout.setTop(vBoxTitle);
-		layout.setCenter(buttonLayout);
-		layout.setBottom(vBoxCredit);
-
-		this.menus.put(Integer.valueOf(ID_GAMEOVER), new Scene(layout, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor()));
+		layout.setCenter(board);
+		layout.setBottom(buttonLayout);
+		
+		return new Scene(layout, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
 	}
 
 	/**
@@ -1500,7 +1517,7 @@ public class Management extends Stage implements Observer{
 	}
 	
 	public static Save createSave(Maze maze) {
-		return new Save(maze.dataMan, maze.getData(), maze.getExit().getData(), maze.getMonster().getData(), maze.getHunter().getData());
+		return new Save(maze.getDataMan(), maze.getData(), maze.getExit().getData(), maze.getMonster().getData(), maze.getHunter().getData());
 	}
 
 	public static String getDefaultNameMonster() {

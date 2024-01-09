@@ -21,6 +21,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class Hunter {
 	
+	public static final int WALL=-1;
 	public static final int UNDISCOVERED = -2;
 	
 	private SaveHunterData data;
@@ -170,7 +171,7 @@ public class Hunter {
  */
 	public void actualizeTraces(ICellEvent ce) {
 		if(ce.getState().equals(CellInfo.WALL)) {
-			this.setTrace(ce.getCoord(), -1);
+			this.setTrace(ce.getCoord(), Hunter.WALL);
 		}else {
 			this.setTrace(ce.getCoord(), ce.getTurn());
 		}
