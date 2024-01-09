@@ -13,9 +13,12 @@ public class SaveManagementData implements Serializable{
 	
 	private boolean isSameScreen;
 	
-	public SaveManagementData(String theme, boolean isSameScreen) {
+	private boolean areAudioActivated;
+	
+	public SaveManagementData(String theme, boolean isSameScreen, boolean areAudioActivated) {
 		this.theme=theme;
 		this.isSameScreen=isSameScreen;
+		this.areAudioActivated=areAudioActivated;
 	}
 	
 	public String getTheme() {
@@ -28,9 +31,17 @@ public class SaveManagementData implements Serializable{
 	public boolean isSameScreen() {
 		return isSameScreen;
 	}
+	
+	public boolean isAudioActivated() {
+		return areAudioActivated;
+	}
 
 	protected void setSameScreen(boolean isSameScreen) {
 		this.isSameScreen = isSameScreen;
+	}
+	
+	protected void setAudioActivated (boolean areAudioActivated) {
+		this.areAudioActivated = areAudioActivated;
 	}
 	
 	
