@@ -146,7 +146,7 @@ public class Theme {
 		
 		meadow.floorImg=loadImage(THEME_MEADOW,"grass.png");
 		meadow.wallImg=loadImage(THEME_MEADOW,"tree.png");
-		meadow.monsterImg=loadImage(THEME_MEADOW,"rabbit.png");
+		meadow.monsterImg=loadImage(THEME_MEADOW,"animation_rabbit.gif");
 		meadow.exitImg=loadImage(THEME_MEADOW,"burrow.png");
 		meadow.hunterImg=loadImage(THEME_MEADOW,"rifleScope.png");
 		meadow.floorColor=Color.GREENYELLOW;
