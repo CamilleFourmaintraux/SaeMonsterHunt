@@ -235,7 +235,7 @@ public class MonsterView  extends View {
 			this.notification.setText("");
 		}
 	}
-
+	
 	/**
 	 * Initialisation des sprites.
 	 */

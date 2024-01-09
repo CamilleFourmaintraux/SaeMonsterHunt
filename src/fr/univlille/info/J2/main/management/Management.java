@@ -46,6 +46,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -1231,6 +1232,26 @@ public class Management extends Stage implements Observer{
 			this.setScene(this.getScene(ID_PLAY));
 			this.show();
 		});
+		
+		Button statButton = Generators.generateButton("stat", 0, 0,Color.WHITE, Color.BLACK);
+		statButton.setOnAction(e -> {
+		    // Create a label to display the custom text
+		    Label popupLabel = new Label("The game ended in turn "+this.maze.getTurn());
+
+		    // Create a pane to hold the label
+		    Pane popupPane = new Pane();
+		    popupPane.getChildren().add(popupLabel);
+
+		    // Create a popup scene
+		    Scene popupScene = new Scene(popupPane, 200, 100);
+
+		    // Create a popup stage
+		    Stage popupStage = new Stage();
+		    popupStage.setScene(popupScene);
+
+		    // Show the popup
+		    popupStage.show();
+		});
 
 		Button quitButton = Generators.generateButton("Quitter", 0, 0,Color.WHITE, Color.BLACK);
 		quitButton.setOnAction(e -> System.exit(0) );
@@ -1248,7 +1269,7 @@ public class Management extends Stage implements Observer{
 		vBoxTitle.setAlignment(Pos.TOP_CENTER);
 		vBoxTitle.setSpacing(60);
 		
-		VBox buttonLayout = new VBox(20);
+		HBox buttonLayout = new HBox(20);
 		buttonLayout.setPrefWidth(200); 
 		buttonLayout.setPrefHeight(50);
 		restartButton.setPrefWidth(150);
@@ -1256,24 +1277,22 @@ public class Management extends Stage implements Observer{
 		quitButton.setPrefWidth(150); 		
 		quitButton.setPrefHeight(30);
 		buttonLayout.setSpacing(20); 
-		buttonLayout.getChildren().addAll(restartButton, quitButton);
+		buttonLayout.getChildren().addAll(restartButton, statButton, quitButton);
 		
 		buttonLayout.setAlignment(Pos.CENTER);
 		
 		
 		VBox vBoxCredit = new VBox(10);
-		vBoxCredit.getChildren().add(Credit);
+		vBoxCredit.getChildren().addAll(buttonLayout ,Credit);
 		vBoxCredit.setAlignment(Pos.BOTTOM_LEFT);
 		
-		buttonLayout.getChildren().add(vBoxCredit);
-
 		layout.setPadding(new Insets(20));
 		
 
 		// Superposez le titre et les boutons
 		layout.setTop(vBoxTitle);
 		layout.setCenter(board);
-		layout.setBottom(buttonLayout);
+		layout.setBottom(vBoxCredit);
 		
 		return new Scene(layout, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
 	}

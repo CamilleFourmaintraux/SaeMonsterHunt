@@ -29,7 +29,7 @@ public class Hunter {
 	/**
 	* Strategy du chasseur.
 	**/
-	private IHunterStrategy strategy;
+	public IHunterStrategy strategy;
 	
 
 

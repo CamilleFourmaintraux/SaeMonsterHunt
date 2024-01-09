@@ -708,21 +708,4 @@ public class Maze extends Subject{
 	}
 	
 
-	
-	/*protected static ICoordinate farthestCell(ICoordinate cell, boolean[][]walls) throws IllegalArgumentException{
-		int distance = 0;
-		ICoordinate far=null;
-		for(int row=0; row<walls.length; row++) {
-			for(int col=0; col<walls[row].length;col++) {
-				if(distance<Maze.calculDistance(cell,new Coordinate (row,col)) && walls[row][col]) {
-					distance=Maze.calculDistance(cell,new Coordinate (row,col));
-					far=new Coordinate (row,col);
-				}
-			}
-		}
-		if(far==null) {
-			throw new IllegalArgumentException();
-		}
-		return far;
-	}*/
  }
