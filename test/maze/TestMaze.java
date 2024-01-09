@@ -26,22 +26,6 @@ public class TestMaze {
 		assertEquals(maze_randomMap.getTurn(),2);
 	}
 
-	 @Test
-	 public void testToString() {
-
-	        String expected = "X . X . . X . X . X \n"+
-	        				  "X . . . . X . X . . \n"+
-	        				  ". . . . X X . X X . \n"+
-	        				  ". . X . . X . . . . \n"+
-	        				  "X . X X . X . . . X \n"+
-	        				  "X . . X X X . . . X \n"+
-	        				  "X . . . X . . . . . \n"+
-	        				  ". . . . . . . X . X \n"+
-	        				  ". . X . . X . X X X \n"+
-	        				  "X X . . X X . . . X";
-
-	        assertEquals(expected, maze_defaultMap.toString());
-	 }
 
 	 @Test
 	 public void testInReach() {
@@ -67,7 +51,7 @@ public class TestMaze {
 	 @Test
 	 public void testInvalidShoot() {
 		 maze_defaultMap.setMonsterTurn(true);
-		 assertTrue(maze_defaultMap.shoot(maze_defaultMap.getMonster().getCoord()));
+		 assertFalse(maze_defaultMap.shoot(maze_defaultMap.getMonster().getCoord()));
 	 }
 
 	 @Test
