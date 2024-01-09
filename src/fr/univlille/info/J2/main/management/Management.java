@@ -37,6 +37,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -46,7 +47,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -556,6 +556,9 @@ public class Management extends Stage implements Observer{
 			}
 			
 			//Création des paquets de data de management
+			if(!choixIA_Monster.getValue().equals(DEFAULT_IA_PLAYER) && !choixIA_Hunter.getValue().equals(DEFAULT_IA_PLAYER)) {
+				 this.areSoundsActivated=false;
+			}
 			SaveManagementData dataMan = new SaveManagementData(this.current_theme.getName(), this.isSameScreen, this.areSoundsActivated);
 			
 			//Creation of the maze
@@ -1235,22 +1238,22 @@ public class Management extends Stage implements Observer{
 		
 		Button statButton = Generators.generateButton("stat", 0, 0,Color.WHITE, Color.BLACK);
 		statButton.setOnAction(e -> {
-		    // Create a label to display the custom text
-		    Label popupLabel = new Label("The game ended in turn "+this.maze.getTurn());
-
-		    // Create a pane to hold the label
-		    Pane popupPane = new Pane();
-		    popupPane.getChildren().add(popupLabel);
-
-		    // Create a popup scene
-		    Scene popupScene = new Scene(popupPane, 200, 100);
-
-		    // Create a popup stage
-		    Stage popupStage = new Stage();
-		    popupStage.setScene(popupScene);
-
-		    // Show the popup
-		    popupStage.show();
+			String stats = "The game ended at turn N°"+this.maze.getTurn()+"."
+					+"\n"+
+					"The monster was at "+(Maze.calculDistance(this.maze.getMonster().getCoord(), this.maze.getExit().getCoord()))+" cases of the exit."
+					+"\n"+
+					"The closest distance the hunter was to the monster was "+this.maze.getClosestDistanceToMonster()+" cases.";
+			Alert stat = new Alert(AlertType.INFORMATION);
+			stat.setTitle("Statistics of the game");
+			stat.setContentText(stats);
+			if(this.maze.getIdWinner()==1) {
+				stat.setHeaderText("Monster won !");
+			}else if(this.maze.getIdWinner()==2) {
+				stat.setHeaderText("Hunter won !");
+			}else {
+				stat.setHeaderText("Tie.");
+			}
+			stat.showAndWait();
 		});
 
 		Button quitButton = Generators.generateButton("Quitter", 0, 0,Color.WHITE, Color.BLACK);

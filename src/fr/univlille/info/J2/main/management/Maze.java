@@ -81,7 +81,9 @@ public class Maze extends Subject{
 	/**
 	 * int utilisé pour determiner qui a gagné a la fin de la partie (0 si le joueur quitte la partie, 1 si le monster gagne et 2 si le chasseur gagne) 
 	 */
-	private int idWinner = 0;
+	private int idWinner;
+	
+	private int closestDistanceToMonster;
 
 	/**
 	 * Constructeur sans paramètres, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
@@ -104,6 +106,8 @@ public class Maze extends Subject{
 		this.dataMan=dataMan;
 		this.initTraces();
 		this.initMonsterExitHunter(dataH, dataM);
+		this.idWinner = 0;
+		this.closestDistanceToMonster=this.getWalls().length*this.getWalls()[0].length;
 		this.exploring(this.monster.getCoord(), this.monster.getVisionRange());
 		this.move(this.monster.getCoord());
 	}
@@ -182,31 +186,6 @@ public class Maze extends Subject{
 			}
 		}
 		return maze;
-	}
-
-	/**
-	 * Calcule le nombre de mur du labyrinthe présent autour de la coordonnée.
-	 * Si la coordonnée correspond à un bord du labyrinthe, la fonction comptera les bordures comme des murs.
-	 * Par exemple, si la coordonnee est (0,0) et qu'il n'y a aucun mur, la fonction va renvoyer 5, à cause des bordures du coin de la map.
-	 *
-	 * @param c une coordonnée du labyrinthe.
-	 * @return un entier correspondant au nombre de murs autour de cette coordonnée.
-	 */
-	//Inutilisé pour le moment
-	public int numberOfWallsAround(ICoordinate c){
-		int cpt=0;
-		for(int y=c.getRow()-1; y<c.getRow()+2; y++) {
-			for(int x=c.getCol()-1; x<c.getCol()+2; x++) {
-				try {
-					if(!this.getWalls()[y][x]) {
-						cpt++;
-					}
-				}catch(Exception e) {
-					cpt++; //Signifie que l'on est sur le bord de la map, et donc c'est forcément un mur.
-				}
-			}
-		}
-		return cpt;
 	}
 
 	/**
@@ -481,6 +460,11 @@ public class Maze extends Subject{
 				MediaLoader.playSound(Theme.themesMap.get(this.dataMan.getTheme()).getSound_hunter());
 			}
 			
+			int dist = Maze.calculDistance(this.getMonster().getCoord(), this.getHunter().getCoord());
+			if(this.closestDistanceToMonster>dist) {
+				this.closestDistanceToMonster = dist;
+			}
+			
 			this.setMonsterTurn(true);
 			this.notifyObservers();
 			return true;
@@ -705,6 +689,10 @@ public class Maze extends Subject{
 	
 	public SaveManagementData getDataMan() {
 		return this.dataMan;	
+	}
+
+	public int getClosestDistanceToMonster() {
+		return closestDistanceToMonster;
 	}
 	
 
