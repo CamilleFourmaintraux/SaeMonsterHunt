@@ -66,7 +66,7 @@ public class SaveLoadSystemGames {
     //Exemple d'utilisation
     public static void main(String[] args) {
         // Exemple d'utilisation
-    	SaveManagementData smand = new SaveManagementData(Theme.THEME_DUNGEON,false);
+    	SaveManagementData smand = new SaveManagementData(Theme.THEME_DUNGEON,false,false);
     	SaveMazeData smazd = new SaveMazeData(Maze.DEFAULT_MAP, new int[10][10], 4, false);
     	SaveExitData sexd = new SaveExitData(8, 8);
     	SaveMonsterData smod = new SaveMonsterData(new GameplayMonsterData("Martha",Management.getDefaultIaPlayer(), true, 1, 1), new boolean[10][10], Maze.DEFAULT_MAP, 1, 8);

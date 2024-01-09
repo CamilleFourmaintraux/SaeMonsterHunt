@@ -17,6 +17,8 @@ import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.strategy.monster.Monster;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
+import fr.univlille.info.J2.main.utils.resources.MediaLoader;
+import fr.univlille.info.J2.main.utils.resources.Theme;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
@@ -432,6 +434,9 @@ public class Maze extends Subject{
 	 * qu'une mise à jour a eu lieu.
 	 */
 	public void endMonsterTurn() {
+		if(this.dataMan.isAudioActivated()) {
+			MediaLoader.playSound(Theme.themesMap.get(this.dataMan.getTheme()).getSound_monster());
+		}
 		this.data.incrementTurn();
 		this.setMonsterTurn(false);
 		this.notifyObservers();
@@ -471,6 +476,11 @@ public class Maze extends Subject{
 				this.isGameOver=true;
 				this.idWinner = 2;
 			}
+			
+			if(this.dataMan.isAudioActivated()) {
+				MediaLoader.playSound(Theme.themesMap.get(this.dataMan.getTheme()).getSound_hunter());
+			}
+			
 			this.setMonsterTurn(true);
 			this.notifyObservers();
 			return true;

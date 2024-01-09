@@ -3,15 +3,20 @@
  */
 package fr.univlille.info.J2.main.application;
 
+import java.io.File;
+
 //Runtime components
 //--module-path /home/iutinfo/ExternalJars/Jars/javafx-sdk-21/lib --add-modules=javafx.controls,javafx.media
 
 import fr.univlille.info.J2.main.management.Management;
 import fr.univlille.info.J2.main.utils.resources.DisplayValues;
+import fr.univlille.info.J2.main.utils.resources.MediaLoader;
 
 //--module-path /home/iutinfo/eclipse-workspace/Jars/javafx-sdk-21/lib --add-modules=javafx.controls
 
 import javafx.application.Application;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 /**
  *
@@ -25,13 +30,14 @@ import javafx.stage.Stage;
  *
  */
 public class MonsterHunt extends Application{
+	static boolean finished = false;
 
 	public static void main(String[] args) {
 		launch();
 	}
+	
 	/**
      * Méthode de démarrage de l'application.
-     *
      * @param stage La scène principale de l'application.
      * @throws Exception Si une exception survient lors du démarrage de l'application.
      */

@@ -227,6 +227,11 @@ public class Management extends Stage implements Observer{
 	 * indique si le jeu se deroule sur la meme fenetre (true) ou sur des fenetres separees (false).
 	 */
 	private boolean isSameScreen;
+	
+	/**
+	 * indique si le jeu aura des effets sonores.
+	 */
+	private boolean areSoundsActivated;
 
 	/**
 	 * Map contenant les différents menus du jeu.
@@ -281,6 +286,7 @@ public class Management extends Stage implements Observer{
 		this.probability=DEFAULT_PROBABILITY;
 		this.isGenerationRandom=true;
 		this.isSameScreen=true;
+		this.areSoundsActivated=true;
 
 		gameplayH = new GameplayHunterData(DEFAULT_NAME_HUNTER, DEFAULT_IA_PLAYER, DEFAULT_BONUS_RANGE);
 		gameplayM = new GameplayMonsterData(DEFAULT_NAME_MONSTER, DEFAULT_IA_PLAYER, false, DEFAULT_VISION_RANGE, DEFAULT_MOVING_RANGE);
@@ -549,7 +555,7 @@ public class Management extends Stage implements Observer{
 			}
 			
 			//Création des paquets de data de management
-			SaveManagementData dataMan = new SaveManagementData(this.current_theme.getName(), this.isSameScreen);
+			SaveManagementData dataMan = new SaveManagementData(this.current_theme.getName(), this.isSameScreen, this.areSoundsActivated);
 			
 			//Creation of the maze
 			if(this.isGenerationRandom) {
@@ -729,6 +735,17 @@ public class Management extends Stage implements Observer{
 		bScreenType.setMinWidth(150);
 		Label l_screenType = Generators.generateLabel("Choose theme mode");
 		
+		Button bSound = Generators.generateButton("Sounds:ON", Color.WHITE, Color.BLACK);
+		bSound.setOnAction(e->{
+			if(this.areSoundsActivated) {
+				this.areSoundsActivated=false;
+				bSound.setText("Sounds:OFF");
+			}else {
+				this.areSoundsActivated=true;
+				bSound.setText("Sounds:ON");
+			}
+		});
+		bSound.setMinWidth(150);
 		
 		Button bDisplayMode = Generators.generateButton("Image Mode", Color.WHITE, Color.BLACK);
 		bDisplayMode.setOnAction(e->{
@@ -761,7 +778,7 @@ public class Management extends Stage implements Observer{
 		);
 
 		VBox vbox = new VBox(10);
-		vbox.getChildren().addAll(l_screenType,bScreenType,Generators.createEmptySpace(20),l_theme,theme,l_bDisplayMode,bDisplayMode);
+		vbox.getChildren().addAll(l_screenType,bScreenType,Generators.createEmptySpace(20),l_theme,theme,l_bDisplayMode,bDisplayMode,bSound);
 		
 		Group group = new Group(vbox);
 
