@@ -8,6 +8,7 @@ import fr.univlille.info.J2.main.management.cells.CellEvent;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.strategy.monster.Monster;
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class TestMonster {
 	boolean[][] walls = {{true, false, true}, {false, true, true}, {false, false, true}};
@@ -31,6 +32,38 @@ public class TestMonster {
 		assertEquals(monster.getCoord(),new Coordinate(9,6));
 
 	}
+	
+    @Test
+    public void testGetCoord() {
+        assertEquals(new Coordinate(4, 5), monster.getCoord());
+        monster.setCoord(new Coordinate(1, 1));
+        assertEquals(new Coordinate(1, 1), monster.getCoord());
+    }
+    
+    @Test
+    public void testGetName() {
+    	assertEquals("Monster", monster.getName());	
+    }
+    
+    @Test
+    public void testGetIA() {
+    	assertEquals("Player", monster.getIA());
+    }
+    
+    @Test
+    public void testGetMovingRange() {
+    	assertEquals(1, monster.getMovingRange());
+    }
+    
+    @Test
+    public void testGetVisionRange() {
+    	assertEquals(0, monster.getVisionRange());
+    }
+    
+    @Test
+    public void testIsVisionLimited() {
+    	assertEquals(false, monster.isVisionLimited());
+    }
 
 	//pas de test pour les methodes play & update car pas encore implemente.
 	@Test
