@@ -66,15 +66,6 @@ public class Save implements Serializable{
 		this.data_monster = data_monster;
 		this.data_hunter = data_hunter;
 	}
-
-	/**
-     * Obtient la version de la classe pour la sérialisation.
-     *
-     * @return Le numéro de série de la classe.
-     */
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 	
 	/**
      * Obtient les données de gestion du jeu.

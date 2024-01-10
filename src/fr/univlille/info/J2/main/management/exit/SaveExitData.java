@@ -36,16 +36,7 @@ public class SaveExitData implements Serializable{
 		this.row = row;
 		this.col = col;
 	}
-
-	/**
-     * Obtient le numéro de version de la sérialisation.
-     *
-     * @return Le numéro de version de la sérialisation.
-     */
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
+	
 	/**
      * Obtient la coordonnée en ligne de la sortie.
      *
@@ -62,6 +53,18 @@ public class SaveExitData implements Serializable{
      */
 	public int getCol() {
 		return col;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SaveExitData other = (SaveExitData) obj;
+		return col == other.col && row == other.row;
 	}
 	
 }

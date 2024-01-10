@@ -1,6 +1,7 @@
 package fr.univlille.info.J2.main.strategy.hunter;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Cette classe représente les données de gameplay spécifiques au chasseur dans le jeu Monster Hunt.
@@ -92,6 +93,20 @@ public class GameplayHunterData implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GameplayHunterData other = (GameplayHunterData) obj;
+		return Objects.equals(IA, other.IA) && bonusRange == other.bonusRange && Objects.equals(name, other.name);
+	}
+	
+	
 	
 	
 }

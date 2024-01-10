@@ -1,6 +1,7 @@
 package fr.univlille.info.J2.main.management;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * La classe SaveManagementData représente les données de gestion de sauvegarde.
@@ -98,6 +99,17 @@ public class SaveManagementData implements Serializable{
 	protected void setAudioActivated (boolean areAudioActivated) {
 		this.areAudioActivated = areAudioActivated;
 	}
-	
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SaveManagementData other = (SaveManagementData) obj;
+		return areAudioActivated == other.areAudioActivated && isSameScreen == other.isSameScreen
+				&& Objects.equals(theme, other.theme);
+	}
 }

@@ -70,7 +70,7 @@ import javafx.stage.Stage;
 public class Management extends Stage implements Observer{
 	
 	/**
-	 * Looger qui permet d'éviter les system.out pour à la place faire de vra ifichiers de log.
+	 * Logger qui permet d'éviter les system.out pour à la place faire de vra ifichiers de log.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(Management.class.getName());
 
@@ -1534,7 +1534,7 @@ public class Management extends Stage implements Observer{
 				areYouSure.showAndWait().ifPresent(confirmation->{
 					if (confirmation.equals(bt_load)) {
 						try {
-							Save save = SaveLoadSystemGames.loadGame(loadedSave.getName());
+							Save save = SaveLoadSystemGames.loadGame(loadedSave);
 							//Adaptation du zoom
 							if(this.display.getWindowHeight()>this.display.getWindowWidth()) {
 								this.display.setZoom(this.display.getWindowWidth()/(this.maze_height+this.maze_width));
