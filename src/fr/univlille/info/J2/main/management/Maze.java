@@ -103,7 +103,7 @@ public class Maze extends Subject{
      * et des données par défaut pour le chasseur et le monstre.
      */
 	public Maze() {
-		this(Maze.generateBasicMap(),new GameplayHunterData("Hunter",Management.IA_LEVELS[0],0),new GameplayMonsterData("Monster",Management.IA_LEVELS[0], false, 1, 1),null);
+		this(Maze.generateBasicMap(),new GameplayHunterData("Hunter",Management.IA_LEVELS[0],0),new GameplayMonsterData("Monster",Management.IA_LEVELS[0], false, 1, 1),new SaveManagementData(Theme.THEME_CAVE, false, false));
 	}
 
 	/**
