@@ -17,7 +17,6 @@ import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.strategy.monster.Monster;
 import fr.univlille.info.J2.main.utils.Utils;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
-import fr.univlille.info.J2.main.utils.resources.MediaLoader;
 import fr.univlille.info.J2.main.utils.resources.Theme;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;

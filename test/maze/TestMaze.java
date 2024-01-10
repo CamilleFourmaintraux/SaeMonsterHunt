@@ -6,12 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.Test;
 
+import fr.univlille.info.J2.main.management.Management;
 import fr.univlille.info.J2.main.management.Maze;
 import fr.univlille.info.J2.main.management.SaveManagementData;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
 import fr.univlille.info.J2.main.utils.resources.Theme;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class TestMaze {
@@ -28,6 +30,19 @@ public class TestMaze {
 		assertEquals(maze_randomMap.isGameOver(),false);
 		assertEquals(maze_randomMap.isMonsterTurn(),false);
 		assertEquals(maze_randomMap.getTurn(),2);
+	}
+	
+	@Test
+	public void test_default_map() {
+		int diff = 0;
+		for(int row=0; row<Maze.DEFAULT_MAP.length; row++) {
+			for(int col=0; col<Maze.DEFAULT_MAP[0].length; col++) {
+				if(!this.maze_defaultMap.getWalls()[row][col]==Maze.DEFAULT_MAP[row][col]) {
+					diff++;
+				}
+			}
+		}
+		assertTrue(diff<3);
 	}
 
 
@@ -66,11 +81,13 @@ public class TestMaze {
 
 	 @Test
 	 public void testCanMonsterMoveAt() {
-		 ICoordinate coorMonster = maze_defaultMap.getMonster().getCoord();
+		 ICoordinate coorMonster = new Coordinate(0,0);
+		 maze_defaultMap.getMonster().setCoord(coorMonster);;
 		 maze_defaultMap.setMonsterTurn(true);
 		 assertTrue(maze_defaultMap.canMonsterMoveAt(new Coordinate(coorMonster.getRow()+1,coorMonster.getCol()+1)));
-		 assertFalse(maze_defaultMap.canMonsterMoveAt(new Coordinate(coorMonster.getRow()+2,coorMonster.getCol()+2)));
-		 assertFalse(maze_defaultMap.canMonsterMoveAt(new Coordinate(32,42)));
+		 assertTrue(maze_defaultMap.canMonsterMoveAt(new Coordinate(coorMonster.getRow()-1,coorMonster.getCol()-1))); //Out of bounds coordinate will be (0,0) and monster can move to (0,0).
+		 assertTrue(maze_defaultMap.canMonsterMoveAt(new Coordinate(coorMonster.getRow(),coorMonster.getCol()+1)));
+		 assertFalse(maze_defaultMap.canMonsterMoveAt(new Coordinate(320,420)));
 	 }
 
 	 @Test
@@ -87,5 +104,53 @@ public class TestMaze {
 		 maze_defaultMap.setMonsterTurn(false);
 		 assertTrue(maze_defaultMap.shoot(maze_defaultMap.getMonster().getCoord()));
 		 assertTrue(maze_defaultMap.isGameOver());
+	 }
+	 
+	 @Test
+	 public void test_Constructor_Maze_Save() {
+		 Maze maze = new Maze(Management.createSave(maze_randomMap));
+		 assertEquals(maze.getWalls(),maze_randomMap.getWalls());
+		 
+	 }
+	 
+	 @Test
+	 public void test_initEmptyMaze() {
+		 boolean[][] emptyMap = Maze.initEmptyMaze(10, 10);
+		 for(int h=0; h<emptyMap.length; h++) {
+				for(int l=0; l<emptyMap[h].length; l++) {
+					assertTrue(emptyMap[h][l]);
+				}
+			}
+	 }
+	 
+	 @Test
+	 public void test_toString() {
+		 String aff = maze_defaultMap.toString();
+		 String aff2 = Maze.toString(Maze.DEFAULT_MAP);
+		 int diff = 0;
+		 for(int i=0; i<aff.length(); i++)  if(aff.charAt(i)!=aff2.charAt(i))  diff++;
+		 assertTrue(diff<3);
+	 }
+	 
+	 @Test
+	 public void test_getCellInfo() {
+		 CellInfo state;
+		 maze_randomMap.getHunter().setCoord(new Coordinate(5,5));
+		 for(int row=0; row<maze_randomMap.getWalls().length;row++) {
+			 for(int col=0; col<maze_randomMap.getWalls()[row].length;col++) {
+				 state=maze_randomMap.getCellInfo(new Coordinate(row,col));
+				 if(row==maze_randomMap.getHunter().getRow() && col==maze_randomMap.getHunter().getCol()) {
+					 assertTrue(state.equals(CellInfo.HUNTER));
+				 }else if(row==maze_randomMap.getMonster().getRow() && col==maze_randomMap.getMonster().getCol()) {
+					 assertTrue(state.equals(CellInfo.MONSTER));
+				 } else if(row==maze_randomMap.getExit().getRow() && col==maze_randomMap.getExit().getCol()) {
+					 assertTrue(state.equals(CellInfo.EXIT));
+				 }else if(maze_randomMap.getWalls()[row][col]) {
+					 assertTrue(state.equals(CellInfo.EMPTY));
+				 }else {
+					 assertTrue(state.equals(CellInfo.WALL));
+				 }
+			 }
+		 }
 	 }
 }

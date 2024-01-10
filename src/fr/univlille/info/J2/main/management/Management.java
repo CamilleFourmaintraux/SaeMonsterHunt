@@ -288,7 +288,7 @@ public class Management extends Stage implements Observer{
 		this.probability=DEFAULT_PROBABILITY;
 		this.isGenerationRandom=true;
 		this.isSameScreen=true;
-		this.areSoundsActivated=true;
+		this.areSoundsActivated=false;
 
 		gameplayH = new GameplayHunterData(DEFAULT_NAME_HUNTER, DEFAULT_IA_PLAYER, DEFAULT_BONUS_RANGE);
 		gameplayM = new GameplayMonsterData(DEFAULT_NAME_MONSTER, DEFAULT_IA_PLAYER, false, DEFAULT_VISION_RANGE, DEFAULT_MOVING_RANGE);
@@ -745,7 +745,7 @@ public class Management extends Stage implements Observer{
 		bScreenType.setMinWidth(150);
 		Label l_screenType = Generators.generateLabel("Choose theme mode");
 		
-		Button bSound = Generators.generateButton("Sounds:ON", Color.WHITE, Color.BLACK);
+		Button bSound = Generators.generateButton("Sounds:OFF", Color.WHITE, Color.BLACK);
 		bSound.setOnAction(e->{
 			if(this.areSoundsActivated) {
 				this.areSoundsActivated=false;
