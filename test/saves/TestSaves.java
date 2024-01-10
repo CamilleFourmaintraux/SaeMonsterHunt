@@ -1,6 +1,7 @@
 package saves;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -73,6 +74,32 @@ public class TestSaves {
 	}
 	
 	@Test
+	public void test_Saves_equals_MonsterData() {
+		
+		SaveMonsterData data_monster2 = new SaveMonsterData(gmd,new boolean[Maze.DEFAULT_MAP.length][Maze.DEFAULT_MAP.length],Maze.DEFAULT_MAP,0,0);
+		SaveMonsterData data_monster3 = new SaveMonsterData(gmd,new boolean[Maze.DEFAULT_MAP.length][Maze.DEFAULT_MAP.length],Maze.DEFAULT_MAP,5,5);
+		
+		
+		assertFalse(data_monster.equals(null));
+		assertFalse(data_monster.equals("data"));
+		assertTrue(data_monster.equals(data_monster));
+		assertTrue(data_monster.equals(data_monster2));
+		assertFalse(data_monster.equals(data_monster3));
+	}
+	
+	@Test
+	public void test_Saves_equals_MonsterGameplay() {
+		GameplayMonsterData gmd2 = new GameplayMonsterData("Monster","Player",false, 1, 1);
+		GameplayMonsterData gmd3 = new GameplayMonsterData("Different","Player",true, 2, 3);
+		
+		assertFalse(gmd.equals(null));
+		assertFalse(gmd.equals("data"));
+		assertTrue(gmd.equals(gmd));
+		assertTrue(gmd.equals(gmd2));
+		assertFalse(gmd.equals(gmd3));
+	}
+	
+	@Test
 	public void test_Saves_getters_Hunter() {
 		assertEquals(3,data_hunter.getCol());
 		assertEquals(3,data_hunter.getRow());
@@ -97,6 +124,31 @@ public class TestSaves {
 	}
 	
 	@Test
+	public void test_Saves_equals_HunterData() {
+		SaveHunterData data_hunter2 = new SaveHunterData(ghd,new int[Maze.DEFAULT_MAP.length][Maze.DEFAULT_MAP.length],3,3);
+		SaveHunterData data_hunter3 = new SaveHunterData(ghd,new int[Maze.DEFAULT_MAP.length][Maze.DEFAULT_MAP.length],5,4);
+		
+		assertFalse(data_hunter.equals(null));
+		assertFalse(data_hunter.equals("data"));
+		assertTrue(data_hunter.equals(data_hunter));
+		assertTrue(data_hunter.equals(data_hunter2));
+		assertFalse(data_hunter.equals(data_hunter3));
+	}
+	
+	@Test
+	public void test_Saves_equals_HunterGameplay() {
+
+		GameplayHunterData ghd2 = new GameplayHunterData("Hunter","Player",0);
+		GameplayHunterData ghd3 = new GameplayHunterData("Different","Player",2);
+		
+		assertFalse(ghd.equals(null));
+		assertFalse(ghd.equals("data"));
+		assertTrue(ghd.equals(ghd));
+		assertTrue(ghd.equals(ghd2));
+		assertFalse(ghd.equals(ghd3));
+	}
+	
+	@Test
 	public void test_Saves_getters_Exit() {
 		assertEquals(Maze.DEFAULT_MAP.length-1,data_exit.getRow());
 		assertEquals(Maze.DEFAULT_MAP.length-1,data_exit.getCol());
@@ -112,6 +164,35 @@ public class TestSaves {
 				assertTrue(Maze.DEFAULT_MAP[row][col]==data_maze.getWalls()[row][col]);
 			}
 		}
+	}
+	
+	@Test
+	public void test_Saves_equals_Maze() {
+		SaveMazeData data_maze2 = new SaveMazeData(Maze.DEFAULT_MAP,new int[Maze.DEFAULT_MAP.length][Maze.DEFAULT_MAP.length],0,true);
+		SaveMazeData data_maze3 = new SaveMazeData(Maze.DEFAULT_MAP,new int[Maze.DEFAULT_MAP.length][Maze.DEFAULT_MAP.length],5,false);
+		assertFalse(data_maze.equals(null));
+		assertFalse(data_maze.equals("data"));
+		assertTrue(data_maze.equals(data_maze));
+		assertTrue(data_maze.equals(data_maze2));
+		assertFalse(data_maze.equals(data_maze3));
+	}
+		
+	@Test
+	public void test_Saves_getters_Management() {
+		assertEquals(Theme.THEME_CAVE,data_man.getTheme());
+		assertEquals(false,data_man.isAudioActivated());
+		assertEquals(false,data_man.isSameScreen());
+	}
+	
+	@Test
+	public void test_Saves_equals_Management() {
+		assertFalse(data_man.equals(null));
+		assertFalse(data_man.equals("data"));
+		assertTrue(data_man.equals(data_man));
+		SaveManagementData data_man2 = new SaveManagementData(Theme.THEME_CAVE, false, false);
+		SaveManagementData data_man3 = new SaveManagementData(Theme.THEME_CAVE, true, true);
+		assertFalse(data_man.equals(data_man3));
+		assertTrue(data_man.equals(data_man2));
 	}
 	
 	
