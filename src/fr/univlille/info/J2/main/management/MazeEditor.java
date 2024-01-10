@@ -116,10 +116,10 @@ public class MazeEditor {
 	/**
      * Réinitialise les murs du labyrinthe.
      */
-	public void resetWalls() {
-		for(int h=0; h<this.walls.length; h++) {
-			for(int l=0; l<this.walls[h].length; l++){
-				this.walls[h][l]=true;
+	public static void resetWalls(boolean[][] walls) {
+		for(int h=0; h<walls.length; h++) {
+			for(int l=0; l<walls[h].length; l++){
+				walls[h][l]=true;
 			}
 		}
 	}
@@ -133,7 +133,7 @@ public class MazeEditor {
      */
 	public void resetDrawing(int map_height, int map_width, DisplayValues display) {
 		this.walls = new boolean[map_height][map_width];
-		this.resetWalls();
+		MazeEditor.resetWalls(this.walls);
 		this.draw(map_height,map_width, display);
 	}
 

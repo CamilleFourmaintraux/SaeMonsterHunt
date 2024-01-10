@@ -49,23 +49,23 @@ public class AStar {
         while (!openSet.isEmpty()&&cpt<MAX_CPT) {
         	cpt++;
             Node currentNode = openSet.poll();
-            if (currentNode.coordinate.equals(end)) {
+            if (currentNode.getCoordinate().equals(end)) {
                 return reconstructPath(currentNode);
             }
 
-            closedSet.add(currentNode.coordinate);
-            for (ICoordinate neighbor : getNeighbors(currentNode.coordinate, maze)) {
+            closedSet.add(currentNode.getCoordinate());
+            for (ICoordinate neighbor : getNeighbors(currentNode.getCoordinate(), maze)) {
                 if (closedSet.contains(neighbor)) {
                     continue;
                 }
 
-                int tentativeGCost = currentNode.gCost + 1;
+                int tentativeGCost = currentNode.getgCost() + 1;
                 Node neighborNode = nodeMap.getOrDefault(neighbor,
                         new Node(neighbor, Integer.MAX_VALUE, heuristic(neighbor, end), null));
 
-                if (!closedSet.contains(neighbor) && tentativeGCost < neighborNode.gCost) {
-                    neighborNode.parent = currentNode;
-                    neighborNode.gCost = tentativeGCost;
+                if (!closedSet.contains(neighbor) && tentativeGCost < neighborNode.getgCost()) {
+                    neighborNode.setParent(currentNode);
+                    neighborNode.setgCost(tentativeGCost);
 
                     if (!openSet.contains(neighborNode)) {
                         openSet.add(neighborNode);
@@ -85,7 +85,7 @@ public class AStar {
      * @param b Deuxième coordonnée.
      * @return Valeur de l'heuristique entre les deux coordonnées.
      */
-    static int heuristic(ICoordinate a, ICoordinate b) {
+    public static int heuristic(ICoordinate a, ICoordinate b) {
         // Heuristic function (Manhattan distance for simplicity)
         return (int)Math.round(Math.sqrt((Math.pow(Math.abs(a.getRow() - b.getRow()), 2)+Math.pow(Math.abs(a.getCol()- b.getCol()),2))));
     }
@@ -96,11 +96,11 @@ public class AStar {
      * @param node Nœud final.
      * @return Liste d'objets ICoordinate représentant le chemin reconstruit.
      */
-    static List<ICoordinate> reconstructPath(Node node) {
+    public static List<ICoordinate> reconstructPath(Node node) {
         List<ICoordinate> path = new ArrayList<>();
         while (node != null) {
-            path.add(node.coordinate);
-            node = node.parent;
+            path.add(node.getCoordinate());
+            node = node.getParent();
         }
         Collections.reverse(path);
         return path;
@@ -113,14 +113,14 @@ public class AStar {
      * @param maze       Labyrinthe représenté par un tableau de boolean indiquant les emplacements des murs.
      * @return Liste d'objets ICoordinate représentant les voisins valides.
      */
-    static List<ICoordinate> getNeighbors(ICoordinate coordinate, boolean[][] maze) {
+    public static List<ICoordinate> getNeighbors(ICoordinate coordinate, boolean[][] maze) {
         List<ICoordinate> neighbors = new ArrayList<>();
-        int[] dx = { -1, 0, 1, 0, -1, 1, 1, -1 }; // 8 directions including diagonals
-        int[] dy = { 0, 1, 0, -1, 1, 1, -1, -1 };
+        int[] dx = { -1, 0, 1, 0};
+        int[] dy = { 0, 1, 0, -1};
 
         for (int i = 0; i < dx.length; i++) {
-            int newRow = coordinate.getRow() + dx[i];
-            int newCol = coordinate.getCol() + dy[i];
+            int newRow = coordinate.getRow() + dy[i];
+            int newCol = coordinate.getCol() + dx[i];
 
             if (newRow >= 0 && newRow < maze.length && newCol >= 0 && newCol < maze[0].length && maze[newRow][newCol]) {
                 neighbors.add(new Coordinate(newRow, newCol));
@@ -128,36 +128,5 @@ public class AStar {
         }
         return neighbors;
     }
-    
-    /*//Example
-    public static void main(String[] args) {
-        
-        boolean[][] maze = Maze.DEFAULT_MAP; // Replace this with your randomly generated maze
-        
-        
-        int rows = maze.length;
-        int cols = maze[0].length;
-        
-        System.out.println(Maze.toString(maze));
-        
-        ICoordinate start = new Coordinate(0, 0); // Replace with your monster's starting position
-        ICoordinate end = new Coordinate(rows - 1, cols - 1); // Replace with your exit position
-
-        System.out.println("(" + start.getRow() + ", " + start.getCol() + ")");
-        System.out.println("(" + end.getRow() + ", " +end.getCol() + ")");
-
-        List<ICoordinate> path = findPath(maze, start, end);
-        if (!path.isEmpty()) {
-            System.out.println("Path found:");
-            for (ICoordinate coord : path) {
-                System.out.println("(" + coord.getRow() + ", " + coord.getCol() + ")");
-            }
-        } else {
-            System.out.println("No path found!");
-        }
-        
-        System.out.println("END");
-    }*/
-    
     
 }
