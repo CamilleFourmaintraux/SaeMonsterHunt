@@ -115,7 +115,11 @@ public class Theme {
 	 */
 	private String sound_monster;
 	
-	
+	/**
+     * Constructeur de la classe Theme.
+     *
+     * @param key La clé unique du thème.
+     */
 	public Theme(String key) {
 		this.name=key;
 		this.isWithImages=true;
@@ -134,7 +138,7 @@ public class Theme {
 	
 		dungeon.floorImg=loadImage(THEME_DUNGEON,"tiles.png");
 		dungeon.wallImg=loadImage(THEME_DUNGEON,"bricks.png");
-		dungeon.monsterImg=loadImage(THEME_DUNGEON,"slime.png");
+		dungeon.monsterImg=loadImage(THEME_DUNGEON,"animation_slime.gif");
 		dungeon.exitImg=loadImage(THEME_DUNGEON,"stairs.png");
 		dungeon.hunterImg=loadImage(THEME_DUNGEON,"magicScope.png");
 		dungeon.floorColor=Color.LIGHTGREY;
@@ -326,11 +330,21 @@ public class Theme {
 	public void setWithImages(boolean isWithImages) {
 		this.isWithImages = isWithImages;
 	}
-
+	
+	/**
+     * Obtient le son associé au chasseur pour ce thème.
+     *
+     * @return Le chemin du fichier audio du chasseur pour ce thème.
+     */
 	public String getSound_hunter() {
 		return sound_hunter;
 	}
 
+	/**
+     * Obtient le son associé au chasseur pour ce thème.
+     *
+     * @return Le chemin du fichier audio du chasseur pour ce thème.
+     */
 	public String getSound_monster() {
 		return sound_monster;
 	}

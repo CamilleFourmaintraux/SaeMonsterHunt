@@ -110,7 +110,6 @@ public class MonsterView  extends View {
      * 
 	 * @param maze			Instance du labyrinthe associée à cette vue.
 	 * @param display 		Instance de DisplayValues pour les paramètres d'affichage.
-	 * @param monsterName	Nom du Monstre.
 	 * @param theme			Thème utilisé pour l'affichage.
 	 */
 	public MonsterView(DisplayValues display, Maze maze, Theme theme) {
@@ -386,10 +385,20 @@ public class MonsterView  extends View {
 		this.selection.setStrokeWidth(3);
 	}
 
+	/**
+     * Le sprite du monstre représenté par un objet CellWithText.
+     *
+     * @return Le sprite du monstre.
+     */
 	public CellWithText getSpriteMonster() {
 		return sprite_monster;
 	}
 	
+	/**
+     * Le sprite de la sortie représenté par un objet CellWithText.
+     *
+     * @return Le sprite de la sortie.
+     */
 	public CellWithText getSpriteExit() {
 		return sprite_exit;
 	}

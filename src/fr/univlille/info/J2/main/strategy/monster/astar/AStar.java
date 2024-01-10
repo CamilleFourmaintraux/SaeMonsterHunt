@@ -12,9 +12,31 @@ import java.util.HashSet;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
-
+/**
+ * Cette classe implémente l'algorithme A* (A-star) pour trouver un chemin dans un labyrinthe.
+ * L'algorithme est utilisé pour trouver le chemin optimal entre deux points, en tenant compte
+ * des obstacles présents dans le labyrinthe.
+ * 
+ * @author arthur.debacq.etu
+ * @author camille.fourmaintraux.etu
+ * @author jessy.top.etu
+ * @author theo.franos.etu
+ * 
+ */
 public class AStar {
+	/**
+     * La limite maximale du compteur utilisé pour éviter une exécution infinie de l'algorithme.
+     */
 	public static final int MAX_CPT = 10000;
+	
+	/**
+     * Recherche un chemin optimal entre les coordonnées de départ et d'arrivée dans le labyrinthe donné.
+     *
+     * @param maze  	Labyrinthe représenté par un tableau de boolean indiquant les emplacements des murs.
+     * @param start 	Coordonnées de départ.
+     * @param end   	Coordonnées d'arrivée.
+     * @return Liste d'objets ICoordinate représentant le chemin optimal trouvé.
+     */
 	public static List<ICoordinate> findPath(boolean[][] maze, ICoordinate start, ICoordinate end) {
 		int cpt = 0;
 		PriorityQueue<Node> openSet = new PriorityQueue<>();
@@ -55,11 +77,25 @@ public class AStar {
         return new ArrayList<>();
     }
 
+	/**
+     * Calcule l'heuristique entre deux coordonnées.
+     * L'heuristique utilisée est la distance de Manhattan.
+     *
+     * @param a Première coordonnée.
+     * @param b Deuxième coordonnée.
+     * @return Valeur de l'heuristique entre les deux coordonnées.
+     */
     static int heuristic(ICoordinate a, ICoordinate b) {
         // Heuristic function (Manhattan distance for simplicity)
         return (int)Math.round(Math.sqrt((Math.pow(Math.abs(a.getRow() - b.getRow()), 2)+Math.pow(Math.abs(a.getCol()- b.getCol()),2))));
     }
 
+    /**
+     * Reconstruit le chemin à partir du nœud final en remontant à travers les parents.
+     *
+     * @param node Nœud final.
+     * @return Liste d'objets ICoordinate représentant le chemin reconstruit.
+     */
     static List<ICoordinate> reconstructPath(Node node) {
         List<ICoordinate> path = new ArrayList<>();
         while (node != null) {
@@ -70,6 +106,13 @@ public class AStar {
         return path;
     }
 
+    /**
+     * Obtient les coordonnées voisines valides d'une coordonnée donnée dans le labyrinthe.
+     *
+     * @param coordinate Coordonnée pour laquelle obtenir les voisins.
+     * @param maze       Labyrinthe représenté par un tableau de boolean indiquant les emplacements des murs.
+     * @return Liste d'objets ICoordinate représentant les voisins valides.
+     */
     static List<ICoordinate> getNeighbors(ICoordinate coordinate, boolean[][] maze) {
         List<ICoordinate> neighbors = new ArrayList<>();
         int[] dx = { -1, 0, 1, 0, -1, 1, 1, -1 }; // 8 directions including diagonals

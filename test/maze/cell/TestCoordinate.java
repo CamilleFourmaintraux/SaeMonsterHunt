@@ -36,12 +36,19 @@ Coordinate c = new Coordinate(1,3);
 	@SuppressWarnings("unlikely-arg-type")
 	@Test
 	public void test_equals_Cell() {
+		Coordinate co = c;
 		assertFalse(c==null);
+		assertTrue(c==co);
 		assertFalse(c.equals(Integer.valueOf(5)));
 		assertFalse(c.equals(new Coordinate()));
 		assertFalse(c.equals(new Coordinate(7,9)));
 		assertFalse(c.equals(new Coordinate(1,9)));
 		assertFalse(c.equals(new Coordinate(7,3)));
 		assertTrue(c.equals(new Coordinate(1,3)));
+	}
+	
+	@Test
+	public void test_toString() {
+		assertEquals("(1;3)",c.toString());
 	}
 }

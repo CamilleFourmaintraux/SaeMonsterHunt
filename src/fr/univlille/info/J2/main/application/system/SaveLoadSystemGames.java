@@ -21,6 +21,12 @@ import fr.univlille.info.J2.main.utils.resources.Theme;
  * La classe SaveLoadSystemGames fournit des méthodes statiques pour sauvegarder et charger des objets de type Maze
  * en utilisant la sérialisation Java. Elle permet de stocker des instances de la classe Maze dans des fichiers
  * pour les sauvegarder et les restaurer ultérieurement.
+ * 
+ * @author arthur.debacq.etu
+ * @author camille.fourmaintraux.etu
+ * @author jessy.top.etu
+ * @author theo.franos.etu
+ * 
  */
 public class SaveLoadSystemGames {
 	
@@ -37,10 +43,11 @@ public class SaveLoadSystemGames {
 	public final static String DEFAULT_NAME_FOR_GAME_SAVE = "default_save_name";
 
 	/**
-     * Sauvegarde un objet de type Maze dans un fichier.
+     * Sauvegarde un objet de type Save dans un fichier.
      *
-     * @param maze     L'objet Maze à sauvegarder.
-     * @param fileName Le nom du fichier dans lequel sauvegarder l'objet.
+     * @param save      L'objet Save à sauvegarder.
+     * @param fileName  Le nom du fichier dans lequel sauvegarder l'objet.
+     * 
      * @throws IOException Si une erreur d'entrée/sortie se produit lors de la sauvegarde.
      */
     public static void saveGame(Save save, String fileName) throws IOException {
@@ -53,7 +60,9 @@ public class SaveLoadSystemGames {
      * Charge un objet de type Maze depuis un fichier.
      *
      * @param fileName Le nom du fichier à partir duquel charger l'objet.
+     * 
      * @return L'objet Maze chargé depuis le fichier.
+     * 
      * @throws IOException            Si une erreur d'entrée/sortie se produit lors du chargement.
      * @throws ClassNotFoundException Si la classe Maze n'est pas trouvée lors du chargement.
      */
