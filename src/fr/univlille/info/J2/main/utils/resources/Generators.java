@@ -31,7 +31,7 @@ public class Generators {
 	/**
 	 * Looger qui permet d'éviter les system.out pour à la place faire de vrai fichiers de log.
 	 */
-	private static final Logger logger = Logger.getLogger(Generators.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(Generators.class.getName());
 
 	private Generators() {}
 	/**
@@ -184,7 +184,7 @@ public class Generators {
 							tf.setText(""+max);
 						}
 					}catch(Exception e) {
-						logger.info("Error in the listener of addCheckNumericalValueToTextField");
+						LOGGER.info("Error in the listener of addCheckNumericalValueToTextField");
 					}
 				}
 

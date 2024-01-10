@@ -21,28 +21,34 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class Hunter {
 	
+	/**
+     * Constante représentant un mur.
+     */
 	public static final int WALL=-1;
+	
+	/**
+     * Constante représentant une case non découverte.
+     */
 	public static final int UNDISCOVERED = -2;
 	
+	/**
+     * Données sauvegardées du chasseur.
+     */
 	private SaveHunterData data;
 	
 	/**
 	* Strategy du chasseur.
 	**/
 	public IHunterStrategy strategy;
-	
-
-
 
 	/**
      * Constructeur de la classe Hunter, crée un Chasseur.
      *
-     * @param height     	La hauteur du labyrinthe.
-     * @param width      	La largeur du labyrinthe.
-     * @param coord_hunter 	Les coordonnées du chasseur.
-     * @param IA   			Le niveau de l'IA du chasseur.
-     * @param bonusRange	La portée bonus de la vision du chasseur.
-	 */
+     * @param height       La hauteur du labyrinthe.
+     * @param width        La largeur du labyrinthe.
+     * @param coord_hunter Les coordonnées du chasseur.
+     * @param gameplay     Les données de jeu pour le Chasseur.
+     */
 	public Hunter(int height, int width, ICoordinate coord_hunter, GameplayHunterData gameplay) {
 		this.data = new SaveHunterData(gameplay, new int[height][width], coord_hunter.getRow(), coord_hunter.getCol());
 		this.strategy=this.chooseHunterStrategy(data.getIA());
@@ -50,6 +56,11 @@ public class Hunter {
 		this.strategy.initialize(height, width);
 	}
 	
+	/**
+     * Constructeur alternatif de la classe Hunter, crée un Chasseur à partir de données sauvegardées.
+     *
+     * @param data Les données sauvegardées du Chasseur.
+     */
 	public Hunter(SaveHunterData data) {
 		this.data=data;
 		this.strategy=this.chooseHunterStrategy(data.getIA());
@@ -195,18 +206,38 @@ public class Hunter {
 		return this.strategy.play();
 	}
 
+	/**
+     * Récupère la portée du bonus du chasseur.
+     *
+     * @return La portée du bonus du chasseur.
+     */
 	public int getBonusRange() {
 		return this.data.getBonusRange();
 	}
 
+	/**
+     * Récupère le niveau d'intelligence artificielle du chasseur.
+     *
+     * @return Le niveau d'intelligence artificielle du chasseur.
+     */
 	public String getIA() {
 		return this.data.getIA();
 	}
 	
+	/**
+     * Récupère le nom du chasseur.
+     *
+     * @return Le nom du chasseur.
+     */
 	public String getName() {
 		return this.data.getName();
 	}
 	
+	/**
+     * Récupère les données sauvegardées du chasseur.
+     *
+     * @return Les données sauvegardées du chasseur.
+     */
 	public SaveHunterData getData() {
 		return this.data;
 	}

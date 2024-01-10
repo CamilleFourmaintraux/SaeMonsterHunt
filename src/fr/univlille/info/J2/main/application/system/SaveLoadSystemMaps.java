@@ -10,6 +10,12 @@ import java.io.ObjectOutputStream;
 /**
  * Cette classe fournit des méthodes pour sauvegarder et charger des tableaux boolean[][] (map) dans des fichiers.
  * Elle utilise la sérialisation d'objets pour accomplir ces opérations.
+ * 
+ * @author arthur.debacq.etu
+ * @author camille.fourmaintraux.etu
+ * @author jessy.top.etu
+ * @author theo.franos.etu
+ * 
  */
 public class SaveLoadSystemMaps {
 	

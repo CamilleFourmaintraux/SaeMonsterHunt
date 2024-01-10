@@ -26,6 +26,7 @@ import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.info.J2.main.utils.resources.DisplayValues;
 import fr.univlille.info.J2.main.utils.resources.Generators;
+import fr.univlille.info.J2.main.utils.resources.MediaLoader;
 import fr.univlille.info.J2.main.utils.resources.Theme;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
@@ -37,6 +38,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -113,12 +115,17 @@ public class Management extends Stage implements Observer{
 	 * Constante ID de l'éditeur de labyrinthe.
 	 */
 	private static final int ID_MAZE_EDITOR = 8;
-	
+	/**
+	 * Le nom du joueur Monstre par défaut.
+	 */
 	private static final String DEFAULT_NAME_MONSTER = "Monster";
+	/**
+	 * Le nom du joueur Chasseur par défaut.
+	 */
 	private static final String DEFAULT_NAME_HUNTER = "Hunter";
-	
-
-
+	/**
+	 * Si aucune IA spécifique n'est fournie, cette IA par défaut est utilisée.
+	 */
 	private static final String DEFAULT_IA_PLAYER = "Player";
 	/**
 	 * Constante utilisée dans les comboBox pour le choix des joueurs.
@@ -227,6 +234,11 @@ public class Management extends Stage implements Observer{
 	 * indique si le jeu se deroule sur la meme fenetre (true) ou sur des fenetres separees (false).
 	 */
 	private boolean isSameScreen;
+	
+	/**
+	 * indique si le jeu aura des effets sonores.
+	 */
+	private boolean areSoundsActivated;
 
 	/**
 	 * Map contenant les différents menus du jeu.
@@ -281,6 +293,7 @@ public class Management extends Stage implements Observer{
 		this.probability=DEFAULT_PROBABILITY;
 		this.isGenerationRandom=true;
 		this.isSameScreen=true;
+		this.areSoundsActivated=false;
 
 		gameplayH = new GameplayHunterData(DEFAULT_NAME_HUNTER, DEFAULT_IA_PLAYER, DEFAULT_BONUS_RANGE);
 		gameplayM = new GameplayMonsterData(DEFAULT_NAME_MONSTER, DEFAULT_IA_PLAYER, false, DEFAULT_VISION_RANGE, DEFAULT_MOVING_RANGE);
@@ -423,6 +436,9 @@ public class Management extends Stage implements Observer{
      * @param c Coordonnée à laquelle le monstre veut se déplacer.
 	 */
 	public void monsterPlayAt(ICoordinate c) {
+		if(this.maze.getDataMan().isAudioActivated()) {
+			MediaLoader.playSound(Theme.themesMap.get(this.maze.getDataMan().getTheme()).getSound_monster());
+		}
 		this.maze.move(c);
 		this.mv.actualize();
 	}
@@ -433,7 +449,9 @@ public class Management extends Stage implements Observer{
      * @param c Coordonnée à laquelle le chasseur veut tirer.
 	 */
 	public void hunterPlayAt(ICoordinate c) {
-		//MediaLoader.playSound("shot.mp3");
+		if(this.maze.getDataMan().isAudioActivated()) {
+			MediaLoader.playSound(Theme.themesMap.get(this.maze.getDataMan().getTheme()).getSound_hunter());
+		}
 		this.maze.shoot(c);
 		this.hv.actualize();
 	}
@@ -459,7 +477,11 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Affiche une boite d'avertissement indiquant que c'est le tour du chasseur.
+	 * Affiche une boîte d'avertissement indiquant que c'est le tour du chasseur.
+	 *
+	 * @param IAMonster 	Le niveau de l'IA du monstre.
+	 * @param IAHunter  	Le niveau de l'IA du chasseur.
+	 * @param isSameScreen 	Un indicateur si c'est la même vue.
 	 */
 	public void toHunterView(String IAMonster, String IAHunter, boolean isSameScreen) {
 		if(isSameScreen) {
@@ -483,16 +505,30 @@ public class Management extends Stage implements Observer{
 
 	}
 	
+	/**
+     * Renvoie le niveau de l'IA du chasseur utilisé dans le jeu.
+     *
+     * @return Le niveau de l'IA du chasseur.
+     */
 	private String getHunter_IA() {
 		return this.gameplayH.getIA();
 	}
 
+	/**
+     * Renvoie le niveau de l'IA du monstre utilisé dans le jeu.
+     *
+     * @return Le niveau de l'IA du monstre.
+     */
 	private String getMonster_IA() {
 		return this.gameplayM.getIA();
 	}
 
 	/**
-	 * Affiche une boite d'avertissement indiquant que c'est le tour du monstre.
+	 * Affiche une boîte d'avertissement indiquant que c'est le tour du monstre.
+	 *
+	 * @param IAMonster 	Le niveau de l'IA du monstre.
+	 * @param IAHunter  	Le niveau de l'IA du chasseur.
+	 * @param isSameScreen 	Un indicateur si c'est la même vue.
 	 */
 	public void toMonsterView(String IAMonster, String IAHunter, boolean isSameScreen) {
 		if(isSameScreen) {
@@ -517,9 +553,11 @@ public class Management extends Stage implements Observer{
 
 
 	/**
-	 * Génére le menu principal du jeu, permettant  l'utilisateur de définir des paramètres pour le jeu
-	 * (noms des personnages, niveaux d'IA, etc.) et de lancer une partie.
-	 */
+     * Génère le menu principal du jeu, permettant à l'utilisateur de définir des paramètres pour le jeu
+     * (noms des personnages, niveaux d'IA, etc.) et de lancer une partie.
+     *
+     * @return La scène du menu principal du jeu.
+     */
 	public Scene generatePlayMenu() {
 
 		Label title = Generators.generateTitle("Main Menu");
@@ -549,7 +587,10 @@ public class Management extends Stage implements Observer{
 			}
 			
 			//Création des paquets de data de management
-			SaveManagementData dataMan = new SaveManagementData(this.current_theme.getName(), this.isSameScreen);
+			if(!choixIA_Monster.getValue().equals(DEFAULT_IA_PLAYER) && !choixIA_Hunter.getValue().equals(DEFAULT_IA_PLAYER)) {
+				 this.areSoundsActivated=false;
+			}
+			SaveManagementData dataMan = new SaveManagementData(this.current_theme.getName(), this.isSameScreen, this.areSoundsActivated);
 			
 			//Creation of the maze
 			if(this.isGenerationRandom) {
@@ -639,8 +680,10 @@ public class Management extends Stage implements Observer{
 		}
 
 	/**
-	 * Génére la scene s'affichant
-	 */
+     * Génère la scène à afficher lorsque l'on attend le prochain joueur.
+     *
+     * @return la scène représentant l'interface d'attente du prochain joueur.
+     */
 	public Scene generateWaitingNextPlayer() {
 
 		Label label = new Label("Waiting for the next player.");
@@ -657,6 +700,8 @@ public class Management extends Stage implements Observer{
 	/**
 	 * Génére le menu des paramètres du jeu, permettant  l'utilisateur de personnaliser diverses options telles que
 	 * la taille du labyrinthe, le thème, etc.
+	 * 
+	 * @return Scene La scène générée pour le menu principal des paramètres.
 	 */
 	public Scene generateSettingsMainMenu() {
 		Label title = Generators.generateTitle("Settings");
@@ -710,9 +755,11 @@ public class Management extends Stage implements Observer{
 	}
 
 
-	/**
-	 * Génére le menu des paramètres gérant des paramètres généreaux
-	 */
+	 /**
+     * Génère le menu des paramètres qui gèrent des paramètres généraux.
+     *
+     * @return Scene La scène générée pour les paramètres divers.
+     */
 	public Scene generateSettingsMiscellaneous() {
 		Label title = Generators.generateTitle("Settings - Miscellaneous");
 		
@@ -729,6 +776,17 @@ public class Management extends Stage implements Observer{
 		bScreenType.setMinWidth(150);
 		Label l_screenType = Generators.generateLabel("Choose theme mode");
 		
+		Button bSound = Generators.generateButton("Sounds:OFF", Color.WHITE, Color.BLACK);
+		bSound.setOnAction(e->{
+			if(this.areSoundsActivated) {
+				this.areSoundsActivated=false;
+				bSound.setText("Sounds:OFF");
+			}else {
+				this.areSoundsActivated=true;
+				bSound.setText("Sounds:ON");
+			}
+		});
+		bSound.setMinWidth(150);
 		
 		Button bDisplayMode = Generators.generateButton("Image Mode", Color.WHITE, Color.BLACK);
 		bDisplayMode.setOnAction(e->{
@@ -761,7 +819,7 @@ public class Management extends Stage implements Observer{
 		);
 
 		VBox vbox = new VBox(10);
-		vbox.getChildren().addAll(l_screenType,bScreenType,Generators.createEmptySpace(20),l_theme,theme,l_bDisplayMode,bDisplayMode);
+		vbox.getChildren().addAll(l_screenType,bScreenType,Generators.createEmptySpace(20),l_theme,theme,l_bDisplayMode,bDisplayMode,bSound);
 		
 		Group group = new Group(vbox);
 
@@ -776,9 +834,11 @@ public class Management extends Stage implements Observer{
 		
 	}
 
-	/**
-	 * Génére le menu des paramètres gérant le labyrinthe
-	 */
+	 /**
+     * Génère le menu des paramètres gérant le labyrinthe.
+     *
+     * @return La scène représentant le menu des paramètres.
+     */
 	public Scene generateSettingsMaze() {
 
 		Label title = Generators.generateTitle("Settings - Maze");
@@ -972,8 +1032,10 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Génére le menu des paramètres gérant le monstre
-	 */
+     * Génère le menu des paramètres gérant le monstre.
+     *
+     * @return Une scène représentant le menu des paramètres.
+     */
 	public Scene generateSettingsMonster() {
 		Label title = Generators.generateTitle("Settings - "+DEFAULT_NAME_MONSTER);
 		TextField tf_vision = Generators.generateTextField(""+DEFAULT_VISION_RANGE, 1, '0', '9');
@@ -1033,8 +1095,10 @@ public class Management extends Stage implements Observer{
 	}
 
 	/**
-	 * Génére le menu des paramètres gérant le chasseur
-	 */
+     * Génère le menu des paramètres gérant le monstre.
+     * 
+     * @return Une scène représentant le menu des paramètres du monstre.
+     */
 	public Scene generateSettingsHunter() {
 		Label title = Generators.generateTitle("Settings - "+DEFAULT_NAME_HUNTER);
 
@@ -1067,10 +1131,12 @@ public class Management extends Stage implements Observer{
 	}
 	
 	/**
-	 * Génére le menu de l'éditeur de labyrinthe.
-	 */
+     * Génère le menu de l'éditeur de labyrinthe.
+     *
+     * @return Une scène représentant le menu de l'éditeur de labyrinthe.
+     */
 	public Scene generateMazeEditor() {
-  MazeEditor mEdit;
+		MazeEditor mEdit;
 		Label title = Generators.generateTitle("Maze Editor");
 
 		mEdit = new MazeEditor(DEFAULT_MAZE_SIZE,DEFAULT_MAZE_SIZE,this.display,this.current_theme);
@@ -1182,12 +1248,11 @@ public class Management extends Stage implements Observer{
 
 
 	/**
-	 * Génére le menu de GameOver.
-	 */
+     * Génère le menu de GameOver.
+     * 
+     * @return Une scène représentant l'écran de fin de jeu.
+     */
 	public Scene generateGameOverScreen() {
-		/**
-		 * Groupe pour afficher le jeu final
-		 */
 		Group board;
 		
 		Label title = Generators.generateTitle("Game Over");
@@ -1214,6 +1279,26 @@ public class Management extends Stage implements Observer{
 			this.setScene(this.getScene(ID_PLAY));
 			this.show();
 		});
+		
+		Button statButton = Generators.generateButton("stat", 0, 0,Color.WHITE, Color.BLACK);
+		statButton.setOnAction(e -> {
+			String stats = "The game ended at turn N°"+this.maze.getTurn()+"."
+					+"\n"+
+					"The monster was at "+(Maze.calculDistance(this.maze.getMonster().getCoord(), this.maze.getExit().getCoord()))+" cases of the exit."
+					+"\n"+
+					"The closest distance the hunter was to the monster was "+this.maze.getClosestDistanceToMonster()+" cases.";
+			Alert stat = new Alert(AlertType.INFORMATION);
+			stat.setTitle("Statistics of the game");
+			stat.setContentText(stats);
+			if(this.maze.getIdWinner()==1) {
+				stat.setHeaderText("Monster won !");
+			}else if(this.maze.getIdWinner()==2) {
+				stat.setHeaderText("Hunter won !");
+			}else {
+				stat.setHeaderText("Tie.");
+			}
+			stat.showAndWait();
+		});
 
 		Button quitButton = Generators.generateButton("Quitter", 0, 0,Color.WHITE, Color.BLACK);
 		quitButton.setOnAction(e -> System.exit(0) );
@@ -1231,7 +1316,7 @@ public class Management extends Stage implements Observer{
 		vBoxTitle.setAlignment(Pos.TOP_CENTER);
 		vBoxTitle.setSpacing(60);
 		
-		VBox buttonLayout = new VBox(20);
+		HBox buttonLayout = new HBox(20);
 		buttonLayout.setPrefWidth(200); 
 		buttonLayout.setPrefHeight(50);
 		restartButton.setPrefWidth(150);
@@ -1239,31 +1324,28 @@ public class Management extends Stage implements Observer{
 		quitButton.setPrefWidth(150); 		
 		quitButton.setPrefHeight(30);
 		buttonLayout.setSpacing(20); 
-		buttonLayout.getChildren().addAll(restartButton, quitButton);
+		buttonLayout.getChildren().addAll(restartButton, statButton, quitButton);
 		
 		buttonLayout.setAlignment(Pos.CENTER);
 		
 		
 		VBox vBoxCredit = new VBox(10);
-		vBoxCredit.getChildren().add(Credit);
+		vBoxCredit.getChildren().addAll(buttonLayout ,Credit);
 		vBoxCredit.setAlignment(Pos.BOTTOM_LEFT);
 		
-		buttonLayout.getChildren().add(vBoxCredit);
-
 		layout.setPadding(new Insets(20));
 		
 
 		// Superposez le titre et les boutons
 		layout.setTop(vBoxTitle);
 		layout.setCenter(board);
-		layout.setBottom(buttonLayout);
+		layout.setBottom(vBoxCredit);
 		
 		return new Scene(layout, this.display.getWindowHeight(), this.display.getWindowWidth(), this.current_theme.getFloorColor());
 	}
 
 	/**
      * Fonction qui applique un thème spécifique au jeu en modifiant les couleurs d'affichage.
-     *
 	 */
 	public void applyTheme() {
 		for(Scene s:this.menus.values()) {
@@ -1402,8 +1484,7 @@ public class Management extends Stage implements Observer{
 	}
 	
 	/**
-     *Permet de charger une précédente sauvegarde
-     *
+     * Affiche le menu de chargement d'une sauvegarde existante.
      */
 	public void showLoadMenu() {
 		
@@ -1495,18 +1576,39 @@ public class Management extends Stage implements Observer{
 		});
 	}
 	
+	/**
+     * Crée un objet Save à partir des données d'un labyrinthe.
+     *
+     * @param maze Le labyrinthe à partir duquel créer l'objet Save.
+     * @return Un objet Save contenant les données du labyrinthe.
+     */
 	public static Save createSave(Maze maze) {
 		return new Save(maze.getDataMan(), maze.getData(), maze.getExit().getData(), maze.getMonster().getData(), maze.getHunter().getData());
 	}
 
+	/**
+     * Obtient le nom par défaut du monstre.
+     *
+     * @return Le nom par défaut du monstre.
+     */
 	public static String getDefaultNameMonster() {
 		return DEFAULT_NAME_MONSTER;
 	}
 
+	/**
+     * Obtient le nom par défaut du chasseur.
+     *
+     * @return Le nom par défaut du chasseur.
+     */
 	public static String getDefaultNameHunter() {
 		return DEFAULT_NAME_HUNTER;
 	}
 	
+	/**
+     * Obtient le niveau par défaut de l'IA du joueur.
+     *
+     * @return Le niveau par défaut de l'IA du joueur.
+     */
 	public static String getDefaultIaPlayer() {
 		return DEFAULT_IA_PLAYER;
 	}

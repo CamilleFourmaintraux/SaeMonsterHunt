@@ -25,13 +25,14 @@ import javafx.stage.Stage;
  *
  */
 public class MonsterHunt extends Application{
+	static boolean finished = false;
 
 	public static void main(String[] args) {
 		launch();
 	}
+	
 	/**
      * Méthode de démarrage de l'application.
-     *
      * @param stage La scène principale de l'application.
      * @throws Exception Si une exception survient lors du démarrage de l'application.
      */

@@ -5,8 +5,6 @@ import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
 import fr.univlille.info.J2.main.strategy.hunter.Hunter;
 import fr.univlille.info.J2.main.strategy.hunter.IAeasyHunter;
 import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
-import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
-import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -97,6 +95,8 @@ public class TestHunter {
             }
         }
     }
+    
+    
 
     @Test
     void testSetStrategy() {
