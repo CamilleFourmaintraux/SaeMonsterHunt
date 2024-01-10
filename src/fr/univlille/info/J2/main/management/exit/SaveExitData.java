@@ -6,6 +6,12 @@ import java.io.Serializable;
  * La classe SaveExitData représente les données de sauvegarde associées à la sortie d'un labyrinthe.
  * Ces données comprennent les coordonnées (ligne, colonne) de la sortie.
  * Cette classe implémente l'interface Serializable pour permettre la sérialisation des instances.
+ * 
+ * @author arthur.debacq.etu
+ * @author camille.fourmaintraux.etu
+ * @author jessy.top.etu
+ * @author theo.franos.etu
+ * 
  */
 public class SaveExitData implements Serializable{
 	private static final long serialVersionUID = 4790349523153458010L;
