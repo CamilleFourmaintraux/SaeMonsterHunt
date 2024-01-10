@@ -37,12 +37,13 @@
 **Arthur Debacq :** Terminer la javaDoc, reprise des tests pour augmenter le coverage du modèle et mise à jour du readMe avec les diffèrentes fonctionnalités et ajout des thèmes.
 **Camille Fourmaintraux :** Intégration des stratégies pour rendre notre application compatible avec celles des autres groupes.
 **Théo Franos :** animation des images pour les thèmes(gif)
+**Top jessy :** ajout du bouttons stat dans le menu game over.
 
 ## Semaine du 18/12 au 22/12
 
  **Théo Franos :** poursuite des animations des images pour les thèmes(gif)
 **Camille Fourmaintraux :** Système de sauvegarde de partie et générateur de labyrinthe
-
+**Top jessy :** amélioration et correction de bug du bouttons stat
 ## Vacances du 23/12 au 07/01
 
 **Camille Fourmaintraux :** Tentative d'ajout d'effets sonores, corrections de bugs et écran de fin de partie.
@@ -52,3 +53,4 @@
 ## Semaine du 08/01 au 10/01
 
 **Camille Fourmaintraux :** Améliorations des IAs et Derniers correctifs
+**Top jessy:** ajout de quelque tests.
