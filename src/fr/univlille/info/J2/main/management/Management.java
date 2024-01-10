@@ -26,6 +26,7 @@ import fr.univlille.info.J2.main.utils.patrons.Observer;
 import fr.univlille.info.J2.main.utils.patrons.Subject;
 import fr.univlille.info.J2.main.utils.resources.DisplayValues;
 import fr.univlille.info.J2.main.utils.resources.Generators;
+import fr.univlille.info.J2.main.utils.resources.MediaLoader;
 import fr.univlille.info.J2.main.utils.resources.Theme;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
@@ -430,6 +431,9 @@ public class Management extends Stage implements Observer{
      * @param c Coordonnée à laquelle le monstre veut se déplacer.
 	 */
 	public void monsterPlayAt(ICoordinate c) {
+		if(this.maze.getDataMan().isAudioActivated()) {
+			MediaLoader.playSound(Theme.themesMap.get(this.maze.getDataMan().getTheme()).getSound_monster());
+		}
 		this.maze.move(c);
 		this.mv.actualize();
 	}
@@ -440,7 +444,9 @@ public class Management extends Stage implements Observer{
      * @param c Coordonnée à laquelle le chasseur veut tirer.
 	 */
 	public void hunterPlayAt(ICoordinate c) {
-		//MediaLoader.playSound("shot.mp3");
+		if(this.maze.getDataMan().isAudioActivated()) {
+			MediaLoader.playSound(Theme.themesMap.get(this.maze.getDataMan().getTheme()).getSound_hunter());
+		}
 		this.maze.shoot(c);
 		this.hv.actualize();
 	}

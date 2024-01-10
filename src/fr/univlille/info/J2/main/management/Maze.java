@@ -264,20 +264,6 @@ public class Maze extends Subject{
 	}
 
 	/**
-	 * Affichage en ASCII (Terminal ) du tableau des traces laissées par le monstre.
-	 */
-	public String getStringTraces() {
-		StringBuilder sb = new StringBuilder();
-		for(int h=0; h<this.getWalls().length;h++) {
-			for(int l=0; l<this.getWalls()[h].length;l++) {
-				sb.append(" "+this.getWalls()[h][l]+" ");
-			}
-			sb.append("\n");
-		}
-		return sb.toString();
-	}
-
-	/**
 	 * Retourne des informations sur le contenu d'une cellule à une coordonnée spécifique du labyrinthe.
 	 *
 	 * @param c la coordonnée de la cellule dans le labyrinthe.
@@ -413,9 +399,6 @@ public class Maze extends Subject{
 	 * qu'une mise à jour a eu lieu.
 	 */
 	public void endMonsterTurn() {
-		if(this.dataMan.isAudioActivated()) {
-			MediaLoader.playSound(Theme.themesMap.get(this.dataMan.getTheme()).getSound_monster());
-		}
 		this.data.incrementTurn();
 		this.setMonsterTurn(false);
 		this.notifyObservers();
@@ -456,9 +439,6 @@ public class Maze extends Subject{
 				this.idWinner = 2;
 			}
 			
-			if(this.dataMan.isAudioActivated()) {
-				MediaLoader.playSound(Theme.themesMap.get(this.dataMan.getTheme()).getSound_hunter());
-			}
 			
 			int dist = Maze.calculDistance(this.getMonster().getCoord(), this.getHunter().getCoord());
 			if(this.closestDistanceToMonster>dist) {
@@ -694,6 +674,7 @@ public class Maze extends Subject{
 	public int getClosestDistanceToMonster() {
 		return closestDistanceToMonster;
 	}
+	
 	
 
  }
