@@ -7,13 +7,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.Test;
 
 import fr.univlille.info.J2.main.management.Maze;
+import fr.univlille.info.J2.main.management.SaveManagementData;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
+import fr.univlille.info.J2.main.strategy.hunter.GameplayHunterData;
+import fr.univlille.info.J2.main.strategy.monster.GameplayMonsterData;
+import fr.univlille.info.J2.main.utils.resources.Theme;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class TestMaze {
 
 	Maze maze_defaultMap = new Maze();
-	Maze maze_randomMap = new Maze();
+	Maze maze_randomMap = new Maze(20, 10, 10, new GameplayHunterData("Hunter","Player",0),new GameplayMonsterData("Monster","Player", false, 1, 1),new SaveManagementData(Theme.THEME_CAVE, false, false));
 
 
 	@Test

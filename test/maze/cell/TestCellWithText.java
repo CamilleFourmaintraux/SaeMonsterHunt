@@ -45,8 +45,8 @@ public class TestCellWithText {
 
 	@Test
 	public void test_setters_cellWithText_textPosition() {
-		int verificationX=(1*50+10)+(50/3);
-		int verificationY=(2*50+10)+(50/2);
+		double verificationX=(1*50.0+10.0)+(50.0/3);
+		double verificationY=(2*50.0+10.0)+(50.0/2);
 		assertEquals(Double.valueOf(cwt1.getText().getX()),Double.valueOf(verificationX));
 		assertEquals(Double.valueOf(cwt1.getText().getY()),Double.valueOf(verificationY));
 		cwt1.setPosTextX(10);
