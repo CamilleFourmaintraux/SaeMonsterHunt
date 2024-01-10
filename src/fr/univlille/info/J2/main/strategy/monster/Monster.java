@@ -23,6 +23,9 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class Monster {
 	
+	 /**
+     * Données sauvegardées du monstre.
+     */
 	private SaveMonsterData data;
 	
 	/**
@@ -31,14 +34,13 @@ public class Monster {
 	private IMonsterStrategy strategy;
 
 	/**
-     * Constructeur de la classe Monster, crée un Monstre.
-	 *
-	 * @param walls 		La grille de murs du labyrinthe.
-	 * @param ce            L'événement de la cellule du monstre.
-	 * @param IA	  		Le niveau de l'IA du monstre.
-	 * @param visionRange 	Entier correspondant à la distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
-	 * @param movingRange	Entier correspondant à la distance jusqu'à laquelle le monstre peut se déplacer.
-	 */
+     * Constructeur pour créer un monstre avec des paramètres spécifiques.
+     *
+     * @param walls     Tableau de boolean représentant les murs du labyrinthe.
+     * @param spawn     Coordonnées de spawn du monstre.
+     * @param exit      Coordonnées de la sortie du labyrinthe.
+     * @param gameplay  Données de gameplay du monstre.
+     */
 	public Monster(boolean[][] walls,ICoordinate spawn, ICoordinate exit, GameplayMonsterData gameplay) {
 		this.data = new SaveMonsterData(gameplay, new boolean[walls.length][walls[0].length], walls, spawn.getRow(), spawn.getCol());
 		if(!data.getGameplay().isVisionLimited()) {
@@ -51,6 +53,12 @@ public class Monster {
 		this.strategy.update(initEntity);
 	}
 	
+	/**
+     * Constructeur pour créer un monstre avec des données sauvegardées spécifiques.
+     *
+     * @param data Données sauvegardées du monstre.
+     * @param exit Coordonnées de la sortie du labyrinthe.
+     */
 	public Monster(SaveMonsterData data,ICoordinate exit) {
 		this.data=data;
 		this.strategy=this.chooseMonsterStrategy(data.getIA());
@@ -85,7 +93,6 @@ public class Monster {
 	 * Cette méthode marque toutes les cases comme explorées par le monstre.
 	 * Elle parcourt le tableau bidimensionnel 'explored' et assigne la valeur 'true'
 	 * à chaque élément, indiquant que le monstre a exploré toutes les cases.
-	 * 
 	 */
 	public void setToAllExplored() {
 		for(int h=0;h<this.data.getExplored().length;h++) {
@@ -94,8 +101,6 @@ public class Monster {
 			}
 		}
 	}
-
-	
 
 	/**
      * Met à jour l'état du monstre en fonction d'un événement de cellule.
@@ -125,6 +130,14 @@ public class Monster {
 		return this.strategy.play();
 	}
 	
+	/**
+     * Crée et renvoie une coordonnée valide à l'intérieur des limites du labyrinthe.
+     *
+     * @param row   Coordonnée en ligne.
+     * @param col   Coordonnée en colonne.
+     * @param walls Tableau de boolean représentant les murs du labyrinthe.
+     * @return Coordonnée valide à l'intérieur des limites du labyrinthe.
+     */
 	protected static ICoordinate createInBoundCoord(int row, int col, boolean[][]walls) {
 		if(row>=walls.length) {
 			row=walls.length-1;
@@ -139,22 +152,47 @@ public class Monster {
 		return new Coordinate(row,col);
 	}
 
+	/**
+     * Vérifie si la vision du monstre est limitée.
+     *
+     * @return true si la vision est limitée, sinon false.
+     */
 	public boolean isVisionLimited() {
 		return this.data.isVisionLimited();
 	}
 
+	/**
+     * Renvoie la portée de vision du monstre.
+     *
+     * @return Portée de vision du monstre.
+     */
 	public int getVisionRange() {
 		return this.data.getVisionRange();
 	}
 
+	/**
+     * Renvoie la portée de déplacement du monstre.
+     *
+     * @return Portée de déplacement du monstre.
+     */
 	public int getMovingRange() {
 		return this.data.getMovingRange();
 	}
 
+	/**
+     * Renvoie le niveau d'intelligence artificielle du monstre.
+     *
+     * @return Niveau d'intelligence artificielle du monstre.
+     */
 	public String getIA() {
 		return this.data.getIA();
 	}
 	
+	/**
+     * Renvoie le nom du monstre.
+     *
+     * @return Nom du monstre.
+     */
 	public String getName() {
 		return this.data.getName();
 	}
@@ -196,6 +234,11 @@ public class Monster {
 		return new Coordinate(this.data.getRow(),this.data.getCol());
 	}
 	
+	/**
+     * Renvoie les données sauvegardées du monstre.
+     *
+     * @return Données sauvegardées du monstre.
+     */
 	public SaveMonsterData getData() {
 		return this.data;
 	}

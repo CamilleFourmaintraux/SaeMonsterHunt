@@ -75,6 +75,12 @@ public class IAmoderateHunter implements IHunterStrategy{
 		}
 	}
 	
+	/**
+	 * Modifie le tableau de traces à la coordonnée c pour ajouter la nouvelle trace. 
+	 * 
+	 * @param c 	une coordonnée du labyrinthe.
+	 * @param trace la trace que le chasseur laisse (correspondant au numero du tour actuel)
+	 */
 	public void setTrace(ICoordinate c, int trace) {
 		this.traces[c.getRow()][c.getCol()]=trace;
 	}

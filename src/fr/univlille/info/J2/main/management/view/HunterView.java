@@ -112,7 +112,6 @@ public class HunterView extends View{
      *
      * @param display    Instance des valeurs d'affichage.
      * @param maze       Instance du labyrinthe associée à cette vue.
-     * @param hunterName Nom du chasseur.
      * @param theme      Thème de l'interface.
      */
 	public HunterView(DisplayValues display, Maze maze, Theme theme) {
@@ -187,6 +186,10 @@ public class HunterView extends View{
 	/**
      * Actualise la vue du chasseur en fonction des changements dans le modèle du labyrinthe.
      * Met à jour la position du sprite du tir, le texte d'indication du tour, et les notifications.
+     * 
+     * @param x La coordonnée X du sprite du tir.
+     * @param y La coordonnée Y du sprite du tir.
+     * 
      */
 	public void actualize(int x, int y) {
 		this.sprite_shot.setXY(x,y);
@@ -201,15 +204,15 @@ public class HunterView extends View{
 		this.actualizeCells(this.maze.getHunter().getRow(),this.maze.getHunter().getCol());
 	}
 	
+	/**
+     * Actualise la vue du chasseur en utilisant les coordonnées actuelles du chasseur.
+     */
 	public void actualize() {
 		int x = calculDrawX(this.maze.getHunter().getCol());
 		int y = calculDrawY(this.maze.getHunter().getRow());
 		this.actualize(x,y);
 	}
 
-	
-	
-	
 	/**
      * Méthode pour dessiner le labyrinthe et les éléments associés.
 	 */
@@ -328,11 +331,13 @@ public class HunterView extends View{
 		}
 		return null;
 	}
+	
 	/**
      * Actualise la cellule et ses voisines en fonction des coordonnées spécifiées.
-     * Utilise la méthode {@code revealCell} pour mettre à jour visuellement les cellules.
+     * Utilise la méthode revealCell pour mettre à jour visuellement les cellules.
      * 
-     * @param c Les coordonnées de la cellule à actualiser.
+     * @param cRow La coordonnée de la ligne de la cellule à actualiser.
+     * @param cCol La coordonnée de la colonne de la cellule à actualiser.
      */
 	public void actualizeCells(int cRow, int cCol) {
 
@@ -355,6 +360,11 @@ public class HunterView extends View{
 
 	}
 	
+	/**
+     * Récupère le plateau de jeu.
+     *
+     * @return Le groupe d'éléments représentant le plateau de jeu.
+     */
 	public Group getGameBoard() {
 		CellWithText cwt;
 		for(int row = 0; row<this.maze.getWalls().length;row++) {

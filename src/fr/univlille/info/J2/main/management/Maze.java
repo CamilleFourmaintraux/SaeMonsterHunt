@@ -35,6 +35,9 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class Maze extends Subject{
 
+	/**
+	 * Carte par défaut représentant le labyrinthe avec des murs et des espaces libres.
+	 */
 	public static final boolean[][] DEFAULT_MAP = new boolean[][] {
 		{true,true,false,true,true,false,true,false,true,false}, 	// . . X . . X . X . X
 		{false,true,true,true,true,false,true,false,true,true},		// X . . . . X . X . .
@@ -48,7 +51,14 @@ public class Maze extends Subject{
 		{false,false,true,true,false,false,true,true,true,true}		// X X . . X X . . . .
 	};
 	
+	/**
+     * Données de sauvegarde du labyrinthe.
+     */
 	private SaveMazeData data;
+	
+	/**
+     * Données de sauvegarde de la gestion du jeu.
+     */
 	private SaveManagementData dataMan;
 
 	/**
@@ -82,23 +92,27 @@ public class Maze extends Subject{
 	 */
 	private int idWinner;
 	
+	/**
+     * Distance la plus proche au monstre.
+     */
 	private int closestDistanceToMonster;
 
 	/**
-	 * Constructeur sans paramètres, crée un labyrinthe Maze à partir d'un labyrinthe prédéfini.
-	 * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
-	 */
+     * Constructeur par défaut de la classe Maze. Initialise un labyrinthe avec une carte de base
+     * et des données par défaut pour le chasseur et le monstre.
+     */
 	public Maze() {
 		this(Maze.generateBasicMap(),new GameplayHunterData("Hunter",Management.IA_LEVELS[0],0),new GameplayMonsterData("Monster",Management.IA_LEVELS[0], false, 1, 1),new SaveManagementData(Theme.THEME_CAVE, false, false));
 	}
 
 	/**
-     * Constructeur originel, crée un labyrinthe Maze à partir d'un labyrinthe existant donné en paramètre.
+     * Constructeur de la classe Maze avec paramètres. Initialise un labyrinthe avec une carte spécifiée,
+     * des données pour le chasseur et le monstre, ainsi que des données de gestion en option.
      *
-     * @see Maze#Maze(boolean[][], String, String, boolean, int, int, int)
-     * @param maze            un labyrinthe.
-     * @param dataH				objet GameplayHunterData pour stoker et transférer facilement des données entre les classes concernant le hunter.
-     * @param dataM				objet GameplayMonsterData pour stoker et transférer facilement des données entre les classes concernant le monster.
+     * @param maze     Le tableau de booléens représentant la carte du labyrinthe.
+     * @param dataH    Les données de jeu pour le chasseur.
+     * @param dataM    Les données de jeu pour le monstre.
+     * @param dataMan  Les données de gestion du jeu.
      */
 	public Maze(boolean[][] maze, GameplayHunterData dataH, GameplayMonsterData dataM, SaveManagementData dataMan) {
 		this.data = new SaveMazeData(maze, new int[maze.length][maze[0].length], 1, true);
@@ -112,19 +126,25 @@ public class Maze extends Subject{
 	}
 
 	/**
-     * Constructeur spécial, crée un labyrinthe Maze personnalisé et génère aléatoirement à partir de la largeur, la hauteur
-     * et la probabilité d'apparition de murs.
-     *
-     * @param probability 		le taux de chances qu'une case du labyrinthe soit un mur.
-     * @param height 			la hauteur du labyrinthe.
-     * @param width 			la largeur du labyrinthe.
-     * @param dataH				objet GameplayHunterData pour stoker et transférer facilement des données entre les classes concernant le hunter.
-     * @param dataM				objet GameplayMonsterData pour stoker et transférer facilement des données entre les classes concernant le monster.
+     * Constructeur de la classe Maze qui génère un labyrinthe aléatoire en fonction des paramètres spécifiés.
+     * 
+     * @param probability   Le taux de chances qu'une case du labyrinthe soit un mur.
+     * @param height        La hauteur du labyrinthe.
+     * @param width         La largeur du labyrinthe.
+     * @param dataH         Les données de jeu associées au chasseur (GameplayHunterData).
+     * @param dataM         Les données de jeu associées au monstre (GameplayMonsterData).
+     * @param dataMan       Les données de gestion de sauvegarde (SaveManagementData).
      */
 	public Maze(int probability, int height, int width, GameplayHunterData dataH, GameplayMonsterData dataM, SaveManagementData dataMan) {
 		this(Maze.generateRandomMap(probability, height, width), dataH, dataM, dataMan);
 	}
 	
+	/**
+     * Constructeur de la classe Maze prenant une sauvegarde en paramètre. Initialise un labyrinthe
+     * à partir des données de sauvegarde spécifiées.
+     *
+     * @param save La sauvegarde à partir de laquelle initialiser le labyrinthe.
+     */
 	public Maze(Save save) {
 		this.data=save.getData_maze();
 		this.dataMan=save.getData_management();
@@ -188,16 +208,10 @@ public class Maze extends Subject{
 	}
 
 	/**
-	 * Initialise les coordonnées de la sortie du labyrinthe, le niveau de l'IA du chasseur et du monstre,
-	 * ainsi que les paramètres liés à la vision du monstre.
-	 *
-	 * @param monster_IA   	Niveau de l'IA du monstre.
-	 * @param hunter_IA    	Niveau de l'IA du chasseur.
-	 * @param limitedVision Boolean indiquant si la vision du monstre est limitée.
-	 * @param visionRange   Distance jusqu'où le monstre peut voir (seulement si limitedVision est True).
-	 * @param movingRange   Portée de déplacement du monstre.
-	 * @param bonusRange    Bonus de portée du chasseur.
-	 */
+     * Initialise les instances du monstre, de la sortie et du chasseur à partir des données sauvegardées.
+     * 
+     * @param save L'objet Save contenant les données nécessaires pour l'initialisation.
+     */
 	public void initMonsterExitHunter(Save save) {
 		this.exit = new Exit(new Coordinate(save.getData_exit().getRow(),save.getData_exit().getCol()));
 		
@@ -207,6 +221,12 @@ public class Maze extends Subject{
 	
 	}
 	
+	/**
+	 * Initialise les positions du monstre, de la sortie et du chasseur dans le labyrinthe en fonction des données de gameplay fournies.
+	 * 
+	 * @param dataH Les données de gameplay du chasseur.
+	 * @param dataM Les données de gameplay du monstre.
+	 */
 	public void initMonsterExitHunter(GameplayHunterData dataH, GameplayMonsterData dataM) {
 		int exit_x = Utils.random.nextInt(this.getWalls()[0].length);
 		int exit_y = Utils.random.nextInt(this.getWalls().length);
@@ -238,13 +258,21 @@ public class Maze extends Subject{
 
 
 	/**
-	 * Affichage en ASCII (Terminal) du labyrinthe.
-	 */
+     * Retourne une représentation ASCII du labyrinthe avec les murs et les espaces.
+     *
+     * @return Une chaîne de caractères représentant le labyrinthe.
+     */
 	@Override
 	public String toString() {
 		return Maze.toString(getWalls());
 	}
 	
+	/**
+     * Retourne une représentation ASCII du labyrinthe avec les murs et les espaces.
+     *
+     * @param walls Le tableau bidimensionnel de booléens représentant les murs du labyrinthe.
+     * @return Une chaîne de caractères représentant le labyrinthe.
+     */
 	public static String toString(boolean[][] walls) {
 		StringBuilder sb = new StringBuilder();
 		for (int h=0; h<walls.length; h++) {
@@ -513,6 +541,14 @@ public class Maze extends Subject{
 		return distances;
 	}
 	
+	/**
+     * Calcule la distance totale entre deux coordonnées du labyrinthe en additionnant
+     * la distance en largeur et la distance en hauteur.
+     *
+     * @param c1 La première coordonnée du labyrinthe.
+     * @param c2 La seconde coordonnée du labyrinthe.
+     * @return La distance totale entre les deux coordonnées.
+     */
 	public static int calculDistance(ICoordinate c1, ICoordinate c2) {
 		int[] distances = calculDistanceTab(c1,c2);
 		return distances[0]+distances[1];
@@ -667,18 +703,38 @@ public class Maze extends Subject{
 		return this.hunter.getIA();
 	}
 	
+	/**
+     * Renvoie l'identifiant du gagnant du jeu.
+     *
+     * @return l'identifiant du gagnant du jeu.
+     */
 	public int getIdWinner() {
 		return this.idWinner;
 	}
 	
+	/**
+     * Renvoie les données du labyrinthe sauvegardées.
+     *
+     * @return les données du labyrinthe sauvegardées.
+     */
 	public SaveMazeData getData() {
 		return this.data;
 	}
 	
+	/**
+     * Renvoie les données de gestion de sauvegarde.
+     *
+     * @return les données de gestion de sauvegarde.
+     */
 	public SaveManagementData getDataMan() {
 		return this.dataMan;	
 	}
 
+	/**
+     * Renvoie la distance la plus proche au monstre depuis une position donnée.
+     *
+     * @return la distance la plus proche au monstre depuis une position donnée.
+     */
 	public int getClosestDistanceToMonster() {
 		return closestDistanceToMonster;
 	}
