@@ -12,14 +12,35 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class IAhardcoreHunter implements IHunterStrategy{
 	
+	/**
+     * Valeur représentant une cellule mur.
+     */
 	private final int T_WALL=-1;
+	
+	/**
+     * Valeur représentant une cellule non découverte.
+     */
 	private final int T_UNDISCOVERED = -2;
 	
+	/**
+     * Dernière coordonnée où le chasseur a effectué un tir.
+     */
 	private ICoordinate lastShot;
 	
+	/**
+     * Nombre de lignes dans le labyrinthe.
+     */
 	private int rows;
+	
+	/**
+     * Nombre de colonnes dans le labyrinthe.
+     */
 	private int cols;
 	
+	/**
+     * Tableau représentant les traces laissées par le chasseur lors de ses déplacements.
+     * Les valeurs sont utilisées pour suivre les mouvements du chasseur dans le labyrinthe.
+     */
 	private int traces[][];
 	
 	/**
@@ -95,6 +116,12 @@ public class IAhardcoreHunter implements IHunterStrategy{
 		}
 	}
 	
+	/**
+	 * Modifie le tableau de traces à la coordonnée c pour ajouter la nouvelle trace. 
+	 * 
+	 * @param c 	une coordonnée du labyrinthe.
+	 * @param trace la trace que le chasseur laisse (correspondant au numero du tour actuel)
+	 */
 	public void setTrace(ICoordinate c, int trace) {
 		this.traces[c.getRow()][c.getCol()]=trace;
 	}

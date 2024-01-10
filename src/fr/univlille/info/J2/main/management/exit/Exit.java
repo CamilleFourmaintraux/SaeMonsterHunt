@@ -58,6 +58,11 @@ public class Exit{
 		return new Coordinate(getRow(),getCol());
 	}
 	
+	/**
+	 * Renvoie les données associées à la sortie sauvegardée.
+	 *
+	 * @return Les données de la sortie sauvegardée.
+	 */
 	public SaveExitData getData() {
 		return this.data;
 	}

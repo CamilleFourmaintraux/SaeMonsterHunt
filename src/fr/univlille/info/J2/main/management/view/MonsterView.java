@@ -110,7 +110,6 @@ public class MonsterView  extends View {
      * 
 	 * @param maze			Instance du labyrinthe associée à cette vue.
 	 * @param display 		Instance de DisplayValues pour les paramètres d'affichage.
-	 * @param monsterName	Nom du Monstre.
 	 * @param theme			Thème utilisé pour l'affichage.
 	 */
 	public MonsterView(DisplayValues display, Maze maze, Theme theme) {

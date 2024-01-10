@@ -2,20 +2,79 @@ package fr.univlille.info.J2.main.management;
 
 import fr.univlille.info.J2.main.utils.Utils;
 
+/**
+ * La classe MazeGenerator est utilisée pour générer aléatoirement un labyrinthe.
+ * Elle utilise l'algorithme de génération de labyrinthe basé sur la méthode de "recursive backtracking".
+ * 
+ * Le labyrinthe généré est représenté par une grille de cases avec des passages ou des murs.
+ * La classe utilise des tags pour représenter différentes étapes du processus de génération.
+ * 
+ * @author arthur.debacq.etu
+ * @author camille.fourmaintraux.etu
+ * @author jessy.top.etu
+ * @author theo.franos.etu
+ * 
+ */
 public class MazeGenerator {
 	
+	/**
+	 * Instance unique de MazeGenerator, suivant le modèle Singleton.
+	 */
 	private static MazeGenerator maze_generator;
+	
+	/**
+	 * Dimensions de la grille pour la génération du labyrinthe.
+	 */
 	private int[] grid_size;
+	
+	/**
+	 * Grille représentant la structure initiale du labyrinthe (avant la génération).
+	 */
 	private boolean[][] grid;
+	
+	/**
+	 * Labyrinthe généré après l'application de l'algorithme.
+	 */
 	private boolean[][] maze;
+	
+	/**
+	 * Valeurs associées à chaque cellule de la grille (pour des traitements spécifiques).
+	 */
 	private int[][] grid_val;
+	
+	/**
+	 * Probabilité d'apparition de murs lors de la génération du labyrinthe.
+	 */
 	private int probability;
+	
+	/**
+	 * Coordonnée X actuelle lors de la génération du labyrinthe.
+	 */
 	private int cX;
+	
+	/**
+	 * Coordonnée Y actuelle lors de la génération du labyrinthe.
+	 */
 	private int cY;
+	
+	/**
+	 * Indicateur indiquant si la génération du labyrinthe est terminée.
+	 */
 	private boolean over;
 	
+	/**
+	 * Constructeur privé pour suivre le modèle Singleton.
+	 */
 	protected MazeGenerator(){}
 	
+	/**
+	 * Génère un labyrinthe aléatoire avec les dimensions spécifiées.
+	 * 
+	 * @param hauteur La hauteur du labyrinthe.
+	 * @param largeur La largeur du labyrinthe.
+	 * @param probability La probabilité de créer un passage au lieu d'un mur.
+	 * @return Une représentation du labyrinthe généré.
+	 */
 	public boolean[][] generateRandomMaze(int hauteur, int largeur, int probability){
 		this.grid_size = new int[2];
 		this.cX = 0;
@@ -28,6 +87,9 @@ public class MazeGenerator {
 		return this.maze;
 	}
 
+	/**
+	 * Initialise les structures de données pour la génération du labyrinthe.
+	 */
 	void setup(){
 	  grid = new boolean[2*grid_size[0]+1][2*grid_size[1]+1];
 	  maze = new boolean[2*grid_size[0]+1][2*grid_size[1]+1];
@@ -56,8 +118,9 @@ public class MazeGenerator {
 	  }
 	}
 
-	
-
+	/**
+	 * Effectue une itération de la génération du labyrinthe.
+	 */
 	void iterate(){
 	  int[] dir = new int[4];
 	  int count_dir = 0;
@@ -119,6 +182,11 @@ public class MazeGenerator {
 	  
 	}
 	
+	/**
+	 * Retourne une représentation textuelle du labyrinthe.
+	 * 
+	 * @return Une chaîne de caractères représentant le labyrinthe.
+	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for(int h = 0; h < 2*grid_size[0]+1; h++){
@@ -134,6 +202,12 @@ public class MazeGenerator {
 		return sb.toString();
 	}
 	
+	/**
+	 * Retourne l'instance unique de MazeGenerator.
+	 * Si aucune instance n'existe, elle est créée.
+	 * 
+	 * @return L'instance unique de MazeGenerator.
+	 */
 	protected static MazeGenerator getMazeGenerator() {
 		if(maze_generator==null) {
 			maze_generator=new MazeGenerator();
