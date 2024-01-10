@@ -1,6 +1,7 @@
 package maze;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -153,4 +154,78 @@ public class TestMaze {
 			 }
 		 }
 	 }
+	 
+	 @Test
+	 public void test_triggerGameOver() {
+		 assertFalse(this.maze_randomMap.isGameOver());
+		 this.maze_randomMap.triggersGameOver();
+		 assertTrue(this.maze_randomMap.isGameOver());
+	 }
+	 
+	 @Test
+	    public void testIsSpotted() {
+		 	maze_randomMap.setSpotted(true);
+	        assertTrue(maze_randomMap.isSpotted());
+	        
+	        // Tester le cas où spotted est faux
+	        maze_randomMap.setSpotted(false);
+	        assertFalse(maze_randomMap.isSpotted());
+	    }
+
+	    @Test
+	    public void testSetGameOver() {
+	    	maze_randomMap.setGameOver(true);
+	        assertTrue(maze_randomMap.isGameOver());
+	        
+	        maze_randomMap.setGameOver(false);
+	        assertFalse(maze_randomMap.isGameOver());
+	    }
+
+	    @Test
+	    public void testSetMonsterTurn() {
+	        Maze instance = new Maze();
+	        
+	        // Tester la méthode setMonsterTurn avec différentes valeurs
+	        instance.setMonsterTurn(true);
+	        assertTrue(instance.getData().isMonsterTurn());
+	        
+	        instance.setMonsterTurn(false);
+	        assertFalse(instance.getData().isMonsterTurn());
+	    }
+
+	    @Test
+	    public void testGetMonsterIA() {
+	        assertEquals(maze_randomMap.getMonsterIA(),"Player");
+	    }
+
+	    @Test
+	    public void testGetHunterIA() {
+	        assertEquals(maze_randomMap.getHunterIA(),"Player");
+	    }
+
+	    @Test
+	    public void testGetIdWinner() {
+	    	assertTrue(maze_randomMap.getIdWinner()<3);
+	    }
+	    
+	    @Test
+	    public void testGetVisionRange() {
+	    	assertEquals(maze_randomMap.getVisionRange(),1);
+	    }
+
+	    @Test
+	    public void testGetData() {
+	        assertNotNull(maze_randomMap.getData());
+	    }
+
+	    @Test
+	    public void testGetDataMan() {
+	        assertNotNull(maze_randomMap.getDataMan());
+	    }
+
+	    @Test
+	    public void testGetClosestDistanceToMonster() {
+	    	assertEquals(maze_randomMap.getClosestDistanceToMonster(),maze_randomMap.getWalls().length*maze_randomMap.getWalls()[0].length);
+	    	//Valeur par défaut
+	    }
 }

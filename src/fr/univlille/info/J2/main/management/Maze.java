@@ -355,10 +355,10 @@ public class Maze extends Subject{
 	 * @return true si l'action a reussi, sinon false.
 	 */ //BUG qui modifie mon labyrinthe
 	public boolean move(ICoordinate c) { //Fais le déplacement du monstre, retourne true si le déplacement à été possible.
-		this.spotted=false;
+		this.setSpotted(false);
 		if(this.canMonsterMoveAt(c)) {
 			if(this.hunter.getTrace(this.monster.getCoord())!=-2) {
-				this.spotted=true;
+				this.setSpotted(true);
 			}
 			this.setTrace(c, this.getTurn());
 
@@ -629,6 +629,15 @@ public class Maze extends Subject{
 	public boolean isSpotted() {
 		return spotted;
 	}
+	
+	/**
+     * @return true si le monstre a traversé une case déjà découverte par le chasseur, sinon false.
+     */
+	public void setSpotted(boolean spotted) {
+		this.spotted=spotted;
+	}
+	
+	
 
 	/**
      * @param isGameOver Boolean utilisé dans les actions move du monstre et shoot du chasseur pour indiquer si la partie est finie.

@@ -1,14 +1,11 @@
 package maze.cell;
 
-import java.util.Objects;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import fr.univlille.info.J2.main.management.cells.Cell;
 import fr.univlille.info.J2.main.management.cells.Coordinate;
-import fr.univlille.info.J2.main.utils.resources.Theme;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class TestCell {
