@@ -1,4 +1,4 @@
-package fr.univlille.info.J2.main.utils.menuConception;
+package fr.univlille.info.J2.main.utils.resources;
 
 import java.io.File;
 
@@ -100,16 +100,29 @@ public class Theme {
 	/**
 	 * Couleur du fond de l'écran
 	 */
-	private Color backgroundColor;/**
+	private Color backgroundColor;
+	/**
 	 * Couleur du texte
 	 */
 	private Color textColor;
 	
 	/**
+<<<<<<< HEAD:src/fr/univlille/info/J2/main/utils/menuConception/Theme.java
 	 * Constructueur du Thème.
 	 * 
 	 * @param key clé correspondant à un thème.
 	 */
+=======
+	 * Son associé au chasseur pour ce thème
+	 */
+	private String sound_hunter;
+	/**
+	 * Son associé au monstre pour ce thème
+	 */
+	private String sound_monster;
+	
+	
+>>>>>>> master:src/fr/univlille/info/J2/main/utils/resources/Theme.java
 	public Theme(String key) {
 		this.name=key;
 		this.isWithImages=true;
@@ -128,7 +141,7 @@ public class Theme {
 	
 		dungeon.floorImg=loadImage(THEME_DUNGEON,"tiles.png");
 		dungeon.wallImg=loadImage(THEME_DUNGEON,"bricks.png");
-		dungeon.monsterImg=loadImage(THEME_DUNGEON,"slime.png");
+		dungeon.monsterImg=loadImage(THEME_DUNGEON,"animation_slime.gif");
 		dungeon.exitImg=loadImage(THEME_DUNGEON,"stairs.png");
 		dungeon.hunterImg=loadImage(THEME_DUNGEON,"magicScope.png");
 		dungeon.floorColor=Color.LIGHTGREY;
@@ -136,6 +149,8 @@ public class Theme {
 		dungeon.fogColor=Color.BLACK;
 		dungeon.backgroundColor=Color.BLACK;
 		dungeon.textColor=Color.WHITE;
+		dungeon.sound_monster="move.wav";
+		dungeon.sound_hunter="laser.wav";
 		
 		cave.floorImg=loadImage(THEME_CAVE,"stone.png");
 		cave.wallImg=loadImage(THEME_CAVE,"rock.png");
@@ -147,10 +162,12 @@ public class Theme {
 		cave.fogColor=Color.BLACK;
 		cave.backgroundColor=Color.BLACK;
 		cave.textColor=Color.WHITE;
+		cave.sound_monster="move.wav";
+		cave.sound_hunter="shot.wav";
 		
 		meadow.floorImg=loadImage(THEME_MEADOW,"grass.png");
 		meadow.wallImg=loadImage(THEME_MEADOW,"tree.png");
-		meadow.monsterImg=loadImage(THEME_MEADOW,"rabbit.png");
+		meadow.monsterImg=loadImage(THEME_MEADOW,"animation_rabbit.gif");
 		meadow.exitImg=loadImage(THEME_MEADOW,"burrow.png");
 		meadow.hunterImg=loadImage(THEME_MEADOW,"rifleScope.png");
 		meadow.floorColor=Color.GREENYELLOW;
@@ -158,6 +175,8 @@ public class Theme {
 		meadow.fogColor=Color.DARKGREEN;
 		meadow.backgroundColor=Color.DARKGREEN;
 		meadow.textColor=Color.WHITE;
+		meadow.sound_monster="move.wav";
+		meadow.sound_hunter="shot.wav";
 		
 		forest.floorImg=loadImage(THEME_FOREST,"humus.png");
 		forest.wallImg=loadImage(THEME_FOREST,"stump.png");
@@ -169,6 +188,8 @@ public class Theme {
 		forest.fogColor=Color.DARKGREEN;
 		forest.backgroundColor=Color.DARKGREEN;
 		forest.textColor=Color.WHITE;
+		forest.sound_monster="move.wav";
+		forest.sound_hunter="shot.wav";
 		
 		ocean.floorImg=loadImage(THEME_OCEAN,"sea.png");
 		ocean.wallImg=loadImage(THEME_OCEAN,"boat.png");
@@ -180,6 +201,8 @@ public class Theme {
 		ocean.fogColor=Color.DARKBLUE;
 		ocean.backgroundColor=Color.DARKBLUE;
 		ocean.textColor=Color.WHITE;
+		ocean.sound_monster="move.wav";
+		ocean.sound_hunter="laser.wav";
 	}
 	
 	/**
@@ -309,6 +332,14 @@ public class Theme {
      */
 	public void setWithImages(boolean isWithImages) {
 		this.isWithImages = isWithImages;
+	}
+
+	public String getSound_hunter() {
+		return sound_hunter;
+	}
+
+	public String getSound_monster() {
+		return sound_monster;
 	}
 	
 	

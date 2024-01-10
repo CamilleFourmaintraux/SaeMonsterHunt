@@ -2,8 +2,6 @@ package fr.univlille.info.J2.main.management;
 
 import java.io.Serializable;
 
-import fr.univlille.info.J2.main.utils.menuConception.DisplayValues;
-
 public class SaveManagementData implements Serializable{
 
 	private static final long serialVersionUID = -6622533595241810229L;
@@ -18,6 +16,7 @@ public class SaveManagementData implements Serializable{
 	 */
 	private boolean isSameScreen;
 	
+<<<<<<< HEAD
 	/**
 	 * Constructeur de la sauvegarde de Management.
 	 * 
@@ -25,8 +24,14 @@ public class SaveManagementData implements Serializable{
 	 * @param isSameScreen	Mode de vue du jeu.
 	 */
 	public SaveManagementData(String theme, boolean isSameScreen) {
+=======
+	private boolean areAudioActivated;
+	
+	public SaveManagementData(String theme, boolean isSameScreen, boolean areAudioActivated) {
+>>>>>>> master
 		this.theme=theme;
 		this.isSameScreen=isSameScreen;
+		this.areAudioActivated=areAudioActivated;
 	}
 	
 	/**
@@ -55,6 +60,10 @@ public class SaveManagementData implements Serializable{
 	public boolean isSameScreen() {
 		return isSameScreen;
 	}
+	
+	public boolean isAudioActivated() {
+		return areAudioActivated;
+	}
 
 	/**
 	 * Définit le mode de vue du jeu.
@@ -63,6 +72,10 @@ public class SaveManagementData implements Serializable{
 	 */
 	protected void setSameScreen(boolean isSameScreen) {
 		this.isSameScreen = isSameScreen;
+	}
+	
+	protected void setAudioActivated (boolean areAudioActivated) {
+		this.areAudioActivated = areAudioActivated;
 	}
 	
 	

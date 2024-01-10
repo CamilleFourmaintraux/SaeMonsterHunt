@@ -21,9 +21,13 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class Hunter {
 	
+<<<<<<< HEAD
 	/**
 	 * Entier représentant l'état "non découvert" de la case.
 	 */
+=======
+	public static final int WALL=-1;
+>>>>>>> master
 	public static final int UNDISCOVERED = -2;
 	
 	/**
@@ -34,7 +38,14 @@ public class Hunter {
 	/**
 	* Strategy du chasseur.
 	**/
+<<<<<<< HEAD
 	private IHunterStrategy strategy;
+=======
+	public IHunterStrategy strategy;
+	
+
+
+>>>>>>> master
 
 	/**
      * Constructeur de la classe Hunter, crée un Chasseur.
@@ -177,7 +188,7 @@ public class Hunter {
  */
 	public void actualizeTraces(ICellEvent ce) {
 		if(ce.getState().equals(CellInfo.WALL)) {
-			this.setTrace(ce.getCoord(), -1);
+			this.setTrace(ce.getCoord(), Hunter.WALL);
 		}else {
 			this.setTrace(ce.getCoord(), ce.getTurn());
 		}
