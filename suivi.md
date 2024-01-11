@@ -60,3 +60,4 @@
 
 **Camille Fourmaintraux :** Améliorations des IAs, Tests et Derniers correctifs
 **Top jessy:** ajout de quelque tests.
+**Théo Franos :** écriture et correction de test
