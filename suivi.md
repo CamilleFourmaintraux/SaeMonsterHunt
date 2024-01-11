@@ -59,5 +59,5 @@
 ## Semaine du 08/01 au 10/01
 **Arthur Debacq :** Terminer la JavaDoc et quelques correctifs sur le readme.  
 **Camille Fourmaintraux :** Améliorations des IAs, Tests et Derniers correctifs.  
-**Top jessy:** ajout de quelque tests.  
+**Top jessy:** ajout de quelque tests et realisation d'une video démo.  
 **Théo Franos :** écriture et correction de test
