@@ -6,6 +6,8 @@
 package fr.univlille.info.J2.main.management.exit;
 
 
+import java.util.Objects;
+
 import fr.univlille.info.J2.main.management.cells.Coordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
@@ -66,5 +68,19 @@ public class Exit{
 	public SaveExitData getData() {
 		return this.data;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Exit other = (Exit) obj;
+		return Objects.equals(data, other.data);
+	}
+	
+	
 }
 

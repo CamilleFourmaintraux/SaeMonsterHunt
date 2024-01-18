@@ -1,6 +1,7 @@
 package fr.univlille.info.J2.main.management;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Cette classe représente les données d'un labyrinthe à sauvegarder.
@@ -50,16 +51,7 @@ public class SaveMazeData implements Serializable{
 		this.turn = turn;
 		this.isMonsterTurn = isMonsterTurn;
 	}
-
-	/**
-     * Retourne le serialVersionUID de la classe.
-     *
-     * @return Le serialVersionUID de la classe.
-     */
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
+	
 	/**
      * Retourne le tableau de boolean représentant les murs du labyrinthe.
      *
@@ -138,5 +130,20 @@ public class SaveMazeData implements Serializable{
 	protected void setMonsterTurn(boolean isMonsterTurn) {
 		this.isMonsterTurn = isMonsterTurn;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SaveMazeData other = (SaveMazeData) obj;
+		return isMonsterTurn == other.isMonsterTurn && Arrays.deepEquals(traces, other.traces) && turn == other.turn
+				&& Arrays.deepEquals(walls, other.walls);
+	}
+	
+	
 	
 }

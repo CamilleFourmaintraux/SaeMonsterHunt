@@ -1,6 +1,8 @@
 package fr.univlille.info.J2.main.strategy.monster;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Cette classe représente les données sauvegardées du monstre, comprenant la grille
@@ -57,16 +59,7 @@ public class SaveMonsterData implements Serializable{
 		this.row = row;
 		this.col = col;
 	}
-
-	/**
-     * Retourne le numéro de version de la sérialisation.
-     *
-     * @return Le numéro de version de la sérialisation.
-     */
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
+	
 	/**
      * Retourne les données de gameplay du monstre.
      *
@@ -192,4 +185,19 @@ public class SaveMonsterData implements Serializable{
 	public String getName() {
 		return this.gameplay.getName();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SaveMonsterData other = (SaveMonsterData) obj;
+		return col == other.col && Arrays.deepEquals(explored, other.explored)
+				&& Objects.equals(gameplay, other.gameplay) && row == other.row
+				&& Arrays.deepEquals(walls, other.walls);
+	}
+	
 }

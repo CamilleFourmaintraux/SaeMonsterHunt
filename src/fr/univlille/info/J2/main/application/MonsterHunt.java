@@ -3,6 +3,8 @@
  */
 package fr.univlille.info.J2.main.application;
 
+import java.util.logging.Logger;
+
 //Runtime components
 //--module-path /home/iutinfo/ExternalJars/Jars/javafx-sdk-21/lib --add-modules=javafx.controls,javafx.media
 
@@ -25,7 +27,11 @@ import javafx.stage.Stage;
  *
  */
 public class MonsterHunt extends Application{
-	static boolean finished = false;
+	
+	/**
+	 * Looger qui permet d'éviter les system.out pour à la place faire de vrai fichiers de log.
+	 */
+	private static final Logger LOGGER = Logger.getLogger(MonsterHunt.class.getName());
 
 	public static void main(String[] args) {
 		launch();
@@ -39,6 +45,13 @@ public class MonsterHunt extends Application{
 	@Override
 	public void start(Stage stage) throws Exception {
 		Management game = new Management(new DisplayValues(DisplayValues.WINDOWS_MIN_SIZE,DisplayValues.WINDOWS_MIN_SIZE,0,0,10,0,0));
+		game.setOnCloseRequest(e->{
+			try {
+				this.stop();
+			} catch (Exception e1) {
+				LOGGER.info(e1.getMessage());
+			}
+		});
 		game.show();
 	}
 

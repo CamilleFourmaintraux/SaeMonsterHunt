@@ -72,38 +72,4 @@ public class SaveLoadSystemMaps {
             return (boolean[][]) ois.readObject();
         }
     }
-
-    //Exemple de fonctionnement de saveMap et loadMap
-   
-    public static void main(String[] args) {
-        // Exemple d'utilisation
-        boolean[][] tableauASauvegarder = { { true, false, true }, { false, true, false } };
-        String cheminFichier = "testSave";
-
-        // Sauvegarder le tableau
-        try {
-            saveMap(tableauASauvegarder, cheminFichier);
-            System.out.println("Tableau sauvegardé avec succès.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Charger le tableau
-        try {
-            boolean[][] tableauCharge = loadMap(cheminFichier);
-            System.out.println("Tableau chargé avec succès.");
-            for(int h=0; h<tableauCharge.length; h++) {
-        		System.out.print('[');
-        		System.out.print(tableauCharge[h][0]);
-            	for(int l=1; l<tableauCharge[h].length; l++) {
-            		System.out.print(',');
-            		System.out.print(tableauCharge[h][l]);
-            	}
-        		System.out.println(']');
-            }
-        	System.out.println();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -1,6 +1,8 @@
 package fr.univlille.info.J2.main.strategy.hunter;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
@@ -50,15 +52,6 @@ public class SaveHunterData implements Serializable{
 		this.traces = traces;
 		this.row = row;
 		this.col = col;
-	}
-	
-	/**
-     * Renvoie le numéro de version de la classe pour la sérialisation.
-     *
-     * @return Le numéro de version de la classe.
-     */
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 	
 	/**
@@ -171,6 +164,22 @@ public class SaveHunterData implements Serializable{
 	public void setTrace(int row, int col, int trace) {
 		this.traces[row][col]=trace;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SaveHunterData other = (SaveHunterData) obj;
+		return col == other.col && Objects.equals(gameplay, other.gameplay) && row == other.row
+				&& Arrays.deepEquals(traces, other.traces);
+	}
+	
+	
+	
 	
 	
 }

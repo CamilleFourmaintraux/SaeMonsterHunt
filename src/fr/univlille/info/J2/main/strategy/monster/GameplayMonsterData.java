@@ -1,6 +1,7 @@
 package fr.univlille.info.J2.main.strategy.monster;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Cette classe représente les données de gameplay associées à un monstre dans le jeu.
@@ -150,6 +151,21 @@ public class GameplayMonsterData implements Serializable{
 	public void setIA(String iA) {
 		IA = iA;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GameplayMonsterData other = (GameplayMonsterData) obj;
+		return Objects.equals(IA, other.IA) && isVisionLimited == other.isVisionLimited
+				&& movingRange == other.movingRange && Objects.equals(name, other.name)
+				&& visionRange == other.visionRange;
+	}
+	
 	
 	
 }

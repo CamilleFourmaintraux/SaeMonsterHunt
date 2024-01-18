@@ -70,7 +70,7 @@ import javafx.stage.Stage;
 public class Management extends Stage implements Observer{
 	
 	/**
-	 * Looger qui permet d'éviter les system.out pour à la place faire de vra ifichiers de log.
+	 * Logger qui permet d'éviter les system.out pour à la place faire de vra ifichiers de log.
 	 */
 	private static final Logger LOGGER = Logger.getLogger(Management.class.getName());
 
@@ -307,7 +307,7 @@ public class Management extends Stage implements Observer{
 		this.menus.put(Integer.valueOf(ID_MONSTER_SETTINGS), this.generateSettingsMonster());
 		this.menus.put(Integer.valueOf(ID_HUNTER_SETTINGS), this.generateSettingsHunter());
 		this.menus.put(Integer.valueOf(ID_MAZE_EDITOR), this.generateMazeEditor());
-		//Game Over est généré à chaque fin de partie
+		//Game Over, contrairement aux autres menus, est généré à chaque fin de partie
 		
 		this.viewM = new Stage();
 		this.viewH = new Stage();
@@ -707,35 +707,35 @@ public class Management extends Stage implements Observer{
 		Label title = Generators.generateTitle("Settings");
 
 		Button toMisc = Generators.generateButton("Screen",Color.WHITE, Color.BLACK);
-		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),30)
+		//Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),30)
 		toMisc.setOnAction(e->
 			this.setScene(this.getScene(ID_MISCELLANEOUS_SETTINGS))
 		);
 		toMisc.setMinWidth(150);
 
 		Button toMaze = Generators.generateButton("Maze",Color.WHITE, Color.BLACK);
-		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),40)
+		//Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),40)
 		toMaze.setOnAction(e->
 			this.setScene(this.getScene(ID_MAZE_SETTINGS))
 		);
 		toMaze.setMinWidth(150);
 
 		Button toMons = Generators.generateButton(DEFAULT_NAME_MONSTER,Color.WHITE, Color.BLACK);
-		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),50)
+		//Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),50)
 		toMons.setOnAction(e->
 			this.setScene(this.getScene(ID_MONSTER_SETTINGS))
 		);
 		toMons.setMinWidth(150);
 
 		Button toHunt = Generators.generateButton(DEFAULT_NAME_HUNTER,Color.WHITE, Color.BLACK);
-		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),60)
+		//Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),60)
 		toHunt.setOnAction(e->
 			this.setScene(this.getScene(ID_HUNTER_SETTINGS))
 		);
 		toHunt.setMinWidth(150);
 
 		Button bBack = Generators.generateButton("Back",Color.WHITE, Color.BLACK);
-		//this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90)
+		//Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),90)
 		bBack.setOnAction(e->
 			this.setScene(this.getScene(ID_PLAY))
 		);
@@ -915,7 +915,7 @@ public class Management extends Stage implements Observer{
 			}
 		});
 
-		Button bEditor = Generators.generateButton("Maze Editor", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE, Color.BLACK);
+		Button bEditor = Generators.generateButton("Maze Editor", Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE, Color.BLACK);
 		bEditor.setOnAction(e->
 			this.setScene(this.getScene(ID_MAZE_EDITOR))
 		);
@@ -932,7 +932,7 @@ public class Management extends Stage implements Observer{
         File initialDirectory = new File(SaveLoadSystemMaps.MAZES_DIRECTORY);
         fileChooser.setInitialDirectory(initialDirectory);
 
-		Button bImport = Generators.generateButton("Import", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE,Color.BLACK);
+		Button bImport = Generators.generateButton("Import", Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE,Color.BLACK);
 		bImport.setOnAction(e->{
 			this.importedmap = fileChooser.showOpenDialog(this);
 			if(this.importedmap==null) {
@@ -943,7 +943,7 @@ public class Management extends Stage implements Observer{
 
 		});
 
-		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE, Color.BLACK);
+		Button bBack = Generators.generateButton("Back", Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE, Color.BLACK);
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(ID_SETTINGS));
 			if(tf_probability.getText().isEmpty()) {
@@ -1039,7 +1039,7 @@ public class Management extends Stage implements Observer{
 	public Scene generateSettingsMonster() {
 		Label title = Generators.generateTitle("Settings - "+DEFAULT_NAME_MONSTER);
 		TextField tf_vision = Generators.generateTextField(""+DEFAULT_VISION_RANGE, 1, '0', '9');
-		Generators.setLayout(tf_vision, this.calculPercentage(this.display.getWindowWidth(),70), this.calculPercentage(this.display.getWindowHeight(),39));
+		Generators.setLayout(tf_vision, Management.calculPercentage(this.display.getWindowWidth(),70), Management.calculPercentage(this.display.getWindowHeight(),39));
 		Generators.addCheckNumericalValueToTextField(tf_vision, MIN_VISION_RANGE, MAX_VISION_RANGE);
 		tf_vision.setDisable(true);
 		Button b_vision = Generators.generateButton("NO", calculPercentage(this.display.getWindowWidth(),70),calculPercentage(this.display.getWindowHeight(),30),Color.WHITE, Color.BLACK);
@@ -1059,11 +1059,11 @@ public class Management extends Stage implements Observer{
 		Label l_tf_vision= Generators.generateLabel("Vision Range", tf_vision.getLayoutX()-LABEL_MIN_WIDTH-40, tf_vision.getLayoutY());
 
 		TextField tf_range = Generators.generateTextField("1", 1, '0', '9');
-		Generators.setLayout(tf_range, this.calculPercentage(this.display.getWindowWidth(),70), this.calculPercentage(this.display.getWindowHeight(),50));
+		Generators.setLayout(tf_range, Management.calculPercentage(this.display.getWindowWidth(),70), Management.calculPercentage(this.display.getWindowHeight(),50));
 		Generators.addCheckNumericalValueToTextField(tf_range, 1, 9);
 		Label l_range = Generators.generateLabel("Moving Range", tf_range.getLayoutX()-LABEL_MIN_WIDTH-40, tf_range.getLayoutY());
 		Button bBack = Generators.generateButton("Back",Color.WHITE, Color.BLACK);
-		Generators.setLayout(bBack, this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90));
+		Generators.setLayout(bBack, Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),90));
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(ID_SETTINGS));
 			if(tf_vision.getText().isEmpty()) {
@@ -1105,7 +1105,7 @@ public class Management extends Stage implements Observer{
 		TextField tf_bonusRange = Generators.generateTextField(""+DEFAULT_BONUS_RANGE, 1, '0', '9');
 		Label l_bonusRange = Generators.generateLabel("Bonus Vision Range", tf_bonusRange.getLayoutX()-LABEL_MIN_WIDTH-40, tf_bonusRange.getLayoutY());
 
-		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE, Color.BLACK);
+		Button bBack = Generators.generateButton("Back", Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE, Color.BLACK);
 		bBack.setOnAction(e->{
 			this.setScene(this.getScene(ID_SETTINGS));
 			if(tf_bonusRange.getText().isEmpty()) {
@@ -1191,7 +1191,7 @@ public class Management extends Stage implements Observer{
 			}
 		});
 
-		Button bBack = Generators.generateButton("Back", this.calculPercentage(this.display.getWindowWidth(), 5), this.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE,Color.BLACK);
+		Button bBack = Generators.generateButton("Back", Management.calculPercentage(this.display.getWindowWidth(), 5), Management.calculPercentage(this.display.getWindowHeight(),90),Color.WHITE,Color.BLACK);
 		bBack.setOnAction(e->{
 			this.setScene(getScene(ID_MAZE_SETTINGS));
 			message.setVisible(false);
@@ -1377,17 +1377,6 @@ public class Management extends Stage implements Observer{
 		return this.menus.get(Integer.valueOf(id));
 	}
 
-	/**
-	 * Positionne un élément aux coordonnées spécifiés.
-	 *
-	 * @param node 	L'élément à positionner.
-	 * @param x 	La position horizontale de l'élément.
-	 * @param y 	La position verticale de l'élément.
-	 */
-	public void setLayout(Node node, double x, double y) {
-		node.setLayoutX(x);
-		node.setLayoutY(y);
-	}
 
 	/**
 	 * Calcule un pourcentage de la valeur totale donné.
@@ -1396,7 +1385,7 @@ public class Management extends Stage implements Observer{
 	 * @param percentage 	Le pourcentage a calculé (doit être entre 0 et 100).
 	 * @return La valeur résultante du pourcentage calculé.
 	 */
-	public double calculPercentage(double total, double percentage) {//percentage must be between 0 and 100
+	public static double calculPercentage(double total, double percentage) {//percentage must be between 0 and 100
 		return (percentage/100)*total;
 	}
 	
@@ -1534,7 +1523,7 @@ public class Management extends Stage implements Observer{
 				areYouSure.showAndWait().ifPresent(confirmation->{
 					if (confirmation.equals(bt_load)) {
 						try {
-							Save save = SaveLoadSystemGames.loadGame(loadedSave.getName());
+							Save save = SaveLoadSystemGames.loadGame(loadedSave);
 							//Adaptation du zoom
 							if(this.display.getWindowHeight()>this.display.getWindowWidth()) {
 								this.display.setZoom(this.display.getWindowWidth()/(this.maze_height+this.maze_width));

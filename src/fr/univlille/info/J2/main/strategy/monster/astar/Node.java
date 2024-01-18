@@ -2,6 +2,8 @@ package fr.univlille.info.J2.main.strategy.monster.astar;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
+
+
 /**
  * Représente un nœud dans l'algorithme A* utilisé par la stratégie du monstre.
  * Chaque nœud contient une coordonnée, les coûts g et h, ainsi qu'un nœud parent.
@@ -16,15 +18,16 @@ public class Node implements Comparable<Node> {
 	/**
      * Coordonnée du nœud dans la grille.
      */
-    ICoordinate coordinate;
+    private ICoordinate coordinate;
     /**
      * Coût du chemin du début à ce nœud / Estimation du coût du chemin de ce nœud à la destination (heuristique).
      */
-    int gCost, hCost;
+    private int gCost;
+	private int hCost;
     /**
      * Nœud parent dans le chemin optimal.
      */
-    Node parent;
+    private Node parent;
 
     /**
      * Constructeur de la classe Node.
@@ -34,11 +37,11 @@ public class Node implements Comparable<Node> {
      * @param hCost      Estimation du coût du chemin de ce nœud à la destination (heuristique).
      * @param parent     Nœud parent dans le chemin optimal.
      */
-    Node(ICoordinate coordinate, int gCost, int hCost, Node parent) {
-        this.coordinate = coordinate;
-        this.gCost = gCost;
-        this.hCost = hCost;
-        this.parent = parent;
+    public Node(ICoordinate coordinate, int gCost, int hCost, Node parent) {
+        this.setCoordinate(coordinate);
+        this.setgCost(gCost);
+        this.sethCost(hCost);
+        this.setParent(parent);
     }
 
     /**
@@ -50,8 +53,40 @@ public class Node implements Comparable<Node> {
      */
     @Override
     public int compareTo(Node other) {
-        int fCost = gCost + hCost;
-        int otherFCost = other.gCost + other.hCost;
+        int fCost = getgCost() + gethCost();
+        int otherFCost = other.getgCost() + other.gethCost();
         return Integer.compare(fCost, otherFCost);
     }
+
+	public ICoordinate getCoordinate() {
+		return coordinate;
+	}
+
+	public void setCoordinate(ICoordinate coordinate) {
+		this.coordinate = coordinate;
+	}
+
+	public int getgCost() {
+		return gCost;
+	}
+
+	public void setgCost(int gCost) {
+		this.gCost = gCost;
+	}
+
+	public int gethCost() {
+		return hCost;
+	}
+
+	public void sethCost(int hCost) {
+		this.hCost = hCost;
+	}
+
+	public Node getParent() {
+		return parent;
+	}
+
+	public void setParent(Node parent) {
+		this.parent = parent;
+	}
 }

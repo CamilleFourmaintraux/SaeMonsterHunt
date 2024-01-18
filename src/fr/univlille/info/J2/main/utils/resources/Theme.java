@@ -141,65 +141,65 @@ public class Theme {
 		dungeon.monsterImg=loadImage(THEME_DUNGEON,"animation_slime.gif");
 		dungeon.exitImg=loadImage(THEME_DUNGEON,"stairs.png");
 		dungeon.hunterImg=loadImage(THEME_DUNGEON,"magicScope.png");
-		dungeon.floorColor=Color.LIGHTGREY;
-		dungeon.wallColor=Color.DARKGREY;
-		dungeon.fogColor=Color.BLACK;
-		dungeon.backgroundColor=Color.BLACK;
-		dungeon.textColor=Color.WHITE;
-		dungeon.sound_monster="move.wav";
-		dungeon.sound_hunter="laser.wav";
+		dungeon.setFloorColor(Color.LIGHTGREY);
+		dungeon.setWallColor(Color.DARKGREY);
+		dungeon.setFogColor(Color.BLACK);
+		dungeon.setBackgroundColor(Color.BLACK);
+		dungeon.setTextColor(Color.WHITE);
+		dungeon.setSound_monster("move.wav");
+		dungeon.setSound_hunter("laser.wav");
 		
 		cave.floorImg=loadImage(THEME_CAVE,"stone.png");
 		cave.wallImg=loadImage(THEME_CAVE,"rock.png");
 		cave.monsterImg=loadImage(THEME_CAVE,"animation_bat.gif");
 		cave.exitImg=loadImage(THEME_CAVE,"wayout.png");
 		cave.hunterImg=loadImage(THEME_CAVE,"rifleScope.png");
-		cave.floorColor=Color.DARKGRAY;
-		cave.wallColor=Color.LIGHTGRAY;
-		cave.fogColor=Color.BLACK;
-		cave.backgroundColor=Color.BLACK;
-		cave.textColor=Color.WHITE;
-		cave.sound_monster="move.wav";
-		cave.sound_hunter="shot.wav";
+		cave.setFloorColor(Color.DARKGRAY);
+		cave.setWallColor(Color.LIGHTGRAY);
+		cave.setFogColor(Color.BLACK);
+		cave.setBackgroundColor(Color.BLACK);
+		cave.setTextColor(Color.WHITE);
+		cave.setSound_monster("move.wav");
+		cave.setSound_hunter("shot.wav");
 		
 		meadow.floorImg=loadImage(THEME_MEADOW,"grass.png");
 		meadow.wallImg=loadImage(THEME_MEADOW,"tree.png");
 		meadow.monsterImg=loadImage(THEME_MEADOW,"animation_rabbit.gif");
 		meadow.exitImg=loadImage(THEME_MEADOW,"burrow.png");
 		meadow.hunterImg=loadImage(THEME_MEADOW,"rifleScope.png");
-		meadow.floorColor=Color.GREENYELLOW;
-		meadow.wallColor=Color.CORNFLOWERBLUE;
-		meadow.fogColor=Color.DARKGREEN;
-		meadow.backgroundColor=Color.DARKGREEN;
-		meadow.textColor=Color.WHITE;
-		meadow.sound_monster="move.wav";
-		meadow.sound_hunter="shot.wav";
+		meadow.setFloorColor(Color.GREENYELLOW);
+		meadow.setWallColor(Color.CORNFLOWERBLUE);
+		meadow.setFogColor(Color.DARKGREEN);
+		meadow.setBackgroundColor(Color.DARKGREEN);
+		meadow.setTextColor(Color.WHITE);
+		meadow.setSound_monster("move.wav");
+		meadow.setSound_hunter("shot.wav");
 		
 		forest.floorImg=loadImage(THEME_FOREST,"humus.png");
 		forest.wallImg=loadImage(THEME_FOREST,"stump.png");
 		forest.monsterImg=loadImage(THEME_FOREST,"bambi.png");
 		forest.exitImg=loadImage(THEME_FOREST,"bush.png");
 		forest.hunterImg=loadImage(THEME_FOREST,"rifleScope.png");
-		forest.floorColor=Color.LIGHTGREEN;
-		forest.wallColor=Color.FORESTGREEN;
-		forest.fogColor=Color.DARKGREEN;
-		forest.backgroundColor=Color.DARKGREEN;
-		forest.textColor=Color.WHITE;
-		forest.sound_monster="move.wav";
-		forest.sound_hunter="shot.wav";
+		forest.setFloorColor(Color.LIGHTGREEN);
+		forest.setWallColor(Color.FORESTGREEN);
+		forest.setFogColor(Color.DARKGREEN);
+		forest.setBackgroundColor(Color.DARKGREEN);
+		forest.setTextColor(Color.WHITE);
+		forest.setSound_monster("move.wav");
+		forest.setSound_hunter("shot.wav");
 		
 		ocean.floorImg=loadImage(THEME_OCEAN,"sea.png");
 		ocean.wallImg=loadImage(THEME_OCEAN,"boat.png");
 		ocean.monsterImg=loadImage(THEME_OCEAN,"shark.png");
 		ocean.exitImg=loadImage(THEME_OCEAN,"abyss.png");
 		ocean.hunterImg=loadImage(THEME_OCEAN,"hook.png");
-		ocean.floorColor=Color.AQUAMARINE;
-		ocean.wallColor=Color.SEAGREEN;
-		ocean.fogColor=Color.DARKBLUE;
-		ocean.backgroundColor=Color.DARKBLUE;
-		ocean.textColor=Color.WHITE;
-		ocean.sound_monster="move.wav";
-		ocean.sound_hunter="laser.wav";
+		ocean.setFloorColor(Color.AQUAMARINE);
+		ocean.setWallColor(Color.SEAGREEN);
+		ocean.setFogColor(Color.DARKBLUE);
+		ocean.setBackgroundColor(Color.DARKBLUE);
+		ocean.setTextColor(Color.WHITE);
+		ocean.setSound_monster("move.wav");
+		ocean.setSound_hunter("laser.wav");
 	}
 	
 	/**
@@ -347,6 +347,34 @@ public class Theme {
      */
 	public String getSound_monster() {
 		return sound_monster;
+	}
+
+	public void setFloorColor(Color floorColor) {
+		this.floorColor = floorColor;
+	}
+
+	public void setWallColor(Color wallColor) {
+		this.wallColor = wallColor;
+	}
+
+	public void setFogColor(Color fogColor) {
+		this.fogColor = fogColor;
+	}
+
+	public void setTextColor(Color textColor) {
+		this.textColor = textColor;
+	}
+
+	public void setBackgroundColor(Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+	}
+
+	public void setSound_monster(String sound_monster) {
+		this.sound_monster = sound_monster;
+	}
+
+	public void setSound_hunter(String sound_hunter) {
+		this.sound_hunter = sound_hunter;
 	}
 	
 	
